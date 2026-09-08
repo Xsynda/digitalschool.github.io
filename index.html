@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Главная · Электронная школа</title>
+  <title>Консоль · Электронная школа</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
   <style>
@@ -20,7 +20,6 @@
       padding-top: 80px;
     }
 
-    /* ----- ШАПКА ----- */
     .navbar {
       position: fixed;
       top: 0;
@@ -162,7 +161,6 @@
       transform: scale(0.97);
     }
 
-    /* ----- ОСНОВНОЙ КОНТЕНТ ----- */
     .container {
       max-width: 900px;
       margin: 0 auto;
@@ -173,124 +171,32 @@
       border: 1px solid #f0f5fe;
     }
 
-    .section-title {
-      font-size: 22px;
+    .page-title {
+      font-size: 26px;
       font-weight: 600;
       color: #0a1e3c;
-      margin-bottom: 20px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .section-title .material-symbols-outlined {
-      color: #2a7de1;
-      font-size: 28px;
-    }
-
-    .news-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .news-item {
-      background: #f9fcff;
-      border-radius: 24px;
-      padding: 20px 24px;
-      border: 1px solid #eef3fa;
-      transition: 0.15s;
-    }
-    .news-item:hover {
-      border-color: #c7d9f0;
-      background: #ffffff;
-    }
-
-    .news-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-
-    .news-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #0a1e3c;
-    }
-
-    .news-date {
-      font-size: 13px;
-      color: #6a7f9e;
-      background: #eef3fa;
-      padding: 4px 14px;
-      border-radius: 40px;
-      white-space: nowrap;
-    }
-
-    .news-desc {
-      font-size: 15px;
-      color: #3d5270;
-      line-height: 1.5;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 48px 20px;
-      color: #6a7f9e;
-    }
-    .empty-state .material-symbols-outlined {
-      font-size: 48px;
-      color: #d0dae9;
-      margin-bottom: 12px;
-    }
-    .empty-state h3 {
-      color: #0a1e3c;
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
-
-    .footer {
-      margin-top: 32px;
-      padding-top: 20px;
-      border-top: 1px solid #eef3fa;
-      font-size: 13px;
-      color: #889bb3;
-      text-align: center;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: #6a7f9e;
-    }
-
-    /* ----- КОНСОЛЬ АДМИНИСТРАТОРА ----- */
-    .admin-console {
-      margin-top: 32px;
-      padding-top: 24px;
-      border-top: 2px solid #eef3fa;
-    }
-
-    .admin-console .console-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #0a1e3c;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .admin-console .console-title .material-symbols-outlined {
+    .page-title .material-symbols-outlined {
       color: #8b5cf6;
-      font-size: 24px;
+      font-size: 32px;
     }
 
+    .page-sub {
+      color: #5f7696;
+      font-size: 16px;
+      margin-bottom: 28px;
+    }
+
+    /* ----- КОНСОЛЬ ----- */
     .console-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
+      margin-bottom: 24px;
     }
 
     .console-card {
@@ -301,10 +207,10 @@
     }
 
     .console-card .card-label {
-      font-size: 13px;
-      font-weight: 500;
-      color: #6a7f9e;
-      margin-bottom: 4px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #0a1e3c;
+      margin-bottom: 12px;
     }
 
     .console-card input,
@@ -407,11 +313,88 @@
       color: #c74a4a;
     }
 
-    .news-item-admin .admin-actions {
-      margin-top: 12px;
+    .edit-section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #0a1e3c;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .edit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .edit-item {
+      background: #f9fcff;
+      border-radius: 16px;
+      padding: 16px 20px;
+      border: 1px solid #eef3fa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .edit-item .edit-info {
+      flex: 1;
+      min-width: 150px;
+    }
+    .edit-item .edit-info .edit-title {
+      font-weight: 500;
+      color: #0a1e3c;
+    }
+    .edit-item .edit-info .edit-meta {
+      font-size: 13px;
+      color: #6a7f9e;
+    }
+
+    .edit-item .edit-actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
+    }
+
+    .edit-item .edit-fields {
+      display: none;
+      width: 100%;
+      padding-top: 12px;
+      border-top: 1px solid #eef3fa;
+      margin-top: 12px;
+    }
+    .edit-item .edit-fields.open {
+      display: block;
+    }
+
+    .edit-item .edit-fields input,
+    .edit-item .edit-fields textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1.5px solid #dce4ef;
+      border-radius: 12px;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      margin-bottom: 8px;
+    }
+
+    .footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid #eef3fa;
+      font-size: 13px;
+      color: #889bb3;
+      text-align: center;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6a7f9e;
     }
 
     @media (max-width: 700px) {
@@ -447,61 +430,57 @@
 </head>
 <body>
 
-<!-- ШАПКА -->
 <header class="navbar" id="navbar">
   <div class="navbar-left">
     <div class="logo-area">
       <div class="logo-icon">Ш</div>
       <div class="logo-text">Электро<span>школа</span></div>
     </div>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">
+        <span class="material-symbols-outlined">home</span>
+        Главная
+      </a>
+    </nav>
   </div>
   <div class="navbar-right" id="userArea">
     <!-- Имя пользователя -->
   </div>
 </header>
 
-<!-- ОСНОВНОЙ КОНТЕНТ -->
 <div class="container">
-  <div class="section-title">
-    <span class="material-symbols-outlined">newspaper</span>
-    Последние новости
+  <div class="page-title">
+    <span class="material-symbols-outlined">admin_panel_settings</span>
+    Консоль администратора
+  </div>
+  <div class="page-sub">Управление новостями</div>
+
+  <!-- Форма добавления -->
+  <div class="console-grid">
+    <div class="console-card">
+      <div class="card-label">➕ Добавить новость</div>
+      <input type="text" id="addTitle" placeholder="Заголовок" />
+      <textarea id="addDesc" placeholder="Описание"></textarea>
+      <input type="number" id="addDate" placeholder="Unix timestamp" />
+      <button class="btn-console btn-console-success" id="addNewsBtn">➕ Добавить</button>
+      <div id="addMessage" class="console-message"></div>
+    </div>
+
+    <div class="console-card">
+      <div class="card-label">🗑️ Удалить по индексу</div>
+      <input type="number" id="deleteIndex" placeholder="Индекс новости" />
+      <button class="btn-console btn-console-danger" id="deleteNewsBtn">🗑️ Удалить</button>
+      <div id="deleteMessage" class="console-message"></div>
+    </div>
   </div>
 
-  <div id="newsContainer">
-    <div class="loading">⏳ Загрузка новостей...</div>
+  <!-- Редактирование существующих -->
+  <div class="edit-section-title">
+    <span class="material-symbols-outlined" style="color:#2a7de1;">edit</span>
+    Редактировать новости
   </div>
-
-  <!-- КОНСОЛЬ АДМИНИСТРАТОРА (скрыта по умолчанию) -->
-  <div class="admin-console" id="adminConsole" style="display: none;">
-    <div class="console-title">
-      <span class="material-symbols-outlined">admin_panel_settings</span>
-      Консоль администратора
-    </div>
-
-    <!-- Форма добавления -->
-    <div class="console-grid">
-      <div class="console-card">
-        <div class="card-label">➕ Добавить новость</div>
-        <input type="text" id="addTitle" placeholder="Заголовок" />
-        <textarea id="addDesc" placeholder="Описание"></textarea>
-        <input type="number" id="addDate" placeholder="Unix timestamp" />
-        <button class="btn-console btn-console-success" id="addNewsBtn">➕ Добавить</button>
-        <div id="addMessage" class="console-message"></div>
-      </div>
-
-      <div class="console-card">
-        <div class="card-label">🗑️ Удалить новость по индексу</div>
-        <input type="number" id="deleteIndex" placeholder="Индекс новости" />
-        <button class="btn-console btn-console-danger" id="deleteNewsBtn">🗑️ Удалить</button>
-        <div id="deleteMessage" class="console-message"></div>
-      </div>
-    </div>
-
-    <!-- Редактирование существующих -->
-    <div style="margin-top:16px;">
-      <div class="card-label" style="font-weight:500; color:#0a1e3c; margin-bottom:12px;">✏️ Редактировать существующие</div>
-      <div id="editList"></div>
-    </div>
+  <div id="editList" class="edit-list">
+    <div class="loading">⏳ Загрузка...</div>
   </div>
 
   <div class="footer">© 2026 · Электронная школа</div>
@@ -543,15 +522,9 @@
 
   const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
   const ACCOUNT_URL = 'account.html';
-  const NEWS_COUNT = 15;
 
   const userArea = document.getElementById('userArea');
-  const newsContainer = document.getElementById('newsContainer');
-  const adminConsole = document.getElementById('adminConsole');
-
-  function redirectToAuth() {
-    window.location.href = AUTH_URL;
-  }
+  const editList = document.getElementById('editList');
 
   function escapeHtml(text) {
     if (!text) return '';
@@ -580,101 +553,119 @@
     }, 4000);
   }
 
-  // ----- Рендер новостей -----
-  function renderNews(newsData, isAdmin) {
+  // ----- Рендер списка для редактирования -----
+  function renderEditList(newsData) {
     if (!newsData || Object.keys(newsData).length === 0) {
-      newsContainer.innerHTML = `
-        <div class="empty-state">
-          <span class="material-symbols-outlined">feed_off</span>
-          <h3>Новостей пока нет</h3>
-          <p>Скоро здесь появятся первые новости</p>
+      editList.innerHTML = `
+        <div class="empty-state" style="padding:24px;">
+          <p style="color:#6a7f9e;">Новостей нет</p>
         </div>
       `;
       return;
     }
 
     const keys = Object.keys(newsData).map(Number).sort((a, b) => b - a);
-    const topKeys = keys.slice(0, NEWS_COUNT);
 
-    let html = '<div class="news-list">';
-    for (const key of topKeys) {
+    let html = '';
+    for (const key of keys) {
       const item = newsData[key];
       if (!item) continue;
-      const title = item.title || 'Без названия';
-      const desc = item.desc || '';
-      const date = formatDate(item.date);
-      
       html += `
-        <div class="news-item ${isAdmin ? 'news-item-admin' : ''}" data-key="${key}">
-          <div class="news-header">
-            <div class="news-title">${escapeHtml(title)}</div>
-            <div class="news-date">${date}</div>
+        <div class="edit-item" data-key="${key}">
+          <div class="edit-info">
+            <div class="edit-title">#${key}: ${escapeHtml(item.title || 'Без названия')}</div>
+            <div class="edit-meta">${formatDate(item.date)}</div>
           </div>
-          ${desc ? `<div class="news-desc">${escapeHtml(desc)}</div>` : ''}
-          ${isAdmin ? `
-            <div class="admin-actions">
-              <button class="btn-console btn-console-outline edit-news-btn" data-key="${key}">✏️ Редактировать</button>
-              <button class="btn-console btn-console-danger delete-news-btn" data-key="${key}">🗑️ Удалить</button>
+          <div class="edit-actions">
+            <button class="btn-console btn-console-outline toggle-edit-btn">✏️ Редактировать</button>
+            <button class="btn-console btn-console-danger delete-item-btn">🗑️</button>
+          </div>
+          <div class="edit-fields">
+            <input type="text" class="edit-field-title" value="${escapeHtml(item.title || '')}" placeholder="Заголовок" />
+            <textarea class="edit-field-desc" placeholder="Описание">${escapeHtml(item.desc || '')}</textarea>
+            <input type="number" class="edit-field-date" value="${item.date || ''}" placeholder="Unix timestamp" />
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <button class="btn-console btn-console-primary save-edit-btn">💾 Сохранить</button>
+              <button class="btn-console btn-console-outline cancel-edit-btn">Отмена</button>
             </div>
-          ` : ''}
+            <div class="console-message edit-message"></div>
+          </div>
         </div>
       `;
     }
-    html += '</div>';
-    newsContainer.innerHTML = html;
+    editList.innerHTML = html;
 
-    // Обработчики для администратора
-    if (isAdmin) {
-      document.querySelectorAll('.edit-news-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const key = parseInt(btn.dataset.key);
-          const item = newsData[key];
-          if (item) {
-            document.getElementById('addTitle').value = item.title || '';
-            document.getElementById('addDesc').value = item.desc || '';
-            document.getElementById('addDate').value = item.date || '';
-            // Меняем кнопку на "Сохранить" и запоминаем ключ
-            const addBtn = document.getElementById('addNewsBtn');
-            addBtn.textContent = '💾 Сохранить';
-            addBtn.dataset.editKey = key;
-            addBtn.classList.remove('btn-console-success');
-            addBtn.classList.add('btn-console-primary');
-          }
-        });
+    // Обработчики
+    document.querySelectorAll('.toggle-edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fields = btn.closest('.edit-item').querySelector('.edit-fields');
+        fields.classList.toggle('open');
       });
+    });
 
-      document.querySelectorAll('.delete-news-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const key = parseInt(btn.dataset.key);
-          if (confirm(`Удалить новость #${key}?`)) {
-            try {
-              await remove(ref(db, 'news/' + key));
-              showMessage(document.getElementById('deleteMessage'), '✅ Новость удалена', 'success');
-            } catch (e) {
-              showMessage(document.getElementById('deleteMessage'), '❌ Ошибка: ' + e.message, 'error');
-            }
-          }
-        });
+    document.querySelectorAll('.cancel-edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fields = btn.closest('.edit-item').querySelector('.edit-fields');
+        fields.classList.remove('open');
       });
-    }
+    });
+
+    document.querySelectorAll('.save-edit-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const item = btn.closest('.edit-item');
+        const key = parseInt(item.dataset.key);
+        const title = item.querySelector('.edit-field-title').value.trim();
+        const desc = item.querySelector('.edit-field-desc').value.trim();
+        const date = parseInt(item.querySelector('.edit-field-date').value);
+        const msg = item.querySelector('.edit-message');
+
+        if (!title || !date) {
+          showMessage(msg, '⚠️ Заполните заголовок и дату', 'error');
+          return;
+        }
+
+        try {
+          await set(ref(db, 'news/' + key), { title, desc, date });
+          showMessage(msg, '✅ Новость обновлена', 'success');
+          setTimeout(() => {
+            item.querySelector('.edit-fields').classList.remove('open');
+          }, 1000);
+        } catch (e) {
+          showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
+        }
+      });
+    });
+
+    document.querySelectorAll('.delete-item-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const item = btn.closest('.edit-item');
+        const key = parseInt(item.dataset.key);
+        if (confirm(`Удалить новость #${key}?`)) {
+          try {
+            await remove(ref(db, 'news/' + key));
+            showMessage(document.getElementById('deleteMessage'), '✅ Новость удалена', 'success');
+          } catch (e) {
+            showMessage(document.getElementById('deleteMessage'), '❌ Ошибка: ' + e.message, 'error');
+          }
+        }
+      });
+    });
   }
 
-  // ----- Загрузка новостей -----
-  function loadNews(isAdmin) {
+  // ----- Загрузка новостей для редактирования -----
+  function loadEditList() {
     const newsRef = ref(db, 'news');
     onValue(newsRef, (snapshot) => {
       if (snapshot.exists()) {
-        renderNews(snapshot.val(), isAdmin);
+        renderEditList(snapshot.val());
       } else {
-        renderNews(null, isAdmin);
+        renderEditList(null);
       }
     }, (error) => {
-      console.error('Ошибка загрузки новостей:', error);
-      newsContainer.innerHTML = `
-        <div class="empty-state">
-          <span class="material-symbols-outlined">error</span>
-          <h3>Ошибка загрузки</h3>
-          <p>Не удалось загрузить новости. Попробуйте позже.</p>
+      console.error('Ошибка загрузки:', error);
+      editList.innerHTML = `
+        <div class="empty-state" style="padding:24px;">
+          <p style="color:#c74a4a;">❌ Ошибка загрузки</p>
         </div>
       `;
     });
@@ -700,13 +691,10 @@
     }
   }
 
-  // ----- Инициализация консоли администратора -----
-  function initAdminConsole() {
-    adminConsole.style.display = 'block';
-
-    // Добавление / Сохранение
-    const addBtn = document.getElementById('addNewsBtn');
-    addBtn.addEventListener('click', async () => {
+  // ----- Инициализация консоли -----
+  function initConsole() {
+    // Добавление
+    document.getElementById('addNewsBtn').addEventListener('click', async () => {
       const title = document.getElementById('addTitle').value.trim();
       const desc = document.getElementById('addDesc').value.trim();
       const date = parseInt(document.getElementById('addDate').value);
@@ -717,36 +705,20 @@
         return;
       }
 
-      const editKey = addBtn.dataset.editKey;
-
       try {
-        if (editKey !== undefined) {
-          // Редактирование существующей
-          await set(ref(db, 'news/' + editKey), { title, desc, date });
-          showMessage(msg, '✅ Новость обновлена', 'success');
-          addBtn.textContent = '➕ Добавить';
-          addBtn.dataset.editKey = undefined;
-          addBtn.classList.remove('btn-console-primary');
-          addBtn.classList.add('btn-console-success');
-          document.getElementById('addTitle').value = '';
-          document.getElementById('addDesc').value = '';
-          document.getElementById('addDate').value = '';
-        } else {
-          // Добавление новой
-          const snapshot = await get(ref(db, 'news'));
-          let maxKey = -1;
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            const keys = Object.keys(data).map(Number);
-            maxKey = keys.length > 0 ? Math.max(...keys) : -1;
-          }
-          const newKey = maxKey + 1;
-          await set(ref(db, 'news/' + newKey), { title, desc, date });
-          showMessage(msg, `✅ Новость добавлена (индекс ${newKey})`, 'success');
-          document.getElementById('addTitle').value = '';
-          document.getElementById('addDesc').value = '';
-          document.getElementById('addDate').value = '';
+        const snapshot = await get(ref(db, 'news'));
+        let maxKey = -1;
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const keys = Object.keys(data).map(Number);
+          maxKey = keys.length > 0 ? Math.max(...keys) : -1;
         }
+        const newKey = maxKey + 1;
+        await set(ref(db, 'news/' + newKey), { title, desc, date });
+        showMessage(msg, `✅ Новость добавлена (индекс ${newKey})`, 'success');
+        document.getElementById('addTitle').value = '';
+        document.getElementById('addDesc').value = '';
+        document.getElementById('addDate').value = '';
       } catch (e) {
         showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
       }
@@ -771,55 +743,41 @@
     });
   }
 
-  // ----- Загрузка данных пользователя -----
-  function loadUserAndRender(user) {
+  // ----- Проверка прав администратора -----
+  async function checkAdmin(user) {
     if (!user) {
-      renderHeader(null);
-      return;
+      window.location.href = AUTH_URL;
+      return false;
     }
-
-    const userRef = ref(db, 'users/' + user.uid);
-    get(userRef).then((snapshot) => {
-      let isAdmin = false;
-      let displayName = user.email;
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        displayName = data.name || user.email;
-        isAdmin = (data.status === 2); // Администратор = статус 2
+    try {
+      const snapshot = await get(ref(db, 'users/' + user.uid));
+      if (snapshot.exists() && snapshot.val().status === 2) {
+        return true;
       }
-      user.displayName = displayName;
-      renderHeader(user);
-      
-      // Показываем консоль для администратора
-      if (isAdmin) {
-        adminConsole.style.display = 'block';
-        if (!adminConsole.dataset.initialized) {
-          initAdminConsole();
-          adminConsole.dataset.initialized = 'true';
-        }
-        // Загружаем новости с админ-режимом
-        loadNews(true);
-      } else {
-        adminConsole.style.display = 'none';
-        loadNews(false);
-      }
-    }).catch((err) => {
-      console.warn('Ошибка получения профиля:', err);
-      renderHeader(user);
-      loadNews(false);
-    });
+      alert('⛔ У вас нет прав администратора');
+      window.location.href = 'index.html';
+      return false;
+    } catch (e) {
+      console.error('Ошибка проверки прав:', e);
+      return false;
+    }
   }
 
   // ----- Авторизация -----
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      loadUserAndRender(user);
-    } else {
-      redirectToAuth();
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = AUTH_URL;
+      return;
+    }
+    renderHeader(user);
+    const isAdmin = await checkAdmin(user);
+    if (isAdmin) {
+      initConsole();
+      loadEditList();
     }
   });
 
-  console.log('✅ Главная страница с консолью администратора');
+  console.log('✅ Страница консоли администратора');
 </script>
 </body>
 </html>
