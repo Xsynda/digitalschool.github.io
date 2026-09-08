@@ -7,461 +7,86 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f8faff; min-height: 100vh; padding-top: 80px; }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f8faff;
-      min-height: 100vh;
-      padding-top: 80px;
-    }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #ffffff; border-bottom: 1px solid #eef3fa; box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .navbar-left { display: flex; align-items: center; gap: 16px; }
+    .logo-area { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { background: #2a7de1; color: white; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); }
+    .logo-text { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; color: #0a1e3c; }
+    .logo-text span { color: #2a7de1; }
+    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .nav-link { padding: 8px 18px; border-radius: 40px; font-weight: 500; font-size: 14px; color: #1f2b48; text-decoration: none; transition: 0.15s; display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid transparent; }
+    .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
+    .nav-link .material-symbols-outlined { font-size: 18px; }
+    .navbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .user-badge { display: flex; align-items: center; gap: 8px; background: #f0f6ff; padding: 6px 16px 6px 12px; border-radius: 40px; font-size: 14px; font-weight: 500; color: #0a1e3c; cursor: pointer; transition: 0.15s; text-decoration: none; border: none; font-family: 'Inter', sans-serif; }
+    .user-badge:hover { background: #e5effb; transform: scale(0.97); }
+    .user-badge .material-symbols-outlined { color: #2a7de1; font-size: 20px; }
+    .btn { border: none; padding: 6px 18px; border-radius: 40px; font-weight: 500; font-size: 13px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif; text-decoration: none; }
+    .btn-primary { background: #2a7de1; color: white; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); }
+    .btn-primary:hover { background: #1a5fb0; transform: scale(0.97); }
 
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: #ffffff;
-      border-bottom: 1px solid #eef3fa;
-      box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06);
-      padding: 12px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
+    .container { max-width: 1000px; margin: 0 auto; background: #ffffff; border-radius: 48px; box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08); padding: 32px 40px 44px; border: 1px solid #f0f5fe; }
+    .page-title { font-size: 26px; font-weight: 600; color: #0a1e3c; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .page-title .material-symbols-outlined { color: #8b5cf6; font-size: 32px; }
+    .page-sub { color: #5f7696; font-size: 16px; margin-bottom: 28px; }
 
-    .navbar-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
+    .tab-bar { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid #eef3fa; padding-bottom: 12px; flex-wrap: wrap; }
+    .tab-btn { padding: 8px 20px; border-radius: 40px; border: none; font-weight: 500; font-size: 14px; cursor: pointer; transition: 0.15s; font-family: 'Inter', sans-serif; background: transparent; color: #6a7f9e; }
+    .tab-btn:hover { background: #f0f4fe; color: #0a1e3c; }
+    .tab-btn.active { background: #e5effb; color: #2a7de1; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .console-card { background: #f9fcff; border-radius: 24px; padding: 20px 24px; border: 1px solid #eef3fa; margin-bottom: 20px; }
+    .console-card .card-label { font-size: 15px; font-weight: 600; color: #0a1e3c; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .console-card input, .console-card textarea, .console-card select { width: 100%; padding: 10px 14px; border: 1.5px solid #dce4ef; border-radius: 16px; font-size: 14px; font-family: 'Inter', sans-serif; transition: 0.15s; background: #ffffff; margin-bottom: 10px; }
+    .console-card input:focus, .console-card textarea:focus, .console-card select:focus { outline: none; border-color: #2a7de1; box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10); }
+    .console-card textarea { resize: vertical; min-height: 60px; }
+    .console-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-console { border: none; padding: 8px 20px; border-radius: 40px; font-weight: 500; font-size: 13px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif; }
+    .btn-console-primary { background: #2a7de1; color: white; }
+    .btn-console-primary:hover { background: #1a5fb0; transform: scale(0.97); }
+    .btn-console-success { background: #1a8a4a; color: white; }
+    .btn-console-success:hover { background: #146e3a; transform: scale(0.97); }
+    .btn-console-danger { background: #c74a4a; color: white; }
+    .btn-console-danger:hover { background: #a33a3a; transform: scale(0.97); }
+    .btn-console-outline { background: transparent; color: #1f2b48; border: 1.5px solid #d0dae9; }
+    .btn-console-outline:hover { background: #f0f4fe; }
 
-    .logo-icon {
-      background: #2a7de1;
-      color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20);
-    }
+    .console-message { font-size: 13px; padding: 8px 14px; border-radius: 40px; margin-top: 8px; display: none; }
+    .console-message.show { display: block; }
+    .console-message.success { background: #e8f5ed; color: #1a8a4a; }
+    .console-message.error { background: #fff0f0; color: #c74a4a; }
 
-    .logo-text {
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-      color: #0a1e3c;
-    }
-    .logo-text span {
-      color: #2a7de1;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .nav-link {
-      padding: 8px 18px;
-      border-radius: 40px;
-      font-weight: 500;
-      font-size: 14px;
-      color: #1f2b48;
-      text-decoration: none;
-      transition: 0.15s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: transparent;
-      border: 1.5px solid transparent;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-    }
-    .nav-link:hover {
-      background: #f0f4fe;
-      border-color: #d0dae9;
-    }
-    .nav-link .material-symbols-outlined {
-      font-size: 18px;
-    }
-
-    .navbar-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .user-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #f0f6ff;
-      padding: 6px 16px 6px 12px;
-      border-radius: 40px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #0a1e3c;
-      cursor: pointer;
-      transition: 0.15s;
-      text-decoration: none;
-      border: none;
-      font-family: 'Inter', sans-serif;
-    }
-    .user-badge:hover {
-      background: #e5effb;
-      transform: scale(0.97);
-    }
-    .user-badge .material-symbols-outlined {
-      color: #2a7de1;
-      font-size: 20px;
-    }
-
-    .btn {
-      border: none;
-      padding: 6px 18px;
-      border-radius: 40px;
-      font-weight: 500;
-      font-size: 13px;
-      cursor: pointer;
-      transition: 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'Inter', sans-serif;
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      background: #2a7de1;
-      color: white;
-      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20);
-    }
-    .btn-primary:hover {
-      background: #1a5fb0;
-      transform: scale(0.97);
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      background: #ffffff;
-      border-radius: 48px;
-      box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08);
-      padding: 32px 40px 44px;
-      border: 1px solid #f0f5fe;
-    }
-
-    .page-title {
-      font-size: 26px;
-      font-weight: 600;
-      color: #0a1e3c;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .page-title .material-symbols-outlined {
-      color: #8b5cf6;
-      font-size: 32px;
-    }
-
-    .page-sub {
-      color: #5f7696;
-      font-size: 16px;
-      margin-bottom: 28px;
-    }
-
-    .tab-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      border-bottom: 1px solid #eef3fa;
-      padding-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .tab-btn {
-      padding: 8px 20px;
-      border-radius: 40px;
-      border: none;
-      font-weight: 500;
-      font-size: 14px;
-      cursor: pointer;
-      transition: 0.15s;
-      font-family: 'Inter', sans-serif;
-      background: transparent;
-      color: #6a7f9e;
-    }
-    .tab-btn:hover {
-      background: #f0f4fe;
-      color: #0a1e3c;
-    }
-    .tab-btn.active {
-      background: #e5effb;
-      color: #2a7de1;
-    }
-
-    .tab-content {
-      display: none;
-    }
-    .tab-content.active {
-      display: block;
-    }
-
-    .console-card {
-      background: #f9fcff;
-      border-radius: 24px;
-      padding: 20px 24px;
-      border: 1px solid #eef3fa;
-      margin-bottom: 20px;
-    }
-
-    .console-card .card-label {
-      font-size: 15px;
-      font-weight: 600;
-      color: #0a1e3c;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .console-card input,
-    .console-card textarea,
-    .console-card select {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1.5px solid #dce4ef;
-      border-radius: 16px;
-      font-size: 14px;
-      font-family: 'Inter', sans-serif;
-      transition: 0.15s;
-      background: #ffffff;
-      margin-bottom: 10px;
-    }
-
-    .console-card input:focus,
-    .console-card textarea:focus,
-    .console-card select:focus {
-      outline: none;
-      border-color: #2a7de1;
-      box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10);
-    }
-
-    .console-card textarea {
-      resize: vertical;
-      min-height: 60px;
-    }
-
-    .console-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .btn-console {
-      border: none;
-      padding: 8px 20px;
-      border-radius: 40px;
-      font-weight: 500;
-      font-size: 13px;
-      cursor: pointer;
-      transition: 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .btn-console-primary {
-      background: #2a7de1;
-      color: white;
-    }
-    .btn-console-primary:hover {
-      background: #1a5fb0;
-      transform: scale(0.97);
-    }
-
-    .btn-console-success {
-      background: #1a8a4a;
-      color: white;
-    }
-    .btn-console-success:hover {
-      background: #146e3a;
-      transform: scale(0.97);
-    }
-
-    .btn-console-danger {
-      background: #c74a4a;
-      color: white;
-    }
-    .btn-console-danger:hover {
-      background: #a33a3a;
-      transform: scale(0.97);
-    }
-
-    .btn-console-outline {
-      background: transparent;
-      color: #1f2b48;
-      border: 1.5px solid #d0dae9;
-    }
-    .btn-console-outline:hover {
-      background: #f0f4fe;
-    }
-
-    .console-message {
-      font-size: 13px;
-      padding: 8px 14px;
-      border-radius: 40px;
-      margin-top: 8px;
-      display: none;
-    }
-    .console-message.show {
-      display: block;
-    }
-    .console-message.success {
-      background: #e8f5ed;
-      color: #1a8a4a;
-    }
-    .console-message.error {
-      background: #fff0f0;
-      color: #c74a4a;
-    }
-
-    .list-item {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 16px 20px;
-      border: 1px solid #eef3fa;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .list-item .item-info {
-      flex: 1;
-      min-width: 120px;
-    }
-    .list-item .item-info .item-title {
-      font-weight: 500;
-      color: #0a1e3c;
-    }
-    .list-item .item-info .item-meta {
-      font-size: 13px;
-      color: #6a7f9e;
-    }
-
-    .list-item .item-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .list-item .edit-fields {
-      display: none;
-      width: 100%;
-      padding-top: 12px;
-      border-top: 1px solid #eef3fa;
-      margin-top: 12px;
-    }
-    .list-item .edit-fields.open {
-      display: block;
-    }
-
-    .list-item .edit-fields input,
-    .list-item .edit-fields textarea {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1.5px solid #dce4ef;
-      border-radius: 12px;
-      font-size: 13px;
-      font-family: 'Inter', sans-serif;
-      margin-bottom: 8px;
-    }
-
-    .lesson-item {
-      border-left: 3px solid #2a7de1;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 32px 20px;
-      color: #6a7f9e;
-    }
-    .empty-state .material-symbols-outlined {
-      font-size: 40px;
-      color: #d0dae9;
-      margin-bottom: 8px;
-    }
-
-    .footer {
-      margin-top: 32px;
-      padding-top: 20px;
-      border-top: 1px solid #eef3fa;
-      font-size: 13px;
-      color: #889bb3;
-      text-align: center;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: #6a7f9e;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
+    .list-item { background: #ffffff; border-radius: 16px; padding: 16px 20px; border: 1px solid #eef3fa; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .list-item .item-info { flex: 1; min-width: 120px; }
+    .list-item .item-info .item-title { font-weight: 500; color: #0a1e3c; }
+    .list-item .item-info .item-meta { font-size: 13px; color: #6a7f9e; }
+    .list-item .item-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .list-item .edit-fields { display: none; width: 100%; padding-top: 12px; border-top: 1px solid #eef3fa; margin-top: 12px; }
+    .list-item .edit-fields.open { display: block; }
+    .list-item .edit-fields input, .list-item .edit-fields textarea { width: 100%; padding: 8px 12px; border: 1.5px solid #dce4ef; border-radius: 12px; font-size: 13px; font-family: 'Inter', sans-serif; margin-bottom: 8px; }
+    .lesson-item { border-left: 3px solid #2a7de1; }
+    .empty-state { text-align: center; padding: 32px 20px; color: #6a7f9e; }
+    .empty-state .material-symbols-outlined { font-size: 40px; color: #d0dae9; margin-bottom: 8px; }
+    .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid #eef3fa; font-size: 13px; color: #889bb3; text-align: center; }
+    .loading { text-align: center; padding: 40px; color: #6a7f9e; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .inline-fields { display: flex; gap: 10px; flex-wrap: wrap; }
+    .inline-fields input, .inline-fields textarea { flex: 1; min-width: 100px; }
 
     @media (max-width: 700px) {
-      .navbar {
-        padding: 10px 16px;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-      }
-      .navbar-left {
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-      .nav-links {
-        justify-content: flex-start;
-      }
-      .navbar-right {
-        justify-content: flex-start;
-      }
-      body {
-        padding-top: 130px;
-      }
+      .navbar { padding: 10px 16px; flex-direction: column; align-items: stretch; gap: 8px; }
+      .navbar-left { flex-wrap: wrap; justify-content: space-between; }
+      .nav-links { justify-content: flex-start; }
+      .navbar-right { justify-content: flex-start; }
+      body { padding-top: 130px; }
       .container { padding: 20px 16px 28px; border-radius: 32px; }
       .grid-2 { grid-template-columns: 1fr; }
     }
-
     @media (max-width: 480px) {
       .list-item { flex-direction: column; align-items: stretch; }
       .list-item .item-actions { justify-content: flex-start; }
@@ -472,30 +97,16 @@
 
 <header class="navbar" id="navbar">
   <div class="navbar-left">
-    <div class="logo-area">
-      <div class="logo-icon">Ш</div>
-      <div class="logo-text">Электро<span>школа</span></div>
-    </div>
-    <nav class="nav-links">
-      <a href="index.html" class="nav-link">
-        <span class="material-symbols-outlined">home</span>
-        Главная
-      </a>
-    </nav>
+    <div class="logo-area"><div class="logo-icon">Ш</div><div class="logo-text">Электро<span>школа</span></div></div>
+    <nav class="nav-links"><a href="index.html" class="nav-link"><span class="material-symbols-outlined">home</span> Главная</a></nav>
   </div>
-  <div class="navbar-right" id="userArea">
-    <!-- Имя пользователя -->
-  </div>
+  <div class="navbar-right" id="userArea"></div>
 </header>
 
 <div class="container">
-  <div class="page-title">
-    <span class="material-symbols-outlined">admin_panel_settings</span>
-    Консоль администратора
-  </div>
+  <div class="page-title"><span class="material-symbols-outlined">admin_panel_settings</span> Консоль администратора</div>
   <div class="page-sub">Управление новостями и расписанием</div>
 
-  <!-- Вкладки -->
   <div class="tab-bar">
     <button class="tab-btn active" data-tab="news">📰 Новости</button>
     <button class="tab-btn" data-tab="schedule">📅 Расписание</button>
@@ -512,7 +123,6 @@
         <button class="btn-console btn-console-success" id="addNewsBtn">➕ Добавить</button>
         <div id="addMessage" class="console-message"></div>
       </div>
-
       <div class="console-card">
         <div class="card-label">🗑️ Удалить по индексу</div>
         <input type="number" id="deleteIndex" placeholder="Индекс новости" />
@@ -520,7 +130,6 @@
         <div id="deleteMessage" class="console-message"></div>
       </div>
     </div>
-
     <div class="console-card">
       <div class="card-label">✏️ Редактировать новости</div>
       <div id="editNewsList"></div>
@@ -529,7 +138,6 @@
 
   <!-- Вкладка: Расписание -->
   <div class="tab-content" id="tab-schedule">
-    <!-- Добавление дня -->
     <div class="console-card">
       <div class="card-label">➕ Добавить день</div>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -539,21 +147,20 @@
       <div id="dayMessage" class="console-message"></div>
     </div>
 
-    <!-- Список дней -->
     <div class="console-card">
       <div class="card-label">📅 Дни недели</div>
       <div id="dayList"></div>
     </div>
 
-    <!-- Управление уроками (появляется при выборе дня) -->
     <div class="console-card" id="lessonManagement" style="display:none;">
       <div class="card-label" id="lessonManagementTitle">📚 Уроки</div>
-      
-      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
-        <input type="text" id="addLessonName" placeholder="Название урока" style="flex:1; min-width:120px;" />
-        <textarea id="addLessonHomework" placeholder="Домашнее задание" style="flex:2; min-width:150px;"></textarea>
-        <button class="btn-console btn-console-success" id="addLessonBtn">➕ Добавить урок</button>
+      <div class="inline-fields">
+        <input type="text" id="addLessonName" placeholder="Название урока" />
+        <input type="text" id="addLessonTime" placeholder="Время (15:00-15:30)" />
+        <input type="number" id="addLessonCab" placeholder="Кабинет" />
       </div>
+      <textarea id="addLessonHomework" placeholder="Домашнее задание" style="width:100%; margin-bottom:10px;"></textarea>
+      <button class="btn-console btn-console-success" id="addLessonBtn">➕ Добавить урок</button>
       <div id="lessonMessage" class="console-message"></div>
       <div id="lessonList"></div>
     </div>
@@ -566,19 +173,8 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
-  import {
-    getAuth,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-  import {
-    getDatabase,
-    ref,
-    get,
-    set,
-    remove,
-    onValue,
-    update
-  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+  import { getDatabase, ref, get, set, remove, onValue, update } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
@@ -599,72 +195,38 @@
   const ACCOUNT_URL = 'account.html';
   const userArea = document.getElementById('userArea');
 
-  // ----- Вспомогательные функции -----
-  function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
+  function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+  function showMessage(element, text, type) { element.textContent = text; element.className = 'console-message show ' + type; setTimeout(() => element.className = 'console-message', 4000); }
 
-  function showMessage(element, text, type) {
-    element.textContent = text;
-    element.className = 'console-message show ' + type;
-    setTimeout(() => {
-      element.className = 'console-message';
-    }, 4000);
-  }
-
-  // ----- ОБНОВЛЕНИЕ ИМЕНИ В ШАПКЕ -----
+  // ----- Шапка -----
   function updateUserBadge(user) {
     if (!user) return;
     const displayName = user.displayName || user.email || 'Пользователь';
     const badge = userArea.querySelector('.user-badge');
     if (badge) {
-      badge.innerHTML = `
-        <span class="material-symbols-outlined">account_circle</span>
-        ${escapeHtml(displayName)}
-      `;
+      badge.innerHTML = `<span class="material-symbols-outlined">account_circle</span>${escapeHtml(displayName)}`;
     }
   }
 
-  // ----- РЕНДЕР ШАПКИ (исправленный) -----
   function renderHeader(user) {
     if (user) {
       let displayName = user.displayName || user.email || 'Пользователь';
-      
-      // Если имя не загружено, пытаемся получить из базы
       if (!user.displayName || user.displayName === user.email) {
-        const userRef = ref(db, 'users/' + user.uid);
-        get(userRef).then((snapshot) => {
+        get(ref(db, 'users/' + user.uid)).then((snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.val();
-            const name = data.name || user.email || 'Пользователь';
-            user.displayName = name;
+            user.displayName = data.name || user.email || 'Пользователь';
             updateUserBadge(user);
           }
         }).catch(() => {});
       }
-      
-      userArea.innerHTML = `
-        <a href="${ACCOUNT_URL}" class="user-badge">
-          <span class="material-symbols-outlined">account_circle</span>
-          ${escapeHtml(displayName)}
-        </a>
-      `;
+      userArea.innerHTML = `<a href="${ACCOUNT_URL}" class="user-badge"><span class="material-symbols-outlined">account_circle</span>${escapeHtml(displayName)}</a>`;
     } else {
-      userArea.innerHTML = `
-        <a href="${AUTH_URL}" class="btn btn-primary">
-          <span class="material-symbols-outlined" style="font-size:18px;">login</span>
-          Войти
-        </a>
-      `;
+      userArea.innerHTML = `<a href="${AUTH_URL}" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:18px;">login</span> Войти</a>`;
     }
   }
 
-  // ============================================
-  // ====== ВКЛАДКИ ======
-  // ============================================
+  // ----- Вкладки -----
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -675,165 +237,78 @@
   });
 
   // ============================================
-  // ====== УПРАВЛЕНИЕ НОВОСТЯМИ ======
+  // ====== НОВОСТИ ======
   // ============================================
-
   function renderEditNewsList(newsData) {
     const container = document.getElementById('editNewsList');
     if (!newsData || Object.keys(newsData).length === 0) {
       container.innerHTML = `<div class="empty-state"><p style="color:#6a7f9e;">Новостей нет</p></div>`;
       return;
     }
-
     const keys = Object.keys(newsData).map(Number).sort((a, b) => b - a);
     let html = '';
     for (const key of keys) {
       const item = newsData[key];
       if (!item) continue;
-      html += `
-        <div class="list-item" data-key="${key}">
-          <div class="item-info">
-            <div class="item-title">#${key}: ${escapeHtml(item.title || 'Без названия')}</div>
-            <div class="item-meta">${item.date ? new Date(item.date * 1000).toLocaleString('ru-RU') : '—'}</div>
-          </div>
-          <div class="item-actions">
-            <button class="btn-console btn-console-outline toggle-edit-btn">✏️ Редактировать</button>
-            <button class="btn-console btn-console-danger delete-item-btn">🗑️</button>
-          </div>
-          <div class="edit-fields">
-            <input type="text" class="edit-field-title" value="${escapeHtml(item.title || '')}" placeholder="Заголовок" />
-            <textarea class="edit-field-desc" placeholder="Описание">${escapeHtml(item.desc || '')}</textarea>
-            <input type="number" class="edit-field-date" value="${item.date || ''}" placeholder="Unix timestamp" />
-            <div style="display:flex; gap:8px; margin-top:8px;">
-              <button class="btn-console btn-console-primary save-edit-btn">💾 Сохранить</button>
-              <button class="btn-console btn-console-outline cancel-edit-btn">Отмена</button>
-            </div>
-            <div class="console-message edit-message"></div>
-          </div>
-        </div>
-      `;
+      html += `<div class="list-item" data-key="${key}">
+        <div class="item-info"><div class="item-title">#${key}: ${escapeHtml(item.title || 'Без названия')}</div>
+        <div class="item-meta">${item.date ? new Date(item.date * 1000).toLocaleString('ru-RU') : '—'}</div></div>
+        <div class="item-actions"><button class="btn-console btn-console-outline toggle-edit-btn">✏️ Редактировать</button><button class="btn-console btn-console-danger delete-item-btn">🗑️</button></div>
+        <div class="edit-fields"><input type="text" class="edit-field-title" value="${escapeHtml(item.title || '')}" placeholder="Заголовок" />
+        <textarea class="edit-field-desc" placeholder="Описание">${escapeHtml(item.desc || '')}</textarea>
+        <input type="number" class="edit-field-date" value="${item.date || ''}" placeholder="Unix timestamp" />
+        <div style="display:flex; gap:8px; margin-top:8px;"><button class="btn-console btn-console-primary save-edit-btn">💾 Сохранить</button><button class="btn-console btn-console-outline cancel-edit-btn">Отмена</button></div>
+        <div class="console-message edit-message"></div></div></div>`;
     }
     container.innerHTML = html;
-
-    // Обработчики для новостей
-    container.querySelectorAll('.toggle-edit-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const fields = btn.closest('.list-item').querySelector('.edit-fields');
-        fields.classList.toggle('open');
-      });
-    });
-
-    container.querySelectorAll('.cancel-edit-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const fields = btn.closest('.list-item').querySelector('.edit-fields');
-        fields.classList.remove('open');
-      });
-    });
-
-    container.querySelectorAll('.save-edit-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const item = btn.closest('.list-item');
-        const key = parseInt(item.dataset.key);
-        const title = item.querySelector('.edit-field-title').value.trim();
-        const desc = item.querySelector('.edit-field-desc').value.trim();
-        const date = parseInt(item.querySelector('.edit-field-date').value);
-        const msg = item.querySelector('.edit-message');
-
-        if (!title || !date) {
-          showMessage(msg, '⚠️ Заполните заголовок и дату', 'error');
-          return;
-        }
-
-        try {
-          await set(ref(db, 'news/' + key), { title, desc, date });
-          showMessage(msg, '✅ Новость обновлена', 'success');
-          setTimeout(() => item.querySelector('.edit-fields').classList.remove('open'), 1000);
-        } catch (e) {
-          showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
-        }
-      });
-    });
-
-    container.querySelectorAll('.delete-item-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const item = btn.closest('.list-item');
-        const key = parseInt(item.dataset.key);
-        if (!confirm(`Удалить новость #${key}?`)) return;
-        try {
-          await remove(ref(db, 'news/' + key));
-          showMessage(document.getElementById('deleteMessage'), '✅ Новость удалена', 'success');
-        } catch (e) {
-          showMessage(document.getElementById('deleteMessage'), '❌ Ошибка: ' + e.message, 'error');
-        }
-      });
-    });
+    container.querySelectorAll('.toggle-edit-btn').forEach(btn => btn.addEventListener('click', () => { const f = btn.closest('.list-item').querySelector('.edit-fields'); f.classList.toggle('open'); }));
+    container.querySelectorAll('.cancel-edit-btn').forEach(btn => btn.addEventListener('click', () => { const f = btn.closest('.list-item').querySelector('.edit-fields'); f.classList.remove('open'); }));
+    container.querySelectorAll('.save-edit-btn').forEach(btn => btn.addEventListener('click', async () => {
+      const item = btn.closest('.list-item'); const key = parseInt(item.dataset.key);
+      const title = item.querySelector('.edit-field-title').value.trim();
+      const desc = item.querySelector('.edit-field-desc').value.trim();
+      const date = parseInt(item.querySelector('.edit-field-date').value);
+      const msg = item.querySelector('.edit-message');
+      if (!title || !date) { showMessage(msg, '⚠️ Заполните заголовок и дату', 'error'); return; }
+      try { await set(ref(db, 'news/' + key), { title, desc, date }); showMessage(msg, '✅ Новость обновлена', 'success'); setTimeout(() => item.querySelector('.edit-fields').classList.remove('open'), 1000); } catch (e) { showMessage(msg, '❌ Ошибка: ' + e.message, 'error'); }
+    }));
+    container.querySelectorAll('.delete-item-btn').forEach(btn => btn.addEventListener('click', async () => {
+      const item = btn.closest('.list-item'); const key = parseInt(item.dataset.key);
+      if (!confirm(`Удалить новость #${key}?`)) return;
+      try { await remove(ref(db, 'news/' + key)); showMessage(document.getElementById('deleteMessage'), '✅ Новость удалена', 'success'); } catch (e) { showMessage(document.getElementById('deleteMessage'), '❌ Ошибка: ' + e.message, 'error'); }
+    }));
   }
 
   function initNewsConsole() {
-    // Добавление новости
     document.getElementById('addNewsBtn').addEventListener('click', async () => {
       const title = document.getElementById('addTitle').value.trim();
       const desc = document.getElementById('addDesc').value.trim();
       const date = parseInt(document.getElementById('addDate').value);
       const msg = document.getElementById('addMessage');
-
-      if (!title || !date) {
-        showMessage(msg, '⚠️ Заполните заголовок и дату', 'error');
-        return;
-      }
-
+      if (!title || !date) { showMessage(msg, '⚠️ Заполните заголовок и дату', 'error'); return; }
       try {
         const snapshot = await get(ref(db, 'news'));
         let maxKey = -1;
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const keys = Object.keys(data).map(Number);
-          maxKey = keys.length > 0 ? Math.max(...keys) : -1;
-        }
+        if (snapshot.exists()) { const data = snapshot.val(); const keys = Object.keys(data).map(Number); maxKey = keys.length > 0 ? Math.max(...keys) : -1; }
         const newKey = maxKey + 1;
         await set(ref(db, 'news/' + newKey), { title, desc, date });
         showMessage(msg, `✅ Новость добавлена (индекс ${newKey})`, 'success');
-        document.getElementById('addTitle').value = '';
-        document.getElementById('addDesc').value = '';
-        document.getElementById('addDate').value = '';
-      } catch (e) {
-        showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
-      }
+        document.getElementById('addTitle').value = ''; document.getElementById('addDesc').value = ''; document.getElementById('addDate').value = '';
+      } catch (e) { showMessage(msg, '❌ Ошибка: ' + e.message, 'error'); }
     });
-
-    // Удаление новости по индексу
     document.getElementById('deleteNewsBtn').addEventListener('click', async () => {
       const index = parseInt(document.getElementById('deleteIndex').value);
       const msg = document.getElementById('deleteMessage');
-      if (isNaN(index) || index < 0) {
-        showMessage(msg, '⚠️ Введите корректный индекс', 'error');
-        return;
-      }
+      if (isNaN(index) || index < 0) { showMessage(msg, '⚠️ Введите корректный индекс', 'error'); return; }
       if (!confirm(`Удалить новость #${index}?`)) return;
-      try {
-        await remove(ref(db, 'news/' + index));
-        showMessage(msg, '✅ Новость удалена', 'success');
-        document.getElementById('deleteIndex').value = '';
-      } catch (e) {
-        showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
-      }
+      try { await remove(ref(db, 'news/' + index)); showMessage(msg, '✅ Новость удалена', 'success'); document.getElementById('deleteIndex').value = ''; } catch (e) { showMessage(msg, '❌ Ошибка: ' + e.message, 'error'); }
     });
-
-    // Загрузка списка новостей
-    const newsRef = ref(db, 'news');
-    onValue(newsRef, (snapshot) => {
-      if (snapshot.exists()) {
-        renderEditNewsList(snapshot.val());
-      } else {
-        renderEditNewsList(null);
-      }
-    });
+    onValue(ref(db, 'news'), (snapshot) => { if (snapshot.exists()) renderEditNewsList(snapshot.val()); else renderEditNewsList(null); });
   }
 
   // ============================================
-  // ====== УПРАВЛЕНИЕ РАСПИСАНИЕМ ======
+  // ====== РАСПИСАНИЕ ======
   // ============================================
-
   let selectedDayKey = null;
 
   function renderDayList(scheduleData) {
@@ -842,7 +317,6 @@
       container.innerHTML = `<div class="empty-state"><p style="color:#6a7f9e;">Дней пока нет</p></div>`;
       return;
     }
-
     const keys = Object.keys(scheduleData).map(Number).sort((a, b) => a - b);
     let html = '';
     for (const key of keys) {
@@ -850,22 +324,12 @@
       if (!day) continue;
       const dayName = day.name || `День ${key + 1}`;
       const lessonCount = day.lessons ? Object.keys(day.lessons).length : 0;
-      html += `
-        <div class="list-item day-item" data-key="${key}" style="${selectedDayKey === key ? 'border-left: 3px solid #8b5cf6;' : ''}">
-          <div class="item-info">
-            <div class="item-title">#${key}: ${escapeHtml(dayName)}</div>
-            <div class="item-meta">${lessonCount} уроков</div>
-          </div>
-          <div class="item-actions">
-            <button class="btn-console btn-console-primary select-day-btn">📂 Выбрать</button>
-            <button class="btn-console btn-console-danger delete-day-btn">🗑️</button>
-          </div>
-        </div>
-      `;
+      html += `<div class="list-item day-item" data-key="${key}" style="${selectedDayKey === key ? 'border-left: 3px solid #8b5cf6;' : ''}">
+        <div class="item-info"><div class="item-title">#${key}: ${escapeHtml(dayName)}</div><div class="item-meta">${lessonCount} уроков</div></div>
+        <div class="item-actions"><button class="btn-console btn-console-primary select-day-btn">📂 Выбрать</button><button class="btn-console btn-console-danger delete-day-btn">🗑️</button></div>
+      </div>`;
     }
     container.innerHTML = html;
-
-    // Выбор дня
     container.querySelectorAll('.select-day-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const item = btn.closest('.day-item');
@@ -877,23 +341,12 @@
         document.getElementById('lessonManagementTitle').textContent = `📚 Уроки дня #${selectedDayKey}`;
       });
     });
-
-    // Удаление дня
     container.querySelectorAll('.delete-day-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const item = btn.closest('.day-item');
         const key = parseInt(item.dataset.key);
         if (!confirm(`Удалить день #${key}?`)) return;
-        try {
-          await remove(ref(db, 'schedule/' + key));
-          if (selectedDayKey === key) {
-            selectedDayKey = null;
-            document.getElementById('lessonManagement').style.display = 'none';
-          }
-          showMessage(document.getElementById('dayMessage'), '✅ День удалён', 'success');
-        } catch (e) {
-          showMessage(document.getElementById('dayMessage'), '❌ Ошибка: ' + e.message, 'error');
-        }
+        try { await remove(ref(db, 'schedule/' + key)); if (selectedDayKey === key) { selectedDayKey = null; document.getElementById('lessonManagement').style.display = 'none'; } showMessage(document.getElementById('dayMessage'), '✅ День удалён', 'success'); } catch (e) { showMessage(document.getElementById('dayMessage'), '❌ Ошибка: ' + e.message, 'error'); }
       });
     });
   }
@@ -904,220 +357,125 @@
       container.innerHTML = `<div class="empty-state"><p style="color:#6a7f9e;">Уроков нет</p></div>`;
       return;
     }
-
     const keys = Object.keys(lessonsData).map(Number).sort((a, b) => a - b);
     let html = '';
     for (const key of keys) {
       const lesson = lessonsData[key];
       if (!lesson) continue;
-      html += `
-        <div class="list-item lesson-item" data-key="${key}">
-          <div class="item-info">
-            <div class="item-title">${key + 1}. ${escapeHtml(lesson.name || 'Без названия')}</div>
-            <div class="item-meta">${escapeHtml(lesson.homework || 'нет ДЗ')}</div>
-          </div>
-          <div class="item-actions">
-            <button class="btn-console btn-console-outline toggle-lesson-edit-btn">✏️ Редактировать</button>
-            <button class="btn-console btn-console-danger delete-lesson-btn">🗑️</button>
-          </div>
-          <div class="edit-fields">
-            <input type="text" class="edit-lesson-name" value="${escapeHtml(lesson.name || '')}" placeholder="Название урока" />
-            <textarea class="edit-lesson-homework" placeholder="Домашнее задание">${escapeHtml(lesson.homework || '')}</textarea>
-            <div style="display:flex; gap:8px; margin-top:8px;">
-              <button class="btn-console btn-console-primary save-lesson-btn">💾 Сохранить</button>
-              <button class="btn-console btn-console-outline cancel-lesson-btn">Отмена</button>
-            </div>
-            <div class="console-message lesson-edit-message"></div>
-          </div>
+      html += `<div class="list-item lesson-item" data-key="${key}">
+        <div class="item-info"><div class="item-title">${key + 1}. ${escapeHtml(lesson.name || 'Без названия')}</div>
+        <div class="item-meta">${lesson.time || '—'} | Каб. ${lesson.cab ?? '—'} | ${escapeHtml(lesson.homework || 'нет ДЗ')}</div></div>
+        <div class="item-actions"><button class="btn-console btn-console-outline toggle-lesson-edit-btn">✏️ Редактировать</button><button class="btn-console btn-console-danger delete-lesson-btn">🗑️</button></div>
+        <div class="edit-fields">
+          <input type="text" class="edit-lesson-name" value="${escapeHtml(lesson.name || '')}" placeholder="Название урока" />
+          <input type="text" class="edit-lesson-time" value="${escapeHtml(lesson.time || '')}" placeholder="Время (15:00-15:30)" />
+          <input type="number" class="edit-lesson-cab" value="${lesson.cab ?? ''}" placeholder="Кабинет" />
+          <textarea class="edit-lesson-homework" placeholder="Домашнее задание">${escapeHtml(lesson.homework || '')}</textarea>
+          <div style="display:flex; gap:8px; margin-top:8px;"><button class="btn-console btn-console-primary save-lesson-btn">💾 Сохранить</button><button class="btn-console btn-console-outline cancel-lesson-btn">Отмена</button></div>
+          <div class="console-message lesson-edit-message"></div>
         </div>
-      `;
+      </div>`;
     }
     container.innerHTML = html;
-
-    // Обработчики для уроков
-    container.querySelectorAll('.toggle-lesson-edit-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const fields = btn.closest('.list-item').querySelector('.edit-fields');
-        fields.classList.toggle('open');
-      });
-    });
-
-    container.querySelectorAll('.cancel-lesson-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const fields = btn.closest('.list-item').querySelector('.edit-fields');
-        fields.classList.remove('open');
-      });
-    });
-
-    container.querySelectorAll('.save-lesson-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const item = btn.closest('.list-item');
-        const key = parseInt(item.dataset.key);
-        const name = item.querySelector('.edit-lesson-name').value.trim();
-        const homework = item.querySelector('.edit-lesson-homework').value.trim();
-        const msg = item.querySelector('.lesson-edit-message');
-
-        if (!name) {
-          showMessage(msg, '⚠️ Введите название урока', 'error');
-          return;
-        }
-
-        try {
-          await update(ref(db, `schedule/${selectedDayKey}/lessons/${key}`), { name, homework });
-          showMessage(msg, '✅ Урок обновлён', 'success');
-          setTimeout(() => item.querySelector('.edit-fields').classList.remove('open'), 1000);
-        } catch (e) {
-          showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
-        }
-      });
-    });
-
-    container.querySelectorAll('.delete-lesson-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const item = btn.closest('.list-item');
-        const key = parseInt(item.dataset.key);
-        if (!confirm(`Удалить урок #${key + 1}?`)) return;
-        try {
-          await remove(ref(db, `schedule/${selectedDayKey}/lessons/${key}`));
-          showMessage(document.getElementById('lessonMessage'), '✅ Урок удалён', 'success');
-        } catch (e) {
-          showMessage(document.getElementById('lessonMessage'), '❌ Ошибка: ' + e.message, 'error');
-        }
-      });
-    });
+    container.querySelectorAll('.toggle-lesson-edit-btn').forEach(btn => btn.addEventListener('click', () => { const f = btn.closest('.list-item').querySelector('.edit-fields'); f.classList.toggle('open'); }));
+    container.querySelectorAll('.cancel-lesson-btn').forEach(btn => btn.addEventListener('click', () => { const f = btn.closest('.list-item').querySelector('.edit-fields'); f.classList.remove('open'); }));
+    container.querySelectorAll('.save-lesson-btn').forEach(btn => btn.addEventListener('click', async () => {
+      const item = btn.closest('.list-item'); const key = parseInt(item.dataset.key);
+      const name = item.querySelector('.edit-lesson-name').value.trim();
+      const time = item.querySelector('.edit-lesson-time').value.trim();
+      const cab = parseInt(item.querySelector('.edit-lesson-cab').value);
+      const homework = item.querySelector('.edit-lesson-homework').value.trim();
+      const msg = item.querySelector('.lesson-edit-message');
+      if (!name) { showMessage(msg, '⚠️ Введите название урока', 'error'); return; }
+      try {
+        await update(ref(db, `schedule/${selectedDayKey}/lessons/${key}`), { name, time, cab, homework });
+        showMessage(msg, '✅ Урок обновлён', 'success');
+        setTimeout(() => item.querySelector('.edit-fields').classList.remove('open'), 1000);
+      } catch (e) { showMessage(msg, '❌ Ошибка: ' + e.message, 'error'); }
+    }));
+    container.querySelectorAll('.delete-lesson-btn').forEach(btn => btn.addEventListener('click', async () => {
+      const item = btn.closest('.list-item'); const key = parseInt(item.dataset.key);
+      if (!confirm(`Удалить урок #${key + 1}?`)) return;
+      try { await remove(ref(db, `schedule/${selectedDayKey}/lessons/${key}`)); showMessage(document.getElementById('lessonMessage'), '✅ Урок удалён', 'success'); } catch (e) { showMessage(document.getElementById('lessonMessage'), '❌ Ошибка: ' + e.message, 'error'); }
+    }));
   }
 
   async function loadLessons(dayKey) {
     if (dayKey === null || dayKey === undefined) return;
     try {
       const snapshot = await get(ref(db, `schedule/${dayKey}/lessons`));
-      if (snapshot.exists()) {
-        renderLessonList(snapshot.val());
-      } else {
-        renderLessonList(null);
-      }
-    } catch (e) {
-      console.error('Ошибка загрузки уроков:', e);
-    }
+      if (snapshot.exists()) renderLessonList(snapshot.val());
+      else renderLessonList(null);
+    } catch (e) { console.error('Ошибка загрузки уроков:', e); }
   }
 
   function initScheduleConsole() {
-    // Добавление дня
     document.getElementById('addDayBtn').addEventListener('click', async () => {
       const name = document.getElementById('addDayName').value.trim();
       const msg = document.getElementById('dayMessage');
-      if (!name) {
-        showMessage(msg, '⚠️ Введите название дня', 'error');
-        return;
-      }
-
+      if (!name) { showMessage(msg, '⚠️ Введите название дня', 'error'); return; }
       try {
         const snapshot = await get(ref(db, 'schedule'));
         let maxKey = -1;
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const keys = Object.keys(data).map(Number);
-          maxKey = keys.length > 0 ? Math.max(...keys) : -1;
-        }
+        if (snapshot.exists()) { const data = snapshot.val(); const keys = Object.keys(data).map(Number); maxKey = keys.length > 0 ? Math.max(...keys) : -1; }
         const newKey = maxKey + 1;
         await set(ref(db, `schedule/${newKey}`), { name, lessons: {} });
         showMessage(msg, `✅ День добавлен (индекс ${newKey})`, 'success');
         document.getElementById('addDayName').value = '';
-      } catch (e) {
-        showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
-      }
+      } catch (e) { showMessage(msg, '❌ Ошибка: ' + e.message, 'error'); }
     });
 
-    // Добавление урока
     document.getElementById('addLessonBtn').addEventListener('click', async () => {
-      if (selectedDayKey === null) {
-        showMessage(document.getElementById('lessonMessage'), '⚠️ Сначала выберите день', 'error');
-        return;
-      }
+      if (selectedDayKey === null) { showMessage(document.getElementById('lessonMessage'), '⚠️ Сначала выберите день', 'error'); return; }
       const name = document.getElementById('addLessonName').value.trim();
+      const time = document.getElementById('addLessonTime').value.trim();
+      const cab = parseInt(document.getElementById('addLessonCab').value);
       const homework = document.getElementById('addLessonHomework').value.trim();
       const msg = document.getElementById('lessonMessage');
-
-      if (!name) {
-        showMessage(msg, '⚠️ Введите название урока', 'error');
-        return;
-      }
-
+      if (!name) { showMessage(msg, '⚠️ Введите название урока', 'error'); return; }
       try {
         const snapshot = await get(ref(db, `schedule/${selectedDayKey}/lessons`));
         let maxKey = -1;
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const keys = Object.keys(data).map(Number);
-          maxKey = keys.length > 0 ? Math.max(...keys) : -1;
-        }
+        if (snapshot.exists()) { const data = snapshot.val(); const keys = Object.keys(data).map(Number); maxKey = keys.length > 0 ? Math.max(...keys) : -1; }
         const newKey = maxKey + 1;
-        await set(ref(db, `schedule/${selectedDayKey}/lessons/${newKey}`), { name, homework });
+        await set(ref(db, `schedule/${selectedDayKey}/lessons/${newKey}`), { name, time, cab, homework });
         showMessage(msg, `✅ Урок добавлен (#${newKey + 1})`, 'success');
         document.getElementById('addLessonName').value = '';
+        document.getElementById('addLessonTime').value = '';
+        document.getElementById('addLessonCab').value = '';
         document.getElementById('addLessonHomework').value = '';
-      } catch (e) {
-        showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
-      }
+      } catch (e) { showMessage(msg, '❌ Ошибка: ' + e.message, 'error'); }
     });
 
-    // Загрузка списка дней
-    const scheduleRef = ref(db, 'schedule');
-    onValue(scheduleRef, (snapshot) => {
-      if (snapshot.exists()) {
-        renderDayList(snapshot.val());
-      } else {
-        renderDayList(null);
-      }
+    onValue(ref(db, 'schedule'), (snapshot) => {
+      if (snapshot.exists()) renderDayList(snapshot.val());
+      else renderDayList(null);
     });
   }
 
   // ============================================
-  // ====== ПРОВЕРКА АДМИНА ======
+  // ====== ПРОВЕРКА АДМИНА И ЗАПУСК ======
   // ============================================
-
   async function checkAdmin(user) {
-    if (!user) {
-      window.location.href = AUTH_URL;
-      return false;
-    }
+    if (!user) { window.location.href = AUTH_URL; return false; }
     try {
       const snapshot = await get(ref(db, 'users/' + user.uid));
-      if (snapshot.exists() && snapshot.val().status === 2) {
-        return true;
-      }
+      if (snapshot.exists() && snapshot.val().status === 2) return true;
       alert('⛔ У вас нет прав администратора');
       window.location.href = 'index.html';
       return false;
-    } catch (e) {
-      console.error('Ошибка проверки прав:', e);
-      return false;
-    }
+    } catch (e) { console.error('Ошибка проверки прав:', e); return false; }
   }
 
-  // ============================================
-  // ====== ЗАПУСК ======
-  // ============================================
-
   onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      window.location.href = AUTH_URL;
-      return;
-    }
-    // Сначала загружаем имя пользователя
-    const userRef = ref(db, 'users/' + user.uid);
+    if (!user) { window.location.href = AUTH_URL; return; }
     try {
-      const snapshot = await get(userRef);
+      const snapshot = await get(ref(db, 'users/' + user.uid));
       if (snapshot.exists()) {
         const data = snapshot.val();
         user.displayName = data.name || user.email;
-      } else {
-        user.displayName = user.email;
-      }
-    } catch (e) {
-      user.displayName = user.email;
-    }
-    
+      } else { user.displayName = user.email; }
+    } catch (e) { user.displayName = user.email; }
     renderHeader(user);
     const isAdmin = await checkAdmin(user);
     if (isAdmin) {
@@ -1126,7 +484,7 @@
     }
   });
 
-  console.log('✅ Консоль администратора с исправленным отображением имени');
+  console.log('✅ Консоль с поддержкой времени и кабинета');
 </script>
 </body>
 </html>
