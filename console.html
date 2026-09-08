@@ -162,7 +162,7 @@
     }
 
     .container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
       background: #ffffff;
       border-radius: 48px;
@@ -192,11 +192,41 @@
     }
 
     /* ----- КОНСОЛЬ ----- */
-    .console-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+    .tab-bar {
+      display: flex;
+      gap: 8px;
       margin-bottom: 24px;
+      border-bottom: 1px solid #eef3fa;
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 8px 20px;
+      border-radius: 40px;
+      border: none;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.15s;
+      font-family: 'Inter', sans-serif;
+      background: transparent;
+      color: #6a7f9e;
+    }
+    .tab-btn:hover {
+      background: #f0f4fe;
+      color: #0a1e3c;
+    }
+    .tab-btn.active {
+      background: #e5effb;
+      color: #2a7de1;
+    }
+
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
     }
 
     .console-card {
@@ -204,6 +234,7 @@
       border-radius: 24px;
       padding: 20px 24px;
       border: 1px solid #eef3fa;
+      margin-bottom: 20px;
     }
 
     .console-card .card-label {
@@ -211,10 +242,14 @@
       font-weight: 600;
       color: #0a1e3c;
       margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .console-card input,
-    .console-card textarea {
+    .console-card textarea,
+    .console-card select {
       width: 100%;
       padding: 10px 14px;
       border: 1.5px solid #dce4ef;
@@ -227,7 +262,8 @@
     }
 
     .console-card input:focus,
-    .console-card textarea:focus {
+    .console-card textarea:focus,
+    .console-card select:focus {
       outline: none;
       border-color: #2a7de1;
       box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10);
@@ -313,27 +349,12 @@
       color: #c74a4a;
     }
 
-    .edit-section-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #0a1e3c;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .edit-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .edit-item {
-      background: #f9fcff;
+    .list-item {
+      background: #ffffff;
       border-radius: 16px;
       padding: 16px 20px;
       border: 1px solid #eef3fa;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -341,44 +362,59 @@
       gap: 12px;
     }
 
-    .edit-item .edit-info {
+    .list-item .item-info {
       flex: 1;
-      min-width: 150px;
+      min-width: 120px;
     }
-    .edit-item .edit-info .edit-title {
+    .list-item .item-info .item-title {
       font-weight: 500;
       color: #0a1e3c;
     }
-    .edit-item .edit-info .edit-meta {
+    .list-item .item-info .item-meta {
       font-size: 13px;
       color: #6a7f9e;
     }
 
-    .edit-item .edit-actions {
+    .list-item .item-actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .edit-item .edit-fields {
+    .list-item .edit-fields {
       display: none;
       width: 100%;
       padding-top: 12px;
       border-top: 1px solid #eef3fa;
       margin-top: 12px;
     }
-    .edit-item .edit-fields.open {
+    .list-item .edit-fields.open {
       display: block;
     }
 
-    .edit-item .edit-fields input,
-    .edit-item .edit-fields textarea {
+    .list-item .edit-fields input,
+    .list-item .edit-fields textarea {
       width: 100%;
       padding: 8px 12px;
       border: 1.5px solid #dce4ef;
       border-radius: 12px;
       font-size: 13px;
       font-family: 'Inter', sans-serif;
+      margin-bottom: 8px;
+    }
+
+    .lesson-item {
+      border-left: 3px solid #2a7de1;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 32px 20px;
+      color: #6a7f9e;
+    }
+    .empty-state .material-symbols-outlined {
+      font-size: 40px;
+      color: #d0dae9;
       margin-bottom: 8px;
     }
 
@@ -395,6 +431,12 @@
       text-align: center;
       padding: 40px;
       color: #6a7f9e;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
 
     @media (max-width: 700px) {
@@ -417,14 +459,13 @@
       body {
         padding-top: 130px;
       }
-      .console-grid {
-        grid-template-columns: 1fr;
-      }
+      .container { padding: 20px 16px 28px; border-radius: 32px; }
+      .grid-2 { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 480px) {
-      .container { padding: 20px 16px 28px; border-radius: 32px; }
-      .navbar-left { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .list-item { flex-direction: column; align-items: stretch; }
+      .list-item .item-actions { justify-content: flex-start; }
     }
   </style>
 </head>
@@ -453,34 +494,70 @@
     <span class="material-symbols-outlined">admin_panel_settings</span>
     Консоль администратора
   </div>
-  <div class="page-sub">Управление новостями</div>
+  <div class="page-sub">Управление новостями и расписанием</div>
 
-  <!-- Форма добавления -->
-  <div class="console-grid">
-    <div class="console-card">
-      <div class="card-label">➕ Добавить новость</div>
-      <input type="text" id="addTitle" placeholder="Заголовок" />
-      <textarea id="addDesc" placeholder="Описание"></textarea>
-      <input type="number" id="addDate" placeholder="Unix timestamp" />
-      <button class="btn-console btn-console-success" id="addNewsBtn">➕ Добавить</button>
-      <div id="addMessage" class="console-message"></div>
+  <!-- Вкладки -->
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="news">📰 Новости</button>
+    <button class="tab-btn" data-tab="schedule">📅 Расписание</button>
+  </div>
+
+  <!-- Вкладка: Новости -->
+  <div class="tab-content active" id="tab-news">
+    <div class="grid-2">
+      <div class="console-card">
+        <div class="card-label">➕ Добавить новость</div>
+        <input type="text" id="addTitle" placeholder="Заголовок" />
+        <textarea id="addDesc" placeholder="Описание"></textarea>
+        <input type="number" id="addDate" placeholder="Unix timestamp" />
+        <button class="btn-console btn-console-success" id="addNewsBtn">➕ Добавить</button>
+        <div id="addMessage" class="console-message"></div>
+      </div>
+
+      <div class="console-card">
+        <div class="card-label">🗑️ Удалить по индексу</div>
+        <input type="number" id="deleteIndex" placeholder="Индекс новости" />
+        <button class="btn-console btn-console-danger" id="deleteNewsBtn">🗑️ Удалить</button>
+        <div id="deleteMessage" class="console-message"></div>
+      </div>
     </div>
 
     <div class="console-card">
-      <div class="card-label">🗑️ Удалить по индексу</div>
-      <input type="number" id="deleteIndex" placeholder="Индекс новости" />
-      <button class="btn-console btn-console-danger" id="deleteNewsBtn">🗑️ Удалить</button>
-      <div id="deleteMessage" class="console-message"></div>
+      <div class="card-label">✏️ Редактировать новости</div>
+      <div id="editNewsList"></div>
     </div>
   </div>
 
-  <!-- Редактирование существующих -->
-  <div class="edit-section-title">
-    <span class="material-symbols-outlined" style="color:#2a7de1;">edit</span>
-    Редактировать новости
-  </div>
-  <div id="editList" class="edit-list">
-    <div class="loading">⏳ Загрузка...</div>
+  <!-- Вкладка: Расписание -->
+  <div class="tab-content" id="tab-schedule">
+    <!-- Добавление дня -->
+    <div class="console-card">
+      <div class="card-label">➕ Добавить день</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <input type="text" id="addDayName" placeholder="Название дня (например, Понедельник)" style="flex:1; min-width:150px;" />
+        <button class="btn-console btn-console-success" id="addDayBtn">➕ Добавить день</button>
+      </div>
+      <div id="dayMessage" class="console-message"></div>
+    </div>
+
+    <!-- Список дней -->
+    <div class="console-card">
+      <div class="card-label">📅 Дни недели</div>
+      <div id="dayList"></div>
+    </div>
+
+    <!-- Управление уроками (появляется при выборе дня) -->
+    <div class="console-card" id="lessonManagement" style="display:none;">
+      <div class="card-label" id="lessonManagementTitle">📚 Уроки</div>
+      
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+        <input type="text" id="addLessonName" placeholder="Название урока" style="flex:1; min-width:120px;" />
+        <textarea id="addLessonHomework" placeholder="Домашнее задание" style="flex:2; min-width:150px;"></textarea>
+        <button class="btn-console btn-console-success" id="addLessonBtn">➕ Добавить урок</button>
+      </div>
+      <div id="lessonMessage" class="console-message"></div>
+      <div id="lessonList"></div>
+    </div>
   </div>
 
   <div class="footer">© 2026 · Электронная школа</div>
@@ -502,7 +579,8 @@
     set,
     remove,
     child,
-    onValue
+    onValue,
+    update
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
   const firebaseConfig = {
@@ -522,27 +600,24 @@
 
   const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
   const ACCOUNT_URL = 'account.html';
-
   const userArea = document.getElementById('userArea');
-  const editList = document.getElementById('editList');
 
+  // ----- Вкладки -----
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ----- Вспомогательные функции -----
   function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
-  }
-
-  function formatDate(timestamp) {
-    if (!timestamp) return '—';
-    const date = new Date(timestamp * 1000);
-    return date.toLocaleDateString('ru-RU', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
   }
 
   function showMessage(element, text, type) {
@@ -553,125 +628,6 @@
     }, 4000);
   }
 
-  // ----- Рендер списка для редактирования -----
-  function renderEditList(newsData) {
-    if (!newsData || Object.keys(newsData).length === 0) {
-      editList.innerHTML = `
-        <div class="empty-state" style="padding:24px;">
-          <p style="color:#6a7f9e;">Новостей нет</p>
-        </div>
-      `;
-      return;
-    }
-
-    const keys = Object.keys(newsData).map(Number).sort((a, b) => b - a);
-
-    let html = '';
-    for (const key of keys) {
-      const item = newsData[key];
-      if (!item) continue;
-      html += `
-        <div class="edit-item" data-key="${key}">
-          <div class="edit-info">
-            <div class="edit-title">#${key}: ${escapeHtml(item.title || 'Без названия')}</div>
-            <div class="edit-meta">${formatDate(item.date)}</div>
-          </div>
-          <div class="edit-actions">
-            <button class="btn-console btn-console-outline toggle-edit-btn">✏️ Редактировать</button>
-            <button class="btn-console btn-console-danger delete-item-btn">🗑️</button>
-          </div>
-          <div class="edit-fields">
-            <input type="text" class="edit-field-title" value="${escapeHtml(item.title || '')}" placeholder="Заголовок" />
-            <textarea class="edit-field-desc" placeholder="Описание">${escapeHtml(item.desc || '')}</textarea>
-            <input type="number" class="edit-field-date" value="${item.date || ''}" placeholder="Unix timestamp" />
-            <div style="display:flex; gap:8px; margin-top:8px;">
-              <button class="btn-console btn-console-primary save-edit-btn">💾 Сохранить</button>
-              <button class="btn-console btn-console-outline cancel-edit-btn">Отмена</button>
-            </div>
-            <div class="console-message edit-message"></div>
-          </div>
-        </div>
-      `;
-    }
-    editList.innerHTML = html;
-
-    // Обработчики
-    document.querySelectorAll('.toggle-edit-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const fields = btn.closest('.edit-item').querySelector('.edit-fields');
-        fields.classList.toggle('open');
-      });
-    });
-
-    document.querySelectorAll('.cancel-edit-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const fields = btn.closest('.edit-item').querySelector('.edit-fields');
-        fields.classList.remove('open');
-      });
-    });
-
-    document.querySelectorAll('.save-edit-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const item = btn.closest('.edit-item');
-        const key = parseInt(item.dataset.key);
-        const title = item.querySelector('.edit-field-title').value.trim();
-        const desc = item.querySelector('.edit-field-desc').value.trim();
-        const date = parseInt(item.querySelector('.edit-field-date').value);
-        const msg = item.querySelector('.edit-message');
-
-        if (!title || !date) {
-          showMessage(msg, '⚠️ Заполните заголовок и дату', 'error');
-          return;
-        }
-
-        try {
-          await set(ref(db, 'news/' + key), { title, desc, date });
-          showMessage(msg, '✅ Новость обновлена', 'success');
-          setTimeout(() => {
-            item.querySelector('.edit-fields').classList.remove('open');
-          }, 1000);
-        } catch (e) {
-          showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
-        }
-      });
-    });
-
-    document.querySelectorAll('.delete-item-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const item = btn.closest('.edit-item');
-        const key = parseInt(item.dataset.key);
-        if (confirm(`Удалить новость #${key}?`)) {
-          try {
-            await remove(ref(db, 'news/' + key));
-            showMessage(document.getElementById('deleteMessage'), '✅ Новость удалена', 'success');
-          } catch (e) {
-            showMessage(document.getElementById('deleteMessage'), '❌ Ошибка: ' + e.message, 'error');
-          }
-        }
-      });
-    });
-  }
-
-  // ----- Загрузка новостей для редактирования -----
-  function loadEditList() {
-    const newsRef = ref(db, 'news');
-    onValue(newsRef, (snapshot) => {
-      if (snapshot.exists()) {
-        renderEditList(snapshot.val());
-      } else {
-        renderEditList(null);
-      }
-    }, (error) => {
-      console.error('Ошибка загрузки:', error);
-      editList.innerHTML = `
-        <div class="empty-state" style="padding:24px;">
-          <p style="color:#c74a4a;">❌ Ошибка загрузки</p>
-        </div>
-      `;
-    });
-  }
-
-  // ----- Рендер шапки -----
   function renderHeader(user) {
     if (user) {
       const displayName = user.displayName || user.email || 'Пользователь';
@@ -691,9 +647,103 @@
     }
   }
 
-  // ----- Инициализация консоли -----
-  function initConsole() {
-    // Добавление
+  // ============================================
+  // ====== УПРАВЛЕНИЕ НОВОСТЯМИ ======
+  // ============================================
+
+  function renderEditNewsList(newsData) {
+    const container = document.getElementById('editNewsList');
+    if (!newsData || Object.keys(newsData).length === 0) {
+      container.innerHTML = `<div class="empty-state"><p style="color:#6a7f9e;">Новостей нет</p></div>`;
+      return;
+    }
+
+    const keys = Object.keys(newsData).map(Number).sort((a, b) => b - a);
+    let html = '';
+    for (const key of keys) {
+      const item = newsData[key];
+      if (!item) continue;
+      html += `
+        <div class="list-item" data-key="${key}">
+          <div class="item-info">
+            <div class="item-title">#${key}: ${escapeHtml(item.title || 'Без названия')}</div>
+            <div class="item-meta">${item.date ? new Date(item.date * 1000).toLocaleString('ru-RU') : '—'}</div>
+          </div>
+          <div class="item-actions">
+            <button class="btn-console btn-console-outline toggle-edit-btn">✏️ Редактировать</button>
+            <button class="btn-console btn-console-danger delete-item-btn">🗑️</button>
+          </div>
+          <div class="edit-fields">
+            <input type="text" class="edit-field-title" value="${escapeHtml(item.title || '')}" placeholder="Заголовок" />
+            <textarea class="edit-field-desc" placeholder="Описание">${escapeHtml(item.desc || '')}</textarea>
+            <input type="number" class="edit-field-date" value="${item.date || ''}" placeholder="Unix timestamp" />
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <button class="btn-console btn-console-primary save-edit-btn">💾 Сохранить</button>
+              <button class="btn-console btn-console-outline cancel-edit-btn">Отмена</button>
+            </div>
+            <div class="console-message edit-message"></div>
+          </div>
+        </div>
+      `;
+    }
+    container.innerHTML = html;
+
+    // Обработчики для новостей
+    container.querySelectorAll('.toggle-edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fields = btn.closest('.list-item').querySelector('.edit-fields');
+        fields.classList.toggle('open');
+      });
+    });
+
+    container.querySelectorAll('.cancel-edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fields = btn.closest('.list-item').querySelector('.edit-fields');
+        fields.classList.remove('open');
+      });
+    });
+
+    container.querySelectorAll('.save-edit-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const item = btn.closest('.list-item');
+        const key = parseInt(item.dataset.key);
+        const title = item.querySelector('.edit-field-title').value.trim();
+        const desc = item.querySelector('.edit-field-desc').value.trim();
+        const date = parseInt(item.querySelector('.edit-field-date').value);
+        const msg = item.querySelector('.edit-message');
+
+        if (!title || !date) {
+          showMessage(msg, '⚠️ Заполните заголовок и дату', 'error');
+          return;
+        }
+
+        try {
+          await set(ref(db, 'news/' + key), { title, desc, date });
+          showMessage(msg, '✅ Новость обновлена', 'success');
+          setTimeout(() => item.querySelector('.edit-fields').classList.remove('open'), 1000);
+        } catch (e) {
+          showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
+        }
+      });
+    });
+
+    container.querySelectorAll('.delete-item-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const item = btn.closest('.list-item');
+        const key = parseInt(item.dataset.key);
+        if (!confirm(`Удалить новость #${key}?`)) return;
+        try {
+          await remove(ref(db, 'news/' + key));
+          showMessage(document.getElementById('deleteMessage'), '✅ Новость удалена', 'success');
+        } catch (e) {
+          showMessage(document.getElementById('deleteMessage'), '❌ Ошибка: ' + e.message, 'error');
+        }
+      });
+    });
+  }
+
+  function initNewsConsole() {
+    // Добавление новости
     document.getElementById('addNewsBtn').addEventListener('click', async () => {
       const title = document.getElementById('addTitle').value.trim();
       const desc = document.getElementById('addDesc').value.trim();
@@ -724,7 +774,7 @@
       }
     });
 
-    // Удаление по индексу
+    // Удаление новости по индексу
     document.getElementById('deleteNewsBtn').addEventListener('click', async () => {
       const index = parseInt(document.getElementById('deleteIndex').value);
       const msg = document.getElementById('deleteMessage');
@@ -741,9 +791,264 @@
         showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
       }
     });
+
+    // Загрузка списка новостей
+    const newsRef = ref(db, 'news');
+    onValue(newsRef, (snapshot) => {
+      if (snapshot.exists()) {
+        renderEditNewsList(snapshot.val());
+      } else {
+        renderEditNewsList(null);
+      }
+    });
   }
 
-  // ----- Проверка прав администратора -----
+  // ============================================
+  // ====== УПРАВЛЕНИЕ РАСПИСАНИЕМ ======
+  // ============================================
+
+  let selectedDayKey = null;
+
+  function renderDayList(scheduleData) {
+    const container = document.getElementById('dayList');
+    if (!scheduleData || Object.keys(scheduleData).length === 0) {
+      container.innerHTML = `<div class="empty-state"><p style="color:#6a7f9e;">Дней пока нет</p></div>`;
+      return;
+    }
+
+    const keys = Object.keys(scheduleData).map(Number).sort((a, b) => a - b);
+    let html = '';
+    for (const key of keys) {
+      const day = scheduleData[key];
+      if (!day) continue;
+      const dayName = day.name || `День ${key + 1}`;
+      const lessonCount = day.lessons ? Object.keys(day.lessons).length : 0;
+      html += `
+        <div class="list-item day-item" data-key="${key}" style="${selectedDayKey === key ? 'border-left: 3px solid #8b5cf6;' : ''}">
+          <div class="item-info">
+            <div class="item-title">#${key}: ${escapeHtml(dayName)}</div>
+            <div class="item-meta">${lessonCount} уроков</div>
+          </div>
+          <div class="item-actions">
+            <button class="btn-console btn-console-primary select-day-btn">📂 Выбрать</button>
+            <button class="btn-console btn-console-danger delete-day-btn">🗑️</button>
+          </div>
+        </div>
+      `;
+    }
+    container.innerHTML = html;
+
+    // Выбор дня
+    container.querySelectorAll('.select-day-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.day-item');
+        selectedDayKey = parseInt(item.dataset.key);
+        document.querySelectorAll('.day-item').forEach(el => el.style.borderLeft = '');
+        item.style.borderLeft = '3px solid #8b5cf6';
+        loadLessons(selectedDayKey);
+        document.getElementById('lessonManagement').style.display = 'block';
+        document.getElementById('lessonManagementTitle').textContent = `📚 Уроки дня #${selectedDayKey}`;
+      });
+    });
+
+    // Удаление дня
+    container.querySelectorAll('.delete-day-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const item = btn.closest('.day-item');
+        const key = parseInt(item.dataset.key);
+        if (!confirm(`Удалить день #${key}?`)) return;
+        try {
+          await remove(ref(db, 'schedule/' + key));
+          if (selectedDayKey === key) {
+            selectedDayKey = null;
+            document.getElementById('lessonManagement').style.display = 'none';
+          }
+          showMessage(document.getElementById('dayMessage'), '✅ День удалён', 'success');
+        } catch (e) {
+          showMessage(document.getElementById('dayMessage'), '❌ Ошибка: ' + e.message, 'error');
+        }
+      });
+    });
+  }
+
+  function renderLessonList(lessonsData) {
+    const container = document.getElementById('lessonList');
+    if (!lessonsData || Object.keys(lessonsData).length === 0) {
+      container.innerHTML = `<div class="empty-state"><p style="color:#6a7f9e;">Уроков нет</p></div>`;
+      return;
+    }
+
+    const keys = Object.keys(lessonsData).map(Number).sort((a, b) => a - b);
+    let html = '';
+    for (const key of keys) {
+      const lesson = lessonsData[key];
+      if (!lesson) continue;
+      html += `
+        <div class="list-item lesson-item" data-key="${key}">
+          <div class="item-info">
+            <div class="item-title">${key + 1}. ${escapeHtml(lesson.name || 'Без названия')}</div>
+            <div class="item-meta">${escapeHtml(lesson.homework || 'нет ДЗ')}</div>
+          </div>
+          <div class="item-actions">
+            <button class="btn-console btn-console-outline toggle-lesson-edit-btn">✏️ Редактировать</button>
+            <button class="btn-console btn-console-danger delete-lesson-btn">🗑️</button>
+          </div>
+          <div class="edit-fields">
+            <input type="text" class="edit-lesson-name" value="${escapeHtml(lesson.name || '')}" placeholder="Название урока" />
+            <textarea class="edit-lesson-homework" placeholder="Домашнее задание">${escapeHtml(lesson.homework || '')}</textarea>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <button class="btn-console btn-console-primary save-lesson-btn">💾 Сохранить</button>
+              <button class="btn-console btn-console-outline cancel-lesson-btn">Отмена</button>
+            </div>
+            <div class="console-message lesson-edit-message"></div>
+          </div>
+        </div>
+      `;
+    }
+    container.innerHTML = html;
+
+    // Обработчики для уроков
+    container.querySelectorAll('.toggle-lesson-edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fields = btn.closest('.list-item').querySelector('.edit-fields');
+        fields.classList.toggle('open');
+      });
+    });
+
+    container.querySelectorAll('.cancel-lesson-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fields = btn.closest('.list-item').querySelector('.edit-fields');
+        fields.classList.remove('open');
+      });
+    });
+
+    container.querySelectorAll('.save-lesson-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const item = btn.closest('.list-item');
+        const key = parseInt(item.dataset.key);
+        const name = item.querySelector('.edit-lesson-name').value.trim();
+        const homework = item.querySelector('.edit-lesson-homework').value.trim();
+        const msg = item.querySelector('.lesson-edit-message');
+
+        if (!name) {
+          showMessage(msg, '⚠️ Введите название урока', 'error');
+          return;
+        }
+
+        try {
+          await update(ref(db, `schedule/${selectedDayKey}/lessons/${key}`), { name, homework });
+          showMessage(msg, '✅ Урок обновлён', 'success');
+          setTimeout(() => item.querySelector('.edit-fields').classList.remove('open'), 1000);
+        } catch (e) {
+          showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
+        }
+      });
+    });
+
+    container.querySelectorAll('.delete-lesson-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const item = btn.closest('.list-item');
+        const key = parseInt(item.dataset.key);
+        if (!confirm(`Удалить урок #${key + 1}?`)) return;
+        try {
+          await remove(ref(db, `schedule/${selectedDayKey}/lessons/${key}`));
+          showMessage(document.getElementById('lessonMessage'), '✅ Урок удалён', 'success');
+        } catch (e) {
+          showMessage(document.getElementById('lessonMessage'), '❌ Ошибка: ' + e.message, 'error');
+        }
+      });
+    });
+  }
+
+  async function loadLessons(dayKey) {
+    if (dayKey === null || dayKey === undefined) return;
+    try {
+      const snapshot = await get(ref(db, `schedule/${dayKey}/lessons`));
+      if (snapshot.exists()) {
+        renderLessonList(snapshot.val());
+      } else {
+        renderLessonList(null);
+      }
+    } catch (e) {
+      console.error('Ошибка загрузки уроков:', e);
+    }
+  }
+
+  function initScheduleConsole() {
+    // Добавление дня
+    document.getElementById('addDayBtn').addEventListener('click', async () => {
+      const name = document.getElementById('addDayName').value.trim();
+      const msg = document.getElementById('dayMessage');
+      if (!name) {
+        showMessage(msg, '⚠️ Введите название дня', 'error');
+        return;
+      }
+
+      try {
+        const snapshot = await get(ref(db, 'schedule'));
+        let maxKey = -1;
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const keys = Object.keys(data).map(Number);
+          maxKey = keys.length > 0 ? Math.max(...keys) : -1;
+        }
+        const newKey = maxKey + 1;
+        await set(ref(db, `schedule/${newKey}`), { name, lessons: {} });
+        showMessage(msg, `✅ День добавлен (индекс ${newKey})`, 'success');
+        document.getElementById('addDayName').value = '';
+      } catch (e) {
+        showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
+      }
+    });
+
+    // Добавление урока
+    document.getElementById('addLessonBtn').addEventListener('click', async () => {
+      if (selectedDayKey === null) {
+        showMessage(document.getElementById('lessonMessage'), '⚠️ Сначала выберите день', 'error');
+        return;
+      }
+      const name = document.getElementById('addLessonName').value.trim();
+      const homework = document.getElementById('addLessonHomework').value.trim();
+      const msg = document.getElementById('lessonMessage');
+
+      if (!name) {
+        showMessage(msg, '⚠️ Введите название урока', 'error');
+        return;
+      }
+
+      try {
+        const snapshot = await get(ref(db, `schedule/${selectedDayKey}/lessons`));
+        let maxKey = -1;
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const keys = Object.keys(data).map(Number);
+          maxKey = keys.length > 0 ? Math.max(...keys) : -1;
+        }
+        const newKey = maxKey + 1;
+        await set(ref(db, `schedule/${selectedDayKey}/lessons/${newKey}`), { name, homework });
+        showMessage(msg, `✅ Урок добавлен (#${newKey + 1})`, 'success');
+        document.getElementById('addLessonName').value = '';
+        document.getElementById('addLessonHomework').value = '';
+      } catch (e) {
+        showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
+      }
+    });
+
+    // Загрузка списка дней
+    const scheduleRef = ref(db, 'schedule');
+    onValue(scheduleRef, (snapshot) => {
+      if (snapshot.exists()) {
+        renderDayList(snapshot.val());
+      } else {
+        renderDayList(null);
+      }
+    });
+  }
+
+  // ============================================
+  // ====== ПРОВЕРКА АДМИНА ======
+  // ============================================
+
   async function checkAdmin(user) {
     if (!user) {
       window.location.href = AUTH_URL;
@@ -763,7 +1068,10 @@
     }
   }
 
-  // ----- Авторизация -----
+  // ============================================
+  // ====== ЗАПУСК ======
+  // ============================================
+
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       window.location.href = AUTH_URL;
@@ -772,12 +1080,12 @@
     renderHeader(user);
     const isAdmin = await checkAdmin(user);
     if (isAdmin) {
-      initConsole();
-      loadEditList();
+      initNewsConsole();
+      initScheduleConsole();
     }
   });
 
-  console.log('✅ Страница консоли администратора');
+  console.log('✅ Консоль администратора с управлением расписанием');
 </script>
 </body>
 </html>
