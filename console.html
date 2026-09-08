@@ -2,191 +2,729 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Консоль · Электронная школа</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: #f8faff; min-height: 100vh; padding-top: 80px; }
 
-    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #ffffff; border-bottom: 1px solid #eef3fa; box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-    .navbar-left { display: flex; align-items: center; gap: 16px; }
-    .logo-area { display: flex; align-items: center; gap: 10px; }
-    .logo-icon { background: #2a7de1; color: white; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); }
-    .logo-text { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; color: #0a1e3c; }
-    .logo-text span { color: #2a7de1; }
-    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .nav-link { padding: 8px 18px; border-radius: 40px; font-weight: 500; font-size: 14px; color: #1f2b48; text-decoration: none; transition: 0.15s; display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid transparent; }
-    .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
-    .nav-link .material-symbols-outlined { font-size: 18px; }
-    .navbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .user-badge { display: flex; align-items: center; gap: 8px; background: #f0f6ff; padding: 6px 16px 6px 12px; border-radius: 40px; font-size: 14px; font-weight: 500; color: #0a1e3c; cursor: pointer; transition: 0.15s; text-decoration: none; border: none; font-family: 'Inter', sans-serif; }
-    .user-badge:hover { background: #e5effb; transform: scale(0.97); }
-    .user-badge .material-symbols-outlined { color: #2a7de1; font-size: 20px; }
-    .btn { border: none; padding: 6px 18px; border-radius: 40px; font-weight: 500; font-size: 13px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif; text-decoration: none; }
-    .btn-primary { background: #2a7de1; color: white; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); }
-    .btn-primary:hover { background: #1a5fb0; transform: scale(0.97); }
+    :root {
+      --blue: #2a7de1;
+      --blue-dark: #1a5fb0;
+      --blue-soft: #e5effb;
+      --text: #0a1e3c;
+      --text-soft: #5f7696;
+      --border: #eef3fa;
+      --input-border: #dce4ef;
+      --page: #f8faff;
+      --card: #ffffff;
+      --soft-card: #f9fcff;
+      --green: #1a8a4a;
+      --green-soft: #e8f5ed;
+      --red: #c74a4a;
+      --red-soft: #fff0f0;
+      --purple: #8b5cf6;
+    }
 
-    .container { max-width: 1000px; margin: 0 auto; background: #ffffff; border-radius: 48px; box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08); padding: 32px 40px 44px; border: 1px solid #f0f5fe; }
-    .page-title { font-size: 26px; font-weight: 600; color: #0a1e3c; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-    .page-title .material-symbols-outlined { color: #8b5cf6; font-size: 32px; }
-    .page-sub { color: #5f7696; font-size: 16px; margin-bottom: 28px; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--page);
+      color: var(--text);
+      min-height: 100vh;
+      padding-top: 76px;
+    }
 
-    .tab-bar { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid #eef3fa; padding-bottom: 12px; flex-wrap: wrap; }
-    .tab-btn { padding: 8px 20px; border-radius: 40px; border: none; font-weight: 500; font-size: 14px; cursor: pointer; transition: 0.15s; font-family: 'Inter', sans-serif; background: transparent; color: #6a7f9e; }
-    .tab-btn:hover { background: #f0f4fe; color: #0a1e3c; }
-    .tab-btn.active { background: #e5effb; color: #2a7de1; }
+    button, input, textarea, select { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+
+    .navbar {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 1000;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,20,40,.06);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .navbar-left, .logo-area, .nav-links, .navbar-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-left { gap: 16px; min-width: 0; }
+    .logo-area { gap: 10px; }
+    .logo-icon {
+      background: var(--blue);
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 600;
+      flex: 0 0 auto;
+    }
+    .logo-text {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -.3px;
+      white-space: nowrap;
+    }
+    .logo-text span { color: var(--blue); }
+
+    .nav-link, .user-badge {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 40px;
+      transition: .15s;
+    }
+
+    .nav-link {
+      padding: 8px 18px;
+      color: #1f2b48;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .nav-link:hover { background: #f0f4fe; }
+
+    .user-badge {
+      gap: 8px;
+      background: #f0f6ff;
+      padding: 7px 16px 7px 12px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .user-badge .material-symbols-outlined { color: var(--blue); }
+
+    .container {
+      max-width: 1100px;
+      margin: 24px auto;
+      background: var(--card);
+      border-radius: 40px;
+      box-shadow: 0 24px 60px rgba(0,20,40,.08);
+      padding: 32px 40px 44px;
+      border: 1px solid #f0f5fe;
+    }
+
+    .page-title {
+      font-size: 26px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .page-title .material-symbols-outlined { color: var(--purple); font-size: 32px; }
+    .page-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 26px; }
+
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+    .tab-btn {
+      border: 0;
+      background: transparent;
+      color: #6a7f9e;
+      padding: 9px 18px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .tab-btn:hover { background: #f0f4fe; color: var(--text); }
+    .tab-btn.active { background: var(--blue-soft); color: var(--blue); }
+
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    .console-card { background: #f9fcff; border-radius: 24px; padding: 20px 24px; border: 1px solid #eef3fa; margin-bottom: 20px; }
-    .console-card .card-label { font-size: 15px; font-weight: 600; color: #0a1e3c; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .console-card input, .console-card textarea, .console-card select { width: 100%; padding: 10px 14px; border: 1.5px solid #dce4ef; border-radius: 16px; font-size: 14px; font-family: 'Inter', sans-serif; transition: 0.15s; background: #ffffff; margin-bottom: 10px; }
-    .console-card input:focus, .console-card textarea:focus, .console-card select:focus { outline: none; border-color: #2a7de1; box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10); }
-    .console-card textarea { resize: vertical; min-height: 60px; }
-    .console-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn-console { border: none; padding: 8px 20px; border-radius: 40px; font-weight: 500; font-size: 13px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif; }
-    .btn-console-primary { background: #2a7de1; color: white; }
-    .btn-console-primary:hover { background: #1a5fb0; transform: scale(0.97); }
-    .btn-console-success { background: #1a8a4a; color: white; }
-    .btn-console-success:hover { background: #146e3a; transform: scale(0.97); }
-    .btn-console-danger { background: #c74a4a; color: white; }
-    .btn-console-danger:hover { background: #a33a3a; transform: scale(0.97); }
-    .btn-console-outline { background: transparent; color: #1f2b48; border: 1.5px solid #d0dae9; }
-    .btn-console-outline:hover { background: #f0f4fe; }
-
-    .console-message { font-size: 13px; padding: 8px 14px; border-radius: 40px; margin-top: 8px; display: none; }
-    .console-message.show { display: block; }
-    .console-message.success { background: #e8f5ed; color: #1a8a4a; }
-    .console-message.error { background: #fff0f0; color: #c74a4a; }
-
-    .list-item { background: #ffffff; border-radius: 16px; padding: 16px 20px; border: 1px solid #eef3fa; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-    .list-item .item-info { flex: 1; min-width: 120px; }
-    .list-item .item-info .item-title { font-weight: 500; color: #0a1e3c; }
-    .list-item .item-info .item-meta { font-size: 13px; color: #6a7f9e; }
-    .list-item .item-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-    .list-item .edit-fields { display: none; width: 100%; padding-top: 12px; border-top: 1px solid #eef3fa; margin-top: 12px; }
-    .list-item .edit-fields.open { display: block; }
-    .list-item .edit-fields input, .list-item .edit-fields textarea { width: 100%; padding: 8px 12px; border: 1.5px solid #dce4ef; border-radius: 12px; font-size: 13px; font-family: 'Inter', sans-serif; margin-bottom: 8px; }
-    .lesson-item { border-left: 3px solid #2a7de1; }
-    .empty-state { text-align: center; padding: 32px 20px; color: #6a7f9e; }
-    .empty-state .material-symbols-outlined { font-size: 40px; color: #d0dae9; margin-bottom: 8px; }
-    .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid #eef3fa; font-size: 13px; color: #889bb3; text-align: center; }
-    .loading { text-align: center; padding: 40px; color: #6a7f9e; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .inline-fields { display: flex; gap: 10px; flex-wrap: wrap; }
-    .inline-fields input, .inline-fields textarea { flex: 1; min-width: 100px; }
-
-    /* Редактор ссылок */
-    .link-editor { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-    .link-editor input[type="text"] { flex: 1; min-width: 120px; margin-bottom: 0; }
-    .link-editor .btn-link { padding: 8px 14px; border-radius: 40px; border: none; background: #eef3fa; color: #1f2b48; font-weight: 500; font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif; transition: 0.15s; white-space: nowrap; }
-    .link-editor .btn-link:hover { background: #dce4ef; }
-    .link-editor .btn-link-primary { background: #2a7de1; color: white; }
-    .link-editor .btn-link-primary:hover { background: #1a5fb0; }
-
-    @media (max-width: 700px) {
-      .navbar { padding: 10px 16px; flex-direction: column; align-items: stretch; gap: 8px; }
-      .navbar-left { flex-wrap: wrap; justify-content: space-between; }
-      .nav-links { justify-content: flex-start; }
-      .navbar-right { justify-content: flex-start; }
-      body { padding-top: 130px; }
-      .container { padding: 20px 16px 28px; border-radius: 32px; }
-      .grid-2 { grid-template-columns: 1fr; }
-      .link-editor { flex-direction: column; }
+    .console-card {
+      background: var(--soft-card);
+      border-radius: 24px;
+      padding: 20px 24px;
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
     }
-    @media (max-width: 480px) {
-      .list-item { flex-direction: column; align-items: stretch; }
-      .list-item .item-actions { justify-content: flex-start; }
+
+    .card-label {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .field-grid.three { grid-template-columns: 1.2fr 1fr .7fr; }
+
+    .input, .console-card input, .console-card textarea, .console-card select,
+    .edit-fields input, .edit-fields textarea {
+      width: 100%;
+      border: 1.5px solid var(--input-border);
+      background: #fff;
+      color: var(--text);
+      border-radius: 15px;
+      padding: 11px 14px;
+      font-size: 14px;
+      outline: none;
+      transition: .15s;
+    }
+
+    textarea { resize: vertical; min-height: 84px; }
+
+    .console-card input:focus, .console-card textarea:focus, .console-card select:focus,
+    .edit-fields input:focus, .edit-fields textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(42,125,225,.10);
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .btn-console {
+      border: 0;
+      min-height: 38px;
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: .2s;
+    }
+    .btn-console:hover { transform: scale(.98); }
+    .btn-console:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    .btn-console-primary { background: var(--blue); color: #fff; }
+    .btn-console-primary:hover { background: var(--blue-dark); }
+    .btn-console-success { background: var(--green); color: #fff; }
+    .btn-console-danger { background: var(--red); color: #fff; }
+    .btn-console-outline { background: #fff; color: #1f2b48; border: 1.5px solid #d0dae9; }
+
+    .console-message {
+      display: none;
+      font-size: 13px;
+      padding: 9px 14px;
+      border-radius: 40px;
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+    .console-message.show { display: block; }
+    .console-message.success { background: var(--green-soft); color: var(--green); }
+    .console-message.error { background: var(--red-soft); color: var(--red); }
+
+    .schedule-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .schedule-toolbar h3 {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .day-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .day-item {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: .15s;
+    }
+    .day-item.selected {
+      border-color: #c7d9f0;
+      box-shadow: 0 5px 18px rgba(42,125,225,.08);
+    }
+
+    .day-main {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 18px;
+    }
+
+    .day-info { min-width: 0; }
+    .day-name {
+      font-size: 16px;
+      font-weight: 600;
+      word-break: break-word;
+    }
+    .day-meta {
+      color: var(--text-soft);
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .day-actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .day-edit {
+      display: none;
+      padding: 0 18px 16px;
+      border-top: 1px solid var(--border);
+      background: #fbfdff;
+    }
+    .day-edit.open { display: block; padding-top: 14px; }
+
+    .editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .editor-header h3 { font-size: 18px; }
+    .editor-header small { color: var(--text-soft); }
+
+    .lesson-list { display: grid; gap: 10px; }
+
+    .lesson-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--blue);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .lesson-summary {
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 46px 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .lesson-number {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .lesson-title {
+      font-weight: 600;
+      word-break: break-word;
+    }
+    .lesson-meta {
+      color: var(--text-soft);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .lesson-homework-preview {
+      color: #3d5270;
+      font-size: 13px;
+      margin-top: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lesson-actions { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .lesson-edit {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 16px;
+      background: #fbfdff;
+    }
+    .lesson-edit.open { display: block; }
+
+    .form-label {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin: 0 0 5px 4px;
+      display: block;
+    }
+
+    .homework-editor {
+      margin-top: 10px;
+    }
+
+    .editor-tools {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin: 8px 0;
+    }
+
+    .tool-btn {
+      min-height: 36px;
+      padding: 7px 12px;
+      border-radius: 12px;
+      border: 1.5px solid #d0dae9;
+      background: #fff;
+      color: #1f2b48;
+      cursor: pointer;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .tool-btn:hover { background: #f0f4fe; }
+
+    .attachment-box {
+      background: #f0f6ff;
+      border: 1px dashed #b9d2ef;
+      border-radius: 15px;
+      padding: 11px;
+      margin-top: 8px;
+    }
+
+    .add-lesson-card {
+      margin-top: 12px;
+      background: #f7fbff;
+      border: 1px dashed #c5d9ef;
+      border-radius: 18px;
+      padding: 15px;
+    }
+
+    .add-lesson-card summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--blue);
+      list-style: none;
+    }
+    .add-lesson-card summary::-webkit-details-marker { display: none; }
+
+    .empty-state {
+      text-align: center;
+      padding: 30px 20px;
+      color: var(--text-soft);
+    }
+
+    .footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: #889bb3;
+      text-align: center;
+    }
+
+    .hidden { display: none !important; }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      background: rgba(0,20,40,.42);
+      backdrop-filter: blur(5px);
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 30px;
+      box-shadow: 0 30px 70px rgba(0,20,40,.22);
+      padding: 25px;
+      animation: modalPop .18s ease;
+    }
+
+    @keyframes modalPop {
+      from { opacity: 0; transform: translateY(10px) scale(.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal h2 { font-size: 21px; margin-bottom: 8px; }
+    .modal-sub { color: var(--text-soft); font-size: 13px; line-height: 1.5; margin-bottom: 17px; }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .news-list { display: grid; gap: 10px; }
+    .news-item {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      padding: 14px 16px;
+    }
+    .news-item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .news-item-title { font-weight: 600; }
+    .news-item-meta { color: var(--text-soft); font-size: 12px; margin-top: 4px; }
+    .news-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    @media (max-width: 760px) {
+      body { padding-top: 124px; }
+
+      .navbar {
+        padding: 9px 14px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 7px;
+      }
+
+      .navbar-left {
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .nav-links { display: block; }
+      .nav-link { padding: 7px 12px; }
+      .navbar-right { justify-content: flex-end; }
+
+      .container {
+        margin: 12px 10px 20px;
+        padding: 22px 14px 30px;
+        border-radius: 28px;
+      }
+
+      .page-title { font-size: 22px; }
+      .page-title .material-symbols-outlined { font-size: 27px; }
+      .page-sub { font-size: 14px; }
+
+      .tab-bar {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        scrollbar-width: none;
+      }
+      .tab-bar::-webkit-scrollbar { display: none; }
+      .tab-btn { white-space: nowrap; flex: 0 0 auto; }
+
+      .grid-2 { grid-template-columns: 1fr; gap: 12px; }
+      .field-grid, .field-grid.three { grid-template-columns: 1fr; }
+
+      .console-card { padding: 16px 14px; border-radius: 20px; }
+
+      .day-main {
+        grid-template-columns: 1fr;
+        padding: 14px;
+      }
+      .day-actions {
+        justify-content: flex-start;
+      }
+      .day-edit { padding-left: 14px; padding-right: 14px; }
+
+      .lesson-summary {
+        grid-template-columns: 42px 1fr;
+        padding: 13px;
+      }
+      .lesson-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+      }
+
+      .editor-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .modal {
+        border-radius: 25px;
+        padding: 20px 16px;
+        max-height: 94vh;
+      }
+
+      .modal-actions { flex-direction: column-reverse; }
+      .modal-actions .btn-console { width: 100%; }
+
+      .btn-console { min-height: 40px; }
+    }
+
+    @media (max-width: 420px) {
+      .logo-text { font-size: 19px; }
+      .logo-icon { width: 36px; height: 36px; font-size: 18px; border-radius: 11px; }
+      .user-badge { font-size: 12px; padding-right: 11px; }
+      .news-item-head { flex-direction: column; }
+      .news-actions { width: 100%; }
     }
   </style>
 </head>
-<body>
 
-<header class="navbar" id="navbar">
+<body>
+<header class="navbar">
   <div class="navbar-left">
-    <div class="logo-area"><div class="logo-icon">Ш</div><div class="logo-text">Электро<span>школа</span></div></div>
-    <nav class="nav-links"><a href="index.html" class="nav-link"><span class="material-symbols-outlined">home</span> Главная</a></nav>
+    <div class="logo-area">
+      <div class="logo-icon">Ш</div>
+      <div class="logo-text">Электро<span>школа</span></div>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">
+        <span class="material-symbols-outlined">home</span> Главная
+      </a>
+    </nav>
   </div>
   <div class="navbar-right" id="userArea"></div>
 </header>
 
-<div class="container">
-  <div class="page-title"><span class="material-symbols-outlined">admin_panel_settings</span> Консоль администратора</div>
-  <div class="page-sub">Управление новостями и расписанием</div>
+<main class="container">
+  <div class="page-title">
+    <span class="material-symbols-outlined">admin_panel_settings</span>
+    Консоль администратора
+  </div>
+  <div class="page-sub">Удобное редактирование новостей, расписания и домашних заданий</div>
 
   <div class="tab-bar">
     <button class="tab-btn active" data-tab="news">📰 Новости</button>
     <button class="tab-btn" data-tab="schedule">📅 Расписание</button>
   </div>
 
-  <!-- Вкладка: Новости -->
-  <div class="tab-content active" id="tab-news">
+  <section class="tab-content active" id="tab-news">
     <div class="grid-2">
       <div class="console-card">
         <div class="card-label">➕ Добавить новость</div>
         <input type="text" id="addTitle" placeholder="Заголовок" />
-        <textarea id="addDesc" placeholder="Описание"></textarea>
+        <textarea id="addDesc" placeholder="Текст новости"></textarea>
         <input type="number" id="addDate" placeholder="Unix timestamp" />
-        <button class="btn-console btn-console-success" id="addNewsBtn">➕ Добавить</button>
+        <div class="actions">
+          <button class="btn-console btn-console-success" id="addNewsBtn">➕ Добавить</button>
+        </div>
         <div id="addMessage" class="console-message"></div>
       </div>
+
       <div class="console-card">
-        <div class="card-label">🗑️ Удалить по индексу</div>
+        <div class="card-label">🗑️ Удалить новость</div>
         <input type="number" id="deleteIndex" placeholder="Индекс новости" />
-        <button class="btn-console btn-console-danger" id="deleteNewsBtn">🗑️ Удалить</button>
+        <div class="actions">
+          <button class="btn-console btn-console-danger" id="deleteNewsBtn">🗑️ Удалить</button>
+        </div>
         <div id="deleteMessage" class="console-message"></div>
       </div>
     </div>
-    <div class="console-card">
-      <div class="card-label">✏️ Редактировать новости</div>
-      <div id="editNewsList"></div>
-    </div>
-  </div>
 
-  <!-- Вкладка: Расписание -->
-  <div class="tab-content" id="tab-schedule">
     <div class="console-card">
-      <div class="card-label">➕ Добавить день</div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <input type="text" id="addDayName" placeholder="Название дня (например, Понедельник)" style="flex:1; min-width:150px;" />
-        <button class="btn-console btn-console-success" id="addDayBtn">➕ Добавить день</button>
+      <div class="card-label">✏️ Новости</div>
+      <div id="editNewsList" class="news-list"></div>
+    </div>
+  </section>
+
+  <section class="tab-content" id="tab-schedule">
+    <div class="console-card">
+      <div class="schedule-toolbar">
+        <div>
+          <div class="card-label" style="margin-bottom:3px;">📅 Дни расписания</div>
+          <div style="font-size:13px;color:#6a7f9e;">Выберите день, чтобы открыть его уроки</div>
+        </div>
+        <button class="btn-console btn-console-success" id="addDayOpenBtn">➕ Добавить день</button>
       </div>
+
+      <div id="dayList" class="day-list"></div>
       <div id="dayMessage" class="console-message"></div>
     </div>
-
-    <div class="console-card">
-      <div class="card-label">📅 Дни недели</div>
-      <div id="dayList"></div>
-    </div>
-
-    <div class="console-card" id="lessonManagement" style="display:none;">
-      <div class="card-label" id="lessonManagementTitle">📚 Уроки</div>
-      <div class="inline-fields">
-        <input type="text" id="addLessonName" placeholder="Название урока" />
-        <input type="text" id="addLessonTime" placeholder="Время (15:00-15:30)" />
-        <input type="number" id="addLessonCab" placeholder="Кабинет" />
-      </div>
-      
-      <!-- Редактор ссылок для ДЗ -->
-      <div class="link-editor">
-        <input type="text" id="addLessonHomework" placeholder="Текст ДЗ (можно использовать <a href='...'>текст</a>)" style="flex:2;" />
-        <input type="text" id="linkUrl" placeholder="https://..." style="flex:1;" />
-        <input type="text" id="linkText" placeholder="Текст ссылки" style="flex:1;" />
-        <button class="btn-link btn-link-primary" id="insertLinkBtn">🔗 Вставить ссылку</button>
-      </div>
-      
-      <button class="btn-console btn-console-success" id="addLessonBtn">➕ Добавить урок</button>
-      <div id="lessonMessage" class="console-message"></div>
-      <div id="lessonList"></div>
-    </div>
-  </div>
+  </section>
 
   <div class="footer">© 2026 · Электронная школа</div>
+</main>
+
+<div class="modal-overlay" id="addDayModal">
+  <div class="modal">
+    <h2>Добавить день</h2>
+    <div class="modal-sub">Создайте новый день расписания. Дата будет отображаться в удобном виде, например: «Среда, 9 сентября».</div>
+    <label class="form-label">Дата дня</label>
+    <input class="input" id="addDayDate" type="date" />
+    <div class="modal-actions">
+      <button class="btn-console btn-console-outline close-modal">Отмена</button>
+      <button class="btn-console btn-console-success" id="addDayBtn">➕ Добавить</button>
+    </div>
+  </div>
 </div>
 
-<!-- FIREBASE -->
+<div class="modal-overlay" id="linkModal">
+  <div class="modal">
+    <h2>🔗 Вставить ссылку</h2>
+    <div class="modal-sub">Ссылка сохранится внутри домашнего задания и будет доступна ученикам.</div>
+    <label class="form-label">URL</label>
+    <input class="input" id="linkUrl" placeholder="https://example.com" />
+    <label class="form-label" style="margin-top:10px;">Текст ссылки</label>
+    <input class="input" id="linkText" placeholder="Открыть материал" />
+    <div class="modal-actions">
+      <button class="btn-console btn-console-outline close-modal">Отмена</button>
+      <button class="btn-console btn-console-primary" id="confirmLinkBtn">🔗 Вставить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="imageModal">
+  <div class="modal">
+    <h2>🖼️ Добавить изображение</h2>
+    <div class="modal-sub">Можно указать прямую ссылку на изображение. Это удобно для картинок из вашего сайта или другого хостинга.</div>
+    <label class="form-label">URL изображения</label>
+    <input class="input" id="imageUrl" placeholder="https://example.com/image.jpg" />
+    <label class="form-label" style="margin-top:10px;">Описание</label>
+    <input class="input" id="imageAlt" placeholder="Изображение к заданию" />
+    <div class="modal-actions">
+      <button class="btn-console btn-console-outline close-modal">Отмена</button>
+      <button class="btn-console btn-console-primary" id="confirmImageBtn">🖼️ Вставить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="copyDayModal">
+  <div class="modal">
+    <h2>📋 Копировать уроки</h2>
+    <div class="modal-sub">Введите дату для нового дня. Уроки будут скопированы без домашних заданий.</div>
+    <label class="form-label">Новая дата (ДД.ММ.ГГГГ)</label>
+    <input class="input" id="copyDayDate" placeholder="09.09.2026" />
+    <div class="modal-actions">
+      <button class="btn-console btn-console-outline close-modal">Отмена</button>
+      <button class="btn-console btn-console-success" id="confirmCopyBtn">📋 Копировать</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
@@ -204,341 +742,922 @@
   };
 
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+  getAnalytics(app);
   const auth = getAuth(app);
   const db = getDatabase(app);
 
-  const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
-  const ACCOUNT_URL = 'account.html';
-  const userArea = document.getElementById('userArea');
+  const AUTH_URL = "https://xsynda.github.io/digitalschool.github.io/auth.html";
+  const ACCOUNT_URL = "account.html";
+  const userArea = document.getElementById("userArea");
 
-  function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
-  function showMessage(element, text, type) { element.textContent = text; element.className = 'console-message show ' + type; setTimeout(() => element.className = 'console-message', 4000); }
+  let selectedDayKey = null;
+  let selectedHomeworkField = null;
+  let scheduleCache = null;
+  let copySourceKey = null;
 
-  // ----- Редактор ссылок -----
-  document.getElementById('insertLinkBtn').addEventListener('click', () => {
-    const url = document.getElementById('linkUrl').value.trim();
-    const text = document.getElementById('linkText').value.trim();
-    const homeworkField = document.getElementById('addLessonHomework');
-    if (!url) { alert('Введите URL'); return; }
-    const linkHtml = text ? `<a href="${url}" target="_blank">${text}</a>` : `<a href="${url}" target="_blank">${url}</a>`;
-    const current = homeworkField.value;
-    homeworkField.value = current + (current ? ' ' : '') + linkHtml;
-    document.getElementById('linkUrl').value = '';
-    document.getElementById('linkText').value = '';
-    homeworkField.focus();
+  function escapeHtml(value) {
+    if (value === null || value === undefined) return "";
+    const d = document.createElement("div");
+    d.textContent = String(value);
+    return d.innerHTML;
+  }
+
+  function safeUrl(value) {
+    try {
+      const url = new URL(value);
+      if (url.protocol === "http:" || url.protocol === "https:") return url.href;
+    } catch (e) {}
+    return null;
+  }
+
+  function showMessage(element, text, type) {
+    element.textContent = text;
+    element.className = "console-message show " + type;
+    clearTimeout(element._timer);
+    element._timer = setTimeout(() => {
+      element.className = "console-message";
+    }, 4000);
+  }
+
+  function openModal(id) {
+    document.getElementById(id).classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeAllModals() {
+    document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("open"));
+    document.body.style.overflow = "";
+  }
+
+  document.querySelectorAll(".modal-overlay").forEach(overlay => {
+    overlay.addEventListener("click", e => {
+      if (e.target === overlay) closeAllModals();
+    });
   });
 
-  // ----- Шапка -----
-  function updateUserBadge(user) {
-    if (!user) return;
-    const displayName = user.displayName || user.email || 'Пользователь';
-    const badge = userArea.querySelector('.user-badge');
-    if (badge) {
-      badge.innerHTML = `<span class="material-symbols-outlined">account_circle</span>${escapeHtml(displayName)}`;
-    }
-  }
+  document.querySelectorAll(".close-modal").forEach(btn => {
+    btn.addEventListener("click", closeAllModals);
+  });
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeAllModals();
+  });
 
   function renderHeader(user) {
-    if (user) {
-      let displayName = user.displayName || user.email || 'Пользователь';
-      if (!user.displayName || user.displayName === user.email) {
-        get(ref(db, 'users/' + user.uid)).then((snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            user.displayName = data.name || user.email || 'Пользователь';
-            updateUserBadge(user);
-          }
-        }).catch(() => {});
-      }
-      userArea.innerHTML = `<a href="${ACCOUNT_URL}" class="user-badge"><span class="material-symbols-outlined">account_circle</span>${escapeHtml(displayName)}</a>`;
-    } else {
-      userArea.innerHTML = `<a href="${AUTH_URL}" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:18px;">login</span> Войти</a>`;
+    if (!user) {
+      userArea.innerHTML = `<a href="${AUTH_URL}" class="nav-link">Войти</a>`;
+      return;
     }
+
+    get(ref(db, "users/" + user.uid)).then(snapshot => {
+      const data = snapshot.exists() ? snapshot.val() : {};
+      const displayName = data.name || user.displayName || user.email || "Пользователь";
+
+      userArea.innerHTML = `
+        <a href="${ACCOUNT_URL}" class="user-badge">
+          <span class="material-symbols-outlined">account_circle</span>
+          ${escapeHtml(displayName)}
+        </a>
+      `;
+    }).catch(() => {});
   }
 
-  // ----- Вкладки -----
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
     });
   });
 
-  // ============================================
-  // ====== НОВОСТИ ======
-  // ============================================
-  function renderEditNewsList(newsData) {
-    const container = document.getElementById('editNewsList');
-    if (!newsData || Object.keys(newsData).length === 0) {
-      container.innerHTML = `<div class="empty-state"><p style="color:#6a7f9e;">Новостей нет</p></div>`;
+  // ===== НОВОСТИ =====
+  function renderEditNewsList(data) {
+    const container = document.getElementById("editNewsList");
+
+    if (!data || !Object.keys(data).length) {
+      container.innerHTML = `<div class="empty-state">Новостей пока нет</div>`;
       return;
     }
-    const keys = Object.keys(newsData).map(Number).sort((a, b) => b - a);
-    let html = '';
-    for (const key of keys) {
-      const item = newsData[key];
-      if (!item) continue;
-      html += `<div class="list-item" data-key="${key}">
-        <div class="item-info"><div class="item-title">#${key}: ${escapeHtml(item.title || 'Без названия')}</div>
-        <div class="item-meta">${item.date ? new Date(item.date * 1000).toLocaleString('ru-RU') : '—'}</div></div>
-        <div class="item-actions"><button class="btn-console btn-console-outline toggle-edit-btn">✏️ Редактировать</button><button class="btn-console btn-console-danger delete-item-btn">🗑️</button></div>
-        <div class="edit-fields"><input type="text" class="edit-field-title" value="${escapeHtml(item.title || '')}" placeholder="Заголовок" />
-        <textarea class="edit-field-desc" placeholder="Описание">${escapeHtml(item.desc || '')}</textarea>
-        <input type="number" class="edit-field-date" value="${item.date || ''}" placeholder="Unix timestamp" />
-        <div style="display:flex; gap:8px; margin-top:8px;"><button class="btn-console btn-console-primary save-edit-btn">💾 Сохранить</button><button class="btn-console btn-console-outline cancel-edit-btn">Отмена</button></div>
-        <div class="console-message edit-message"></div></div></div>`;
-    }
-    container.innerHTML = html;
-    container.querySelectorAll('.toggle-edit-btn').forEach(btn => btn.addEventListener('click', () => { const f = btn.closest('.list-item').querySelector('.edit-fields'); f.classList.toggle('open'); }));
-    container.querySelectorAll('.cancel-edit-btn').forEach(btn => btn.addEventListener('click', () => { const f = btn.closest('.list-item').querySelector('.edit-fields'); f.classList.remove('open'); }));
-    container.querySelectorAll('.save-edit-btn').forEach(btn => btn.addEventListener('click', async () => {
-      const item = btn.closest('.list-item'); const key = parseInt(item.dataset.key);
-      const title = item.querySelector('.edit-field-title').value.trim();
-      const desc = item.querySelector('.edit-field-desc').value.trim();
-      const date = parseInt(item.querySelector('.edit-field-date').value);
-      const msg = item.querySelector('.edit-message');
-      if (!title || !date) { showMessage(msg, '⚠️ Заполните заголовок и дату', 'error'); return; }
-      try { await set(ref(db, 'news/' + key), { title, desc, date }); showMessage(msg, '✅ Новость обновлена', 'success'); setTimeout(() => item.querySelector('.edit-fields').classList.remove('open'), 1000); } catch (e) { showMessage(msg, '❌ Ошибка: ' + e.message, 'error'); }
-    }));
-    container.querySelectorAll('.delete-item-btn').forEach(btn => btn.addEventListener('click', async () => {
-      const item = btn.closest('.list-item'); const key = parseInt(item.dataset.key);
-      if (!confirm(`Удалить новость #${key}?`)) return;
-      try { await remove(ref(db, 'news/' + key)); showMessage(document.getElementById('deleteMessage'), '✅ Новость удалена', 'success'); } catch (e) { showMessage(document.getElementById('deleteMessage'), '❌ Ошибка: ' + e.message, 'error'); }
-    }));
-  }
 
-  function initNewsConsole() {
-    document.getElementById('addNewsBtn').addEventListener('click', async () => {
-      const title = document.getElementById('addTitle').value.trim();
-      const desc = document.getElementById('addDesc').value.trim();
-      const date = parseInt(document.getElementById('addDate').value);
-      const msg = document.getElementById('addMessage');
-      if (!title || !date) { showMessage(msg, '⚠️ Заполните заголовок и дату', 'error'); return; }
-      try {
-        const snapshot = await get(ref(db, 'news'));
-        let maxKey = -1;
-        if (snapshot.exists()) { const data = snapshot.val(); const keys = Object.keys(data).map(Number); maxKey = keys.length > 0 ? Math.max(...keys) : -1; }
-        const newKey = maxKey + 1;
-        await set(ref(db, 'news/' + newKey), { title, desc, date });
-        showMessage(msg, `✅ Новость добавлена (индекс ${newKey})`, 'success');
-        document.getElementById('addTitle').value = ''; document.getElementById('addDesc').value = ''; document.getElementById('addDate').value = '';
-      } catch (e) { showMessage(msg, '❌ Ошибка: ' + e.message, 'error'); }
-    });
-    document.getElementById('deleteNewsBtn').addEventListener('click', async () => {
-      const index = parseInt(document.getElementById('deleteIndex').value);
-      const msg = document.getElementById('deleteMessage');
-      if (isNaN(index) || index < 0) { showMessage(msg, '⚠️ Введите корректный индекс', 'error'); return; }
-      if (!confirm(`Удалить новость #${index}?`)) return;
-      try { await remove(ref(db, 'news/' + index)); showMessage(msg, '✅ Новость удалена', 'success'); document.getElementById('deleteIndex').value = ''; } catch (e) { showMessage(msg, '❌ Ошибка: ' + e.message, 'error'); }
-    });
-    onValue(ref(db, 'news'), (snapshot) => { if (snapshot.exists()) renderEditNewsList(snapshot.val()); else renderEditNewsList(null); });
-  }
+    const keys = Object.keys(data).map(Number).sort((a,b) => b-a);
 
-  // ============================================
-  // ====== РАСПИСАНИЕ ======
-  // ============================================
-  let selectedDayKey = null;
+    container.innerHTML = keys.map(key => {
+      const item = data[key];
+      if (!item) return "";
 
-  function renderDayList(scheduleData) {
-    const container = document.getElementById('dayList');
-    if (!scheduleData || Object.keys(scheduleData).length === 0) {
-      container.innerHTML = `<div class="empty-state"><p style="color:#6a7f9e;">Дней пока нет</p></div>`;
-      return;
-    }
-    const keys = Object.keys(scheduleData).map(Number).sort((a, b) => a - b);
-    let html = '';
-    for (const key of keys) {
-      const day = scheduleData[key];
-      if (!day) continue;
-      const dayName = day.name || `День ${key + 1}`;
-      const lessonCount = day.lessons ? Object.keys(day.lessons).length : 0;
-      html += `<div class="list-item day-item" data-key="${key}" style="${selectedDayKey === key ? 'border-left: 3px solid #8b5cf6;' : ''}">
-        <div class="item-info"><div class="item-title">#${key}: ${escapeHtml(dayName)}</div><div class="item-meta">${lessonCount} уроков</div></div>
-        <div class="item-actions"><button class="btn-console btn-console-primary select-day-btn">📂 Выбрать</button><button class="btn-console btn-console-danger delete-day-btn">🗑️</button></div>
-      </div>`;
-    }
-    container.innerHTML = html;
-    container.querySelectorAll('.select-day-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const item = btn.closest('.day-item');
-        selectedDayKey = parseInt(item.dataset.key);
-        document.querySelectorAll('.day-item').forEach(el => el.style.borderLeft = '');
-        item.style.borderLeft = '3px solid #8b5cf6';
-        loadLessons(selectedDayKey);
-        document.getElementById('lessonManagement').style.display = 'block';
-        document.getElementById('lessonManagementTitle').textContent = `📚 Уроки дня #${selectedDayKey}`;
-      });
-    });
-    container.querySelectorAll('.delete-day-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const item = btn.closest('.day-item');
-        const key = parseInt(item.dataset.key);
-        if (!confirm(`Удалить день #${key}?`)) return;
-        try { await remove(ref(db, 'schedule/' + key)); if (selectedDayKey === key) { selectedDayKey = null; document.getElementById('lessonManagement').style.display = 'none'; } showMessage(document.getElementById('dayMessage'), '✅ День удалён', 'success'); } catch (e) { showMessage(document.getElementById('dayMessage'), '❌ Ошибка: ' + e.message, 'error'); }
-      });
-    });
-  }
+      const date = item.date
+        ? new Date(item.date * 1000).toLocaleString("ru-RU")
+        : "—";
 
-  function renderLessonList(lessonsData) {
-    const container = document.getElementById('lessonList');
-    if (!lessonsData || Object.keys(lessonsData).length === 0) {
-      container.innerHTML = `<div class="empty-state"><p style="color:#6a7f9e;">Уроков нет</p></div>`;
-      return;
-    }
-    const keys = Object.keys(lessonsData).map(Number).sort((a, b) => a - b);
-    let html = '';
-    for (const key of keys) {
-      const lesson = lessonsData[key];
-      if (!lesson) continue;
-      html += `<div class="list-item lesson-item" data-key="${key}">
-        <div class="item-info"><div class="item-title">${key + 1}. ${escapeHtml(lesson.name || 'Без названия')}</div>
-        <div class="item-meta">${lesson.time || '—'} | Каб. ${lesson.cab ?? '—'} | ${escapeHtml(lesson.homework || 'нет ДЗ')}</div></div>
-        <div class="item-actions"><button class="btn-console btn-console-outline toggle-lesson-edit-btn">✏️ Редактировать</button><button class="btn-console btn-console-danger delete-lesson-btn">🗑️</button></div>
-        <div class="edit-fields">
-          <input type="text" class="edit-lesson-name" value="${escapeHtml(lesson.name || '')}" placeholder="Название урока" />
-          <input type="text" class="edit-lesson-time" value="${escapeHtml(lesson.time || '')}" placeholder="Время (15:00-15:30)" />
-          <input type="number" class="edit-lesson-cab" value="${lesson.cab ?? ''}" placeholder="Кабинет" />
-          <div style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
-            <input type="text" class="edit-lesson-homework" value="${escapeHtml(lesson.homework || '')}" placeholder="ДЗ" style="flex:2;" />
-            <input type="text" class="edit-link-url" placeholder="URL" style="flex:1;" />
-            <input type="text" class="edit-link-text" placeholder="Текст ссылки" style="flex:1;" />
-            <button class="btn-console btn-console-outline insert-edit-link-btn">🔗 Вставить</button>
+      return `
+        <div class="news-item" data-key="${key}">
+          <div class="news-item-head">
+            <div style="min-width:0;">
+              <div class="news-item-title">#${key} · ${escapeHtml(item.title || "Без названия")}</div>
+              <div class="news-item-meta">${escapeHtml(date)}</div>
+            </div>
+            <div class="news-actions">
+              <button class="btn-console btn-console-outline edit-news-btn">✏️</button>
+              <button class="btn-console btn-console-danger delete-news-btn">🗑️</button>
+            </div>
           </div>
-          <div style="display:flex; gap:8px; margin-top:8px;"><button class="btn-console btn-console-primary save-lesson-btn">💾 Сохранить</button><button class="btn-console btn-console-outline cancel-lesson-btn">Отмена</button></div>
+
+          <div class="lesson-edit news-edit">
+            <label class="form-label">Заголовок</label>
+            <input class="edit-news-title" value="${escapeHtml(item.title || "")}" />
+
+            <label class="form-label">Текст</label>
+            <textarea class="edit-news-desc">${escapeHtml(item.desc || "")}</textarea>
+
+            <label class="form-label">Unix timestamp</label>
+            <input type="number" class="edit-news-date" value="${item.date || ""}" />
+
+            <div class="actions">
+              <button class="btn-console btn-console-primary save-news-btn">💾 Сохранить</button>
+              <button class="btn-console btn-console-outline cancel-news-btn">Отмена</button>
+            </div>
+            <div class="console-message news-edit-message"></div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    container.querySelectorAll(".edit-news-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        btn.closest(".news-item").querySelector(".news-edit").classList.toggle("open");
+      });
+    });
+
+    container.querySelectorAll(".cancel-news-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        btn.closest(".news-item").querySelector(".news-edit").classList.remove("open");
+      });
+    });
+
+    container.querySelectorAll(".save-news-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const item = btn.closest(".news-item");
+        const key = Number(item.dataset.key);
+        const title = item.querySelector(".edit-news-title").value.trim();
+        const desc = item.querySelector(".edit-news-desc").value;
+        const date = Number(item.querySelector(".edit-news-date").value);
+        const msg = item.querySelector(".news-edit-message");
+
+        if (!title || !date) {
+          showMessage(msg, "⚠️ Заполните заголовок и дату", "error");
+          return;
+        }
+
+        try {
+          await set(ref(db, "news/" + key), { title, desc, date });
+          showMessage(msg, "✅ Новость сохранена", "success");
+        } catch (e) {
+          showMessage(msg, "❌ Ошибка: " + e.message, "error");
+        }
+      });
+    });
+
+    container.querySelectorAll(".delete-news-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const key = Number(btn.closest(".news-item").dataset.key);
+        if (!confirm("Удалить новость #" + key + "?")) return;
+
+        try {
+          await remove(ref(db, "news/" + key));
+          showMessage(document.getElementById("deleteMessage"), "✅ Новость удалена", "success");
+        } catch (e) {
+          showMessage(document.getElementById("deleteMessage"), "❌ Ошибка: " + e.message, "error");
+        }
+      });
+    });
+  }
+
+  document.getElementById("addNewsBtn").addEventListener("click", async () => {
+    const title = document.getElementById("addTitle").value.trim();
+    const desc = document.getElementById("addDesc").value;
+    const date = Number(document.getElementById("addDate").value);
+    const msg = document.getElementById("addMessage");
+
+    if (!title || !date) {
+      showMessage(msg, "⚠️ Заполните заголовок и дату", "error");
+      return;
+    }
+
+    try {
+      const snapshot = await get(ref(db, "news"));
+      const data = snapshot.exists() ? snapshot.val() : {};
+      const keys = Object.keys(data).map(Number).filter(Number.isFinite);
+      const newKey = keys.length ? Math.max(...keys) + 1 : 0;
+
+      await set(ref(db, "news/" + newKey), { title, desc, date });
+
+      document.getElementById("addTitle").value = "";
+      document.getElementById("addDesc").value = "";
+      document.getElementById("addDate").value = "";
+      showMessage(msg, "✅ Новость добавлена", "success");
+    } catch (e) {
+      showMessage(msg, "❌ Ошибка: " + e.message, "error");
+    }
+  });
+
+  document.getElementById("deleteNewsBtn").addEventListener("click", async () => {
+    const index = Number(document.getElementById("deleteIndex").value);
+    const msg = document.getElementById("deleteMessage");
+
+    if (!Number.isInteger(index) || index < 0) {
+      showMessage(msg, "⚠️ Введите корректный индекс", "error");
+      return;
+    }
+
+    if (!confirm("Удалить новость #" + index + "?")) return;
+
+    try {
+      await remove(ref(db, "news/" + index));
+      document.getElementById("deleteIndex").value = "";
+      showMessage(msg, "✅ Новость удалена", "success");
+    } catch (e) {
+      showMessage(msg, "❌ Ошибка: " + e.message, "error");
+    }
+  });
+
+  onValue(ref(db, "news"), snapshot => {
+    renderEditNewsList(snapshot.exists() ? snapshot.val() : null);
+  });
+
+  // ===== ДАТЫ ДНЕЙ =====
+  const russianWeekdays = [
+    "Воскресенье", "Понедельник", "Вторник", "Среда",
+    "Четверг", "Пятница", "Суббота"
+  ];
+
+  const russianMonths = [
+    "января", "февраля", "марта", "апреля", "мая", "июня",
+    "июля", "августа", "сентября", "октября", "ноября", "декабря"
+  ];
+
+  function parseScheduleDate(value) {
+    if (!value) return null;
+
+    const match = String(value).trim().match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+    if (!match) return null;
+
+    const day = Number(match[1]);
+    const month = Number(match[2]);
+    const year = Number(match[3]);
+    const date = new Date(year, month - 1, day);
+
+    if (
+      date.getFullYear() !== year ||
+      date.getMonth() !== month - 1 ||
+      date.getDate() !== day
+    ) return null;
+
+    return date;
+  }
+
+  function isValidDateString(value) {
+    return parseScheduleDate(value) !== null;
+  }
+
+  function formatScheduleDate(value) {
+    const date = parseScheduleDate(value);
+    if (!date) return value ? String(value) : "Дата не указана";
+
+    return `${russianWeekdays[date.getDay()]}, ${date.getDate()} ${russianMonths[date.getMonth()]}`;
+  }
+
+  function dateInputToScheduleDate(value) {
+    if (!value) return "";
+    const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return match ? `${match[3]}.${match[2]}.${match[1]}` : "";
+  }
+
+  function scheduleDateToInput(value) {
+    const date = parseScheduleDate(value);
+    if (!date) return "";
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function scheduleDateSortValue(value) {
+    const date = parseScheduleDate(value);
+    return date ? date.getTime() : Number.MAX_SAFE_INTEGER;
+  }
+
+  document.getElementById("addDayOpenBtn").addEventListener("click", () => {
+    document.getElementById("addDayDate").value = "";
+    openModal("addDayModal");
+    setTimeout(() => document.getElementById("addDayDate").focus(), 50);
+  });
+
+  document.getElementById("addDayBtn").addEventListener("click", async () => {
+    const date = dateInputToScheduleDate(document.getElementById("addDayDate").value);
+    const msg = document.getElementById("dayMessage");
+
+    if (!date) {
+      closeAllModals();
+      showMessage(msg, "⚠️ Выберите дату дня", "error");
+      return;
+    }
+
+    if (scheduleCache) {
+      const duplicate = Object.keys(scheduleCache).some(key =>
+        scheduleCache[key] && scheduleCache[key].date === date
+      );
+      if (duplicate) {
+        closeAllModals();
+        showMessage(msg, "⚠️ День с такой датой уже существует", "error");
+        return;
+      }
+    }
+
+    try {
+      const snapshot = await get(ref(db, "schedule"));
+      const data = snapshot.exists() ? snapshot.val() : {};
+      const keys = Object.keys(data).map(Number).filter(Number.isFinite);
+      const newKey = keys.length ? Math.max(...keys) + 1 : 0;
+
+      await set(ref(db, "schedule/" + newKey), {
+        date,
+        lessons: {}
+      });
+
+      closeAllModals();
+      showMessage(msg, "✅ День добавлен", "success");
+    } catch (e) {
+      showMessage(msg, "❌ Ошибка: " + e.message, "error");
+    }
+  });
+
+  // ===== ДНИ =====
+  function renderDayList(data) {
+    const container = document.getElementById("dayList");
+
+    if (!data || !Object.keys(data).length) {
+      container.innerHTML = `<div class="empty-state">Дней пока нет. Добавьте первый день.</div>`;
+      return;
+    }
+
+    const keys = Object.keys(data).map(Number).sort((a,b) => {
+      const dateA = scheduleDateSortValue(data[a]?.date);
+      const dateB = scheduleDateSortValue(data[b]?.date);
+      return dateA - dateB || a - b;
+    });
+
+    container.innerHTML = keys.map(key => {
+      const day = data[key];
+      if (!day) return "";
+
+      const count = day.lessons ? Object.keys(day.lessons).length : 0;
+      const selected = selectedDayKey === key ? "selected" : "";
+
+      return `
+        <div class="day-item ${selected}" data-key="${key}">
+          <div class="day-main">
+            <div class="day-info">
+              <div class="day-name">${escapeHtml(formatScheduleDate(day.date))}</div>
+              <div class="day-meta">${escapeHtml(day.date || "Дата не указана")} · ${count} ${count === 1 ? "урок" : "уроков"}</div>
+            </div>
+            <div class="day-actions">
+              <button class="btn-console btn-console-primary open-day-btn">📂 Открыть</button>
+              <button class="btn-console btn-console-outline copy-day-btn">📋 Копировать уроки</button>
+              <button class="btn-console btn-console-outline rename-day-btn">✏️ Изменить дату</button>
+              <button class="btn-console btn-console-danger delete-day-btn">🗑️ Удалить</button>
+            </div>
+          </div>
+
+          <div class="day-edit">
+            <label class="form-label">Дата дня</label>
+            <input class="day-date-input" type="date" value="${escapeHtml(scheduleDateToInput(day.date))}" />
+            <div class="actions">
+              <button class="btn-console btn-console-primary save-day-name-btn">💾 Сохранить дату</button>
+              <button class="btn-console btn-console-outline cancel-day-name-btn">Отмена</button>
+            </div>
+          </div>
+
+          ${selected ? renderLessonEditorHtml(day) : ""}
+        </div>
+      `;
+    }).join("");
+
+    bindDayEvents();
+  }
+
+  function renderLessonEditorHtml(day) {
+    const lessons = day.lessons || {};
+    const keys = Object.keys(lessons).map(Number).sort((a,b) => a-b);
+
+    return `
+      <div class="day-edit open" style="padding-top:16px;">
+        <div class="editor-header">
+          <div>
+            <h3>📚 Уроки</h3>
+            <small>Изменяйте уроки и домашние задания прямо здесь</small>
+          </div>
+        </div>
+
+        <div class="lesson-list">
+          ${keys.length ? keys.map(key => renderLessonHtml(key, lessons[key])).join("") : `<div class="empty-state">Уроков пока нет.</div>`}
+        </div>
+
+        <details class="add-lesson-card">
+          <summary>➕ Добавить новый урок</summary>
+          <div style="margin-top:14px;">
+            <div class="field-grid three">
+              <div>
+                <label class="form-label">Название</label>
+                <input class="new-lesson-name" placeholder="Математика" />
+              </div>
+              <div>
+                <label class="form-label">Время</label>
+                <input class="new-lesson-time" placeholder="08:30-09:15" />
+              </div>
+              <div>
+                <label class="form-label">Кабинет</label>
+                <input type="number" class="new-lesson-cab" placeholder="204" />
+              </div>
+            </div>
+
+            <div style="margin-top:10px;">
+              <label class="form-label">Домашнее задание</label>
+              <textarea class="new-lesson-homework" placeholder="Текст домашнего задания..."></textarea>
+              <div class="editor-tools">
+                <button type="button" class="tool-btn new-link-tool">🔗 Ссылка</button>
+                <button type="button" class="tool-btn new-image-tool">🖼️ Изображение</button>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn-console btn-console-success add-lesson-btn">➕ Добавить урок</button>
+            </div>
+            <div class="console-message add-lesson-message"></div>
+          </div>
+        </details>
+      </div>
+    `;
+  }
+
+  function renderLessonHtml(key, lesson) {
+    lesson = lesson || {};
+
+    return `
+      <div class="lesson-card" data-key="${key}">
+        <div class="lesson-summary">
+          <div class="lesson-number">${key + 1}</div>
+
+          <div style="min-width:0;">
+            <div class="lesson-title">${escapeHtml(lesson.name || "Без названия")}</div>
+            <div class="lesson-meta">${escapeHtml(lesson.time || "Время не указано")} · Каб. ${escapeHtml(lesson.cab ?? "—")}</div>
+            <div class="lesson-homework-preview">${escapeHtml(lesson.homework || "Домашнее задание не задано")}</div>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="btn-console btn-console-outline edit-lesson-btn">✏️ Редактировать</button>
+            <button class="btn-console btn-console-danger delete-lesson-btn">🗑️ Удалить</button>
+          </div>
+        </div>
+
+        <div class="lesson-edit">
+          <div class="field-grid three">
+            <div>
+              <label class="form-label">Название урока</label>
+              <input class="lesson-name-input" value="${escapeHtml(lesson.name || "")}" />
+            </div>
+            <div>
+              <label class="form-label">Время</label>
+              <input class="lesson-time-input" value="${escapeHtml(lesson.time || "")}" />
+            </div>
+            <div>
+              <label class="form-label">Кабинет</label>
+              <input type="number" class="lesson-cab-input" value="${escapeHtml(lesson.cab ?? "")}" />
+            </div>
+          </div>
+
+          <div class="homework-editor">
+            <label class="form-label">Домашнее задание</label>
+            <textarea class="lesson-homework-input" placeholder="Введите домашнее задание...">${escapeHtml(lesson.homework || "")}</textarea>
+
+            <div class="editor-tools">
+              <button type="button" class="tool-btn lesson-link-tool">🔗 Вставить ссылку</button>
+              <button type="button" class="tool-btn lesson-image-tool">🖼️ Вставить изображение</button>
+            </div>
+
+            <div class="attachment-box">
+              <div style="font-size:12px;color:#5f7696;">
+                💡 Можно хранить ссылки и изображения прямо в тексте ДЗ. Для изображений используется HTML-тег <b>&lt;img&gt;</b>.
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn-console btn-console-primary save-lesson-btn">💾 Сохранить урок</button>
+            <button class="btn-console btn-console-outline cancel-lesson-btn">Отмена</button>
+          </div>
           <div class="console-message lesson-edit-message"></div>
         </div>
-      </div>`;
-    }
-    container.innerHTML = html;
+      </div>
+    `;
+  }
 
-    // Вставка ссылки в редакторе урока
-    container.querySelectorAll('.insert-edit-link-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const fields = btn.closest('.edit-fields');
-        const url = fields.querySelector('.edit-link-url').value.trim();
-        const text = fields.querySelector('.edit-link-text').value.trim();
-        const homeworkField = fields.querySelector('.edit-lesson-homework');
-        if (!url) { alert('Введите URL'); return; }
-        const linkHtml = text ? `<a href="${url}" target="_blank">${text}</a>` : `<a href="${url}" target="_blank">${url}</a>`;
-        const current = homeworkField.value;
-        homeworkField.value = current + (current ? ' ' : '') + linkHtml;
-        fields.querySelector('.edit-link-url').value = '';
-        fields.querySelector('.edit-link-text').value = '';
-        homeworkField.focus();
+  function bindDayEvents() {
+    const container = document.getElementById("dayList");
+
+    container.querySelectorAll(".open-day-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedDayKey = Number(btn.closest(".day-item").dataset.key);
+        renderCurrentSchedule();
       });
     });
 
-    container.querySelectorAll('.toggle-lesson-edit-btn').forEach(btn => btn.addEventListener('click', () => { const f = btn.closest('.list-item').querySelector('.edit-fields'); f.classList.toggle('open'); }));
-    container.querySelectorAll('.cancel-lesson-btn').forEach(btn => btn.addEventListener('click', () => { const f = btn.closest('.list-item').querySelector('.edit-fields'); f.classList.remove('open'); }));
-    container.querySelectorAll('.save-lesson-btn').forEach(btn => btn.addEventListener('click', async () => {
-      const item = btn.closest('.list-item'); const key = parseInt(item.dataset.key);
-      const name = item.querySelector('.edit-lesson-name').value.trim();
-      const time = item.querySelector('.edit-lesson-time').value.trim();
-      const cab = parseInt(item.querySelector('.edit-lesson-cab').value);
-      const homework = item.querySelector('.edit-lesson-homework').value.trim();
-      const msg = item.querySelector('.lesson-edit-message');
-      if (!name) { showMessage(msg, '⚠️ Введите название урока', 'error'); return; }
-      try {
-        await update(ref(db, `schedule/${selectedDayKey}/lessons/${key}`), { name, time, cab, homework });
-        showMessage(msg, '✅ Урок обновлён', 'success');
-        setTimeout(() => item.querySelector('.edit-fields').classList.remove('open'), 1000);
-      } catch (e) { showMessage(msg, '❌ Ошибка: ' + e.message, 'error'); }
-    }));
-    container.querySelectorAll('.delete-lesson-btn').forEach(btn => btn.addEventListener('click', async () => {
-      const item = btn.closest('.list-item'); const key = parseInt(item.dataset.key);
-      if (!confirm(`Удалить урок #${key + 1}?`)) return;
-      try { await remove(ref(db, `schedule/${selectedDayKey}/lessons/${key}`)); showMessage(document.getElementById('lessonMessage'), '✅ Урок удалён', 'success'); } catch (e) { showMessage(document.getElementById('lessonMessage'), '❌ Ошибка: ' + e.message, 'error'); }
-    }));
-  }
-
-  async function loadLessons(dayKey) {
-    if (dayKey === null || dayKey === undefined) return;
-    try {
-      const snapshot = await get(ref(db, `schedule/${dayKey}/lessons`));
-      if (snapshot.exists()) renderLessonList(snapshot.val());
-      else renderLessonList(null);
-    } catch (e) { console.error('Ошибка загрузки уроков:', e); }
-  }
-
-  function initScheduleConsole() {
-    document.getElementById('addDayBtn').addEventListener('click', async () => {
-      const name = document.getElementById('addDayName').value.trim();
-      const msg = document.getElementById('dayMessage');
-      if (!name) { showMessage(msg, '⚠️ Введите название дня', 'error'); return; }
-      try {
-        const snapshot = await get(ref(db, 'schedule'));
-        let maxKey = -1;
-        if (snapshot.exists()) { const data = snapshot.val(); const keys = Object.keys(data).map(Number); maxKey = keys.length > 0 ? Math.max(...keys) : -1; }
-        const newKey = maxKey + 1;
-        await set(ref(db, `schedule/${newKey}`), { name, lessons: {} });
-        showMessage(msg, `✅ День добавлен (индекс ${newKey})`, 'success');
-        document.getElementById('addDayName').value = '';
-      } catch (e) { showMessage(msg, '❌ Ошибка: ' + e.message, 'error'); }
+    container.querySelectorAll(".rename-day-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const edit = btn.closest(".day-item").querySelector(".day-edit");
+        edit.classList.toggle("open");
+      });
     });
 
-    document.getElementById('addLessonBtn').addEventListener('click', async () => {
-      if (selectedDayKey === null) { showMessage(document.getElementById('lessonMessage'), '⚠️ Сначала выберите день', 'error'); return; }
-      const name = document.getElementById('addLessonName').value.trim();
-      const time = document.getElementById('addLessonTime').value.trim();
-      const cab = parseInt(document.getElementById('addLessonCab').value);
-      const homework = document.getElementById('addLessonHomework').value.trim();
-      const msg = document.getElementById('lessonMessage');
-      if (!name) { showMessage(msg, '⚠️ Введите название урока', 'error'); return; }
+    container.querySelectorAll(".cancel-day-name-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        btn.closest(".day-edit").classList.remove("open");
+      });
+    });
+
+    container.querySelectorAll(".save-day-name-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const item = btn.closest(".day-item");
+        const key = Number(item.dataset.key);
+        const date = dateInputToScheduleDate(item.querySelector(".day-date-input").value);
+        const msg = document.getElementById("dayMessage");
+
+        if (!date) {
+          showMessage(msg, "⚠️ Выберите корректную дату", "error");
+          return;
+        }
+
+        if (scheduleCache) {
+          const duplicate = Object.keys(scheduleCache).some(existingKey =>
+            existingKey !== String(key) &&
+            scheduleCache[existingKey] &&
+            scheduleCache[existingKey].date === date
+          );
+          if (duplicate) {
+            showMessage(msg, "⚠️ День с такой датой уже существует", "error");
+            return;
+          }
+        }
+
+        try {
+          await update(ref(db, "schedule/" + key), { date });
+          showMessage(msg, "✅ Дата дня изменена", "success");
+        } catch (e) {
+          showMessage(msg, "❌ Ошибка: " + e.message, "error");
+        }
+      });
+    });
+
+    // ===== КОПИРОВАНИЕ УРОКОВ =====
+    container.querySelectorAll(".copy-day-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        copySourceKey = Number(btn.closest(".day-item").dataset.key);
+        document.getElementById("copyDayDate").value = "";
+        openModal("copyDayModal");
+        setTimeout(() => document.getElementById("copyDayDate").focus(), 50);
+      });
+    });
+
+    document.getElementById("confirmCopyBtn").addEventListener("click", async () => {
+      const date = document.getElementById("copyDayDate").value.trim();
+      const msg = document.getElementById("dayMessage");
+
+      if (!date) {
+        showMessage(msg, "⚠️ Введите дату", "error");
+        return;
+      }
+
+      if (!isValidDateString(date)) {
+        showMessage(msg, "⚠️ Введите корректную дату в формате ДД.ММ.ГГГГ", "error");
+        return;
+      }
+
+      if (copySourceKey === null) {
+        showMessage(msg, "❌ Ошибка: источник не выбран", "error");
+        return;
+      }
+
+      const sourceDay = scheduleCache && scheduleCache[copySourceKey];
+      if (!sourceDay) {
+        showMessage(msg, "❌ Исходный день не найден", "error");
+        return;
+      }
+
       try {
-        const snapshot = await get(ref(db, `schedule/${selectedDayKey}/lessons`));
-        let maxKey = -1;
-        if (snapshot.exists()) { const data = snapshot.val(); const keys = Object.keys(data).map(Number); maxKey = keys.length > 0 ? Math.max(...keys) : -1; }
-        const newKey = maxKey + 1;
-        await set(ref(db, `schedule/${selectedDayKey}/lessons/${newKey}`), { name, time, cab, homework });
-        showMessage(msg, `✅ Урок добавлен (#${newKey + 1})`, 'success');
-        document.getElementById('addLessonName').value = '';
-        document.getElementById('addLessonTime').value = '';
-        document.getElementById('addLessonCab').value = '';
-        document.getElementById('addLessonHomework').value = '';
-      } catch (e) { showMessage(msg, '❌ Ошибка: ' + e.message, 'error'); }
+        const snapshot = await get(ref(db, "schedule"));
+        const data = snapshot.exists() ? snapshot.val() : {};
+
+        const duplicate = Object.keys(data).some(existingKey =>
+          existingKey !== String(copySourceKey) &&
+          data[existingKey] &&
+          data[existingKey].date === date
+        );
+
+        if (duplicate) {
+          showMessage(msg, "⚠️ День с такой датой уже существует", "error");
+          return;
+        }
+
+        const keys = Object.keys(data).map(Number).filter(Number.isFinite);
+        const newKey = keys.length ? Math.max(...keys) + 1 : 0;
+
+        const copiedLessons = {};
+        const sourceLessons = sourceDay.lessons || {};
+
+        Object.keys(sourceLessons).forEach(lessonKey => {
+          const lesson = sourceLessons[lessonKey] || {};
+          copiedLessons[lessonKey] = {
+            name: lesson.name || "",
+            time: lesson.time || "",
+            cab: lesson.cab ?? null
+          };
+        });
+
+        await set(ref(db, "schedule/" + newKey), {
+          date,
+          lessons: copiedLessons
+        });
+
+        closeAllModals();
+
+        const updatedSnapshot = await get(ref(db, "schedule"));
+        scheduleCache = updatedSnapshot.exists() ? updatedSnapshot.val() : null;
+        renderCurrentSchedule();
+
+        showMessage(msg, "✅ Уроки скопированы на " + formatScheduleDate(date), "success");
+      } catch (e) {
+        showMessage(msg, "❌ Ошибка: " + e.message, "error");
+      }
     });
 
-    onValue(ref(db, 'schedule'), (snapshot) => {
-      if (snapshot.exists()) renderDayList(snapshot.val());
-      else renderDayList(null);
+    container.querySelectorAll(".delete-day-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const key = Number(btn.closest(".day-item").dataset.key);
+
+        if (!confirm("Удалить весь день и все его уроки?")) return;
+
+        try {
+          await remove(ref(db, "schedule/" + key));
+
+          if (selectedDayKey === key) selectedDayKey = null;
+          showMessage(document.getElementById("dayMessage"), "✅ День удалён", "success");
+        } catch (e) {
+          showMessage(document.getElementById("dayMessage"), "❌ Ошибка: " + e.message, "error");
+        }
+      });
+    });
+
+    container.querySelectorAll(".edit-lesson-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        btn.closest(".lesson-card").querySelector(".lesson-edit").classList.toggle("open");
+      });
+    });
+
+    container.querySelectorAll(".cancel-lesson-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        btn.closest(".lesson-edit").classList.remove("open");
+      });
+    });
+
+    container.querySelectorAll(".save-lesson-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const item = btn.closest(".lesson-card");
+        const key = Number(item.dataset.key);
+
+        const name = item.querySelector(".lesson-name-input").value.trim();
+        const time = item.querySelector(".lesson-time-input").value.trim();
+        const cabRaw = item.querySelector(".lesson-cab-input").value.trim();
+        const cab = cabRaw === "" ? null : Number(cabRaw);
+        const homework = item.querySelector(".lesson-homework-input").value;
+
+        const msg = item.querySelector(".lesson-edit-message");
+
+        if (!name) {
+          showMessage(msg, "⚠️ Введите название урока", "error");
+          return;
+        }
+
+        try {
+          await update(ref(db, `schedule/${selectedDayKey}/lessons/${key}`), {
+            name, time, cab, homework
+          });
+
+          showMessage(msg, "✅ Урок и ДЗ сохранены", "success");
+        } catch (e) {
+          showMessage(msg, "❌ Ошибка: " + e.message, "error");
+        }
+      });
+    });
+
+    container.querySelectorAll(".delete-lesson-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const key = Number(btn.closest(".lesson-card").dataset.key);
+
+        if (!confirm("Удалить этот урок вместе с домашним заданием?")) return;
+
+        try {
+          await remove(ref(db, `schedule/${selectedDayKey}/lessons/${key}`));
+        } catch (e) {
+          showMessage(document.getElementById("dayMessage"), "❌ Ошибка: " + e.message, "error");
+        }
+      });
+    });
+
+    container.querySelectorAll(".lesson-link-tool").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedHomeworkField = btn.closest(".lesson-edit").querySelector(".lesson-homework-input");
+        document.getElementById("linkUrl").value = "";
+        document.getElementById("linkText").value = "";
+        openModal("linkModal");
+        setTimeout(() => document.getElementById("linkUrl").focus(), 50);
+      });
+    });
+
+    container.querySelectorAll(".lesson-image-tool").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedHomeworkField = btn.closest(".lesson-edit").querySelector(".lesson-homework-input");
+        document.getElementById("imageUrl").value = "";
+        document.getElementById("imageAlt").value = "";
+        openModal("imageModal");
+        setTimeout(() => document.getElementById("imageUrl").focus(), 50);
+      });
+    });
+
+    container.querySelectorAll(".new-link-tool").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedHomeworkField = btn.closest(".add-lesson-card").querySelector(".new-lesson-homework");
+        document.getElementById("linkUrl").value = "";
+        document.getElementById("linkText").value = "";
+        openModal("linkModal");
+      });
+    });
+
+    container.querySelectorAll(".new-image-tool").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedHomeworkField = btn.closest(".add-lesson-card").querySelector(".new-lesson-homework");
+        document.getElementById("imageUrl").value = "";
+        document.getElementById("imageAlt").value = "";
+        openModal("imageModal");
+      });
+    });
+
+    container.querySelectorAll(".add-lesson-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const box = btn.closest(".add-lesson-card");
+        const name = box.querySelector(".new-lesson-name").value.trim();
+        const time = box.querySelector(".new-lesson-time").value.trim();
+        const cabRaw = box.querySelector(".new-lesson-cab").value.trim();
+        const cab = cabRaw === "" ? null : Number(cabRaw);
+        const homework = box.querySelector(".new-lesson-homework").value;
+        const msg = box.querySelector(".add-lesson-message");
+
+        if (!name) {
+          showMessage(msg, "⚠️ Введите название урока", "error");
+          return;
+        }
+
+        try {
+          const snapshot = await get(ref(db, `schedule/${selectedDayKey}/lessons`));
+          const data = snapshot.exists() ? snapshot.val() : {};
+          const keys = Object.keys(data).map(Number).filter(Number.isFinite);
+          const newKey = keys.length ? Math.max(...keys) + 1 : 0;
+
+          await set(ref(db, `schedule/${selectedDayKey}/lessons/${newKey}`), {
+            name, time, cab, homework
+          });
+
+          showMessage(msg, "✅ Урок добавлен", "success");
+          box.querySelector(".new-lesson-name").value = "";
+          box.querySelector(".new-lesson-time").value = "";
+          box.querySelector(".new-lesson-cab").value = "";
+          box.querySelector(".new-lesson-homework").value = "";
+        } catch (e) {
+          showMessage(msg, "❌ Ошибка: " + e.message, "error");
+        }
+      });
     });
   }
 
-  // ============================================
-  // ====== ПРОВЕРКА АДМИНА И ЗАПУСК ======
-  // ============================================
-  async function checkAdmin(user) {
-    if (!user) { window.location.href = AUTH_URL; return false; }
-    try {
-      const snapshot = await get(ref(db, 'users/' + user.uid));
-      if (snapshot.exists() && snapshot.val().status === 2) return true;
-      alert('⛔ У вас нет прав администратора');
-      window.location.href = 'index.html';
-      return false;
-    } catch (e) { console.error('Ошибка проверки прав:', e); return false; }
+  function renderCurrentSchedule() {
+    renderDayList(scheduleCache);
   }
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) { window.location.href = AUTH_URL; return; }
-    try {
-      const snapshot = await get(ref(db, 'users/' + user.uid));
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        user.displayName = data.name || user.email;
-      } else { user.displayName = user.email; }
-    } catch (e) { user.displayName = user.email; }
-    renderHeader(user);
-    const isAdmin = await checkAdmin(user);
-    if (isAdmin) {
-      initNewsConsole();
-      initScheduleConsole();
+  onValue(ref(db, "schedule"), snapshot => {
+    scheduleCache = snapshot.exists() ? snapshot.val() : null;
+
+    if (selectedDayKey !== null && scheduleCache && !scheduleCache[selectedDayKey]) {
+      selectedDayKey = null;
+    }
+
+    renderCurrentSchedule();
+  });
+
+  // ===== ССЫЛКИ / ИЗОБРАЖЕНИЯ =====
+  document.getElementById("confirmLinkBtn").addEventListener("click", () => {
+    const url = safeUrl(document.getElementById("linkUrl").value.trim());
+    const text = document.getElementById("linkText").value.trim();
+
+    if (!url) {
+      alert("Введите корректный URL, начинающийся с http:// или https://");
+      return;
+    }
+
+    if (!selectedHomeworkField) return;
+
+    const link = `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(text || url)}</a>`;
+    insertAtCursor(selectedHomeworkField, link);
+
+    closeAllModals();
+    selectedHomeworkField.focus();
+  });
+
+  document.getElementById("confirmImageBtn").addEventListener("click", () => {
+    const url = safeUrl(document.getElementById("imageUrl").value.trim());
+    const alt = document.getElementById("imageAlt").value.trim();
+
+    if (!url) {
+      alert("Введите корректный URL изображения");
+      return;
+    }
+
+    if (!selectedHomeworkField) return;
+
+    const image = `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt || "Изображение")}" style="max-width:100%;height:auto;border-radius:12px;">`;
+    insertAtCursor(selectedHomeworkField, image);
+
+    closeAllModals();
+    selectedHomeworkField.focus();
+  });
+
+  function insertAtCursor(field, text) {
+    const start = field.selectionStart ?? field.value.length;
+    const end = field.selectionEnd ?? field.value.length;
+    const before = field.value.substring(0, start);
+    const after = field.value.substring(end);
+
+    field.value = before + (before && !/\s$/.test(before) ? " " : "") + text +
+      (after && !/^\s/.test(after) ? " " : "") + after;
+
+    const pos = (before + (before && !/\s$/.test(before) ? " " : "") + text).length;
+    field.selectionStart = pos;
+    field.selectionEnd = pos;
+  }
+
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Enter" || e.shiftKey) return;
+
+    if (e.target.matches("input") && e.target.closest(".modal")) {
+      e.preventDefault();
+      const modal = e.target.closest(".modal");
+      const button = modal.querySelector(".btn-console-primary, .btn-console-success");
+      if (button) button.click();
     }
   });
 
-  console.log('✅ Консоль с редактором ссылок для ДЗ');
+  async function checkAdmin(user) {
+    if (!user) {
+      window.location.href = AUTH_URL;
+      return false;
+    }
+
+    try {
+      const snapshot = await get(ref(db, "users/" + user.uid));
+
+      if (snapshot.exists() && snapshot.val().status === 2) return true;
+
+      alert("⛔ У вас нет прав администратора");
+      window.location.href = "index.html";
+      return false;
+    } catch (e) {
+      console.error("Ошибка проверки прав:", e);
+      return false;
+    }
+  }
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      window.location.href = AUTH_URL;
+      return;
+    }
+
+    renderHeader(user);
+
+    const isAdmin = await checkAdmin(user);
+    if (!isAdmin) return;
+  });
+
+  console.log("✅ Консоль готова");
 </script>
 </body>
 </html>

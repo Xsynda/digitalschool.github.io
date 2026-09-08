@@ -25,12 +25,18 @@
     @keyframes fadeIn { 0% { opacity: 0; transform: translateY(-6px); } 100% { opacity: 1; transform: translateY(0); } }
     .error-msg { color: #c74a4a; font-size: 14px; margin: 8px 0 12px; background: #fff0f0; padding: 10px 16px; border-radius: 40px; display: block; line-height: 1.4; }
     .error-msg.hidden { display: none; }
+    .success-msg { color: #1a8a4a; font-size: 14px; margin: 8px 0 12px; background: #e8f5ed; padding: 10px 16px; border-radius: 40px; display: block; line-height: 1.4; }
+    .success-msg.hidden { display: none; }
+    .info-msg { color: #2a7de1; font-size: 14px; margin: 8px 0 12px; background: #e5effb; padding: 10px 16px; border-radius: 40px; display: block; line-height: 1.4; }
+    .info-msg.hidden { display: none; }
     .btn { border: none; padding: 14px 28px; border-radius: 40px; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Inter', sans-serif; width: 100%; }
     .btn-primary { background: #2a7de1; color: white; box-shadow: 0 8px 20px rgba(42, 125, 225, 0.25); }
     .btn-primary:hover:not(:disabled) { background: #1a5fb0; transform: scale(0.98); }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-outline { background: transparent; color: #1f2b48; border: 1.5px solid #d0dae9; margin-top: 12px; }
     .btn-outline:hover { background: #f0f4fe; border-color: #2a7de1; }
+    .btn-success { background: #1a8a4a; color: white; box-shadow: 0 8px 20px rgba(26, 138, 74, 0.25); }
+    .btn-success:hover { background: #146e3a; transform: scale(0.98); }
     .switch-row { margin-top: 22px; text-align: center; font-size: 15px; color: #4b6589; }
     .switch-row span { color: #2a7de1; font-weight: 600; cursor: pointer; margin-left: 4px; transition: 0.1s; }
     .switch-row span:hover { text-decoration: underline; }
@@ -38,6 +44,21 @@
     .hidden { display: none !important; }
     .remember-me { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 14px; color: #1f2b48; cursor: pointer; }
     .remember-me input[type="checkbox"] { width: 18px; height: 18px; accent-color: #2a7de1; cursor: pointer; }
+    .resend-link { color: #2a7de1; cursor: pointer; font-weight: 500; text-decoration: underline; }
+    .resend-link:hover { text-decoration: none; }
+
+    .verification-overlay { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0, 20, 40, 0.40); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px; }
+    .verification-overlay.open { display: flex; }
+    .verification-modal { width: 100%; max-width: 440px; background: #ffffff; border-radius: 32px; box-shadow: 0 30px 70px rgba(0, 20, 40, 0.20); padding: 32px 28px 28px; text-align: center; border: 1px solid #f0f5fe; animation: verificationPop 0.2s ease; }
+    @keyframes verificationPop { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .verification-icon { width: 56px; height: 56px; margin: 0 auto 18px; border-radius: 18px; background: #e5effb; color: #2a7de1; display: flex; align-items: center; justify-content: center; }
+    .verification-icon .material-symbols-outlined { font-size: 30px; }
+    .verification-title { font-size: 24px; font-weight: 600; color: #0a1e3c; margin-bottom: 10px; }
+    .verification-text { font-size: 15px; color: #5f7696; line-height: 1.6; word-break: break-word; }
+    .verification-text strong { color: #1f2b48; font-weight: 600; }
+    .verification-close { margin-top: 24px; width: 100%; padding: 14px 28px; border: none; border-radius: 40px; background: #2a7de1; color: white; box-shadow: 0 8px 20px rgba(42, 125, 225, 0.25); font-weight: 600; font-size: 16px; cursor: pointer; font-family: 'Inter', sans-serif; transition: 0.2s; }
+    .verification-close:hover { background: #1a5fb0; transform: scale(0.98); }
+
     @media (max-width: 480px) { .auth-card { padding: 28px 20px 32px; border-radius: 32px; } .logo-text { font-size: 22px; } .logo-icon { width: 42px; height: 42px; font-size: 20px; } }
   </style>
 </head>
@@ -75,6 +96,8 @@
     </div>
 
     <div id="authError" class="error-msg hidden"></div>
+    <div id="authSuccess" class="success-msg hidden"></div>
+    <div id="authInfo" class="info-msg hidden"></div>
 
     <button class="btn btn-primary" id="submitBtn">Войти</button>
     <button class="btn btn-outline" id="switchModeBtn">Зарегистрироваться</button>
@@ -88,6 +111,19 @@
   <div class="footer-note">© 2026 · Электронная школа</div>
 </div>
 
+<div class="verification-overlay" id="verificationModal">
+  <div class="verification-modal">
+    <div class="verification-icon">
+      <span class="material-symbols-outlined">mark_email_unread</span>
+    </div>
+    <div class="verification-title">Подтвердите почту</div>
+    <div class="verification-text" id="verificationText">
+      Мы отправили письмо с подтверждением на вашу почту.
+    </div>
+    <button class="verification-close" id="verificationClose">Понятно</button>
+  </div>
+</div>
+
 <!-- FIREBASE -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
@@ -99,7 +135,9 @@
     createUserWithEmailAndPassword,
     setPersistence,
     browserLocalPersistence,
-    browserSessionPersistence
+    browserSessionPersistence,
+    sendEmailVerification,
+    sendPasswordResetEmail
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
   const firebaseConfig = {
@@ -129,7 +167,34 @@
   const switchActionLabel = document.getElementById('switchActionLabel');
   const switchActionBtn = document.getElementById('switchActionBtn');
   const authError = document.getElementById('authError');
+  const authSuccess = document.getElementById('authSuccess');
+  const authInfo = document.getElementById('authInfo');
   const rememberCheckbox = document.getElementById('rememberCheckbox');
+
+  const verificationModal = document.getElementById('verificationModal');
+  const verificationText = document.getElementById('verificationText');
+  const verificationClose = document.getElementById('verificationClose');
+
+  function showVerificationModal(email) {
+    verificationText.innerHTML = 'Мы отправили письмо с подтверждением на <strong>' + email.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</strong>.<br>Перейдите по ссылке в письме, чтобы активировать аккаунт.';
+    verificationModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeVerificationModal() {
+    verificationModal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  verificationClose.addEventListener('click', closeVerificationModal);
+  verificationModal.addEventListener('click', (e) => {
+    if (e.target === verificationModal) closeVerificationModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && verificationModal.classList.contains('open')) {
+      closeVerificationModal();
+    }
+  });
 
   let isLoginMode = true;
 
@@ -156,6 +221,8 @@
       extraFields.classList.add('visible');
     }
     authError.classList.add('hidden');
+    authSuccess.classList.add('hidden');
+    authInfo.classList.add('hidden');
   }
 
   function toggleMode() {
@@ -165,6 +232,8 @@
     passwordInput.value = '';
     nameInput.value = '';
     authError.classList.add('hidden');
+    authSuccess.classList.add('hidden');
+    authInfo.classList.add('hidden');
   }
 
   switchModeBtn.addEventListener('click', toggleMode);
@@ -195,6 +264,29 @@
     } catch (e) {}
   }
 
+  // ===== ОТПРАВКА ПОДТВЕРЖДЕНИЯ =====
+  async function sendVerificationEmail(user) {
+    try {
+      await sendEmailVerification(user);
+      console.log('✅ Письмо с подтверждением отправлено');
+      return true;
+    } catch (error) {
+      console.error('❌ Ошибка отправки письма:', error);
+      return false;
+    }
+  }
+
+  // ===== ПОКАЗАТЬ СООБЩЕНИЕ И ОСТАВИТЬ ЕГО =====
+  function showMessage(element, text, type) {
+    // Скрываем все сообщения
+    authError.classList.add('hidden');
+    authSuccess.classList.add('hidden');
+    authInfo.classList.add('hidden');
+    
+    element.textContent = text;
+    element.classList.remove('hidden');
+  }
+
   // ===== ОБРАБОТЧИК =====
   async function handleSubmit() {
     const email = emailInput.value.trim();
@@ -202,18 +294,18 @@
     const name = nameInput.value.trim();
 
     if (!email || password.length < 6) {
-      authError.textContent = '⚠️ Введите email и пароль (мин. 6 символов)';
-      authError.classList.remove('hidden');
+      showMessage(authError, '⚠️ Введите email и пароль (мин. 6 символов)');
       return;
     }
 
     if (!isLoginMode && !name) {
-      authError.textContent = '⚠️ Пожалуйста, введите имя';
-      authError.classList.remove('hidden');
+      showMessage(authError, '⚠️ Пожалуйста, введите имя');
       return;
     }
 
     authError.classList.add('hidden');
+    authSuccess.classList.add('hidden');
+    authInfo.classList.add('hidden');
     submitBtn.disabled = true;
     submitBtn.textContent = '⏳ Загрузка...';
 
@@ -227,21 +319,63 @@
       }
 
       if (isLoginMode) {
-        await signInWithEmailAndPassword(auth, email, password);
+        // ===== ВХОД =====
+        try {
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+          
+          if (!user.emailVerified) {
+            // Отправляем новое письмо
+            await sendVerificationEmail(user);
+            await auth.signOut();
+            showVerificationModal(email);
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Войти';
+            return;
+          }
+          
+          // Всё ок — на главную
+          redirectToMain();
+          
+        } catch (error) {
+          if (error.code === 'auth/user-not-found') {
+            showMessage(authError, '❌ Пользователь с таким email не найден. Зарегистрируйтесь.');
+          } else {
+            throw error;
+          }
+        }
+        
       } else {
-        // ТОЛЬКО СОЗДАЁМ ПОЛЬЗОВАТЕЛЯ — БЕЗ БАЗЫ
-        await createUserWithEmailAndPassword(auth, email, password);
-        // Имя сохранится на главной странице
-        localStorage.setItem('pending_user_name', name);
+        // ===== РЕГИСТРАЦИЯ =====
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        
+        // Отправляем письмо с подтверждением
+        const sent = await sendVerificationEmail(user);
+        
+        if (sent) {
+          // Сохраняем имя для профиля на главной
+          localStorage.setItem('pending_user_name', name);
+          
+          // Показываем сообщение
+          showVerificationModal(email);
+          
+          // Разлогиниваемся
+          await auth.signOut();
+          
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Создать';
+        } else {
+          showMessage(authError, '❌ Не удалось отправить письмо. Попробуйте позже.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Создать';
+          await user.delete();
+        }
       }
-      
-      // Перенаправляем на главную — там создастся профиль
-      redirectToMain();
       
     } catch (error) {
       console.error('Ошибка:', error);
-      authError.textContent = '❌ ' + getErrorMessage(error);
-      authError.classList.remove('hidden');
+      showMessage(authError, '❌ ' + getErrorMessage(error));
       submitBtn.disabled = false;
       submitBtn.textContent = isLoginMode ? 'Войти' : 'Создать';
     }
@@ -258,11 +392,20 @@
     }
   });
 
+  // ===== onAuthStateChanged =====
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      // Уже авторизован — на главную
-      redirectToMain();
+      console.log('👤 Авторизован:', user.email, 'Verified:', user.emailVerified);
+      
+      if (user.emailVerified) {
+        // Если почта подтверждена — на главную
+        redirectToMain();
+      } else {
+        // Если почта не подтверждена — ничего не делаем, сообщение уже показано
+        console.log('⏳ Почта не подтверждена, ждём...');
+      }
     } else {
+      console.log('👤 Не авторизован');
       loadSavedEmail();
       updateFormMode();
     }
@@ -270,7 +413,7 @@
 
   updateFormMode();
   loadSavedEmail();
-  console.log('✅ Страница авторизации (без сохранения профиля)');
+  console.log('✅ Страница авторизации с подтверждением почты');
 </script>
 </body>
 </html>

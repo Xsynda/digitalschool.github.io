@@ -35,9 +35,15 @@
     .page-sub { color: #5f7696; font-size: 16px; margin-bottom: 28px; }
 
     .schedule-grid { display: flex; flex-direction: column; gap: 24px; }
+
     .day-card { background: #f9fcff; border-radius: 24px; border: 1px solid #eef3fa; overflow: hidden; }
+    .day-card.past { opacity: 0.6; border-color: #dce4ef; }
+    .day-card.past .day-header { background: #f5f8fc; color: #6a7f9e; }
+
     .day-header { background: #f0f6ff; padding: 14px 24px; font-weight: 600; font-size: 18px; color: #0a1e3c; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #eef3fa; }
-    .day-header .material-symbols-outlined { color: #2a7de1; font-size: 24px; }
+    .day-header .past-badge { font-size: 12px; font-weight: 400; color: #6a7f9e; background: #eef3fa; padding: 2px 12px; border-radius: 40px; margin-left: 8px; }
+
+    .day-body { overflow: hidden; }
 
     .lessons-grid { display: grid; grid-template-columns: 44px 1.2fr 1.8fr; gap: 0; }
     .lesson-cell { padding: 14px 16px; border-bottom: 1px solid #eef3fa; border-right: 1px solid #eef3fa; display: flex; align-items: center; font-size: 14px; color: #1f2b48; cursor: pointer; transition: 0.1s; }
@@ -45,11 +51,12 @@
     .lesson-cell:hover { background: #f0f6ff; }
     .lesson-number { font-weight: 600; color: #6a7f9e; justify-content: center; background: #f5f8fc; border-right: 1px solid #eef3fa; }
     .lesson-name { font-weight: 500; background: #ffffff; flex-wrap: wrap; gap: 6px; }
-    .lesson-time { font-size: 13px; color: #6a7f9e; font-weight: 400; }
+    .lesson-time { font-size: 13px; color: #6a7f9e; font-weight: 400; margin-left: 6px; }
     .lesson-homework { background: #ffffff; flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 16px; }
     .homework-preview { font-size: 13px; color: #3d5270; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word; line-height: 1.4; max-height: 2.8em; width: 100%; }
     .homework-preview a { color: #2a7de1; text-decoration: underline; }
     .homework-preview a:hover { text-decoration: none; }
+    .homework-preview img { max-width: 100%; max-height: 80px; border-radius: 8px; margin-top: 4px; object-fit: cover; }
     .homework-empty { color: #a0b3cc; font-style: italic; font-size: 13px; }
     .empty-state { text-align: center; padding: 48px 20px; color: #6a7f9e; }
     .empty-state .material-symbols-outlined { font-size: 48px; color: #d0dae9; margin-bottom: 12px; }
@@ -57,10 +64,26 @@
     .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid #eef3fa; font-size: 13px; color: #889bb3; text-align: center; }
     .loading { text-align: center; padding: 40px; color: #6a7f9e; }
 
+    .show-past-btn { display: block; width: 100%; padding: 12px; margin-top: 12px; border: 2px dashed #d0dae9; border-radius: 20px; background: transparent; color: #5f7696; font-weight: 500; font-size: 14px; cursor: pointer; transition: 0.2s; font-family: 'Inter', sans-serif; }
+    .show-past-btn:hover { background: #f0f6ff; border-color: #2a7de1; color: #2a7de1; }
+    .show-past-btn .material-symbols-outlined { font-size: 18px; vertical-align: middle; }
+
+    .past-section { display: none; }
+    .past-section.visible { display: block; }
+
+    .load-more-btn { display: none; width: 100%; padding: 12px; margin-top: 12px; border: 2px dashed #d0dae9; border-radius: 20px; background: transparent; color: #5f7696; font-weight: 500; font-size: 14px; cursor: pointer; transition: 0.2s; font-family: 'Inter', sans-serif; }
+    .load-more-btn:hover { background: #f0f6ff; border-color: #2a7de1; color: #2a7de1; }
+    .load-more-btn .material-symbols-outlined { font-size: 18px; vertical-align: middle; }
+    .load-more-btn.visible { display: block; }
+
+    .future-days-wrapper { display: flex; flex-direction: column; gap: 24px; }
+    .future-days-wrapper .day-card { display: none; }
+    .future-days-wrapper .day-card.visible { display: block; }
+
     /* Модальное окно */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.35); backdrop-filter: blur(4px); align-items: center; justify-content: center; z-index: 2000; }
     .modal-overlay.active { display: flex; }
-    .modal-card { background: #ffffff; max-width: 420px; width: 90%; padding: 32px 28px; border-radius: 32px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); animation: modalFade 0.2s ease; }
+    .modal-card { background: #ffffff; max-width: 480px; width: 90%; padding: 32px 28px; border-radius: 32px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); animation: modalFade 0.2s ease; max-height: 90vh; overflow-y: auto; }
     @keyframes modalFade { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
     .modal-card .modal-title { font-size: 22px; font-weight: 600; color: #0a1e3c; margin-bottom: 4px; }
     .modal-card .modal-sub { font-size: 14px; color: #6a7f9e; margin-bottom: 16px; }
@@ -71,6 +94,7 @@
     .modal-card .modal-homework { margin-top: 12px; padding: 12px 16px; background: #f9fcff; border-radius: 16px; font-size: 14px; color: #0a1e3c; line-height: 1.6; border: 1px solid #eef3fa; word-break: break-word; }
     .modal-card .modal-homework a { color: #2a7de1; text-decoration: underline; }
     .modal-card .modal-homework a:hover { text-decoration: none; }
+    .modal-card .modal-homework img { max-width: 100%; height: auto; border-radius: 12px; margin: 6px 0; }
     .modal-card .modal-close { margin-top: 20px; width: 100%; padding: 12px; border: none; border-radius: 40px; background: #eef3fa; color: #1f2b48; font-weight: 500; font-size: 15px; cursor: pointer; font-family: 'Inter', sans-serif; transition: 0.15s; }
     .modal-card .modal-close:hover { background: #dce4ef; }
 
@@ -159,24 +183,69 @@
   const modalHomework = document.getElementById('modalHomework');
   const modalCloseBtn = document.getElementById('modalCloseBtn');
 
+  // ----- Парсинг даты из формата ДД.ММ.ГГГГ -----
+  function parseDateFromString(dateStr) {
+    if (!dateStr) return null;
+    const match = String(dateStr).trim().match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+    if (!match) return null;
+    const day = Number(match[1]);
+    const month = Number(match[2]);
+    const year = Number(match[3]);
+    const date = new Date(year, month - 1, day);
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return null;
+    return date;
+  }
+
+  function getDateSortValue(dateStr) {
+    const date = parseDateFromString(dateStr);
+    return date ? date.getTime() : Number.MAX_SAFE_INTEGER;
+  }
+
+  function isDatePast(dateStr) {
+    const date = parseDateFromString(dateStr);
+    if (!date) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  }
+
+  // ----- Форматирование даты для заголовка -----
+  const russianWeekdays = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+  const russianMonths = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+
+  function formatDayHeader(dateStr) {
+    const date = parseDateFromString(dateStr);
+    if (!date) return dateStr || 'День';
+    return `${russianWeekdays[date.getDay()]}, ${date.getDate()} ${russianMonths[date.getMonth()]}`;
+  }
+
+  // ----- Обработка HTML в ДЗ (поддержка <a> и <img>) -----
   function processHomeworkText(text) {
     if (!text) return 'Нет задания';
-    // Экранируем HTML, затем преобразуем ссылки
     let processed = escapeHtml(text);
-    // Поддержка <a> тегов (преобразуем их обратно после экранирования)
-    // Сначала заменяем <a на специальный маркер, чтобы не экранировать
     const linkRegex = /&lt;a\s+(.*?)&gt;(.*?)&lt;\/a&gt;/g;
     processed = processed.replace(linkRegex, (match, attrs, content) => {
       return `<a ${attrs}>${content}</a>`;
     });
-    // Автоссылки http/https
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const imgRegex = /&lt;img\s+(.*?)\s*\/?&gt;/g;
+    processed = processed.replace(imgRegex, (match, attrs) => {
+      return `<img ${attrs}>`;
+    });
+    const urlRegex = /(https?:\/\/[^\s<]+)/g;
     processed = processed.replace(urlRegex, (url) => {
-      return `<a href="${url}" target="_blank" rel="noopener">${url}</a>`;
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
     });
     return processed;
   }
 
+  function escapeHtml(text) {
+    if (!text) return '';
+    const d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
+
+  // ----- Модалка -----
   function openModal(lesson) {
     modalTitle.textContent = lesson.name || 'Без названия';
     modalTime.textContent = lesson.time ? `⏰ ${lesson.time}` : '⏰ Время не указано';
@@ -189,26 +258,64 @@
   modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
 
   function redirectToAuth() { window.location.href = AUTH_URL; }
-  function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
 
+  // ----- Рендер расписания -----
   function renderSchedule(scheduleData) {
     if (!scheduleData || Object.keys(scheduleData).length === 0) {
       scheduleContainer.innerHTML = `<div class="empty-state"><span class="material-symbols-outlined">event_busy</span><h3>Расписание пока не загружено</h3></div>`;
       return;
     }
-    const dayKeys = Object.keys(scheduleData).map(Number).sort((a, b) => a - b);
-    const dayNames = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
-    let html = '<div class="schedule-grid">';
+
+    // Сортируем ключи по дате
+    const dayKeys = Object.keys(scheduleData)
+      .map(Number)
+      .sort((a, b) => {
+        const dateA = scheduleData[a]?.date ? getDateSortValue(scheduleData[a].date) : Number.MAX_SAFE_INTEGER;
+        const dateB = scheduleData[b]?.date ? getDateSortValue(scheduleData[b].date) : Number.MAX_SAFE_INTEGER;
+        return dateA - dateB || a - b;
+      });
+
+    let pastHtml = '';
+    let futureDayKeys = [];
+    let hasPast = false;
+    let hasFuture = false;
+
     for (const dayKey of dayKeys) {
       const dayData = scheduleData[dayKey];
       if (!dayData) continue;
-      const dayName = dayData.name || dayNames[dayKey] || `День ${dayKey + 1}`;
+
+      let dayHeader = `День ${dayKey + 1}`;
+      if (dayData.date) {
+        dayHeader = formatDayHeader(dayData.date);
+      } else if (dayData.name) {
+        dayHeader = dayData.name;
+      }
+
+      const isPast = dayData.date ? isDatePast(dayData.date) : false;
+
       const lessons = dayData.lessons || {};
       const lessonKeys = Object.keys(lessons).map(Number).sort((a, b) => a - b);
-      html += `<div class="day-card"><div class="day-header"><span class="material-symbols-outlined">event_note</span>${escapeHtml(dayName)}</div><div class="lessons-grid">`;
-      html += `<div class="lesson-cell lesson-number" style="font-weight:600;background:#f5f8fc;">№</div><div class="lesson-cell lesson-name" style="font-weight:600;background:#f5f8fc;">Урок</div><div class="lesson-cell lesson-homework" style="font-weight:600;background:#f5f8fc;border-right:none;">Домашнее задание</div>`;
+
+      let dayHtml = `
+        <div class="day-card ${isPast ? 'past' : ''}" data-past="${isPast}">
+          <div class="day-header">
+            <span class="material-symbols-outlined">${isPast ? 'history' : 'event_note'}</span>
+            ${escapeHtml(dayHeader)}
+            ${isPast ? `<span class="past-badge">прошёл</span>` : ''}
+          </div>
+          <div class="day-body">
+            <div class="lessons-grid">
+              <div class="lesson-cell lesson-number" style="font-weight:600;background:#f5f8fc;">№</div>
+              <div class="lesson-cell lesson-name" style="font-weight:600;background:#f5f8fc;">Урок</div>
+              <div class="lesson-cell lesson-homework" style="font-weight:600;background:#f5f8fc;border-right:none;">Домашнее задание</div>
+      `;
+
       if (lessonKeys.length === 0) {
-        html += `<div class="lesson-cell lesson-number">—</div><div class="lesson-cell lesson-name">Нет уроков</div><div class="lesson-cell lesson-homework" style="border-right:none;">—</div>`;
+        dayHtml += `
+          <div class="lesson-cell lesson-number">—</div>
+          <div class="lesson-cell lesson-name">Нет уроков</div>
+          <div class="lesson-cell lesson-homework" style="border-right:none;">—</div>
+        `;
       } else {
         for (const lessonKey of lessonKeys) {
           const lesson = lessons[lessonKey];
@@ -217,23 +324,173 @@
           const time = lesson.time || '';
           const homework = lesson.homework || '';
           const cab = lesson.cab ?? '';
+
           let homeworkDisplay = homework ? processHomeworkText(homework) : '<span class="homework-empty">нет задания</span>';
-          html += `
+          const lessonData = JSON.stringify({ name, time, cab, homework });
+
+          dayHtml += `
             <div class="lesson-cell lesson-number">${lessonKey + 1}</div>
-            <div class="lesson-cell lesson-name" data-lesson='${JSON.stringify({ name, time, cab, homework })}'>
+            <div class="lesson-cell lesson-name" data-lesson='${lessonData}'>
               ${escapeHtml(name)}${time ? `<span class="lesson-time">${escapeHtml(time)}</span>` : ''}
             </div>
-            <div class="lesson-cell lesson-homework" style="border-right:none;" data-lesson='${JSON.stringify({ name, time, cab, homework })}'>
+            <div class="lesson-cell lesson-homework" style="border-right:none;" data-lesson='${lessonData}'>
               <div class="homework-preview">${homeworkDisplay}</div>
             </div>
           `;
         }
       }
-      html += `</div></div>`;
-    }
-    html += '</div>';
-    scheduleContainer.innerHTML = html;
 
+      dayHtml += `</div></div></div>`;
+
+      if (isPast) {
+        pastHtml += dayHtml;
+        hasPast = true;
+      } else {
+        futureDayKeys.push(dayKey);
+        hasFuture = true;
+      }
+    }
+
+    let result = '<div class="schedule-grid">';
+
+    // Прошедшие дни — наверх, скрыты по умолчанию
+    if (hasPast) {
+      result += `
+        <button class="show-past-btn" onclick="togglePast()">
+          <span class="material-symbols-outlined">unfold_more</span>
+          Показать прошедшие дни
+        </button>
+        <div class="past-section" id="pastSection">
+          ${pastHtml}
+        </div>
+      `;
+    }
+
+    // Будущие дни — снизу, показываем по 5 штук
+    if (hasFuture) {
+      result += `<div class="future-days-wrapper" id="futureDaysWrapper">`;
+
+      let visibleCount = 0;
+      const totalFuture = futureDayKeys.length;
+
+      for (let i = 0; i < futureDayKeys.length; i++) {
+        const dayKey = futureDayKeys[i];
+        const dayData = scheduleData[dayKey];
+        if (!dayData) continue;
+
+        let dayHeader = `День ${dayKey + 1}`;
+        if (dayData.date) {
+          dayHeader = formatDayHeader(dayData.date);
+        } else if (dayData.name) {
+          dayHeader = dayData.name;
+        }
+
+        const lessons = dayData.lessons || {};
+        const lessonKeys = Object.keys(lessons).map(Number).sort((a, b) => a - b);
+
+        let dayHtml = `
+          <div class="day-card ${i < 5 ? 'visible' : ''}" data-index="${i}">
+            <div class="day-header">
+              <span class="material-symbols-outlined">event_note</span>
+              ${escapeHtml(dayHeader)}
+            </div>
+            <div class="day-body">
+              <div class="lessons-grid">
+                <div class="lesson-cell lesson-number" style="font-weight:600;background:#f5f8fc;">№</div>
+                <div class="lesson-cell lesson-name" style="font-weight:600;background:#f5f8fc;">Урок</div>
+                <div class="lesson-cell lesson-homework" style="font-weight:600;background:#f5f8fc;border-right:none;">Домашнее задание</div>
+        `;
+
+        if (lessonKeys.length === 0) {
+          dayHtml += `
+            <div class="lesson-cell lesson-number">—</div>
+            <div class="lesson-cell lesson-name">Нет уроков</div>
+            <div class="lesson-cell lesson-homework" style="border-right:none;">—</div>
+          `;
+        } else {
+          for (const lessonKey of lessonKeys) {
+            const lesson = lessons[lessonKey];
+            if (!lesson) continue;
+            const name = lesson.name || `Урок ${lessonKey + 1}`;
+            const time = lesson.time || '';
+            const homework = lesson.homework || '';
+            const cab = lesson.cab ?? '';
+
+            let homeworkDisplay = homework ? processHomeworkText(homework) : '<span class="homework-empty">нет задания</span>';
+            const lessonData = JSON.stringify({ name, time, cab, homework });
+
+            dayHtml += `
+              <div class="lesson-cell lesson-number">${lessonKey + 1}</div>
+              <div class="lesson-cell lesson-name" data-lesson='${lessonData}'>
+                ${escapeHtml(name)}${time ? `<span class="lesson-time">${escapeHtml(time)}</span>` : ''}
+              </div>
+              <div class="lesson-cell lesson-homework" style="border-right:none;" data-lesson='${lessonData}'>
+                <div class="homework-preview">${homeworkDisplay}</div>
+              </div>
+            `;
+          }
+        }
+
+        dayHtml += `</div></div></div>`;
+        result += dayHtml;
+      }
+
+      // Кнопка "Загрузить ещё"
+      if (totalFuture > 5) {
+        result += `
+          <button class="load-more-btn visible" id="loadMoreBtn" onclick="loadMoreDays()">
+            <span class="material-symbols-outlined">expand_more</span>
+            Показать ещё 5 дней
+          </button>
+        `;
+      }
+
+      result += `</div>`;
+    }
+
+    result += '</div>';
+    scheduleContainer.innerHTML = result;
+
+    // Сохраняем состояние для кнопки прошедших дней
+    window.pastVisible = false;
+    window.togglePast = function() {
+      const section = document.getElementById('pastSection');
+      const btn = document.querySelector('.show-past-btn');
+      if (!section || !btn) return;
+      window.pastVisible = !window.pastVisible;
+      section.classList.toggle('visible', window.pastVisible);
+      btn.innerHTML = window.pastVisible
+        ? '<span class="material-symbols-outlined">unfold_less</span> Скрыть прошедшие дни'
+        : '<span class="material-symbols-outlined">unfold_more</span> Показать прошедшие дни';
+    };
+
+    // Логика "Загрузить ещё 5 дней"
+    window.loadMoreDays = function() {
+      const wrapper = document.getElementById('futureDaysWrapper');
+      if (!wrapper) return;
+      const cards = wrapper.querySelectorAll('.day-card');
+      let visibleCount = 0;
+      for (const card of cards) {
+        if (card.classList.contains('visible')) visibleCount++;
+      }
+      let loaded = 0;
+      for (const card of cards) {
+        if (!card.classList.contains('visible')) {
+          card.classList.add('visible');
+          loaded++;
+          if (loaded >= 5) break;
+        }
+      }
+      const btn = document.getElementById('loadMoreBtn');
+      if (btn) {
+        const allVisible = cards.length === wrapper.querySelectorAll('.day-card.visible').length;
+        if (allVisible) {
+          btn.classList.remove('visible');
+        }
+      }
+    };
+
+    // Клик по уроку
     document.querySelectorAll('.lesson-name, .lesson-homework').forEach(el => {
       el.addEventListener('click', () => {
         const data = el.dataset.lesson;
@@ -303,7 +560,7 @@
     }
   });
 
-  console.log('✅ Дневник с поддержкой <a> и автоссылок');
+  console.log('✅ Дневник: прошедшие дни наверху, пагинация по 5 дней');
 </script>
 </body>
 </html>
