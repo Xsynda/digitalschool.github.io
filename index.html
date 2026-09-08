@@ -20,7 +20,6 @@
       padding-top: 80px;
     }
 
-    /* ----- ФИКСИРОВАННАЯ ШАПКА ----- */
     .navbar {
       position: fixed;
       top: 0;
@@ -101,11 +100,6 @@
       background: #f0f4fe;
       border-color: #d0dae9;
     }
-    .nav-link.active {
-      background: #e5effb;
-      border-color: #2a7de1;
-      color: #2a7de1;
-    }
     .nav-link .material-symbols-outlined {
       font-size: 18px;
     }
@@ -167,7 +161,6 @@
       transform: scale(0.97);
     }
 
-    /* ----- ОСНОВНОЙ КОНТЕНТ ----- */
     .container {
       max-width: 900px;
       margin: 0 auto;
@@ -271,7 +264,6 @@
       color: #6a7f9e;
     }
 
-    /* ----- КНОПКА РЕДАКТИРОВАНИЯ НОВОСТЕЙ (под виджетом) ----- */
     .admin-actions {
       margin-top: 24px;
       display: flex;
@@ -332,23 +324,17 @@
 </head>
 <body>
 
-<!-- ФИКСИРОВАННАЯ ШАПКА -->
 <header class="navbar" id="navbar">
   <div class="navbar-left">
     <div class="logo-area">
       <div class="logo-icon">Ш</div>
       <div class="logo-text">Электро<span>школа</span></div>
     </div>
-    <nav class="nav-links" id="navLinks">
-      <!-- Кнопки навигации будут добавлены через JS -->
-    </nav>
+    <nav class="nav-links" id="navLinks"></nav>
   </div>
-  <div class="navbar-right" id="userArea">
-    <!-- Имя пользователя (кликабельное) будет добавлено через JS -->
-  </div>
+  <div class="navbar-right" id="userArea"></div>
 </header>
 
-<!-- ОСНОВНОЙ КОНТЕНТ -->
 <div class="container">
   <div class="section-title">
     <span class="material-symbols-outlined">newspaper</span>
@@ -359,7 +345,6 @@
     <div class="loading">⏳ Загрузка новостей...</div>
   </div>
 
-  <!-- Кнопка для администратора (под новостями) -->
   <div class="admin-actions" id="adminActions" style="display: none;">
     <a href="editNews.html" class="btn-admin" target="_blank">
       <span class="material-symbols-outlined" style="font-size:20px;">edit_note</span>
@@ -376,8 +361,7 @@
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
   import {
     getAuth,
-    onAuthStateChanged,
-    signOut
+    onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
   import {
     getDatabase,
@@ -402,26 +386,21 @@
   const auth = getAuth(app);
   const db = getDatabase(app);
 
-  // ----- Константы -----
   const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
   const DIARY_URL = 'diary.html';
   const MAGAZINE_URL = 'magazine.html';
   const ACCOUNT_URL = 'account.html';
   const NEWS_COUNT = 15;
 
-  // ----- DOM -----
   const navLinks = document.getElementById('navLinks');
   const userArea = document.getElementById('userArea');
   const newsContainer = document.getElementById('newsContainer');
   const adminActions = document.getElementById('adminActions');
 
-  // ----- Функция перенаправления -----
   function redirectToAuth() {
-    console.log('🔄 Неавторизован, перенаправление на:', AUTH_URL);
     window.location.href = AUTH_URL;
   }
 
-  // ----- Форматирование даты -----
   function formatDate(timestamp) {
     if (!timestamp) return '—';
     const date = new Date(timestamp * 1000);
@@ -441,7 +420,6 @@
     return div.innerHTML;
   }
 
-  // ----- Рендер новостей -----
   function renderNews(newsData) {
     if (!newsData || Object.keys(newsData).length === 0) {
       newsContainer.innerHTML = `
@@ -457,31 +435,17 @@
     const keys = Object.keys(newsData).map(Number).sort((a, b) => b - a);
     const topKeys = keys.slice(0, NEWS_COUNT);
 
-    if (topKeys.length === 0) {
-      newsContainer.innerHTML = `
-        <div class="empty-state">
-          <span class="material-symbols-outlined">feed_off</span>
-          <h3>Новостей пока нет</h3>
-          <p>Скоро здесь появятся первые новости</p>
-        </div>
-      `;
-      return;
-    }
-
     let html = '<div class="news-list">';
     for (const key of topKeys) {
       const item = newsData[key];
       if (!item) continue;
-      const title = item.title || 'Без названия';
-      const desc = item.desc || '';
-      const date = formatDate(item.date);
       html += `
         <div class="news-item">
           <div class="news-header">
-            <div class="news-title">${escapeHtml(title)}</div>
-            <div class="news-date">${date}</div>
+            <div class="news-title">${escapeHtml(item.title || 'Без названия')}</div>
+            <div class="news-date">${formatDate(item.date)}</div>
           </div>
-          ${desc ? `<div class="news-desc">${escapeHtml(desc)}</div>` : ''}
+          ${item.desc ? `<div class="news-desc">${escapeHtml(item.desc)}</div>` : ''}
         </div>
       `;
     }
@@ -489,7 +453,6 @@
     newsContainer.innerHTML = html;
   }
 
-  // ----- Загрузка новостей -----
   function loadNews() {
     const newsRef = ref(db, 'news');
     onValue(newsRef, (snapshot) => {
@@ -510,9 +473,8 @@
     });
   }
 
-  // ----- Рендер шапки -----
   function renderHeader(user, isAdmin) {
-    // Навигация: Дневник/Журнал + Аккаунт
+    // Только Дневник/Журнал — без кнопки Аккаунт
     const diaryLabel = isAdmin ? 'Журнал' : 'Дневник';
     const diaryUrl = isAdmin ? MAGAZINE_URL : DIARY_URL;
     const diaryIcon = isAdmin ? 'grading' : 'calendar_month';
@@ -522,13 +484,8 @@
         <span class="material-symbols-outlined">${diaryIcon}</span>
         ${diaryLabel}
       </a>
-      <a href="${ACCOUNT_URL}" class="nav-link">
-        <span class="material-symbols-outlined">account_circle</span>
-        Аккаунт
-      </a>
     `;
 
-    // Пользовательская зона (только имя, кликабельное → аккаунт)
     if (user) {
       const displayName = user.displayName || user.email || 'Пользователь';
       userArea.innerHTML = `
@@ -546,15 +503,9 @@
       `;
     }
 
-    // Показываем/скрываем кнопку редактирования новостей
-    if (isAdmin) {
-      adminActions.style.display = 'flex';
-    } else {
-      adminActions.style.display = 'none';
-    }
+    adminActions.style.display = isAdmin ? 'flex' : 'none';
   }
 
-  // ----- Загрузка данных пользователя -----
   function loadUserAndRender(user) {
     if (!user) {
       renderHeader(null, false);
@@ -578,7 +529,6 @@
     });
   }
 
-  // ----- Следим за состоянием авторизации -----
   onAuthStateChanged(auth, (user) => {
     if (user) {
       loadUserAndRender(user);
@@ -587,9 +537,8 @@
     }
   });
 
-  // ----- Запуск -----
   loadNews();
-  console.log('✅ Главная страница с обновлёнными ссылками');
+  console.log('✅ Главная страница (без кнопки Аккаунт)');
 </script>
 </body>
 </html>
