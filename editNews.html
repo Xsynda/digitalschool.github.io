@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Редактирование новостей · Электронная школа</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8faff;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 48px;
+      box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08);
+      padding: 32px 40px 44px;
+      border: 1px solid #f0f5fe;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eef3fa;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-icon {
+      background: #2a7de1;
+      color: white;
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 600;
+      box-shadow: 0 8px 18px rgba(42, 125, 225, 0.20);
+    }
+    .logo-text {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: #0a1e3c;
+    }
+    .logo-text span { color: #2a7de1; }
+    .back-link {
+      color: #2a7de1;
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #0a1e3c;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .news-editor {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .news-editor-item {
+      background: #f9fcff;
+      border-radius: 24px;
+      padding: 20px 24px;
+      border: 1px solid #eef3fa;
+    }
+    .news-editor-item .field {
+      margin-bottom: 10px;
+    }
+    .news-editor-item label {
+      font-weight: 500;
+      font-size: 14px;
+      color: #1f2b48;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .news-editor-item input, .news-editor-item textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #dce4ef;
+      border-radius: 16px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      transition: 0.15s;
+      background: #ffffff;
+    }
+    .news-editor-item input:focus, .news-editor-item textarea:focus {
+      outline: none;
+      border-color: #2a7de1;
+      box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10);
+    }
+    .news-editor-item .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-primary {
+      background: #2a7de1;
+      color: white;
+      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.25);
+    }
+    .btn-primary:hover { background: #1a5fb0; transform: scale(0.97); }
+    .btn-success {
+      background: #1a8a4a;
+      color: white;
+      box-shadow: 0 4px 12px rgba(26, 138, 74, 0.25);
+    }
+    .btn-success:hover { background: #146e3a; transform: scale(0.97); }
+    .btn-danger {
+      background: #c74a4a;
+      color: white;
+      box-shadow: 0 4px 12px rgba(199, 74, 74, 0.25);
+    }
+    .btn-danger:hover { background: #a33a3a; transform: scale(0.97); }
+    .btn-outline {
+      background: transparent;
+      color: #1f2b48;
+      border: 1.5px solid #d0dae9;
+    }
+    .btn-outline:hover { background: #f0f4fe; }
+
+    .add-news {
+      margin-top: 24px;
+      padding: 20px 24px;
+      background: #f0f6ff;
+      border-radius: 24px;
+      border: 2px dashed #d0dae9;
+    }
+    .add-news .fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .add-news .fields .full-width {
+      grid-column: 1 / -1;
+    }
+    .add-news label {
+      font-weight: 500;
+      font-size: 14px;
+      color: #1f2b48;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .add-news input, .add-news textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #dce4ef;
+      border-radius: 16px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+    }
+    .add-news input:focus, .add-news textarea:focus {
+      outline: none;
+      border-color: #2a7de1;
+      box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10);
+    }
+    .add-news .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .empty-state { text-align: center; padding: 48px 20px; color: #6a7f9e; }
+    .empty-state .material-symbols-outlined { font-size: 48px; color: #d0dae9; margin-bottom: 12px; }
+
+    .loading { text-align: center; padding: 40px; color: #6a7f9e; }
+
+    @media (max-width: 600px) {
+      .container { padding: 20px; }
+      .add-news .fields { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo-area">
+      <div class="logo-icon">Ш</div>
+      <div class="logo-text">Электро<span>школа</span></div>
+    </div>
+    <a href="index.html" class="back-link">
+      <span class="material-symbols-outlined" style="font-size:20px;">arrow_back</span>
+      На главную
+    </a>
+  </div>
+
+  <div class="section-title">
+    <span class="material-symbols-outlined">edit_note</span>
+    Управление новостями
+  </div>
+
+  <div id="newsList">
+    <div class="loading">⏳ Загрузка новостей...</div>
+  </div>
+
+  <!-- Форма добавления новости -->
+  <div class="add-news">
+    <h3 style="margin-bottom:16px; font-weight:600; color:#0a1e3c;">➕ Добавить новость</h3>
+    <div class="fields">
+      <div>
+        <label>Заголовок</label>
+        <input type="text" id="newTitle" placeholder="Заголовок новости" />
+      </div>
+      <div>
+        <label>Дата (Unix timestamp)</label>
+        <input type="number" id="newDate" placeholder="1735689600" />
+      </div>
+      <div class="full-width">
+        <label>Описание</label>
+        <textarea id="newDesc" rows="3" placeholder="Текст новости..."></textarea>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-success" id="addNewsBtn">➕ Добавить</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+  import {
+    getDatabase, ref, get, set, remove, child, onValue
+  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
+    authDomain: "digitalschool-f2c90.firebaseapp.com",
+    projectId: "digitalschool-f2c90",
+    storageBucket: "digitalschool-f2c90.firebasestorage.app",
+    messagingSenderId: "797143730107",
+    appId: "1:797143730107:web:b19437db896170d88b269e",
+    measurementId: "G-FT9ENP491P"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
+  const newsList = document.getElementById('newsList');
+
+  // ----- Проверка прав администратора -----
+  async function checkAdmin(user) {
+    if (!user) {
+      window.location.href = AUTH_URL;
+      return false;
+    }
+    try {
+      const snapshot = await get(ref(db, 'users/' + user.uid));
+      if (snapshot.exists() && snapshot.val().status === 3) {
+        return true;
+      }
+      alert('⛔ У вас нет прав администратора');
+      window.location.href = 'index.html';
+      return false;
+    } catch (e) {
+      console.error('Ошибка проверки прав:', e);
+      return false;
+    }
+  }
+
+  // ----- Загрузка и отображение новостей -----
+  function renderNews(newsData) {
+    if (!newsData || Object.keys(newsData).length === 0) {
+      newsList.innerHTML = `
+        <div class="empty-state">
+          <span class="material-symbols-outlined">feed_off</span>
+          <h3>Новостей пока нет</h3>
+          <p>Добавьте первую новость с помощью формы ниже</p>
+        </div>
+      `;
+      return;
+    }
+
+    const keys = Object.keys(newsData).map(Number).sort((a, b) => b - a);
+    let html = '';
+    for (const key of keys) {
+      const item = newsData[key];
+      if (!item) continue;
+      const title = item.title || 'Без названия';
+      const desc = item.desc || '';
+      const date = item.date ? new Date(item.date * 1000).toLocaleString('ru-RU') : '—';
+      html += `
+        <div class="news-editor-item" data-key="${key}">
+          <div class="field">
+            <label>Заголовок</label>
+            <input type="text" class="edit-title" value="${escapeHtml(title)}" />
+          </div>
+          <div class="field">
+            <label>Описание</label>
+            <textarea class="edit-desc" rows="2">${escapeHtml(desc)}</textarea>
+          </div>
+          <div class="field">
+            <label>Дата (Unix timestamp)</label>
+            <input type="number" class="edit-date" value="${item.date || ''}" />
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary save-news-btn">💾 Сохранить</button>
+            <button class="btn btn-danger delete-news-btn">🗑️ Удалить</button>
+          </div>
+        </div>
+      `;
+    }
+    newsList.innerHTML = html;
+
+    // Обработчики для кнопок
+    document.querySelectorAll('.save-news-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const item = e.target.closest('.news-editor-item');
+        const key = parseInt(item.dataset.key);
+        const title = item.querySelector('.edit-title').value.trim();
+        const desc = item.querySelector('.edit-desc').value.trim();
+        const date = parseInt(item.querySelector('.edit-date').value);
+        if (!title) { alert('Заголовок не может быть пустым'); return; }
+        if (!date) { alert('Укажите корректную дату'); return; }
+        try {
+          await set(ref(db, 'news/' + key), { title, desc, date });
+          console.log('✅ Новость обновлена');
+        } catch (e) { console.error('Ошибка сохранения:', e); alert('Ошибка сохранения'); }
+      });
+    });
+
+    document.querySelectorAll('.delete-news-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        if (!confirm('Удалить эту новость?')) return;
+        const item = e.target.closest('.news-editor-item');
+        const key = parseInt(item.dataset.key);
+        try {
+          await remove(ref(db, 'news/' + key));
+          console.log('✅ Новость удалена');
+        } catch (e) { console.error('Ошибка удаления:', e); alert('Ошибка удаления'); }
+      });
+    });
+  }
+
+  function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function loadNews() {
+    const newsRef = ref(db, 'news');
+    onValue(newsRef, (snapshot) => {
+      if (snapshot.exists()) {
+        renderNews(snapshot.val());
+      } else {
+        renderNews(null);
+      }
+    }, (error) => {
+      console.error('Ошибка загрузки:', error);
+      newsList.innerHTML = `<div class="empty-state"><h3>Ошибка загрузки</h3></div>`;
+    });
+  }
+
+  // ----- Добавление новости -----
+  document.getElementById('addNewsBtn').addEventListener('click', async () => {
+    const title = document.getElementById('newTitle').value.trim();
+    const desc = document.getElementById('newDesc').value.trim();
+    const date = parseInt(document.getElementById('newDate').value);
+    if (!title) { alert('Введите заголовок'); return; }
+    if (!date) { alert('Введите дату (Unix timestamp)'); return; }
+
+    try {
+      // Получаем текущие ключи, чтобы найти максимальный
+      const snapshot = await get(ref(db, 'news'));
+      let maxKey = -1;
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const keys = Object.keys(data).map(Number);
+        maxKey = keys.length > 0 ? Math.max(...keys) : -1;
+      }
+      const newKey = maxKey + 1;
+      await set(ref(db, 'news/' + newKey), { title, desc, date });
+      document.getElementById('newTitle').value = '';
+      document.getElementById('newDesc').value = '';
+      document.getElementById('newDate').value = '';
+      console.log('✅ Новость добавлена с индексом', newKey);
+    } catch (e) {
+      console.error('Ошибка добавления:', e);
+      alert('Ошибка добавления новости');
+    }
+  });
+
+  // ----- Авторизация -----
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = AUTH_URL;
+      return;
+    }
+    const isAdmin = await checkAdmin(user);
+    if (isAdmin) {
+      loadNews();
+    }
+  });
+</script>
+</body>
+</html>
