@@ -17,52 +17,55 @@
       font-family: 'Inter', sans-serif;
       background: #f8faff;
       min-height: 100vh;
-      padding: 24px;
+      padding-top: 80px; /* Отступ под фиксированную шапку */
     }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
+    /* ----- ФИКСИРОВАННАЯ ШАПКА ----- */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
       background: #ffffff;
-      border-radius: 48px;
-      box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08);
-      padding: 40px 40px 44px;
-      border: 1px solid #f0f5fe;
-    }
-
-    .header {
+      border-bottom: 1px solid #eef3fa;
+      box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06);
+      padding: 12px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
       gap: 16px;
-      margin-bottom: 32px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid #eef3fa;
     }
 
     .logo-area {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .logo-icon {
       background: #2a7de1;
       color: white;
-      width: 44px;
-      height: 44px;
-      border-radius: 16px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 600;
-      box-shadow: 0 8px 18px rgba(42, 125, 225, 0.20);
+      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20);
     }
 
     .logo-text {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 600;
       letter-spacing: -0.3px;
       color: #0a1e3c;
@@ -71,7 +74,43 @@
       color: #2a7de1;
     }
 
-    .user-area {
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 14px;
+      color: #1f2b48;
+      text-decoration: none;
+      transition: 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .nav-link:hover {
+      background: #f0f4fe;
+      border-color: #d0dae9;
+    }
+    .nav-link.active {
+      background: #e5effb;
+      border-color: #2a7de1;
+      color: #2a7de1;
+    }
+    .nav-link .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    .navbar-right {
       display: flex;
       align-items: center;
       gap: 12px;
@@ -83,7 +122,7 @@
       align-items: center;
       gap: 8px;
       background: #f0f6ff;
-      padding: 8px 16px;
+      padding: 6px 16px 6px 12px;
       border-radius: 40px;
       font-size: 14px;
       font-weight: 500;
@@ -96,10 +135,10 @@
 
     .btn {
       border: none;
-      padding: 8px 20px;
+      padding: 6px 18px;
       border-radius: 40px;
       font-weight: 500;
-      font-size: 14px;
+      font-size: 13px;
       cursor: pointer;
       transition: 0.2s;
       display: inline-flex;
@@ -112,7 +151,7 @@
     .btn-primary {
       background: #2a7de1;
       color: white;
-      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.25);
+      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20);
     }
     .btn-primary:hover {
       background: #1a5fb0;
@@ -132,11 +171,22 @@
     .btn-admin {
       background: #8b5cf6;
       color: white;
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.20);
     }
     .btn-admin:hover {
       background: #7c3aed;
       transform: scale(0.97);
+    }
+
+    /* ----- ОСНОВНОЙ КОНТЕНТ ----- */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 48px;
+      box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08);
+      padding: 32px 40px 44px;
+      border: 1px solid #f0f5fe;
     }
 
     .section-title {
@@ -232,23 +282,54 @@
       color: #6a7f9e;
     }
 
-    @media (max-width: 600px) {
-      .container { padding: 24px 20px; }
-      .header { flex-direction: column; align-items: stretch; }
-      .user-area { justify-content: flex-start; }
+    @media (max-width: 700px) {
+      .navbar {
+        padding: 10px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .navbar-left {
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+      .nav-links {
+        justify-content: flex-start;
+      }
+      .navbar-right {
+        justify-content: flex-start;
+      }
+      body {
+        padding-top: 130px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 20px 16px 28px; border-radius: 32px; }
+      .navbar-left { flex-direction: column; align-items: flex-start; gap: 6px; }
     }
   </style>
 </head>
 <body>
-<div class="container" id="app">
-  <header class="header">
+
+<!-- ФИКСИРОВАННАЯ ШАПКА -->
+<header class="navbar" id="navbar">
+  <div class="navbar-left">
     <div class="logo-area">
       <div class="logo-icon">Ш</div>
       <div class="logo-text">Электро<span>школа</span></div>
     </div>
-    <div class="user-area" id="userArea"></div>
-  </header>
+    <nav class="nav-links" id="navLinks">
+      <!-- Кнопки навигации будут добавлены через JS -->
+    </nav>
+  </div>
+  <div class="navbar-right" id="userArea">
+    <!-- Заполняется через JS -->
+  </div>
+</header>
 
+<!-- ОСНОВНОЙ КОНТЕНТ -->
+<div class="container">
   <div class="section-title">
     <span class="material-symbols-outlined">newspaper</span>
     Последние новости
@@ -296,13 +377,16 @@
   // ----- Константы -----
   const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
   const ADMIN_URL = 'https://sites.google.com/view/digitallenschool/editnews';
+  const DIARY_URL = '#'; // Замените на реальную ссылку на дневник
+  const ACCOUNT_URL = '#'; // Замените на реальную ссылку на аккаунт
   const NEWS_COUNT = 15;
 
   // ----- DOM -----
+  const navLinks = document.getElementById('navLinks');
   const userArea = document.getElementById('userArea');
   const newsContainer = document.getElementById('newsContainer');
 
-  // ----- Функция перенаправления на авторизацию -----
+  // ----- Функция перенаправления -----
   function redirectToAuth() {
     console.log('🔄 Неавторизован, перенаправление на:', AUTH_URL);
     window.location.href = AUTH_URL;
@@ -341,7 +425,6 @@
       return;
     }
 
-    // Сортируем ключи (индексы) по убыванию — от новых к старым
     const keys = Object.keys(newsData).map(Number).sort((a, b) => b - a);
     const topKeys = keys.slice(0, NEWS_COUNT);
 
@@ -398,81 +481,94 @@
     });
   }
 
-  // ----- Рендер пользовательской зоны -----
-  function renderUserArea(user) {
+  // ----- Рендер шапки (навигация + пользователь) -----
+  function renderHeader(user, isAdmin) {
+    // Навигация
+    const diaryLabel = isAdmin ? 'Журнал' : 'Дневник';
+    navLinks.innerHTML = `
+      <a href="${DIARY_URL}" class="nav-link">
+        <span class="material-symbols-outlined">${isAdmin ? 'grading' : 'calendar_month'}</span>
+        ${diaryLabel}
+      </a>
+      <a href="${ACCOUNT_URL}" class="nav-link">
+        <span class="material-symbols-outlined">account_circle</span>
+        Аккаунт
+      </a>
+    `;
+
+    // Пользовательская зона
     if (user) {
-      const userRef = ref(db, 'users/' + user.uid);
-      get(userRef).then((snapshot) => {
-        let isAdmin = false;
-        let userName = user.email;
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          userName = data.name || user.email;
-          isAdmin = (data.status === 3);
-        }
-        
-        let html = `
-          <div class="user-badge">
-            <span class="material-symbols-outlined">account_circle</span>
-            ${escapeHtml(userName)}
-          </div>
-        `;
-        
-        if (isAdmin) {
-          html += `
-            <a href="${ADMIN_URL}" class="btn btn-admin" target="_blank">
-              <span class="material-symbols-outlined" style="font-size:18px;">edit_note</span>
-              Редактировать новости
-            </a>
-          `;
-        }
-        
+      let html = `
+        <div class="user-badge">
+          <span class="material-symbols-outlined">account_circle</span>
+          ${escapeHtml(user.displayName || user.email || 'Пользователь')}
+        </div>
+      `;
+      
+      if (isAdmin) {
         html += `
-          <button class="btn btn-danger" id="logoutBtn">
-            <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
-            Выйти
-          </button>
+          <a href="${ADMIN_URL}" class="btn btn-admin" target="_blank">
+            <span class="material-symbols-outlined" style="font-size:18px;">edit_note</span>
+            Редактировать новости
+          </a>
         `;
-        
-        userArea.innerHTML = html;
-        
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-          try {
-            await signOut(auth);
-          } catch (e) {
-            console.warn('Ошибка выхода:', e);
-          }
-        });
-      }).catch((err) => {
-        console.warn('Ошибка получения профиля:', err);
-        userArea.innerHTML = `
-          <div class="user-badge">
-            <span class="material-symbols-outlined">account_circle</span>
-            ${escapeHtml(user.email)}
-          </div>
-          <button class="btn btn-danger" id="logoutBtn">
-            <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
-            Выйти
-          </button>
-        `;
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-          try {
-            await signOut(auth);
-          } catch (e) {
-            console.warn('Ошибка выхода:', e);
-          }
-        });
+      }
+      
+      html += `
+        <button class="btn btn-danger" id="logoutBtn">
+          <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
+          Выйти
+        </button>
+      `;
+      
+      userArea.innerHTML = html;
+      
+      document.getElementById('logoutBtn').addEventListener('click', async () => {
+        try {
+          await signOut(auth);
+        } catch (e) {
+          console.warn('Ошибка выхода:', e);
+        }
       });
     } else {
-      // Неавторизован — перенаправляем на страницу входа
-      redirectToAuth();
+      userArea.innerHTML = `
+        <a href="${AUTH_URL}" class="btn btn-primary">
+          <span class="material-symbols-outlined" style="font-size:18px;">login</span>
+          Войти
+        </a>
+      `;
     }
+  }
+
+  // ----- Загрузка данных пользователя и рендер -----
+  function loadUserAndRender(user) {
+    if (!user) {
+      renderHeader(null, false);
+      return;
+    }
+
+    const userRef = ref(db, 'users/' + user.uid);
+    get(userRef).then((snapshot) => {
+      let isAdmin = false;
+      let displayName = user.email;
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        displayName = data.name || user.email;
+        isAdmin = (data.status === 3);
+      }
+      // Сохраняем displayName в user для отображения
+      user.displayName = displayName;
+      renderHeader(user, isAdmin);
+    }).catch((err) => {
+      console.warn('Ошибка получения профиля:', err);
+      renderHeader(user, false);
+    });
   }
 
   // ----- Следим за состоянием авторизации -----
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      renderUserArea(user);
+      loadUserAndRender(user);
     } else {
       redirectToAuth();
     }
@@ -480,7 +576,7 @@
 
   // ----- Запуск -----
   loadNews();
-  console.log('✅ Главная страница Электронной школы');
+  console.log('✅ Главная страница Электронной школы с фиксированной шапкой');
 </script>
 </body>
 </html>
