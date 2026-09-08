@@ -17,7 +17,7 @@
       font-family: 'Inter', sans-serif;
       background: #f8faff;
       min-height: 100vh;
-      padding-top: 80px; /* Отступ под фиксированную шапку */
+      padding-top: 80px;
     }
 
     /* ----- ФИКСИРОВАННАЯ ШАПКА ----- */
@@ -127,6 +127,15 @@
       font-size: 14px;
       font-weight: 500;
       color: #0a1e3c;
+      cursor: pointer;
+      transition: 0.15s;
+      text-decoration: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .user-badge:hover {
+      background: #e5effb;
+      transform: scale(0.97);
     }
     .user-badge .material-symbols-outlined {
       color: #2a7de1;
@@ -155,26 +164,6 @@
     }
     .btn-primary:hover {
       background: #1a5fb0;
-      transform: scale(0.97);
-    }
-
-    .btn-danger {
-      color: #b14a4a;
-      border: 1.5px solid #e0cdcd;
-      background: transparent;
-    }
-    .btn-danger:hover {
-      background: #fff2f2;
-      border-color: #b14a4a;
-    }
-
-    .btn-admin {
-      background: #8b5cf6;
-      color: white;
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.20);
-    }
-    .btn-admin:hover {
-      background: #7c3aed;
       transform: scale(0.97);
     }
 
@@ -282,6 +271,37 @@
       color: #6a7f9e;
     }
 
+    /* ----- КНОПКА РЕДАКТИРОВАНИЯ НОВОСТЕЙ (под виджетом) ----- */
+    .admin-actions {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-admin {
+      background: #8b5cf6;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+    }
+    .btn-admin:hover {
+      background: #7c3aed;
+      transform: scale(0.97);
+    }
+
     @media (max-width: 700px) {
       .navbar {
         padding: 10px 16px;
@@ -320,11 +340,11 @@
       <div class="logo-text">Электро<span>школа</span></div>
     </div>
     <nav class="nav-links" id="navLinks">
-      <!-- Кнопки навигации будут добавлены через JS -->
+      <!-- Кнопка Дневник/Журнал будет добавлена через JS -->
     </nav>
   </div>
   <div class="navbar-right" id="userArea">
-    <!-- Заполняется через JS -->
+    <!-- Имя пользователя (кликабельное) будет добавлено через JS -->
   </div>
 </header>
 
@@ -337,6 +357,14 @@
 
   <div id="newsContainer">
     <div class="loading">⏳ Загрузка новостей...</div>
+  </div>
+
+  <!-- Кнопка для администратора (под новостями) -->
+  <div class="admin-actions" id="adminActions" style="display: none;">
+    <a href="https://sites.google.com/view/digitallenschool/editnews" class="btn-admin" target="_blank">
+      <span class="material-symbols-outlined" style="font-size:20px;">edit_note</span>
+      Редактировать новости
+    </a>
   </div>
 
   <div class="footer">© 2026 · Электронная школа</div>
@@ -376,7 +404,6 @@
 
   // ----- Константы -----
   const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
-  const ADMIN_URL = 'https://sites.google.com/view/digitallenschool/editnews';
   const DIARY_URL = '#'; // Замените на реальную ссылку на дневник
   const ACCOUNT_URL = '#'; // Замените на реальную ссылку на аккаунт
   const NEWS_COUNT = 15;
@@ -385,6 +412,7 @@
   const navLinks = document.getElementById('navLinks');
   const userArea = document.getElementById('userArea');
   const newsContainer = document.getElementById('newsContainer');
+  const adminActions = document.getElementById('adminActions');
 
   // ----- Функция перенаправления -----
   function redirectToAuth() {
@@ -481,55 +509,26 @@
     });
   }
 
-  // ----- Рендер шапки (навигация + пользователь) -----
+  // ----- Рендер шапки -----
   function renderHeader(user, isAdmin) {
-    // Навигация
+    // Навигация (только Дневник/Журнал)
     const diaryLabel = isAdmin ? 'Журнал' : 'Дневник';
     navLinks.innerHTML = `
       <a href="${DIARY_URL}" class="nav-link">
         <span class="material-symbols-outlined">${isAdmin ? 'grading' : 'calendar_month'}</span>
         ${diaryLabel}
       </a>
-      <a href="${ACCOUNT_URL}" class="nav-link">
-        <span class="material-symbols-outlined">account_circle</span>
-        Аккаунт
-      </a>
     `;
 
-    // Пользовательская зона
+    // Пользовательская зона (только имя, кликабельное)
     if (user) {
-      let html = `
-        <div class="user-badge">
+      const displayName = user.displayName || user.email || 'Пользователь';
+      userArea.innerHTML = `
+        <a href="${ACCOUNT_URL}" class="user-badge">
           <span class="material-symbols-outlined">account_circle</span>
-          ${escapeHtml(user.displayName || user.email || 'Пользователь')}
-        </div>
+          ${escapeHtml(displayName)}
+        </a>
       `;
-      
-      if (isAdmin) {
-        html += `
-          <a href="${ADMIN_URL}" class="btn btn-admin" target="_blank">
-            <span class="material-symbols-outlined" style="font-size:18px;">edit_note</span>
-            Редактировать новости
-          </a>
-        `;
-      }
-      
-      html += `
-        <button class="btn btn-danger" id="logoutBtn">
-          <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
-          Выйти
-        </button>
-      `;
-      
-      userArea.innerHTML = html;
-      
-      document.getElementById('logoutBtn').addEventListener('click', async () => {
-        try {
-          await signOut(auth);
-        } catch (e) {
-          console.warn('Ошибка выхода:', e);
-        }
-      });
     } else {
       userArea.innerHTML = `
         <a href="${AUTH_URL}" class="btn btn-primary">
@@ -538,9 +537,16 @@
         </a>
       `;
     }
+
+    // Показываем/скрываем кнопку редактирования новостей
+    if (isAdmin) {
+      adminActions.style.display = 'flex';
+    } else {
+      adminActions.style.display = 'none';
+    }
   }
 
-  // ----- Загрузка данных пользователя и рендер -----
+  // ----- Загрузка данных пользователя -----
   function loadUserAndRender(user) {
     if (!user) {
       renderHeader(null, false);
@@ -556,7 +562,6 @@
         displayName = data.name || user.email;
         isAdmin = (data.status === 3);
       }
-      // Сохраняем displayName в user для отображения
       user.displayName = displayName;
       renderHeader(user, isAdmin);
     }).catch((err) => {
@@ -576,7 +581,7 @@
 
   // ----- Запуск -----
   loadNews();
-  console.log('✅ Главная страница Электронной школы с фиксированной шапкой');
+  console.log('✅ Главная страница с обновлённой шапкой');
 </script>
 </body>
 </html>
