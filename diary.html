@@ -57,7 +57,7 @@
     .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid #eef3fa; font-size: 13px; color: #889bb3; text-align: center; }
     .loading { text-align: center; padding: 40px; color: #6a7f9e; }
 
-    /* ----- МОДАЛЬНОЕ ОКНО ----- */
+    /* Модальное окно */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.35); backdrop-filter: blur(4px); align-items: center; justify-content: center; z-index: 2000; }
     .modal-overlay.active { display: flex; }
     .modal-card { background: #ffffff; max-width: 420px; width: 90%; padding: 32px 28px; border-radius: 32px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); animation: modalFade 0.2s ease; }
@@ -96,10 +96,7 @@
 
 <header class="navbar" id="navbar">
   <div class="navbar-left">
-    <div class="logo-area">
-      <div class="logo-icon">Ш</div>
-      <div class="logo-text">Электро<span>школа</span></div>
-    </div>
+    <div class="logo-area"><div class="logo-icon">Ш</div><div class="logo-text">Электро<span>школа</span></div></div>
     <nav class="nav-links" id="navLinks">
       <a href="index.html" class="nav-link"><span class="material-symbols-outlined">home</span> Главная</a>
       <a href="diary.html" class="nav-link active"><span class="material-symbols-outlined">calendar_month</span> Дневник</a>
@@ -115,7 +112,7 @@
   <div class="footer">© 2026 · Электронная школа</div>
 </div>
 
-<!-- МОДАЛЬНОЕ ОКНО -->
+<!-- Модальное окно -->
 <div class="modal-overlay" id="lessonModal">
   <div class="modal-card">
     <div class="modal-title" id="modalTitle">Название урока</div>
@@ -162,22 +159,30 @@
   const modalHomework = document.getElementById('modalHomework');
   const modalCloseBtn = document.getElementById('modalCloseBtn');
 
+  function processHomeworkText(text) {
+    if (!text) return 'Нет задания';
+    // Экранируем HTML, затем преобразуем ссылки
+    let processed = escapeHtml(text);
+    // Поддержка <a> тегов (преобразуем их обратно после экранирования)
+    // Сначала заменяем <a на специальный маркер, чтобы не экранировать
+    const linkRegex = /&lt;a\s+(.*?)&gt;(.*?)&lt;\/a&gt;/g;
+    processed = processed.replace(linkRegex, (match, attrs, content) => {
+      return `<a ${attrs}>${content}</a>`;
+    });
+    // Автоссылки http/https
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    processed = processed.replace(urlRegex, (url) => {
+      return `<a href="${url}" target="_blank" rel="noopener">${url}</a>`;
+    });
+    return processed;
+  }
+
   function openModal(lesson) {
     modalTitle.textContent = lesson.name || 'Без названия';
     modalTime.textContent = lesson.time ? `⏰ ${lesson.time}` : '⏰ Время не указано';
     modalCab.textContent = lesson.cab ?? '—';
-    // Поддержка ссылок в модалке
-    const homeworkText = lesson.homework || 'Нет задания';
-    modalHomework.innerHTML = linkifyText(escapeHtml(homeworkText));
+    modalHomework.innerHTML = processHomeworkText(lesson.homework);
     modal.classList.add('active');
-  }
-
-  function linkifyText(text) {
-    // Простой парсер ссылок: http://, https://
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return text.replace(urlRegex, (url) => {
-      return `<a href="${url}" target="_blank" rel="noopener">${url}</a>`;
-    });
   }
 
   modalCloseBtn.addEventListener('click', () => modal.classList.remove('active'));
@@ -212,8 +217,7 @@
           const time = lesson.time || '';
           const homework = lesson.homework || '';
           const cab = lesson.cab ?? '';
-          // Для превью ДЗ с поддержкой ссылок
-          let homeworkDisplay = homework ? linkifyText(escapeHtml(homework)) : '<span class="homework-empty">нет задания</span>';
+          let homeworkDisplay = homework ? processHomeworkText(homework) : '<span class="homework-empty">нет задания</span>';
           html += `
             <div class="lesson-cell lesson-number">${lessonKey + 1}</div>
             <div class="lesson-cell lesson-name" data-lesson='${JSON.stringify({ name, time, cab, homework })}'>
@@ -230,7 +234,6 @@
     html += '</div>';
     scheduleContainer.innerHTML = html;
 
-    // Обработчики клика на ячейки урока
     document.querySelectorAll('.lesson-name, .lesson-homework').forEach(el => {
       el.addEventListener('click', () => {
         const data = el.dataset.lesson;
@@ -300,7 +303,7 @@
     }
   });
 
-  console.log('✅ Дневник с поддержкой ссылок в ДЗ');
+  console.log('✅ Дневник с поддержкой <a> и автоссылок');
 </script>
 </body>
 </html>
