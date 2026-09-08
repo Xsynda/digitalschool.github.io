@@ -78,6 +78,14 @@
     .inline-fields { display: flex; gap: 10px; flex-wrap: wrap; }
     .inline-fields input, .inline-fields textarea { flex: 1; min-width: 100px; }
 
+    /* Редактор ссылок */
+    .link-editor { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .link-editor input[type="text"] { flex: 1; min-width: 120px; margin-bottom: 0; }
+    .link-editor .btn-link { padding: 8px 14px; border-radius: 40px; border: none; background: #eef3fa; color: #1f2b48; font-weight: 500; font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif; transition: 0.15s; white-space: nowrap; }
+    .link-editor .btn-link:hover { background: #dce4ef; }
+    .link-editor .btn-link-primary { background: #2a7de1; color: white; }
+    .link-editor .btn-link-primary:hover { background: #1a5fb0; }
+
     @media (max-width: 700px) {
       .navbar { padding: 10px 16px; flex-direction: column; align-items: stretch; gap: 8px; }
       .navbar-left { flex-wrap: wrap; justify-content: space-between; }
@@ -86,6 +94,7 @@
       body { padding-top: 130px; }
       .container { padding: 20px 16px 28px; border-radius: 32px; }
       .grid-2 { grid-template-columns: 1fr; }
+      .link-editor { flex-direction: column; }
     }
     @media (max-width: 480px) {
       .list-item { flex-direction: column; align-items: stretch; }
@@ -159,7 +168,15 @@
         <input type="text" id="addLessonTime" placeholder="Время (15:00-15:30)" />
         <input type="number" id="addLessonCab" placeholder="Кабинет" />
       </div>
-      <textarea id="addLessonHomework" placeholder="Домашнее задание" style="width:100%; margin-bottom:10px;"></textarea>
+      
+      <!-- Редактор ссылок для ДЗ -->
+      <div class="link-editor">
+        <input type="text" id="addLessonHomework" placeholder="Текст ДЗ (можно использовать <a href='...'>текст</a>)" style="flex:2;" />
+        <input type="text" id="linkUrl" placeholder="https://..." style="flex:1;" />
+        <input type="text" id="linkText" placeholder="Текст ссылки" style="flex:1;" />
+        <button class="btn-link btn-link-primary" id="insertLinkBtn">🔗 Вставить ссылку</button>
+      </div>
+      
       <button class="btn-console btn-console-success" id="addLessonBtn">➕ Добавить урок</button>
       <div id="lessonMessage" class="console-message"></div>
       <div id="lessonList"></div>
@@ -197,6 +214,20 @@
 
   function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
   function showMessage(element, text, type) { element.textContent = text; element.className = 'console-message show ' + type; setTimeout(() => element.className = 'console-message', 4000); }
+
+  // ----- Редактор ссылок -----
+  document.getElementById('insertLinkBtn').addEventListener('click', () => {
+    const url = document.getElementById('linkUrl').value.trim();
+    const text = document.getElementById('linkText').value.trim();
+    const homeworkField = document.getElementById('addLessonHomework');
+    if (!url) { alert('Введите URL'); return; }
+    const linkHtml = text ? `<a href="${url}" target="_blank">${text}</a>` : `<a href="${url}" target="_blank">${url}</a>`;
+    const current = homeworkField.value;
+    homeworkField.value = current + (current ? ' ' : '') + linkHtml;
+    document.getElementById('linkUrl').value = '';
+    document.getElementById('linkText').value = '';
+    homeworkField.focus();
+  });
 
   // ----- Шапка -----
   function updateUserBadge(user) {
@@ -370,13 +401,36 @@
           <input type="text" class="edit-lesson-name" value="${escapeHtml(lesson.name || '')}" placeholder="Название урока" />
           <input type="text" class="edit-lesson-time" value="${escapeHtml(lesson.time || '')}" placeholder="Время (15:00-15:30)" />
           <input type="number" class="edit-lesson-cab" value="${lesson.cab ?? ''}" placeholder="Кабинет" />
-          <textarea class="edit-lesson-homework" placeholder="Домашнее задание">${escapeHtml(lesson.homework || '')}</textarea>
+          <div style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+            <input type="text" class="edit-lesson-homework" value="${escapeHtml(lesson.homework || '')}" placeholder="ДЗ" style="flex:2;" />
+            <input type="text" class="edit-link-url" placeholder="URL" style="flex:1;" />
+            <input type="text" class="edit-link-text" placeholder="Текст ссылки" style="flex:1;" />
+            <button class="btn-console btn-console-outline insert-edit-link-btn">🔗 Вставить</button>
+          </div>
           <div style="display:flex; gap:8px; margin-top:8px;"><button class="btn-console btn-console-primary save-lesson-btn">💾 Сохранить</button><button class="btn-console btn-console-outline cancel-lesson-btn">Отмена</button></div>
           <div class="console-message lesson-edit-message"></div>
         </div>
       </div>`;
     }
     container.innerHTML = html;
+
+    // Вставка ссылки в редакторе урока
+    container.querySelectorAll('.insert-edit-link-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fields = btn.closest('.edit-fields');
+        const url = fields.querySelector('.edit-link-url').value.trim();
+        const text = fields.querySelector('.edit-link-text').value.trim();
+        const homeworkField = fields.querySelector('.edit-lesson-homework');
+        if (!url) { alert('Введите URL'); return; }
+        const linkHtml = text ? `<a href="${url}" target="_blank">${text}</a>` : `<a href="${url}" target="_blank">${url}</a>`;
+        const current = homeworkField.value;
+        homeworkField.value = current + (current ? ' ' : '') + linkHtml;
+        fields.querySelector('.edit-link-url').value = '';
+        fields.querySelector('.edit-link-text').value = '';
+        homeworkField.focus();
+      });
+    });
+
     container.querySelectorAll('.toggle-lesson-edit-btn').forEach(btn => btn.addEventListener('click', () => { const f = btn.closest('.list-item').querySelector('.edit-fields'); f.classList.toggle('open'); }));
     container.querySelectorAll('.cancel-lesson-btn').forEach(btn => btn.addEventListener('click', () => { const f = btn.closest('.list-item').querySelector('.edit-fields'); f.classList.remove('open'); }));
     container.querySelectorAll('.save-lesson-btn').forEach(btn => btn.addEventListener('click', async () => {
@@ -484,7 +538,7 @@
     }
   });
 
-  console.log('✅ Консоль с поддержкой времени и кабинета');
+  console.log('✅ Консоль с редактором ссылок для ДЗ');
 </script>
 </body>
 </html>
