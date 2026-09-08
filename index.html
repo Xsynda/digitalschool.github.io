@@ -20,6 +20,7 @@
       padding-top: 80px;
     }
 
+    /* ----- ШАПКА ----- */
     .navbar {
       position: fixed;
       top: 0;
@@ -161,6 +162,7 @@
       transform: scale(0.97);
     }
 
+    /* ----- ОСНОВНОЙ КОНТЕНТ ----- */
     .container {
       max-width: 900px;
       margin: 0 auto;
@@ -264,34 +266,152 @@
       color: #6a7f9e;
     }
 
-    .admin-actions {
-      margin-top: 24px;
+    /* ----- КОНСОЛЬ АДМИНИСТРАТОРА ----- */
+    .admin-console {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 2px solid #eef3fa;
+    }
+
+    .admin-console .console-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0a1e3c;
+      margin-bottom: 16px;
       display: flex;
-      justify-content: center;
-      gap: 12px;
+      align-items: center;
+      gap: 8px;
+    }
+    .admin-console .console-title .material-symbols-outlined {
+      color: #8b5cf6;
+      font-size: 24px;
+    }
+
+    .console-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .console-card {
+      background: #f9fcff;
+      border-radius: 24px;
+      padding: 20px 24px;
+      border: 1px solid #eef3fa;
+    }
+
+    .console-card .card-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #6a7f9e;
+      margin-bottom: 4px;
+    }
+
+    .console-card input,
+    .console-card textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #dce4ef;
+      border-radius: 16px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      transition: 0.15s;
+      background: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .console-card input:focus,
+    .console-card textarea:focus {
+      outline: none;
+      border-color: #2a7de1;
+      box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10);
+    }
+
+    .console-card textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .console-actions {
+      display: flex;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
-    .btn-admin {
-      background: #8b5cf6;
-      color: white;
+    .btn-console {
       border: none;
-      padding: 10px 24px;
+      padding: 8px 20px;
       border-radius: 40px;
       font-weight: 500;
-      font-size: 14px;
+      font-size: 13px;
       cursor: pointer;
       transition: 0.2s;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       font-family: 'Inter', sans-serif;
-      text-decoration: none;
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
     }
-    .btn-admin:hover {
-      background: #7c3aed;
+
+    .btn-console-primary {
+      background: #2a7de1;
+      color: white;
+    }
+    .btn-console-primary:hover {
+      background: #1a5fb0;
       transform: scale(0.97);
+    }
+
+    .btn-console-success {
+      background: #1a8a4a;
+      color: white;
+    }
+    .btn-console-success:hover {
+      background: #146e3a;
+      transform: scale(0.97);
+    }
+
+    .btn-console-danger {
+      background: #c74a4a;
+      color: white;
+    }
+    .btn-console-danger:hover {
+      background: #a33a3a;
+      transform: scale(0.97);
+    }
+
+    .btn-console-outline {
+      background: transparent;
+      color: #1f2b48;
+      border: 1.5px solid #d0dae9;
+    }
+    .btn-console-outline:hover {
+      background: #f0f4fe;
+    }
+
+    .console-message {
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 40px;
+      margin-top: 8px;
+      display: none;
+    }
+    .console-message.show {
+      display: block;
+    }
+    .console-message.success {
+      background: #e8f5ed;
+      color: #1a8a4a;
+    }
+    .console-message.error {
+      background: #fff0f0;
+      color: #c74a4a;
+    }
+
+    .news-item-admin .admin-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     @media (max-width: 700px) {
@@ -314,6 +434,9 @@
       body {
         padding-top: 130px;
       }
+      .console-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 480px) {
@@ -324,17 +447,20 @@
 </head>
 <body>
 
+<!-- ШАПКА -->
 <header class="navbar" id="navbar">
   <div class="navbar-left">
     <div class="logo-area">
       <div class="logo-icon">Ш</div>
       <div class="logo-text">Электро<span>школа</span></div>
     </div>
-    <nav class="nav-links" id="navLinks"></nav>
   </div>
-  <div class="navbar-right" id="userArea"></div>
+  <div class="navbar-right" id="userArea">
+    <!-- Имя пользователя -->
+  </div>
 </header>
 
+<!-- ОСНОВНОЙ КОНТЕНТ -->
 <div class="container">
   <div class="section-title">
     <span class="material-symbols-outlined">newspaper</span>
@@ -345,11 +471,37 @@
     <div class="loading">⏳ Загрузка новостей...</div>
   </div>
 
-  <div class="admin-actions" id="adminActions" style="display: none;">
-    <a href="editNews.html" class="btn-admin" target="_blank">
-      <span class="material-symbols-outlined" style="font-size:20px;">edit_note</span>
-      Редактировать новости
-    </a>
+  <!-- КОНСОЛЬ АДМИНИСТРАТОРА (скрыта по умолчанию) -->
+  <div class="admin-console" id="adminConsole" style="display: none;">
+    <div class="console-title">
+      <span class="material-symbols-outlined">admin_panel_settings</span>
+      Консоль администратора
+    </div>
+
+    <!-- Форма добавления -->
+    <div class="console-grid">
+      <div class="console-card">
+        <div class="card-label">➕ Добавить новость</div>
+        <input type="text" id="addTitle" placeholder="Заголовок" />
+        <textarea id="addDesc" placeholder="Описание"></textarea>
+        <input type="number" id="addDate" placeholder="Unix timestamp" />
+        <button class="btn-console btn-console-success" id="addNewsBtn">➕ Добавить</button>
+        <div id="addMessage" class="console-message"></div>
+      </div>
+
+      <div class="console-card">
+        <div class="card-label">🗑️ Удалить новость по индексу</div>
+        <input type="number" id="deleteIndex" placeholder="Индекс новости" />
+        <button class="btn-console btn-console-danger" id="deleteNewsBtn">🗑️ Удалить</button>
+        <div id="deleteMessage" class="console-message"></div>
+      </div>
+    </div>
+
+    <!-- Редактирование существующих -->
+    <div style="margin-top:16px;">
+      <div class="card-label" style="font-weight:500; color:#0a1e3c; margin-bottom:12px;">✏️ Редактировать существующие</div>
+      <div id="editList"></div>
+    </div>
   </div>
 
   <div class="footer">© 2026 · Электронная школа</div>
@@ -361,12 +513,15 @@
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
   import {
     getAuth,
-    onAuthStateChanged
+    onAuthStateChanged,
+    signOut
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
   import {
     getDatabase,
     ref,
     get,
+    set,
+    remove,
     child,
     onValue
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
@@ -387,18 +542,22 @@
   const db = getDatabase(app);
 
   const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
-  const DIARY_URL = 'diary.html';
-  const MAGAZINE_URL = 'magazine.html';
   const ACCOUNT_URL = 'account.html';
   const NEWS_COUNT = 15;
 
-  const navLinks = document.getElementById('navLinks');
   const userArea = document.getElementById('userArea');
   const newsContainer = document.getElementById('newsContainer');
-  const adminActions = document.getElementById('adminActions');
+  const adminConsole = document.getElementById('adminConsole');
 
   function redirectToAuth() {
     window.location.href = AUTH_URL;
+  }
+
+  function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 
   function formatDate(timestamp) {
@@ -413,14 +572,16 @@
     });
   }
 
-  function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+  function showMessage(element, text, type) {
+    element.textContent = text;
+    element.className = 'console-message show ' + type;
+    setTimeout(() => {
+      element.className = 'console-message';
+    }, 4000);
   }
 
-  function renderNews(newsData) {
+  // ----- Рендер новостей -----
+  function renderNews(newsData, isAdmin) {
     if (!newsData || Object.keys(newsData).length === 0) {
       newsContainer.innerHTML = `
         <div class="empty-state">
@@ -439,27 +600,73 @@
     for (const key of topKeys) {
       const item = newsData[key];
       if (!item) continue;
+      const title = item.title || 'Без названия';
+      const desc = item.desc || '';
+      const date = formatDate(item.date);
+      
       html += `
-        <div class="news-item">
+        <div class="news-item ${isAdmin ? 'news-item-admin' : ''}" data-key="${key}">
           <div class="news-header">
-            <div class="news-title">${escapeHtml(item.title || 'Без названия')}</div>
-            <div class="news-date">${formatDate(item.date)}</div>
+            <div class="news-title">${escapeHtml(title)}</div>
+            <div class="news-date">${date}</div>
           </div>
-          ${item.desc ? `<div class="news-desc">${escapeHtml(item.desc)}</div>` : ''}
+          ${desc ? `<div class="news-desc">${escapeHtml(desc)}</div>` : ''}
+          ${isAdmin ? `
+            <div class="admin-actions">
+              <button class="btn-console btn-console-outline edit-news-btn" data-key="${key}">✏️ Редактировать</button>
+              <button class="btn-console btn-console-danger delete-news-btn" data-key="${key}">🗑️ Удалить</button>
+            </div>
+          ` : ''}
         </div>
       `;
     }
     html += '</div>';
     newsContainer.innerHTML = html;
+
+    // Обработчики для администратора
+    if (isAdmin) {
+      document.querySelectorAll('.edit-news-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = parseInt(btn.dataset.key);
+          const item = newsData[key];
+          if (item) {
+            document.getElementById('addTitle').value = item.title || '';
+            document.getElementById('addDesc').value = item.desc || '';
+            document.getElementById('addDate').value = item.date || '';
+            // Меняем кнопку на "Сохранить" и запоминаем ключ
+            const addBtn = document.getElementById('addNewsBtn');
+            addBtn.textContent = '💾 Сохранить';
+            addBtn.dataset.editKey = key;
+            addBtn.classList.remove('btn-console-success');
+            addBtn.classList.add('btn-console-primary');
+          }
+        });
+      });
+
+      document.querySelectorAll('.delete-news-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const key = parseInt(btn.dataset.key);
+          if (confirm(`Удалить новость #${key}?`)) {
+            try {
+              await remove(ref(db, 'news/' + key));
+              showMessage(document.getElementById('deleteMessage'), '✅ Новость удалена', 'success');
+            } catch (e) {
+              showMessage(document.getElementById('deleteMessage'), '❌ Ошибка: ' + e.message, 'error');
+            }
+          }
+        });
+      });
+    }
   }
 
-  function loadNews() {
+  // ----- Загрузка новостей -----
+  function loadNews(isAdmin) {
     const newsRef = ref(db, 'news');
     onValue(newsRef, (snapshot) => {
       if (snapshot.exists()) {
-        renderNews(snapshot.val());
+        renderNews(snapshot.val(), isAdmin);
       } else {
-        renderNews(null);
+        renderNews(null, isAdmin);
       }
     }, (error) => {
       console.error('Ошибка загрузки новостей:', error);
@@ -473,19 +680,8 @@
     });
   }
 
-  function renderHeader(user, isAdmin) {
-    // Только Дневник/Журнал — без кнопки Аккаунт
-    const diaryLabel = isAdmin ? 'Журнал' : 'Дневник';
-    const diaryUrl = isAdmin ? MAGAZINE_URL : DIARY_URL;
-    const diaryIcon = isAdmin ? 'grading' : 'calendar_month';
-    
-    navLinks.innerHTML = `
-      <a href="${diaryUrl}" class="nav-link">
-        <span class="material-symbols-outlined">${diaryIcon}</span>
-        ${diaryLabel}
-      </a>
-    `;
-
+  // ----- Рендер шапки -----
+  function renderHeader(user) {
     if (user) {
       const displayName = user.displayName || user.email || 'Пользователь';
       userArea.innerHTML = `
@@ -502,13 +698,83 @@
         </a>
       `;
     }
-
-    adminActions.style.display = isAdmin ? 'flex' : 'none';
   }
 
+  // ----- Инициализация консоли администратора -----
+  function initAdminConsole() {
+    adminConsole.style.display = 'block';
+
+    // Добавление / Сохранение
+    const addBtn = document.getElementById('addNewsBtn');
+    addBtn.addEventListener('click', async () => {
+      const title = document.getElementById('addTitle').value.trim();
+      const desc = document.getElementById('addDesc').value.trim();
+      const date = parseInt(document.getElementById('addDate').value);
+      const msg = document.getElementById('addMessage');
+
+      if (!title || !date) {
+        showMessage(msg, '⚠️ Заполните заголовок и дату', 'error');
+        return;
+      }
+
+      const editKey = addBtn.dataset.editKey;
+
+      try {
+        if (editKey !== undefined) {
+          // Редактирование существующей
+          await set(ref(db, 'news/' + editKey), { title, desc, date });
+          showMessage(msg, '✅ Новость обновлена', 'success');
+          addBtn.textContent = '➕ Добавить';
+          addBtn.dataset.editKey = undefined;
+          addBtn.classList.remove('btn-console-primary');
+          addBtn.classList.add('btn-console-success');
+          document.getElementById('addTitle').value = '';
+          document.getElementById('addDesc').value = '';
+          document.getElementById('addDate').value = '';
+        } else {
+          // Добавление новой
+          const snapshot = await get(ref(db, 'news'));
+          let maxKey = -1;
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const keys = Object.keys(data).map(Number);
+            maxKey = keys.length > 0 ? Math.max(...keys) : -1;
+          }
+          const newKey = maxKey + 1;
+          await set(ref(db, 'news/' + newKey), { title, desc, date });
+          showMessage(msg, `✅ Новость добавлена (индекс ${newKey})`, 'success');
+          document.getElementById('addTitle').value = '';
+          document.getElementById('addDesc').value = '';
+          document.getElementById('addDate').value = '';
+        }
+      } catch (e) {
+        showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
+      }
+    });
+
+    // Удаление по индексу
+    document.getElementById('deleteNewsBtn').addEventListener('click', async () => {
+      const index = parseInt(document.getElementById('deleteIndex').value);
+      const msg = document.getElementById('deleteMessage');
+      if (isNaN(index) || index < 0) {
+        showMessage(msg, '⚠️ Введите корректный индекс', 'error');
+        return;
+      }
+      if (!confirm(`Удалить новость #${index}?`)) return;
+      try {
+        await remove(ref(db, 'news/' + index));
+        showMessage(msg, '✅ Новость удалена', 'success');
+        document.getElementById('deleteIndex').value = '';
+      } catch (e) {
+        showMessage(msg, '❌ Ошибка: ' + e.message, 'error');
+      }
+    });
+  }
+
+  // ----- Загрузка данных пользователя -----
   function loadUserAndRender(user) {
     if (!user) {
-      renderHeader(null, false);
+      renderHeader(null);
       return;
     }
 
@@ -519,16 +785,32 @@
       if (snapshot.exists()) {
         const data = snapshot.val();
         displayName = data.name || user.email;
-        isAdmin = (data.status === 3);
+        isAdmin = (data.status === 2); // Администратор = статус 2
       }
       user.displayName = displayName;
-      renderHeader(user, isAdmin);
+      renderHeader(user);
+      
+      // Показываем консоль для администратора
+      if (isAdmin) {
+        adminConsole.style.display = 'block';
+        if (!adminConsole.dataset.initialized) {
+          initAdminConsole();
+          adminConsole.dataset.initialized = 'true';
+        }
+        // Загружаем новости с админ-режимом
+        loadNews(true);
+      } else {
+        adminConsole.style.display = 'none';
+        loadNews(false);
+      }
     }).catch((err) => {
       console.warn('Ошибка получения профиля:', err);
-      renderHeader(user, false);
+      renderHeader(user);
+      loadNews(false);
     });
   }
 
+  // ----- Авторизация -----
   onAuthStateChanged(auth, (user) => {
     if (user) {
       loadUserAndRender(user);
@@ -537,8 +819,7 @@
     }
   });
 
-  loadNews();
-  console.log('✅ Главная страница (без кнопки Аккаунт)');
+  console.log('✅ Главная страница с консолью администратора');
 </script>
 </body>
 </html>
