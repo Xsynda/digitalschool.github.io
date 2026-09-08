@@ -17,53 +17,55 @@
       font-family: 'Inter', sans-serif;
       background: #f8faff;
       min-height: 100vh;
-      padding: 24px;
+      padding-top: 80px;
     }
 
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
+    /* ----- ШАПКА (как на главной) ----- */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
       background: #ffffff;
-      border-radius: 48px;
-      box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08);
-      padding: 40px 40px 44px;
-      border: 1px solid #f0f5fe;
-    }
-
-    /* ----- ШАПКА ----- */
-    .header {
+      border-bottom: 1px solid #eef3fa;
+      box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06);
+      padding: 12px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
       gap: 16px;
-      margin-bottom: 32px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid #eef3fa;
     }
 
     .logo-area {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .logo-icon {
       background: #2a7de1;
       color: white;
-      width: 44px;
-      height: 44px;
-      border-radius: 16px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 600;
-      box-shadow: 0 8px 18px rgba(42, 125, 225, 0.20);
+      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20);
     }
 
     .logo-text {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 600;
       letter-spacing: -0.3px;
       color: #0a1e3c;
@@ -72,19 +74,105 @@
       color: #2a7de1;
     }
 
-    .back-link {
-      color: #2a7de1;
-      text-decoration: none;
-      font-weight: 500;
+    .nav-links {
       display: flex;
       align-items: center;
-      gap: 6px;
-    }
-    .back-link:hover {
-      text-decoration: underline;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
-    /* ----- ЗАГОЛОВОК ----- */
+    .nav-link {
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 14px;
+      color: #1f2b48;
+      text-decoration: none;
+      transition: 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .nav-link:hover {
+      background: #f0f4fe;
+      border-color: #d0dae9;
+    }
+    .nav-link .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f0f6ff;
+      padding: 6px 16px 6px 12px;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #0a1e3c;
+      cursor: pointer;
+      transition: 0.15s;
+      text-decoration: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .user-badge:hover {
+      background: #e5effb;
+      transform: scale(0.97);
+    }
+    .user-badge .material-symbols-outlined {
+      color: #2a7de1;
+      font-size: 20px;
+    }
+
+    .btn {
+      border: none;
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: #2a7de1;
+      color: white;
+      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20);
+    }
+    .btn-primary:hover {
+      background: #1a5fb0;
+      transform: scale(0.97);
+    }
+
+    /* ----- ОСНОВНОЙ КОНТЕНТ ----- */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 48px;
+      box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08);
+      padding: 32px 40px 44px;
+      border: 1px solid #f0f5fe;
+    }
+
     .page-title {
       font-size: 26px;
       font-weight: 600;
@@ -94,13 +182,17 @@
       align-items: center;
       gap: 10px;
     }
+    .page-title .material-symbols-outlined {
+      color: #2a7de1;
+      font-size: 32px;
+    }
+
     .page-sub {
       color: #5f7696;
       font-size: 16px;
       margin-bottom: 28px;
     }
 
-    /* ----- КАРТОЧКИ НАСТРОЕК ----- */
     .settings-card {
       background: #f9fcff;
       border-radius: 24px;
@@ -161,13 +253,7 @@
       cursor: not-allowed;
     }
 
-    .field-group .hint {
-      font-size: 13px;
-      color: #6a7f9e;
-      margin-top: 4px;
-    }
-
-    .btn {
+    .btn-action {
       border: none;
       padding: 10px 24px;
       border-radius: 40px;
@@ -211,36 +297,9 @@
       transform: scale(0.97);
     }
 
-    .btn-outline {
-      background: transparent;
-      color: #1f2b48;
-      border: 1.5px solid #d0dae9;
-    }
-    .btn-outline:hover {
-      background: #f0f4fe;
-      border-color: #2a7de1;
-    }
-
-    .btn-danger-outline {
-      background: transparent;
-      color: #b14a4a;
-      border: 1.5px solid #e0cdcd;
-    }
-    .btn-danger-outline:hover {
-      background: #fff2f2;
-      border-color: #b14a4a;
-    }
-
     .btn-full {
       width: 100%;
       justify-content: center;
-    }
-
-    .actions-row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 8px;
     }
 
     .error-msg {
@@ -292,37 +351,63 @@
       color: #6a7f9e;
     }
 
+    @media (max-width: 700px) {
+      .navbar {
+        padding: 10px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .navbar-left {
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+      .nav-links {
+        justify-content: flex-start;
+      }
+      .navbar-right {
+        justify-content: flex-start;
+      }
+      body {
+        padding-top: 130px;
+      }
+    }
+
     @media (max-width: 480px) {
-      .container { padding: 24px 20px; border-radius: 32px; }
-      .header { flex-direction: column; align-items: stretch; }
-      .logo-text { font-size: 20px; }
-      .logo-icon { width: 38px; height: 38px; font-size: 18px; }
+      .container { padding: 20px 16px 28px; border-radius: 32px; }
+      .navbar-left { flex-direction: column; align-items: flex-start; gap: 6px; }
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <!-- ШАПКА -->
-  <header class="header">
+<!-- ШАПКА (как на главной) -->
+<header class="navbar" id="navbar">
+  <div class="navbar-left">
     <div class="logo-area">
       <div class="logo-icon">Ш</div>
       <div class="logo-text">Электро<span>школа</span></div>
     </div>
-    <a href="index.html" class="back-link">
-      <span class="material-symbols-outlined" style="font-size:20px;">arrow_back</span>
-      На главную
-    </a>
-  </header>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html" class="nav-link">
+        <span class="material-symbols-outlined">home</span>
+        Главная
+      </a>
+    </nav>
+  </div>
+  <div class="navbar-right" id="userArea">
+    <!-- Имя пользователя -->
+  </div>
+</header>
 
-  <!-- ЗАГОЛОВОК -->
+<!-- ОСНОВНОЙ КОНТЕНТ -->
+<div class="container">
   <div class="page-title">
-    <span class="material-symbols-outlined" style="font-size:32px; color:#2a7de1;">account_circle</span>
+    <span class="material-symbols-outlined">account_circle</span>
     Аккаунт
   </div>
   <div class="page-sub">Управление личными данными</div>
 
-  <!-- КОНТЕЙНЕР ДЛЯ ДАННЫХ -->
   <div id="profileContainer">
     <div class="loading">⏳ Загрузка данных...</div>
   </div>
@@ -366,9 +451,10 @@
   const db = getDatabase(app);
 
   const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
+  const ACCOUNT_URL = 'account.html';
   const profileContainer = document.getElementById('profileContainer');
+  const userArea = document.getElementById('userArea');
 
-  // ----- Вспомогательные функции -----
   function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -394,6 +480,26 @@
     setTimeout(() => element.classList.add('hidden'), 4000);
   }
 
+  // ----- Рендер шапки (имя пользователя) -----
+  function renderHeader(user) {
+    if (user) {
+      const displayName = user.displayName || user.email || 'Пользователь';
+      userArea.innerHTML = `
+        <a href="${ACCOUNT_URL}" class="user-badge">
+          <span class="material-symbols-outlined">account_circle</span>
+          ${escapeHtml(displayName)}
+        </a>
+      `;
+    } else {
+      userArea.innerHTML = `
+        <a href="${AUTH_URL}" class="btn btn-primary">
+          <span class="material-symbols-outlined" style="font-size:18px;">login</span>
+          Войти
+        </a>
+      `;
+    }
+  }
+
   // ----- Рендер профиля -----
   function renderProfile(user, profileData) {
     const name = profileData?.name || user.email || 'Пользователь';
@@ -402,7 +508,6 @@
     const status = statusMap[profileData?.status] || 'неизвестно';
 
     profileContainer.innerHTML = `
-      <!-- ИНФОРМАЦИЯ -->
       <div class="settings-card">
         <div class="card-title">
           <span class="material-symbols-outlined">info</span>
@@ -418,7 +523,6 @@
         </div>
       </div>
 
-      <!-- ИЗМЕНЕНИЕ ИМЕНИ -->
       <div class="settings-card">
         <div class="card-title">
           <span class="material-symbols-outlined">edit</span>
@@ -430,10 +534,9 @@
         </div>
         <div id="nameError" class="error-msg hidden"></div>
         <div id="nameSuccess" class="success-msg hidden"></div>
-        <button class="btn btn-primary" id="updateNameBtn">💾 Сохранить имя</button>
+        <button class="btn-action btn-primary" id="updateNameBtn">💾 Сохранить имя</button>
       </div>
 
-      <!-- СМЕНА ПАРОЛЯ -->
       <div class="settings-card">
         <div class="card-title">
           <span class="material-symbols-outlined">lock</span>
@@ -453,20 +556,18 @@
         </div>
         <div id="passwordError" class="error-msg hidden"></div>
         <div id="passwordSuccess" class="success-msg hidden"></div>
-        <button class="btn btn-success" id="updatePasswordBtn">🔑 Сменить пароль</button>
+        <button class="btn-action btn-success" id="updatePasswordBtn">🔑 Сменить пароль</button>
       </div>
 
       <hr class="divider" />
 
-      <!-- ВЫХОД -->
-      <button class="btn btn-danger btn-full" id="logoutBtn">
+      <button class="btn-action btn-danger btn-full" id="logoutBtn">
         <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
         Выйти из аккаунта
       </button>
     `;
 
-    // ----- Обработчики -----
-    // 1. Изменение имени
+    // Обработчики
     document.getElementById('updateNameBtn').addEventListener('click', async () => {
       const nameError = document.getElementById('nameError');
       const nameSuccess = document.getElementById('nameSuccess');
@@ -483,15 +584,16 @@
       try {
         await update(ref(db, 'users/' + user.uid), { name: newName });
         showSuccess(nameSuccess, '✅ Имя успешно обновлено!');
-        // Обновляем значение в поле
         document.getElementById('newNameInput').value = newName;
+        // Обновляем имя в шапке
+        user.displayName = newName;
+        renderHeader(user);
       } catch (error) {
         console.error('Ошибка обновления имени:', error);
         showError(nameError, '❌ Ошибка: ' + (error.message || 'попробуйте позже'));
       }
     });
 
-    // 2. Смена пароля
     document.getElementById('updatePasswordBtn').addEventListener('click', async () => {
       const passwordError = document.getElementById('passwordError');
       const passwordSuccess = document.getElementById('passwordSuccess');
@@ -516,10 +618,8 @@
       }
 
       try {
-        // Переаутентификация
         const credential = EmailAuthProvider.credential(user.email, currentPassword);
         await reauthenticateWithCredential(user, credential);
-        // Смена пароля
         await updatePassword(user, newPassword);
         showSuccess(passwordSuccess, '✅ Пароль успешно изменён!');
         document.getElementById('currentPasswordInput').value = '';
@@ -537,7 +637,6 @@
       }
     });
 
-    // 3. Выход
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       if (confirm('Вы уверены, что хотите выйти из аккаунта?')) {
         try {
@@ -553,6 +652,7 @@
 
   // ----- Загрузка данных пользователя -----
   async function loadProfile(user) {
+    renderHeader(user);
     try {
       const snapshot = await get(child(ref(db), 'users/' + user.uid));
       if (snapshot.exists()) {
@@ -565,13 +665,13 @@
       profileContainer.innerHTML = `
         <div class="settings-card">
           <div class="error-msg" style="display:block;">❌ Ошибка загрузки данных. Попробуйте обновить страницу.</div>
-          <button class="btn btn-primary" onclick="location.reload()">🔄 Обновить</button>
+          <button class="btn-action btn-primary" onclick="location.reload()">🔄 Обновить</button>
         </div>
       `;
     }
   }
 
-  // ----- Следим за состоянием авторизации -----
+  // ----- Авторизация -----
   onAuthStateChanged(auth, (user) => {
     if (user) {
       loadProfile(user);
@@ -580,7 +680,7 @@
     }
   });
 
-  console.log('✅ Страница аккаунта загружена');
+  console.log('✅ Страница аккаунта с шапкой');
 </script>
 </body>
 </html>
