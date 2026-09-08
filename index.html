@@ -340,7 +340,7 @@
       <div class="logo-text">Электро<span>школа</span></div>
     </div>
     <nav class="nav-links" id="navLinks">
-      <!-- Кнопка Дневник/Журнал будет добавлена через JS -->
+      <!-- Кнопки навигации будут добавлены через JS -->
     </nav>
   </div>
   <div class="navbar-right" id="userArea">
@@ -404,8 +404,9 @@
 
   // ----- Константы -----
   const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
-  const DIARY_URL = '#'; // Замените на реальную ссылку на дневник
-  const ACCOUNT_URL = '#'; // Замените на реальную ссылку на аккаунт
+  const DIARY_URL = 'diary.html';
+  const MAGAZINE_URL = 'magazine.html';
+  const ACCOUNT_URL = 'account.html';
   const NEWS_COUNT = 15;
 
   // ----- DOM -----
@@ -511,16 +512,23 @@
 
   // ----- Рендер шапки -----
   function renderHeader(user, isAdmin) {
-    // Навигация (только Дневник/Журнал)
+    // Навигация: Дневник/Журнал + Аккаунт
     const diaryLabel = isAdmin ? 'Журнал' : 'Дневник';
+    const diaryUrl = isAdmin ? MAGAZINE_URL : DIARY_URL;
+    const diaryIcon = isAdmin ? 'grading' : 'calendar_month';
+    
     navLinks.innerHTML = `
-      <a href="${DIARY_URL}" class="nav-link">
-        <span class="material-symbols-outlined">${isAdmin ? 'grading' : 'calendar_month'}</span>
+      <a href="${diaryUrl}" class="nav-link">
+        <span class="material-symbols-outlined">${diaryIcon}</span>
         ${diaryLabel}
+      </a>
+      <a href="${ACCOUNT_URL}" class="nav-link">
+        <span class="material-symbols-outlined">account_circle</span>
+        Аккаунт
       </a>
     `;
 
-    // Пользовательская зона (только имя, кликабельное)
+    // Пользовательская зона (только имя, кликабельное → аккаунт)
     if (user) {
       const displayName = user.displayName || user.email || 'Пользователь';
       userArea.innerHTML = `
@@ -581,7 +589,7 @@
 
   // ----- Запуск -----
   loadNews();
-  console.log('✅ Главная страница с обновлённой ссылкой на editNews.html');
+  console.log('✅ Главная страница с обновлёнными ссылками');
 </script>
 </body>
 </html>
