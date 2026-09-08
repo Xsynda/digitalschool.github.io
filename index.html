@@ -311,7 +311,7 @@
       <div class="logo-text">Электро<span>школа</span></div>
     </div>
     <nav class="nav-links" id="navLinks">
-      <!-- Кнопка Консоль для админа будет добавлена через JS -->
+      <!-- Кнопки будут добавлены через JS: Дневник для всех, Консоль для админа -->
     </nav>
   </div>
   <div class="navbar-right" id="userArea">
@@ -365,6 +365,7 @@
 
   const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
   const ACCOUNT_URL = 'account.html';
+  const DIARY_URL = 'diary.html';
   const CONSOLE_URL = 'https://xsynda.github.io/digitalschool.github.io/console.html';
   const NEWS_COUNT = 15;
 
@@ -449,17 +450,24 @@
   }
 
   function renderHeader(user, isAdmin) {
-    // Навигация: кнопка Консоль для админа
+    // Навигация: Дневник для всех + Консоль для админа
+    let navHtml = `
+      <a href="${DIARY_URL}" class="nav-link">
+        <span class="material-symbols-outlined">calendar_month</span>
+        Дневник
+      </a>
+    `;
+    
     if (isAdmin) {
-      navLinks.innerHTML = `
+      navHtml += `
         <a href="${CONSOLE_URL}" class="nav-link">
           <span class="material-symbols-outlined">admin_panel_settings</span>
           Консоль
         </a>
       `;
-    } else {
-      navLinks.innerHTML = '';
     }
+    
+    navLinks.innerHTML = navHtml;
 
     if (user) {
       const displayName = user.displayName || user.email || 'Пользователь';
@@ -511,7 +519,7 @@
   });
 
   loadNews();
-  console.log('✅ Главная страница с кнопкой Консоль для админа');
+  console.log('✅ Главная страница с Дневником и Консолью для админа');
 </script>
 </body>
 </html>
