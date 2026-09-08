@@ -101,11 +101,6 @@
     browserLocalPersistence,
     browserSessionPersistence
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-  import {
-    getDatabase,
-    ref,
-    set
-  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
@@ -120,7 +115,6 @@
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
   const auth = getAuth(app);
-  const db = getDatabase(app);
 
   const REDIRECT_URL = 'https://xsynda.github.io/digitalschool.github.io/index.html';
 
@@ -201,7 +195,7 @@
     } catch (e) {}
   }
 
-  // ===== ГЛАВНАЯ ФУНКЦИЯ =====
+  // ===== ОБРАБОТЧИК =====
   async function handleSubmit() {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
@@ -224,7 +218,6 @@
     submitBtn.textContent = '⏳ Загрузка...';
 
     try {
-      // Устанавливаем персистентность
       if (rememberCheckbox.checked) {
         await setPersistence(auth, browserLocalPersistence);
         localStorage.setItem('remembered_email', email);
@@ -234,33 +227,17 @@
       }
 
       if (isLoginMode) {
-        // ВХОД
         await signInWithEmailAndPassword(auth, email, password);
-        redirectToMain();
       } else {
-        // РЕГИСТРАЦИЯ — САМЫЙ ПРОСТОЙ СПОСОБ
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        
-        // ЖДЁМ 2 СЕКУНДЫ — за это время Firebase точно успевает авторизоваться
-        console.log('⏳ Ждём 2 секунды перед сохранением профиля...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Теперь сохраняем профиль
-        const userRef = ref(db, 'users/' + user.uid);
-        const defaultName = name || email.split('@')[0];
-        
-        console.log('💾 Сохраняем профиль...');
-        await set(userRef, {
-          email: email,
-          name: defaultName,
-          status: 1,
-          createdAt: new Date().toISOString()
-        });
-        
-        console.log('✅ Профиль сохранён!');
-        redirectToMain();
+        // ТОЛЬКО СОЗДАЁМ ПОЛЬЗОВАТЕЛЯ — БЕЗ БАЗЫ
+        await createUserWithEmailAndPassword(auth, email, password);
+        // Имя сохранится на главной странице
+        localStorage.setItem('pending_user_name', name);
       }
+      
+      // Перенаправляем на главную — там создастся профиль
+      redirectToMain();
+      
     } catch (error) {
       console.error('Ошибка:', error);
       authError.textContent = '❌ ' + getErrorMessage(error);
@@ -281,26 +258,19 @@
     }
   });
 
-  // onAuthStateChanged — только для перенаправления уже авторизованных
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log('👤 Уже авторизован:', user.email);
-      // Если мы на странице авторизации, а пользователь уже есть — перенаправляем
-      // Но только если мы не в процессе регистрации (кнопка не disabled)
-      if (!submitBtn.disabled) {
-        redirectToMain();
-      }
+      // Уже авторизован — на главную
+      redirectToMain();
     } else {
-      console.log('👤 Не авторизован');
       loadSavedEmail();
       updateFormMode();
     }
   });
 
-  // Инициализация
   updateFormMode();
   loadSavedEmail();
-  console.log('✅ Страница авторизации загружена');
+  console.log('✅ Страница авторизации (без сохранения профиля)');
 </script>
 </body>
 </html>
