@@ -7,236 +7,43 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f8faff;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 24px;
-    }
-
-    .auth-card {
-      max-width: 440px;
-      width: 100%;
-      background: #ffffff;
-      border-radius: 48px;
-      box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08);
-      padding: 40px 32px 44px;
-      transition: 0.2s;
-      border: 1px solid #f0f5fe;
-    }
-
-    /* ----- ЛОГОТИП (как на главной) ----- */
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-
-    .logo-icon {
-      background: #2a7de1;
-      color: white;
-      width: 48px;
-      height: 48px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      font-weight: 600;
-      box-shadow: 0 8px 18px rgba(42, 125, 225, 0.20);
-    }
-
-    .logo-text {
-      font-size: 26px;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-      color: #0a1e3c;
-    }
-    .logo-text span {
-      color: #2a7de1;
-    }
-
-    .auth-title {
-      font-size: 28px;
-      font-weight: 600;
-      color: #0a1e3c;
-      margin-bottom: 6px;
-    }
-
-    .auth-sub {
-      font-size: 16px;
-      color: #5f7696;
-      margin-bottom: 28px;
-    }
-
-    .input-group {
-      margin-bottom: 20px;
-    }
-
-    .input-group label {
-      display: block;
-      font-weight: 500;
-      font-size: 14px;
-      color: #1f2b48;
-      margin-bottom: 6px;
-    }
-
-    .input-group input {
-      width: 100%;
-      padding: 14px 18px;
-      border: 1.5px solid #dce4ef;
-      border-radius: 30px;
-      font-size: 15px;
-      font-family: 'Inter', sans-serif;
-      transition: 0.15s;
-      background: #fafcff;
-    }
-
-    .input-group input:focus {
-      outline: none;
-      border-color: #2a7de1;
-      background: white;
-      box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10);
-    }
-
-    .extra-fields {
-      display: none;
-      animation: fadeIn 0.2s ease;
-    }
-    .extra-fields.visible {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(-6px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    .error-msg {
-      color: #c74a4a;
-      font-size: 14px;
-      margin: 8px 0 12px;
-      background: #fff0f0;
-      padding: 10px 16px;
-      border-radius: 40px;
-      display: block;
-      line-height: 1.4;
-    }
-    .error-msg.hidden {
-      display: none;
-    }
-
-    .btn {
-      border: none;
-      padding: 14px 28px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.2s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-family: 'Inter', sans-serif;
-      width: 100%;
-    }
-
-    .btn-primary {
-      background: #2a7de1;
-      color: white;
-      box-shadow: 0 8px 20px rgba(42, 125, 225, 0.25);
-    }
-    .btn-primary:hover:not(:disabled) {
-      background: #1a5fb0;
-      transform: scale(0.98);
-    }
-    .btn-primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: #1f2b48;
-      border: 1.5px solid #d0dae9;
-      margin-top: 12px;
-    }
-    .btn-outline:hover {
-      background: #f0f4fe;
-      border-color: #2a7de1;
-    }
-
-    .switch-row {
-      margin-top: 22px;
-      text-align: center;
-      font-size: 15px;
-      color: #4b6589;
-    }
-    .switch-row span {
-      color: #2a7de1;
-      font-weight: 600;
-      cursor: pointer;
-      margin-left: 4px;
-      transition: 0.1s;
-    }
-    .switch-row span:hover {
-      text-decoration: underline;
-    }
-
-    .footer-note {
-      margin-top: 32px;
-      font-size: 13px;
-      color: #889bb3;
-      text-align: center;
-      border-top: 1px solid #eef3fa;
-      padding-top: 20px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .remember-me {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-      font-size: 14px;
-      color: #1f2b48;
-      cursor: pointer;
-    }
-    .remember-me input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: #2a7de1;
-      cursor: pointer;
-    }
-
-    @media (max-width: 480px) {
-      .auth-card {
-        padding: 28px 20px 32px;
-        border-radius: 32px;
-      }
-      .logo-text { font-size: 22px; }
-      .logo-icon { width: 42px; height: 42px; font-size: 20px; }
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f8faff; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 24px; }
+    .auth-card { max-width: 440px; width: 100%; background: #ffffff; border-radius: 48px; box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08); padding: 40px 32px 44px; border: 1px solid #f0f5fe; }
+    .logo-area { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .logo-icon { background: #2a7de1; color: white; width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 600; box-shadow: 0 8px 18px rgba(42, 125, 225, 0.20); }
+    .logo-text { font-size: 26px; font-weight: 600; letter-spacing: -0.3px; color: #0a1e3c; }
+    .logo-text span { color: #2a7de1; }
+    .auth-title { font-size: 28px; font-weight: 600; color: #0a1e3c; margin-bottom: 6px; }
+    .auth-sub { font-size: 16px; color: #5f7696; margin-bottom: 28px; }
+    .input-group { margin-bottom: 20px; }
+    .input-group label { display: block; font-weight: 500; font-size: 14px; color: #1f2b48; margin-bottom: 6px; }
+    .input-group input { width: 100%; padding: 14px 18px; border: 1.5px solid #dce4ef; border-radius: 30px; font-size: 15px; font-family: 'Inter', sans-serif; transition: 0.15s; background: #fafcff; }
+    .input-group input:focus { outline: none; border-color: #2a7de1; background: white; box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10); }
+    .extra-fields { display: none; animation: fadeIn 0.2s ease; }
+    .extra-fields.visible { display: block; }
+    @keyframes fadeIn { 0% { opacity: 0; transform: translateY(-6px); } 100% { opacity: 1; transform: translateY(0); } }
+    .error-msg { color: #c74a4a; font-size: 14px; margin: 8px 0 12px; background: #fff0f0; padding: 10px 16px; border-radius: 40px; display: block; line-height: 1.4; }
+    .error-msg.hidden { display: none; }
+    .btn { border: none; padding: 14px 28px; border-radius: 40px; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Inter', sans-serif; width: 100%; }
+    .btn-primary { background: #2a7de1; color: white; box-shadow: 0 8px 20px rgba(42, 125, 225, 0.25); }
+    .btn-primary:hover:not(:disabled) { background: #1a5fb0; transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-outline { background: transparent; color: #1f2b48; border: 1.5px solid #d0dae9; margin-top: 12px; }
+    .btn-outline:hover { background: #f0f4fe; border-color: #2a7de1; }
+    .switch-row { margin-top: 22px; text-align: center; font-size: 15px; color: #4b6589; }
+    .switch-row span { color: #2a7de1; font-weight: 600; cursor: pointer; margin-left: 4px; transition: 0.1s; }
+    .switch-row span:hover { text-decoration: underline; }
+    .footer-note { margin-top: 32px; font-size: 13px; color: #889bb3; text-align: center; border-top: 1px solid #eef3fa; padding-top: 20px; }
+    .hidden { display: none !important; }
+    .remember-me { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 14px; color: #1f2b48; cursor: pointer; }
+    .remember-me input[type="checkbox"] { width: 18px; height: 18px; accent-color: #2a7de1; cursor: pointer; }
+    @media (max-width: 480px) { .auth-card { padding: 28px 20px 32px; border-radius: 32px; } .logo-text { font-size: 22px; } .logo-icon { width: 42px; height: 42px; font-size: 20px; } }
   </style>
 </head>
 <body>
 
 <div class="auth-card" id="authCard">
-  <!-- ЛОГОТИП (как на главной) -->
   <div class="logo-area">
     <div class="logo-icon">Ш</div>
     <div class="logo-text">Электро<span>школа</span></div>
@@ -318,10 +125,8 @@
   const auth = getAuth(app);
   const db = getDatabase(app);
 
-  // ----- URL ДЛЯ ПЕРЕНАПРАВЛЕНИЯ -----
   const REDIRECT_URL = 'https://xsynda.github.io/digitalschool.github.io/index.html';
 
-  // ----- DOM -----
   const formTitle = document.getElementById('formTitle');
   const formSub = document.getElementById('formSub');
   const emailInput = document.getElementById('emailInput');
@@ -392,15 +197,40 @@
     return codes[error.code] || error.message || 'Неизвестная ошибка. Попробуйте позже.';
   }
 
+  // ----- Сохранить профиль с проверкой авторизации -----
   async function saveUserProfile(uid, email, name) {
+    // Ждём, пока пользователь станет доступен в auth.currentUser
+    let attempts = 0;
+    let currentUser = auth.currentUser;
+    
+    while (!currentUser || currentUser.uid !== uid) {
+      if (attempts > 20) {
+        throw new Error('Не удалось получить авторизованного пользователя после регистрации');
+      }
+      await new Promise(resolve => setTimeout(resolve, 150));
+      currentUser = auth.currentUser;
+      attempts++;
+    }
+    
+    console.log('✅ Пользователь авторизован, сохраняем профиль');
+    
     const userRef = ref(db, 'users/' + uid);
     const defaultName = name && name.trim() ? name.trim() : email.split('@')[0];
     
     await set(userRef, {
       email: email,
       name: defaultName,
-      status: 1
+      status: 1,
+      createdAt: new Date().toISOString()
     });
+    
+    // Проверяем, что запись создалась
+    const snapshot = await get(userRef);
+    if (!snapshot.exists()) {
+      throw new Error('Профиль не был сохранён в базе данных');
+    }
+    
+    console.log('✅ Профиль успешно сохранён для пользователя:', uid);
     return { name: defaultName, status: 1 };
   }
 
@@ -416,6 +246,7 @@
     }
   }
 
+  // ----- Обработчик сабмита (исправленный) -----
   async function handleSubmit() {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
@@ -438,33 +269,44 @@
     submitBtn.textContent = '⏳ Загрузка...';
 
     try {
+      // Устанавливаем персистентность
       if (rememberCheckbox.checked) {
         await setPersistence(auth, browserLocalPersistence);
-        try {
-          localStorage.setItem('remembered_email', email);
-        } catch (e) {
-          console.warn('Ошибка сохранения email:', e);
-        }
+        try { localStorage.setItem('remembered_email', email); } catch (e) {}
       } else {
         await setPersistence(auth, browserSessionPersistence);
-        try {
-          localStorage.removeItem('remembered_email');
-        } catch (e) {
-          console.warn('Ошибка удаления сохранённого email:', e);
-        }
+        try { localStorage.removeItem('remembered_email'); } catch (e) {}
       }
 
       let userCredential;
       if (isLoginMode) {
+        // ВХОД
         userCredential = await signInWithEmailAndPassword(auth, email, password);
       } else {
+        // РЕГИСТРАЦИЯ
         userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+        
+        // Ждём, пока пользователь появится в auth.currentUser
+        let attempts = 0;
+        let currentUser = auth.currentUser;
+        while (!currentUser || currentUser.uid !== user.uid) {
+          if (attempts > 20) {
+            throw new Error('Не удалось получить авторизованного пользователя');
+          }
+          await new Promise(resolve => setTimeout(resolve, 150));
+          currentUser = auth.currentUser;
+          attempts++;
+        }
+        
+        // Теперь сохраняем профиль
         await saveUserProfile(user.uid, email, name);
+        console.log('✅ Пользователь создан и профиль сохранён');
       }
       
       redirectToMain();
     } catch (error) {
+      console.error('Ошибка:', error);
       authError.textContent = '❌ ' + getErrorMessage(error);
       authError.classList.remove('hidden');
       submitBtn.disabled = false;
@@ -483,9 +325,11 @@
     }
   });
 
+  // ----- Следим за состоянием авторизации -----
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      console.log('👤 Пользователь уже авторизован, перенаправление...');
+      console.log('👤 Пользователь авторизован:', user.email);
+      // Если мы уже на странице авторизации и пользователь есть — перенаправляем
       redirectToMain();
     } else {
       console.log('👤 Пользователь не авторизован');
@@ -494,9 +338,10 @@
     }
   });
 
+  // ----- Инициализация -----
   updateFormMode();
   loadSavedEmail();
-  console.log('✅ Электронная школа — страница авторизации с логотипом');
+  console.log('✅ Электронная школа — страница авторизации (исправлена)');
 </script>
 </body>
 </html>
