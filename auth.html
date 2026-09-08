@@ -34,6 +34,38 @@
       border: 1px solid #f0f5fe;
     }
 
+    /* ----- ЛОГОТИП (как на главной) ----- */
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .logo-icon {
+      background: #2a7de1;
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 600;
+      box-shadow: 0 8px 18px rgba(42, 125, 225, 0.20);
+    }
+
+    .logo-text {
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: #0a1e3c;
+    }
+    .logo-text span {
+      color: #2a7de1;
+    }
+
     .auth-title {
       font-size: 28px;
       font-weight: 600;
@@ -145,16 +177,6 @@
       border-color: #2a7de1;
     }
 
-    .btn-success {
-      background: #1a8a4a;
-      color: white;
-      box-shadow: 0 8px 20px rgba(26, 138, 74, 0.25);
-    }
-    .btn-success:hover {
-      background: #146e3a;
-      transform: scale(0.98);
-    }
-
     .switch-row {
       margin-top: 22px;
       text-align: center;
@@ -206,12 +228,20 @@
         padding: 28px 20px 32px;
         border-radius: 32px;
       }
+      .logo-text { font-size: 22px; }
+      .logo-icon { width: 42px; height: 42px; font-size: 20px; }
     }
   </style>
 </head>
 <body>
 
 <div class="auth-card" id="authCard">
+  <!-- ЛОГОТИП (как на главной) -->
+  <div class="logo-area">
+    <div class="logo-icon">Ш</div>
+    <div class="logo-text">Электро<span>школа</span></div>
+  </div>
+
   <div id="authFormBlock">
     <div class="auth-title" id="formTitle">Вход</div>
     <div class="auth-sub" id="formSub">Введите email и пароль</div>
@@ -225,7 +255,6 @@
       <input type="password" id="passwordInput" placeholder="••••••••" />
     </div>
 
-    <!-- Запомнить меня -->
     <div class="remember-me">
       <input type="checkbox" id="rememberCheckbox" checked />
       <label for="rememberCheckbox">Запомнить меня</label>
@@ -254,7 +283,6 @@
 
 <!-- FIREBASE -->
 <script type="module">
-  // ----- ИМПОРТЫ FIREBASE -----
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
   import {
@@ -309,13 +337,11 @@
 
   let isLoginMode = true;
 
-  // ----- Функция перенаправления -----
   function redirectToMain() {
     console.log('🔄 Перенаправление на:', REDIRECT_URL);
     window.location.href = REDIRECT_URL;
   }
 
-  // ----- Обновить UI формы -----
   function updateFormMode() {
     if (isLoginMode) {
       formTitle.textContent = 'Вход';
@@ -337,7 +363,6 @@
     authError.classList.add('hidden');
   }
 
-  // ----- Переключение режима -----
   function toggleMode() {
     isLoginMode = !isLoginMode;
     updateFormMode();
@@ -350,7 +375,6 @@
   switchModeBtn.addEventListener('click', toggleMode);
   switchActionBtn.addEventListener('click', toggleMode);
 
-  // ----- Получить человеческое описание ошибки -----
   function getErrorMessage(error) {
     const codes = {
       'auth/user-not-found': 'Пользователь с таким email не найден. Проверьте правильность ввода.',
@@ -368,7 +392,6 @@
     return codes[error.code] || error.message || 'Неизвестная ошибка. Попробуйте позже.';
   }
 
-  // ----- Сохранить профиль (статус всегда 1 - ученик) -----
   async function saveUserProfile(uid, email, name) {
     const userRef = ref(db, 'users/' + uid);
     const defaultName = name && name.trim() ? name.trim() : email.split('@')[0];
@@ -381,7 +404,6 @@
     return { name: defaultName, status: 1 };
   }
 
-  // ----- Восстановление сохранённого email -----
   function loadSavedEmail() {
     try {
       const saved = localStorage.getItem('remembered_email');
@@ -394,7 +416,6 @@
     }
   }
 
-  // ----- Обработчик сабмита -----
   async function handleSubmit() {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
@@ -417,10 +438,8 @@
     submitBtn.textContent = '⏳ Загрузка...';
 
     try {
-      // Устанавливаем персистентность (запоминание)
       if (rememberCheckbox.checked) {
         await setPersistence(auth, browserLocalPersistence);
-        // Сохраняем email в localStorage
         try {
           localStorage.setItem('remembered_email', email);
         } catch (e) {
@@ -444,7 +463,6 @@
         await saveUserProfile(user.uid, email, name);
       }
       
-      // После успешного входа/регистрации — ПЕРЕНАПРАВЛЕНИЕ
       redirectToMain();
     } catch (error) {
       authError.textContent = '❌ ' + getErrorMessage(error);
@@ -456,7 +474,6 @@
 
   submitBtn.addEventListener('click', handleSubmit);
 
-  // Enter — сабмит
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       const active = document.activeElement;
@@ -466,25 +483,20 @@
     }
   });
 
-  // ----- Следим за состоянием авторизации -----
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      // Пользователь уже авторизован — перенаправляем
       console.log('👤 Пользователь уже авторизован, перенаправление...');
       redirectToMain();
     } else {
-      // Показываем форму входа
       console.log('👤 Пользователь не авторизован');
-      // Загружаем сохранённый email
       loadSavedEmail();
       updateFormMode();
     }
   });
 
-  // ----- Инициализация -----
   updateFormMode();
   loadSavedEmail();
-  console.log('✅ Электронная школа — страница авторизации с запоминанием');
+  console.log('✅ Электронная школа — страница авторизации с логотипом');
 </script>
 </body>
 </html>
