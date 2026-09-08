@@ -97,7 +97,6 @@
     onAuthStateChanged,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
-    signOut,
     setPersistence,
     browserLocalPersistence,
     browserSessionPersistence
@@ -106,8 +105,7 @@
     getDatabase,
     ref,
     set,
-    get,
-    child
+    get
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
   const firebaseConfig = {
@@ -141,9 +139,9 @@
   const rememberCheckbox = document.getElementById('rememberCheckbox');
 
   let isLoginMode = true;
+  let pendingUserData = null; // для хранения данных нового пользователя
 
   function redirectToMain() {
-    console.log('🔄 Перенаправление на:', REDIRECT_URL);
     window.location.href = REDIRECT_URL;
   }
 
@@ -182,56 +180,17 @@
 
   function getErrorMessage(error) {
     const codes = {
-      'auth/user-not-found': 'Пользователь с таким email не найден. Проверьте правильность ввода.',
-      'auth/wrong-password': 'Неверный пароль. Попробуйте ещё раз или восстановите пароль.',
-      'auth/email-already-in-use': 'Этот email уже зарегистрирован. Попробуйте войти или используйте другой email.',
-      'auth/invalid-email': 'Некорректный формат email. Пример: user@example.com',
-      'auth/weak-password': 'Пароль слишком простой. Используйте минимум 6 символов, включая буквы и цифры.',
-      'auth/user-disabled': 'Этот аккаунт был отключён. Обратитесь в поддержку.',
-      'auth/too-many-requests': 'Слишком много попыток входа. Подождите немного или восстановите пароль.',
-      'auth/network-request-failed': 'Проблема с интернет-соединением. Проверьте сеть.',
-      'auth/internal-error': 'Внутренняя ошибка сервера. Попробуйте позже.',
-      'auth/operation-not-allowed': 'Вход через email/пароль отключён. Обратитесь к администратору.',
-      'auth/requires-recent-login': 'Для безопасности требуется повторный вход. Выйдите и зайдите снова.'
+      'auth/user-not-found': 'Пользователь с таким email не найден.',
+      'auth/wrong-password': 'Неверный пароль.',
+      'auth/email-already-in-use': 'Этот email уже зарегистрирован.',
+      'auth/invalid-email': 'Некорректный формат email.',
+      'auth/weak-password': 'Пароль слишком простой (мин. 6 символов).',
+      'auth/user-disabled': 'Аккаунт отключён.',
+      'auth/too-many-requests': 'Слишком много попыток. Подождите.',
+      'auth/network-request-failed': 'Проблема с интернетом.',
+      'auth/internal-error': 'Внутренняя ошибка сервера.'
     };
-    return codes[error.code] || error.message || 'Неизвестная ошибка. Попробуйте позже.';
-  }
-
-  // ----- Сохранить профиль с проверкой авторизации -----
-  async function saveUserProfile(uid, email, name) {
-    // Ждём, пока пользователь станет доступен в auth.currentUser
-    let attempts = 0;
-    let currentUser = auth.currentUser;
-    
-    while (!currentUser || currentUser.uid !== uid) {
-      if (attempts > 20) {
-        throw new Error('Не удалось получить авторизованного пользователя после регистрации');
-      }
-      await new Promise(resolve => setTimeout(resolve, 150));
-      currentUser = auth.currentUser;
-      attempts++;
-    }
-    
-    console.log('✅ Пользователь авторизован, сохраняем профиль');
-    
-    const userRef = ref(db, 'users/' + uid);
-    const defaultName = name && name.trim() ? name.trim() : email.split('@')[0];
-    
-    await set(userRef, {
-      email: email,
-      name: defaultName,
-      status: 1,
-      createdAt: new Date().toISOString()
-    });
-    
-    // Проверяем, что запись создалась
-    const snapshot = await get(userRef);
-    if (!snapshot.exists()) {
-      throw new Error('Профиль не был сохранён в базе данных');
-    }
-    
-    console.log('✅ Профиль успешно сохранён для пользователя:', uid);
-    return { name: defaultName, status: 1 };
+    return codes[error.code] || error.message || 'Неизвестная ошибка.';
   }
 
   function loadSavedEmail() {
@@ -241,12 +200,10 @@
         emailInput.value = saved;
         rememberCheckbox.checked = true;
       }
-    } catch (e) {
-      console.warn('Ошибка загрузки сохранённого email:', e);
-    }
+    } catch (e) {}
   }
 
-  // ----- Обработчик сабмита (исправленный) -----
+  // ===== ГЛАВНОЕ: ОБРАБОТЧИК САБМИТА =====
   async function handleSubmit() {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
@@ -272,39 +229,35 @@
       // Устанавливаем персистентность
       if (rememberCheckbox.checked) {
         await setPersistence(auth, browserLocalPersistence);
-        try { localStorage.setItem('remembered_email', email); } catch (e) {}
+        localStorage.setItem('remembered_email', email);
       } else {
         await setPersistence(auth, browserSessionPersistence);
-        try { localStorage.removeItem('remembered_email'); } catch (e) {}
+        localStorage.removeItem('remembered_email');
       }
 
-      let userCredential;
       if (isLoginMode) {
         // ВХОД
-        userCredential = await signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmailAndPassword(auth, email, password);
+        // onAuthStateChanged сам перенаправит
       } else {
         // РЕГИСТРАЦИЯ
-        userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        // 1. Создаем пользователя
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         
-        // Ждём, пока пользователь появится в auth.currentUser
-        let attempts = 0;
-        let currentUser = auth.currentUser;
-        while (!currentUser || currentUser.uid !== user.uid) {
-          if (attempts > 20) {
-            throw new Error('Не удалось получить авторизованного пользователя');
-          }
-          await new Promise(resolve => setTimeout(resolve, 150));
-          currentUser = auth.currentUser;
-          attempts++;
-        }
+        // 2. Сохраняем данные для onAuthStateChanged
+        pendingUserData = {
+          uid: user.uid,
+          email: email,
+          name: name
+        };
         
-        // Теперь сохраняем профиль
-        await saveUserProfile(user.uid, email, name);
-        console.log('✅ Пользователь создан и профиль сохранён');
+        // 3. Ждем, пока onAuthStateChanged сработает и сохранит профиль
+        // onAuthStateChanged сам вызовется и сохранит данные
+        console.log('✅ Пользователь создан, ожидаем onAuthStateChanged...');
+        
+        // НЕ перенаправляем сразу — onAuthStateChanged сделает это после сохранения
       }
-      
-      redirectToMain();
     } catch (error) {
       console.error('Ошибка:', error);
       authError.textContent = '❌ ' + getErrorMessage(error);
@@ -325,23 +278,69 @@
     }
   });
 
-  // ----- Следим за состоянием авторизации -----
+  // ===== onAuthStateChanged — ОСНОВНОЙ МЕХАНИЗМ =====
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      console.log('👤 Пользователь авторизован:', user.email);
-      // Если мы уже на странице авторизации и пользователь есть — перенаправляем
-      redirectToMain();
+      console.log('👤 onAuthStateChanged: пользователь авторизован', user.email);
+      
+      // Если есть ожидающие данные — сохраняем профиль
+      if (pendingUserData && pendingUserData.uid === user.uid) {
+        try {
+          console.log('💾 Сохраняем профиль для нового пользователя...');
+          
+          const userRef = ref(db, 'users/' + user.uid);
+          const defaultName = pendingUserData.name || pendingUserData.email.split('@')[0];
+          
+          await set(userRef, {
+            email: pendingUserData.email,
+            name: defaultName,
+            status: 1,
+            createdAt: new Date().toISOString()
+          });
+          
+          // Проверяем, что запись создалась
+          const snapshot = await get(userRef);
+          if (snapshot.exists()) {
+            console.log('✅ Профиль успешно сохранён!');
+          } else {
+            console.error('❌ Профиль не сохранился!');
+          }
+          
+          pendingUserData = null;
+          
+          // Перенаправляем после успешного сохранения
+          redirectToMain();
+          
+        } catch (error) {
+          console.error('❌ Ошибка сохранения профиля:', error);
+          authError.textContent = '❌ Ошибка сохранения профиля: ' + error.message;
+          authError.classList.remove('hidden');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Создать';
+          pendingUserData = null;
+        }
+      } else {
+        // Обычный вход — сразу перенаправляем
+        redirectToMain();
+      }
     } else {
-      console.log('👤 Пользователь не авторизован');
+      console.log('👤 onAuthStateChanged: пользователь не авторизован');
+      // Если был pendingUserData, но пользователь не авторизовался — сбрасываем
+      if (pendingUserData) {
+        console.error('❌ Пользователь не авторизовался после регистрации!');
+        pendingUserData = null;
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Создать';
+      }
       loadSavedEmail();
       updateFormMode();
     }
   });
 
-  // ----- Инициализация -----
+  // Инициализация
   updateFormMode();
   loadSavedEmail();
-  console.log('✅ Электронная школа — страница авторизации (исправлена)');
+  console.log('✅ Страница авторизации загружена');
 </script>
 </body>
 </html>
