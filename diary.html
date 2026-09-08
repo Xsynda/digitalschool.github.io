@@ -91,7 +91,7 @@
     .modal-card .modal-row:last-child { border-bottom: none; }
     .modal-card .modal-row .label { color: #6a7f9e; font-weight: 500; }
     .modal-card .modal-row .value { color: #0a1e3c; font-weight: 500; text-align: right; }
-    .modal-card .modal-homework { margin-top: 12px; padding: 12px 16px; background: #f9fcff; border-radius: 16px; font-size: 14px; color: #0a1e3c; line-height: 1.6; border: 1px solid #eef3fa; word-break: break-word; }
+    .modal-card .modal-homework { margin-top: 12px; padding: 12px 16px; background: #f9fcff; border-radius: 16px; font-size: 14px; color: #0a1e3c; line-height: 1.6; border: 1px solid #eef3fa; word-break: break-word; white-space: pre-wrap; }
     .modal-card .modal-homework a { color: #2a7de1; text-decoration: underline; }
     .modal-card .modal-homework a:hover { text-decoration: none; }
     .modal-card .modal-homework img { max-width: 100%; height: auto; border-radius: 12px; margin: 6px 0; }
@@ -220,21 +220,34 @@
   }
 
   // ----- Обработка HTML в ДЗ (поддержка <a> и <img>) -----
-  function processHomeworkText(text) {
+  function processHomeworkText(text, preserveNewlines = false) {
     if (!text) return 'Нет задания';
+    
     let processed = escapeHtml(text);
+    
+    // Восстанавливаем <a> теги
     const linkRegex = /&lt;a\s+(.*?)&gt;(.*?)&lt;\/a&gt;/g;
     processed = processed.replace(linkRegex, (match, attrs, content) => {
       return `<a ${attrs}>${content}</a>`;
     });
+    
+    // Восстанавливаем <img> теги
     const imgRegex = /&lt;img\s+(.*?)\s*\/?&gt;/g;
     processed = processed.replace(imgRegex, (match, attrs) => {
       return `<img ${attrs}>`;
     });
+    
+    // Автоссылки http/https
     const urlRegex = /(https?:\/\/[^\s<]+)/g;
     processed = processed.replace(urlRegex, (url) => {
       return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
     });
+    
+    // Если не нужно сохранять переносы — заменяем \n на пробел
+    if (!preserveNewlines) {
+      processed = processed.replace(/\n/g, ' ');
+    }
+    
     return processed;
   }
 
@@ -250,7 +263,7 @@
     modalTitle.textContent = lesson.name || 'Без названия';
     modalTime.textContent = lesson.time ? `⏰ ${lesson.time}` : '⏰ Время не указано';
     modalCab.textContent = lesson.cab ?? '—';
-    modalHomework.innerHTML = processHomeworkText(lesson.homework);
+    modalHomework.innerHTML = processHomeworkText(lesson.homework, true);
     modal.classList.add('active');
   }
 
@@ -325,7 +338,8 @@
           const homework = lesson.homework || '';
           const cab = lesson.cab ?? '';
 
-          let homeworkDisplay = homework ? processHomeworkText(homework) : '<span class="homework-empty">нет задания</span>';
+          // В превью \n заменяем на пробел
+          let homeworkDisplay = homework ? processHomeworkText(homework, false) : '<span class="homework-empty">нет задания</span>';
           const lessonData = JSON.stringify({ name, time, cab, homework });
 
           dayHtml += `
@@ -416,7 +430,8 @@
             const homework = lesson.homework || '';
             const cab = lesson.cab ?? '';
 
-            let homeworkDisplay = homework ? processHomeworkText(homework) : '<span class="homework-empty">нет задания</span>';
+            // В превью \n заменяем на пробел
+            let homeworkDisplay = homework ? processHomeworkText(homework, false) : '<span class="homework-empty">нет задания</span>';
             const lessonData = JSON.stringify({ name, time, cab, homework });
 
             dayHtml += `
@@ -560,7 +575,7 @@
     }
   });
 
-  console.log('✅ Дневник: прошедшие дни наверху, пагинация по 5 дней');
+  console.log('✅ Дневник: \n заменяется на пробел в превью, сохраняется в модалке');
 </script>
 </body>
 </html>
