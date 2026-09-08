@@ -7,388 +7,66 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f8faff;
-      min-height: 100vh;
-      padding-top: 80px;
-    }
-
-    /* ----- ШАПКА (как на главной) ----- */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: #ffffff;
-      border-bottom: 1px solid #eef3fa;
-      box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06);
-      padding: 12px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .navbar-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo-icon {
-      background: #2a7de1;
-      color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20);
-    }
-
-    .logo-text {
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-      color: #0a1e3c;
-    }
-    .logo-text span {
-      color: #2a7de1;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .nav-link {
-      padding: 8px 18px;
-      border-radius: 40px;
-      font-weight: 500;
-      font-size: 14px;
-      color: #1f2b48;
-      text-decoration: none;
-      transition: 0.15s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: transparent;
-      border: 1.5px solid transparent;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-    }
-    .nav-link:hover {
-      background: #f0f4fe;
-      border-color: #d0dae9;
-    }
-    .nav-link .material-symbols-outlined {
-      font-size: 18px;
-    }
-
-    .navbar-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .user-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #f0f6ff;
-      padding: 6px 16px 6px 12px;
-      border-radius: 40px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #0a1e3c;
-      cursor: pointer;
-      transition: 0.15s;
-      text-decoration: none;
-      border: none;
-      font-family: 'Inter', sans-serif;
-    }
-    .user-badge:hover {
-      background: #e5effb;
-      transform: scale(0.97);
-    }
-    .user-badge .material-symbols-outlined {
-      color: #2a7de1;
-      font-size: 20px;
-    }
-
-    .btn {
-      border: none;
-      padding: 6px 18px;
-      border-radius: 40px;
-      font-weight: 500;
-      font-size: 13px;
-      cursor: pointer;
-      transition: 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'Inter', sans-serif;
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      background: #2a7de1;
-      color: white;
-      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20);
-    }
-    .btn-primary:hover {
-      background: #1a5fb0;
-      transform: scale(0.97);
-    }
-
-    /* ----- ОСНОВНОЙ КОНТЕНТ ----- */
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      background: #ffffff;
-      border-radius: 48px;
-      box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08);
-      padding: 32px 40px 44px;
-      border: 1px solid #f0f5fe;
-    }
-
-    .page-title {
-      font-size: 26px;
-      font-weight: 600;
-      color: #0a1e3c;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .page-title .material-symbols-outlined {
-      color: #2a7de1;
-      font-size: 32px;
-    }
-
-    .page-sub {
-      color: #5f7696;
-      font-size: 16px;
-      margin-bottom: 28px;
-    }
-
-    .settings-card {
-      background: #f9fcff;
-      border-radius: 24px;
-      padding: 24px;
-      border: 1px solid #eef3fa;
-      margin-bottom: 20px;
-    }
-
-    .settings-card .card-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #0a1e3c;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .settings-card .card-title .material-symbols-outlined {
-      color: #2a7de1;
-      font-size: 22px;
-    }
-
-    .field-group {
-      margin-bottom: 16px;
-    }
-    .field-group:last-child {
-      margin-bottom: 0;
-    }
-
-    .field-group label {
-      display: block;
-      font-weight: 500;
-      font-size: 14px;
-      color: #1f2b48;
-      margin-bottom: 6px;
-    }
-
-    .field-group input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid #dce4ef;
-      border-radius: 30px;
-      font-size: 15px;
-      font-family: 'Inter', sans-serif;
-      transition: 0.15s;
-      background: #ffffff;
-    }
-
-    .field-group input:focus {
-      outline: none;
-      border-color: #2a7de1;
-      box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10);
-    }
-
-    .field-group input:disabled {
-      opacity: 0.6;
-      background: #f5f7fa;
-      cursor: not-allowed;
-    }
-
-    .btn-action {
-      border: none;
-      padding: 10px 24px;
-      border-radius: 40px;
-      font-weight: 500;
-      font-size: 14px;
-      cursor: pointer;
-      transition: 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .btn-primary {
-      background: #2a7de1;
-      color: white;
-      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.25);
-    }
-    .btn-primary:hover {
-      background: #1a5fb0;
-      transform: scale(0.97);
-    }
-
-    .btn-success {
-      background: #1a8a4a;
-      color: white;
-      box-shadow: 0 4px 12px rgba(26, 138, 74, 0.25);
-    }
-    .btn-success:hover {
-      background: #146e3a;
-      transform: scale(0.97);
-    }
-
-    .btn-danger {
-      background: #c74a4a;
-      color: white;
-      box-shadow: 0 4px 12px rgba(199, 74, 74, 0.25);
-    }
-    .btn-danger:hover {
-      background: #a33a3a;
-      transform: scale(0.97);
-    }
-
-    .btn-full {
-      width: 100%;
-      justify-content: center;
-    }
-
-    .error-msg {
-      color: #c74a4a;
-      font-size: 14px;
-      margin: 8px 0 12px;
-      background: #fff0f0;
-      padding: 8px 16px;
-      border-radius: 40px;
-      display: block;
-      line-height: 1.4;
-    }
-    .error-msg.hidden {
-      display: none;
-    }
-
-    .success-msg {
-      color: #1a8a4a;
-      font-size: 14px;
-      margin: 8px 0 12px;
-      background: #e8f5ed;
-      padding: 8px 16px;
-      border-radius: 40px;
-      display: block;
-      line-height: 1.4;
-    }
-    .success-msg.hidden {
-      display: none;
-    }
-
-    .divider {
-      border: none;
-      border-top: 1px solid #eef3fa;
-      margin: 24px 0;
-    }
-
-    .footer {
-      margin-top: 32px;
-      padding-top: 20px;
-      border-top: 1px solid #eef3fa;
-      font-size: 13px;
-      color: #889bb3;
-      text-align: center;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: #6a7f9e;
-    }
-
-    @media (max-width: 700px) {
-      .navbar {
-        padding: 10px 16px;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-      }
-      .navbar-left {
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-      .nav-links {
-        justify-content: flex-start;
-      }
-      .navbar-right {
-        justify-content: flex-start;
-      }
-      body {
-        padding-top: 130px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .container { padding: 20px 16px 28px; border-radius: 32px; }
-      .navbar-left { flex-direction: column; align-items: flex-start; gap: 6px; }
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f8faff; min-height: 100vh; padding-top: 80px; }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #ffffff; border-bottom: 1px solid #eef3fa; box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .navbar-left { display: flex; align-items: center; gap: 16px; }
+    .logo-area { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { background: #2a7de1; color: white; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); }
+    .logo-text { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; color: #0a1e3c; }
+    .logo-text span { color: #2a7de1; }
+    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .nav-link { padding: 8px 18px; border-radius: 40px; font-weight: 500; font-size: 14px; color: #1f2b48; text-decoration: none; transition: 0.15s; display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid transparent; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
+    .nav-link .material-symbols-outlined { font-size: 18px; }
+    .navbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .user-badge { display: flex; align-items: center; gap: 8px; background: #f0f6ff; padding: 6px 16px 6px 12px; border-radius: 40px; font-size: 14px; font-weight: 500; color: #0a1e3c; cursor: pointer; transition: 0.15s; text-decoration: none; border: none; font-family: 'Inter', sans-serif; }
+    .user-badge:hover { background: #e5effb; transform: scale(0.97); }
+    .user-badge .material-symbols-outlined { color: #2a7de1; font-size: 20px; }
+    .btn { border: none; padding: 6px 18px; border-radius: 40px; font-weight: 500; font-size: 13px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif; text-decoration: none; }
+    .btn-primary { background: #2a7de1; color: white; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); }
+    .btn-primary:hover { background: #1a5fb0; transform: scale(0.97); }
+    .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 48px; box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08); padding: 32px 40px 44px; border: 1px solid #f0f5fe; }
+    .page-title { font-size: 26px; font-weight: 600; color: #0a1e3c; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .page-title .material-symbols-outlined { color: #2a7de1; font-size: 32px; }
+    .page-sub { color: #5f7696; font-size: 16px; margin-bottom: 28px; }
+    .settings-card { background: #f9fcff; border-radius: 24px; padding: 24px; border: 1px solid #eef3fa; margin-bottom: 20px; }
+    .settings-card .card-title { font-size: 16px; font-weight: 600; color: #0a1e3c; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .settings-card .card-title .material-symbols-outlined { color: #2a7de1; font-size: 22px; }
+    .field-group { margin-bottom: 16px; }
+    .field-group:last-child { margin-bottom: 0; }
+    .field-group label { display: block; font-weight: 500; font-size: 14px; color: #1f2b48; margin-bottom: 6px; }
+    .field-group input { width: 100%; padding: 12px 16px; border: 1.5px solid #dce4ef; border-radius: 30px; font-size: 15px; font-family: 'Inter', sans-serif; transition: 0.15s; background: #ffffff; }
+    .field-group input:focus { outline: none; border-color: #2a7de1; box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10); }
+    .field-group input:disabled { opacity: 0.6; background: #f5f7fa; cursor: not-allowed; }
+    .btn-action { border: none; padding: 10px 24px; border-radius: 40px; font-weight: 500; font-size: 14px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; }
+    .btn-action-primary { background: #2a7de1; color: white; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.25); }
+    .btn-action-primary:hover { background: #1a5fb0; transform: scale(0.97); }
+    .btn-action-success { background: #1a8a4a; color: white; box-shadow: 0 4px 12px rgba(26, 138, 74, 0.25); }
+    .btn-action-success:hover { background: #146e3a; transform: scale(0.97); }
+    .btn-action-danger { background: #c74a4a; color: white; box-shadow: 0 4px 12px rgba(199, 74, 74, 0.25); }
+    .btn-action-danger:hover { background: #a33a3a; transform: scale(0.97); }
+    .btn-full { width: 100%; justify-content: center; }
+    .error-msg { color: #c74a4a; font-size: 14px; margin: 8px 0 12px; background: #fff0f0; padding: 8px 16px; border-radius: 40px; display: block; line-height: 1.4; }
+    .error-msg.hidden { display: none; }
+    .success-msg { color: #1a8a4a; font-size: 14px; margin: 8px 0 12px; background: #e8f5ed; padding: 8px 16px; border-radius: 40px; display: block; line-height: 1.4; }
+    .success-msg.hidden { display: none; }
+    .divider { border: none; border-top: 1px solid #eef3fa; margin: 24px 0; }
+    .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid #eef3fa; font-size: 13px; color: #889bb3; text-align: center; }
+    .loading { text-align: center; padding: 40px; color: #6a7f9e; }
+    @media (max-width: 700px) { .navbar { padding: 10px 16px; flex-direction: column; align-items: stretch; gap: 8px; } .navbar-left { flex-wrap: wrap; justify-content: space-between; } .nav-links { justify-content: flex-start; } .navbar-right { justify-content: flex-start; } body { padding-top: 130px; } }
+    @media (max-width: 480px) { .container { padding: 20px 16px 28px; border-radius: 32px; } .navbar-left { flex-direction: column; align-items: flex-start; gap: 6px; } }
   </style>
 </head>
 <body>
 
-<!-- ШАПКА (как на главной) -->
 <header class="navbar" id="navbar">
   <div class="navbar-left">
     <div class="logo-area">
       <div class="logo-icon">Ш</div>
       <div class="logo-text">Электро<span>школа</span></div>
     </div>
-    <nav class="nav-links" id="navLinks">
+    <nav class="nav-links">
       <a href="index.html" class="nav-link">
         <span class="material-symbols-outlined">home</span>
         Главная
@@ -400,7 +78,6 @@
   </div>
 </header>
 
-<!-- ОСНОВНОЙ КОНТЕНТ -->
 <div class="container">
   <div class="page-title">
     <span class="material-symbols-outlined">account_circle</span>
@@ -480,10 +157,37 @@
     setTimeout(() => element.classList.add('hidden'), 4000);
   }
 
-  // ----- Рендер шапки (имя пользователя) -----
+  // ----- ОБНОВЛЕНИЕ ИМЕНИ В ШАПКЕ -----
+  function updateUserBadge(user) {
+    if (!user) return;
+    const displayName = user.displayName || user.email || 'Пользователь';
+    const badge = userArea.querySelector('.user-badge');
+    if (badge) {
+      badge.innerHTML = `
+        <span class="material-symbols-outlined">account_circle</span>
+        ${escapeHtml(displayName)}
+      `;
+    }
+  }
+
+  // ----- РЕНДЕР ШАПКИ (исправленный) -----
   function renderHeader(user) {
     if (user) {
-      const displayName = user.displayName || user.email || 'Пользователь';
+      let displayName = user.displayName || user.email || 'Пользователь';
+      
+      // Если имя не загружено, пытаемся получить из базы
+      if (!user.displayName || user.displayName === user.email) {
+        const userRef = ref(db, 'users/' + user.uid);
+        get(userRef).then((snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const name = data.name || user.email || 'Пользователь';
+            user.displayName = name;
+            updateUserBadge(user);
+          }
+        }).catch(() => {});
+      }
+      
       userArea.innerHTML = `
         <a href="${ACCOUNT_URL}" class="user-badge">
           <span class="material-symbols-outlined">account_circle</span>
@@ -500,12 +204,16 @@
     }
   }
 
-  // ----- Рендер профиля -----
+  // ----- РЕНДЕР ПРОФИЛЯ -----
   function renderProfile(user, profileData) {
     const name = profileData?.name || user.email || 'Пользователь';
     const email = user.email || '—';
-    const statusMap = { 1: 'ученик', 2: 'учитель', 3: 'администратор' };
+    const statusMap = { 1: 'ученик', 2: 'администратор' };
     const status = statusMap[profileData?.status] || 'неизвестно';
+
+    // Обновляем имя в шапке
+    user.displayName = name;
+    updateUserBadge(user);
 
     profileContainer.innerHTML = `
       <div class="settings-card">
@@ -534,7 +242,7 @@
         </div>
         <div id="nameError" class="error-msg hidden"></div>
         <div id="nameSuccess" class="success-msg hidden"></div>
-        <button class="btn-action btn-primary" id="updateNameBtn">💾 Сохранить имя</button>
+        <button class="btn-action btn-action-primary" id="updateNameBtn">💾 Сохранить имя</button>
       </div>
 
       <div class="settings-card">
@@ -556,12 +264,12 @@
         </div>
         <div id="passwordError" class="error-msg hidden"></div>
         <div id="passwordSuccess" class="success-msg hidden"></div>
-        <button class="btn-action btn-success" id="updatePasswordBtn">🔑 Сменить пароль</button>
+        <button class="btn-action btn-action-success" id="updatePasswordBtn">🔑 Сменить пароль</button>
       </div>
 
       <hr class="divider" />
 
-      <button class="btn-action btn-danger btn-full" id="logoutBtn">
+      <button class="btn-action btn-action-danger btn-full" id="logoutBtn">
         <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
         Выйти из аккаунта
       </button>
@@ -585,9 +293,8 @@
         await update(ref(db, 'users/' + user.uid), { name: newName });
         showSuccess(nameSuccess, '✅ Имя успешно обновлено!');
         document.getElementById('newNameInput').value = newName;
-        // Обновляем имя в шапке
         user.displayName = newName;
-        renderHeader(user);
+        updateUserBadge(user);
       } catch (error) {
         console.error('Ошибка обновления имени:', error);
         showError(nameError, '❌ Ошибка: ' + (error.message || 'попробуйте позже'));
@@ -650,7 +357,7 @@
     });
   }
 
-  // ----- Загрузка данных пользователя -----
+  // ----- ЗАГРУЗКА ПРОФИЛЯ -----
   async function loadProfile(user) {
     renderHeader(user);
     try {
@@ -665,13 +372,13 @@
       profileContainer.innerHTML = `
         <div class="settings-card">
           <div class="error-msg" style="display:block;">❌ Ошибка загрузки данных. Попробуйте обновить страницу.</div>
-          <button class="btn-action btn-primary" onclick="location.reload()">🔄 Обновить</button>
+          <button class="btn-action btn-action-primary" onclick="location.reload()">🔄 Обновить</button>
         </div>
       `;
     }
   }
 
-  // ----- Авторизация -----
+  // ----- АВТОРИЗАЦИЯ -----
   onAuthStateChanged(auth, (user) => {
     if (user) {
       loadProfile(user);
@@ -680,7 +387,7 @@
     }
   });
 
-  console.log('✅ Страница аккаунта с шапкой');
+  console.log('✅ Страница аккаунта с исправленным отображением имени');
 </script>
 </body>
 </html>
