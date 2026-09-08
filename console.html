@@ -191,7 +191,6 @@
       margin-bottom: 28px;
     }
 
-    /* ----- КОНСОЛЬ ----- */
     .tab-bar {
       display: flex;
       gap: 8px;
@@ -569,8 +568,7 @@
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
   import {
     getAuth,
-    onAuthStateChanged,
-    signOut
+    onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
   import {
     getDatabase,
@@ -578,7 +576,6 @@
     get,
     set,
     remove,
-    child,
     onValue,
     update
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
@@ -602,16 +599,6 @@
   const ACCOUNT_URL = 'account.html';
   const userArea = document.getElementById('userArea');
 
-  // ----- Вкладки -----
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-    });
-  });
-
   // ----- Вспомогательные функции -----
   function escapeHtml(text) {
     if (!text) return '';
@@ -628,9 +615,37 @@
     }, 4000);
   }
 
+  // ----- ОБНОВЛЕНИЕ ИМЕНИ В ШАПКЕ -----
+  function updateUserBadge(user) {
+    if (!user) return;
+    const displayName = user.displayName || user.email || 'Пользователь';
+    const badge = userArea.querySelector('.user-badge');
+    if (badge) {
+      badge.innerHTML = `
+        <span class="material-symbols-outlined">account_circle</span>
+        ${escapeHtml(displayName)}
+      `;
+    }
+  }
+
+  // ----- РЕНДЕР ШАПКИ (исправленный) -----
   function renderHeader(user) {
     if (user) {
-      const displayName = user.displayName || user.email || 'Пользователь';
+      let displayName = user.displayName || user.email || 'Пользователь';
+      
+      // Если имя не загружено, пытаемся получить из базы
+      if (!user.displayName || user.displayName === user.email) {
+        const userRef = ref(db, 'users/' + user.uid);
+        get(userRef).then((snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const name = data.name || user.email || 'Пользователь';
+            user.displayName = name;
+            updateUserBadge(user);
+          }
+        }).catch(() => {});
+      }
+      
       userArea.innerHTML = `
         <a href="${ACCOUNT_URL}" class="user-badge">
           <span class="material-symbols-outlined">account_circle</span>
@@ -646,6 +661,18 @@
       `;
     }
   }
+
+  // ============================================
+  // ====== ВКЛАДКИ ======
+  // ============================================
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
 
   // ============================================
   // ====== УПРАВЛЕНИЕ НОВОСТЯМИ ======
@@ -1077,6 +1104,20 @@
       window.location.href = AUTH_URL;
       return;
     }
+    // Сначала загружаем имя пользователя
+    const userRef = ref(db, 'users/' + user.uid);
+    try {
+      const snapshot = await get(userRef);
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        user.displayName = data.name || user.email;
+      } else {
+        user.displayName = user.email;
+      }
+    } catch (e) {
+      user.displayName = user.email;
+    }
+    
     renderHeader(user);
     const isAdmin = await checkAdmin(user);
     if (isAdmin) {
@@ -1085,7 +1126,7 @@
     }
   });
 
-  console.log('✅ Консоль администратора с управлением расписанием');
+  console.log('✅ Консоль администратора с исправленным отображением имени');
 </script>
 </body>
 </html>
