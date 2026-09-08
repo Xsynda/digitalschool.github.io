@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Дневник · Электронная школа</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8faff;
+      min-height: 100vh;
+      padding-top: 80px;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: #ffffff;
+      border-bottom: 1px solid #eef3fa;
+      box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      background: #2a7de1;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20);
+    }
+
+    .logo-text {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: #0a1e3c;
+    }
+    .logo-text span {
+      color: #2a7de1;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 14px;
+      color: #1f2b48;
+      text-decoration: none;
+      transition: 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .nav-link:hover {
+      background: #f0f4fe;
+      border-color: #d0dae9;
+    }
+    .nav-link.active {
+      background: #e5effb;
+      border-color: #2a7de1;
+      color: #2a7de1;
+    }
+    .nav-link .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f0f6ff;
+      padding: 6px 16px 6px 12px;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #0a1e3c;
+      cursor: pointer;
+      transition: 0.15s;
+      text-decoration: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .user-badge:hover {
+      background: #e5effb;
+      transform: scale(0.97);
+    }
+    .user-badge .material-symbols-outlined {
+      color: #2a7de1;
+      font-size: 20px;
+    }
+
+    .btn {
+      border: none;
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: #2a7de1;
+      color: white;
+      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20);
+    }
+    .btn-primary:hover {
+      background: #1a5fb0;
+      transform: scale(0.97);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 48px;
+      box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08);
+      padding: 32px 40px 44px;
+      border: 1px solid #f0f5fe;
+    }
+
+    .page-title {
+      font-size: 26px;
+      font-weight: 600;
+      color: #0a1e3c;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .page-title .material-symbols-outlined {
+      color: #2a7de1;
+      font-size: 32px;
+    }
+
+    .page-sub {
+      color: #5f7696;
+      font-size: 16px;
+      margin-bottom: 28px;
+    }
+
+    /* ----- ДНЕВНИК ----- */
+    .schedule-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .day-card {
+      background: #f9fcff;
+      border-radius: 24px;
+      border: 1px solid #eef3fa;
+      overflow: hidden;
+    }
+
+    .day-header {
+      background: #f0f6ff;
+      padding: 14px 24px;
+      font-weight: 600;
+      font-size: 18px;
+      color: #0a1e3c;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #eef3fa;
+    }
+    .day-header .material-symbols-outlined {
+      color: #2a7de1;
+      font-size: 24px;
+    }
+
+    .lessons-grid {
+      display: grid;
+      grid-template-columns: 60px 1fr 1fr;
+      gap: 0;
+    }
+
+    .lesson-cell {
+      padding: 14px 16px;
+      border-bottom: 1px solid #eef3fa;
+      border-right: 1px solid #eef3fa;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: #1f2b48;
+    }
+    .lesson-cell:last-child {
+      border-right: none;
+    }
+
+    .lesson-number {
+      font-weight: 600;
+      color: #6a7f9e;
+      justify-content: center;
+      background: #f5f8fc;
+      border-right: 1px solid #eef3fa;
+    }
+
+    .lesson-name {
+      font-weight: 500;
+      background: #ffffff;
+    }
+
+    .lesson-homework {
+      background: #ffffff;
+      cursor: pointer;
+      transition: 0.15s;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .lesson-homework:hover {
+      background: #f0f6ff;
+    }
+
+    .homework-text {
+      width: 100%;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+      font-size: 14px;
+      color: #3d5270;
+      word-break: break-word;
+    }
+    .homework-text.expanded {
+      -webkit-line-clamp: unset;
+      display: block;
+    }
+
+    .homework-expand-btn {
+      font-size: 12px;
+      color: #2a7de1;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      padding: 2px 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .homework-expand-btn:hover {
+      text-decoration: underline;
+    }
+
+    .homework-empty {
+      color: #a0b3cc;
+      font-style: italic;
+      font-size: 13px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: #6a7f9e;
+    }
+    .empty-state .material-symbols-outlined {
+      font-size: 48px;
+      color: #d0dae9;
+      margin-bottom: 12px;
+    }
+    .empty-state h3 {
+      color: #0a1e3c;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid #eef3fa;
+      font-size: 13px;
+      color: #889bb3;
+      text-align: center;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6a7f9e;
+    }
+
+    @media (max-width: 700px) {
+      .navbar {
+        padding: 10px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .navbar-left {
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+      .nav-links {
+        justify-content: flex-start;
+      }
+      .navbar-right {
+        justify-content: flex-start;
+      }
+      body {
+        padding-top: 130px;
+      }
+      .container { padding: 20px 16px 28px; border-radius: 32px; }
+      .lessons-grid {
+        grid-template-columns: 40px 1fr 1.2fr;
+        font-size: 13px;
+      }
+      .lesson-cell { padding: 10px 12px; }
+      .day-header { font-size: 16px; padding: 12px 16px; }
+    }
+
+    @media (max-width: 480px) {
+      .lessons-grid {
+        grid-template-columns: 32px 1fr 1.4fr;
+        font-size: 12px;
+      }
+      .lesson-cell { padding: 8px 10px; }
+      .homework-text { font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="navbar-left">
+    <div class="logo-area">
+      <div class="logo-icon">Ш</div>
+      <div class="logo-text">Электро<span>школа</span></div>
+    </div>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html" class="nav-link">
+        <span class="material-symbols-outlined">home</span>
+        Главная
+      </a>
+      <a href="diary.html" class="nav-link active">
+        <span class="material-symbols-outlined">calendar_month</span>
+        Дневник
+      </a>
+    </nav>
+  </div>
+  <div class="navbar-right" id="userArea">
+    <!-- Имя пользователя -->
+  </div>
+</header>
+
+<div class="container">
+  <div class="page-title">
+    <span class="material-symbols-outlined">calendar_month</span>
+    Дневник
+  </div>
+  <div class="page-sub">Расписание уроков и домашние задания</div>
+
+  <div id="scheduleContainer">
+    <div class="loading">⏳ Загрузка расписания...</div>
+  </div>
+
+  <div class="footer">© 2026 · Электронная школа</div>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+  import {
+    getDatabase,
+    ref,
+    get,
+    child,
+    onValue
+  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
+    authDomain: "digitalschool-f2c90.firebaseapp.com",
+    projectId: "digitalschool-f2c90",
+    storageBucket: "digitalschool-f2c90.firebasestorage.app",
+    messagingSenderId: "797143730107",
+    appId: "1:797143730107:web:b19437db896170d88b269e",
+    measurementId: "G-FT9ENP491P"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
+  const ACCOUNT_URL = 'account.html';
+  const scheduleContainer = document.getElementById('scheduleContainer');
+  const userArea = document.getElementById('userArea');
+
+  function redirectToAuth() {
+    window.location.href = AUTH_URL;
+  }
+
+  function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // ----- Рендер расписания -----
+  function renderSchedule(scheduleData) {
+    if (!scheduleData || Object.keys(scheduleData).length === 0) {
+      scheduleContainer.innerHTML = `
+        <div class="empty-state">
+          <span class="material-symbols-outlined">event_busy</span>
+          <h3>Расписание пока не загружено</h3>
+          <p>Проверьте подключение к интернету или обратитесь к администратору</p>
+        </div>
+      `;
+      return;
+    }
+
+    // Получаем дни и сортируем по индексу
+    const dayKeys = Object.keys(scheduleData).map(Number).sort((a, b) => a - b);
+    
+    // Массив названий дней недели (индекс 0 = понедельник)
+    const dayNames = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
+
+    let html = '<div class="schedule-grid">';
+
+    for (const dayKey of dayKeys) {
+      const dayData = scheduleData[dayKey];
+      if (!dayData) continue;
+      
+      // Название дня из базы или из массива
+      const dayName = dayData.name || dayNames[dayKey] || `День ${dayKey + 1}`;
+      
+      // Уроки
+      const lessons = dayData.lessons || {};
+      const lessonKeys = Object.keys(lessons).map(Number).sort((a, b) => a - b);
+
+      html += `
+        <div class="day-card">
+          <div class="day-header">
+            <span class="material-symbols-outlined">event_note</span>
+            ${escapeHtml(dayName)}
+          </div>
+          <div class="lessons-grid">
+            <div class="lesson-cell lesson-number" style="font-weight:600; background:#f5f8fc; border-right:1px solid #eef3fa;">№</div>
+            <div class="lesson-cell lesson-name" style="font-weight:600; background:#f5f8fc;">Урок</div>
+            <div class="lesson-cell lesson-homework" style="font-weight:600; background:#f5f8fc; border-right:none;">Домашнее задание</div>
+      `;
+
+      if (lessonKeys.length === 0) {
+        html += `
+          <div class="lesson-cell lesson-number" style="grid-column:1;">—</div>
+          <div class="lesson-cell lesson-name" style="grid-column:2;">Нет уроков</div>
+          <div class="lesson-cell lesson-homework" style="grid-column:3; border-right:none;">—</div>
+        `;
+      } else {
+        for (const lessonKey of lessonKeys) {
+          const lesson = lessons[lessonKey];
+          if (!lesson) continue;
+          
+          const lessonName = lesson.name || `Урок ${lessonKey + 1}`;
+          const homework = lesson.homework || '';
+          const homeworkHtml = homework 
+            ? escapeHtml(homework) 
+            : '<span class="homework-empty">нет задания</span>';
+
+          html += `
+            <div class="lesson-cell lesson-number">${lessonKey + 1}</div>
+            <div class="lesson-cell lesson-name">${escapeHtml(lessonName)}</div>
+            <div class="lesson-cell lesson-homework" data-homework="${escapeHtml(homework)}">
+              <div class="homework-text">${homeworkHtml}</div>
+              ${homework && homework.length > 60 ? `<button class="homework-expand-btn">▶ Развернуть</button>` : ''}
+            </div>
+          `;
+        }
+      }
+
+      html += `
+          </div>
+        </div>
+      `;
+    }
+
+    html += '</div>';
+    scheduleContainer.innerHTML = html;
+
+    // ----- Обработчики для раскрытия ДЗ -----
+    document.querySelectorAll('.homework-expand-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const cell = btn.closest('.lesson-homework');
+        const text = cell.querySelector('.homework-text');
+        if (text) {
+          text.classList.toggle('expanded');
+          btn.textContent = text.classList.contains('expanded') ? '▲ Свернуть' : '▶ Развернуть';
+        }
+      });
+    });
+
+    // Клик по ячейке с ДЗ тоже раскрывает
+    document.querySelectorAll('.lesson-homework').forEach(cell => {
+      const btn = cell.querySelector('.homework-expand-btn');
+      if (!btn) return;
+      cell.addEventListener('click', () => {
+        btn.click();
+      });
+    });
+  }
+
+  // ----- Загрузка расписания -----
+  function loadSchedule() {
+    const scheduleRef = ref(db, 'schedule');
+    onValue(scheduleRef, (snapshot) => {
+      if (snapshot.exists()) {
+        renderSchedule(snapshot.val());
+      } else {
+        renderSchedule(null);
+      }
+    }, (error) => {
+      console.error('Ошибка загрузки расписания:', error);
+      scheduleContainer.innerHTML = `
+        <div class="empty-state">
+          <span class="material-symbols-outlined">error</span>
+          <h3>Ошибка загрузки</h3>
+          <p>Не удалось загрузить расписание. Попробуйте позже.</p>
+        </div>
+      `;
+    });
+  }
+
+  // ----- Рендер шапки -----
+  function renderHeader(user) {
+    if (user) {
+      const displayName = user.displayName || user.email || 'Пользователь';
+      userArea.innerHTML = `
+        <a href="${ACCOUNT_URL}" class="user-badge">
+          <span class="material-symbols-outlined">account_circle</span>
+          ${escapeHtml(displayName)}
+        </a>
+      `;
+    } else {
+      userArea.innerHTML = `
+        <a href="${AUTH_URL}" class="btn btn-primary">
+          <span class="material-symbols-outlined" style="font-size:18px;">login</span>
+          Войти
+        </a>
+      `;
+    }
+  }
+
+  // ----- Авторизация -----
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const userRef = ref(db, 'users/' + user.uid);
+      get(userRef).then((snapshot) => {
+        let displayName = user.email;
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          displayName = data.name || user.email;
+        }
+        user.displayName = displayName;
+        renderHeader(user);
+      }).catch(() => {
+        renderHeader(user);
+      });
+      loadSchedule();
+    } else {
+      redirectToAuth();
+    }
+  });
+
+  console.log('✅ Страница дневника загружена');
+</script>
+</body>
+</html>
