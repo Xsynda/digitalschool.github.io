@@ -104,8 +104,7 @@
   import {
     getDatabase,
     ref,
-    set,
-    get
+    set
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
   const firebaseConfig = {
@@ -139,7 +138,6 @@
   const rememberCheckbox = document.getElementById('rememberCheckbox');
 
   let isLoginMode = true;
-  let pendingUserData = null; // для хранения данных нового пользователя
 
   function redirectToMain() {
     window.location.href = REDIRECT_URL;
@@ -203,7 +201,7 @@
     } catch (e) {}
   }
 
-  // ===== ГЛАВНОЕ: ОБРАБОТЧИК САБМИТА =====
+  // ===== ГЛАВНАЯ ФУНКЦИЯ =====
   async function handleSubmit() {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
@@ -238,25 +236,30 @@
       if (isLoginMode) {
         // ВХОД
         await signInWithEmailAndPassword(auth, email, password);
-        // onAuthStateChanged сам перенаправит
+        redirectToMain();
       } else {
-        // РЕГИСТРАЦИЯ
-        // 1. Создаем пользователя
+        // РЕГИСТРАЦИЯ — САМЫЙ ПРОСТОЙ СПОСОБ
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         
-        // 2. Сохраняем данные для onAuthStateChanged
-        pendingUserData = {
-          uid: user.uid,
+        // ЖДЁМ 2 СЕКУНДЫ — за это время Firebase точно успевает авторизоваться
+        console.log('⏳ Ждём 2 секунды перед сохранением профиля...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Теперь сохраняем профиль
+        const userRef = ref(db, 'users/' + user.uid);
+        const defaultName = name || email.split('@')[0];
+        
+        console.log('💾 Сохраняем профиль...');
+        await set(userRef, {
           email: email,
-          name: name
-        };
+          name: defaultName,
+          status: 1,
+          createdAt: new Date().toISOString()
+        });
         
-        // 3. Ждем, пока onAuthStateChanged сработает и сохранит профиль
-        // onAuthStateChanged сам вызовется и сохранит данные
-        console.log('✅ Пользователь создан, ожидаем onAuthStateChanged...');
-        
-        // НЕ перенаправляем сразу — onAuthStateChanged сделает это после сохранения
+        console.log('✅ Профиль сохранён!');
+        redirectToMain();
       }
     } catch (error) {
       console.error('Ошибка:', error);
@@ -278,60 +281,17 @@
     }
   });
 
-  // ===== onAuthStateChanged — ОСНОВНОЙ МЕХАНИЗМ =====
-  onAuthStateChanged(auth, async (user) => {
+  // onAuthStateChanged — только для перенаправления уже авторизованных
+  onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log('👤 onAuthStateChanged: пользователь авторизован', user.email);
-      
-      // Если есть ожидающие данные — сохраняем профиль
-      if (pendingUserData && pendingUserData.uid === user.uid) {
-        try {
-          console.log('💾 Сохраняем профиль для нового пользователя...');
-          
-          const userRef = ref(db, 'users/' + user.uid);
-          const defaultName = pendingUserData.name || pendingUserData.email.split('@')[0];
-          
-          await set(userRef, {
-            email: pendingUserData.email,
-            name: defaultName,
-            status: 1,
-            createdAt: new Date().toISOString()
-          });
-          
-          // Проверяем, что запись создалась
-          const snapshot = await get(userRef);
-          if (snapshot.exists()) {
-            console.log('✅ Профиль успешно сохранён!');
-          } else {
-            console.error('❌ Профиль не сохранился!');
-          }
-          
-          pendingUserData = null;
-          
-          // Перенаправляем после успешного сохранения
-          redirectToMain();
-          
-        } catch (error) {
-          console.error('❌ Ошибка сохранения профиля:', error);
-          authError.textContent = '❌ Ошибка сохранения профиля: ' + error.message;
-          authError.classList.remove('hidden');
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Создать';
-          pendingUserData = null;
-        }
-      } else {
-        // Обычный вход — сразу перенаправляем
+      console.log('👤 Уже авторизован:', user.email);
+      // Если мы на странице авторизации, а пользователь уже есть — перенаправляем
+      // Но только если мы не в процессе регистрации (кнопка не disabled)
+      if (!submitBtn.disabled) {
         redirectToMain();
       }
     } else {
-      console.log('👤 onAuthStateChanged: пользователь не авторизован');
-      // Если был pendingUserData, но пользователь не авторизовался — сбрасываем
-      if (pendingUserData) {
-        console.error('❌ Пользователь не авторизовался после регистрации!');
-        pendingUserData = null;
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Создать';
-      }
+      console.log('👤 Не авторизован');
       loadSavedEmail();
       updateFormMode();
     }
