@@ -228,7 +228,7 @@
     apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
     authDomain: "digitalschool-f2c90.firebaseapp.com",
     projectId: "digitalschool-f2c90",
-    storageBucket: "digitalschool-f2c90.firebasestorage.app",
+    storageBucket: "digitalschool-f2c90.appspot.com",
     messagingSenderId: "797143730107",
     appId: "1:797143730107:web:b19437db896170d88b269e",
     measurementId: "G-FT9ENP491P"
@@ -238,7 +238,7 @@
   const auth = getAuth(app);
   const db = getDatabase(app);
 
-  const AUTH_URL = "https://xsynda.github.io/digitalschool.github.io/auth.html";
+  const AUTH_URL = "auth.html";
   const ACCOUNT_URL = "account.html";
   const scheduleContainer = document.getElementById("scheduleContainer");
   const userArea = document.getElementById("userArea");
@@ -255,45 +255,6 @@
 
   function redirectToAuth() {
     window.location.href = AUTH_URL;
-  }
-
-  function resolveSchoolIndexFromProfile(profile = {}, schools = []) {
-    const raw = profile.schoolIndex ?? profile.school ?? profile.schoolId ?? profile.allowedSchoolIndex ?? 0;
-
-    if (raw === null || raw === undefined || raw === "") return 0;
-
-    if (Number.isInteger(Number(raw))) {
-      const idx = Number(raw);
-      return idx >= 0 && idx < schools.length ? idx : 0;
-    }
-
-    const value = String(raw).trim();
-    const foundIndex = schools.findIndex((school) => {
-      const candidates = [school?.id, school?.schoolId, school?.name, school?.title];
-      return candidates.some((item) => String(item ?? "").trim() === value);
-    });
-
-    return foundIndex >= 0 ? foundIndex : 0;
-  }
-
-  function resolveClassIndexFromProfile(profile = {}, school = null) {
-    const classes = Array.isArray(school?.classes) ? school.classes : [];
-    const raw = profile.classIndex ?? profile.class ?? profile.classId ?? profile.allowedClassIndex ?? 0;
-
-    if (raw === null || raw === undefined || raw === "") return 0;
-
-    if (Number.isInteger(Number(raw))) {
-      const idx = Number(raw);
-      return idx >= 0 && idx < classes.length ? idx : 0;
-    }
-
-    const value = String(raw).trim();
-    const foundIndex = classes.findIndex((cls) => {
-      const candidates = [cls?.id, cls?.classId, cls?.name, cls?.title];
-      return candidates.some((item) => String(item ?? "").trim() === value);
-    });
-
-    return foundIndex >= 0 ? foundIndex : 0;
   }
 
   function parseDateString(value) {
@@ -313,12 +274,37 @@
     return null;
   }
 
+  function sortScheduleDays(scheduleArray) {
+    return [...scheduleArray]
+      .sort((a, b) => {
+        const da = a?.date ? parseDateString(a.date) : null;
+        const db = b?.date ? parseDateString(b.date) : null;
+
+        if (!da && !db) return 0;
+        if (!da) return 1;
+        if (!db) return -1;
+        return da - db;
+      })
+      .map((day) => {
+        const lessons = Array.isArray(day?.lessons)
+          ? [...day.lessons].sort((x, y) => {
+              const aNum = Number(x?.number ?? x?.lessonNumber ?? x?.num ?? 0);
+              const bNum = Number(y?.number ?? y?.lessonNumber ?? y?.num ?? 0);
+              return aNum - bNum;
+            })
+          : [];
+
+        return { ...day, lessons };
+      });
+  }
+
   function formatDayHeader(dateValue) {
     const date = parseDateString(dateValue);
     if (!date) return "День";
 
     const days = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
     const months = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+
     return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]}`;
   }
 
@@ -354,6 +340,8 @@
 
   function openLessonModal(lesson) {
     const modal = document.getElementById("lessonModal");
+    if (!modal) return;
+
     const title = document.getElementById("modalTitle");
     const time = document.getElementById("modalTime");
     const cab = document.getElementById("modalCab");
@@ -367,8 +355,8 @@
     modal.classList.add("active");
   }
 
-  document.getElementById("modalCloseBtn").addEventListener("click", () => {
-    document.getElementById("lessonModal").classList.remove("active");
+  document.getElementById("modalCloseBtn")?.addEventListener("click", () => {
+    document.getElementById("lessonModal")?.classList.remove("active");
   });
 
   function renderSchedule(scheduleArray) {
@@ -383,25 +371,14 @@
       return;
     }
 
-    const sorted = [...scheduleArray].sort((a, b) => {
-      const da = a?.date ? parseDateString(a.date) : null;
-      const db = b?.date ? parseDateString(b.date) : null;
-
-      if (!da && !db) return 0;
-      if (!da) return 1;
-      if (!db) return -1;
-      return da - db;
-    });
-
+    const sorted = sortScheduleDays(scheduleArray);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const pastDays = sorted
-      .filter((day) => {
-        const d = parseDateString(day?.date);
-        return d && d < today;
-      })
-      .reverse();
+    const pastDays = sorted.filter((day) => {
+      const d = parseDateString(day?.date);
+      return d && d < today;
+    });
 
     const futureDays = sorted.filter((day) => {
       const d = parseDateString(day?.date);
@@ -444,10 +421,19 @@
 
           html += `
             <div class="lesson-cell lesson-number">${lessonIndex + 1}</div>
-            <div class="lesson-cell lesson-name" data-name="${escapeHtml(name)}" data-time="${escapeHtml(lesson?.time || "")}" data-cab="${escapeHtml(lesson?.cab ?? "")}" data-homework="${escapeHtml(lesson?.homework || "")}">
+            <div class="lesson-cell lesson-name"
+                 data-name="${escapeHtml(name)}"
+                 data-time="${escapeHtml(lesson?.time || "")}"
+                 data-cab="${escapeHtml(lesson?.cab ?? "")}"
+                 data-homework="${escapeHtml(lesson?.homework || "")}">
               ${escapeHtml(name)}${time}
             </div>
-            <div class="lesson-cell lesson-homework" style="border-right:none;" data-homework="${escapeHtml(lesson?.homework || "")}">
+            <div class="lesson-cell lesson-homework"
+                 style="border-right:none;"
+                 data-name="${escapeHtml(name)}"
+                 data-time="${escapeHtml(lesson?.time || "")}"
+                 data-cab="${escapeHtml(lesson?.cab ?? "")}"
+                 data-homework="${escapeHtml(lesson?.homework || "")}">
               <div class="homework-preview">${homework}</div>
             </div>
           `;
@@ -467,10 +453,8 @@
       const visiblePast = showPast ? pastDays.slice(0, 5) : [];
       const visibleFuture = futureDays.slice(0, futureShown);
 
-      // Создаем контейнер schedule-grid с gap для отступов между днями
       let html = `<div class="schedule-grid">`;
 
-      // Кнопка показа прошедших
       if (pastDays.length > 0) {
         html += `
           <div class="toggle-block">
@@ -481,17 +465,14 @@
         `;
       }
 
-      // Прошедшие дни
       if (showPast && visiblePast.length) {
         html += visiblePast.map(renderDayMarkup).join("");
       }
 
-      // Будущие дни (каждый день в отдельной карточке)
       if (visibleFuture.length) {
         html += visibleFuture.map(renderDayMarkup).join("");
       }
 
-      // Кнопка показа еще будущих дней
       const remainingFuture = Math.max(0, futureDays.length - futureShown);
       if (remainingFuture > 0) {
         html += `
@@ -507,7 +488,6 @@
 
       scheduleContainer.innerHTML = html;
 
-      // Обработчики для кнопок
       scheduleContainer.querySelectorAll("[data-toggle]").forEach((btn) => {
         btn.addEventListener("click", () => {
           if (btn.dataset.toggle === "past") {
@@ -522,7 +502,6 @@
         });
       });
 
-      // Обработчики клика для открытия модального окна
       scheduleContainer.querySelectorAll(".lesson-name, .lesson-homework").forEach((el) => {
         el.addEventListener("click", () => {
           const lesson = {
@@ -532,7 +511,7 @@
             homework: el.dataset.homework || ""
           };
 
-          if (lesson.homework || lesson.time || lesson.cab) {
+          if (lesson.name || lesson.time || lesson.cab || lesson.homework) {
             openLessonModal(lesson);
           }
         });
@@ -540,6 +519,43 @@
     };
 
     renderView();
+  }
+
+  function resolveSchoolIndexFromProfile(profile = {}, schools = []) {
+    const raw = profile.schoolIndex ?? profile.school ?? profile.schoolId ?? profile.allowedSchoolIndex ?? 0;
+
+    if (raw === null || raw === undefined || raw === "") return 0;
+    if (Number.isInteger(Number(raw))) {
+      const idx = Number(raw);
+      return idx >= 0 && idx < schools.length ? idx : 0;
+    }
+
+    const value = String(raw).trim();
+    const found = schools.findIndex((school) => {
+      const candidates = [school?.id, school?.schoolId, school?.name, school?.title];
+      return candidates.some((item) => String(item ?? "").trim() === value);
+    });
+
+    return found >= 0 ? found : 0;
+  }
+
+  function resolveClassIndexFromProfile(profile = {}, school = null) {
+    const classes = Array.isArray(school?.classes) ? school.classes : [];
+    const raw = profile.classIndex ?? profile.class ?? profile.classId ?? profile.allowedClassIndex ?? 0;
+
+    if (raw === null || raw === undefined || raw === "") return 0;
+    if (Number.isInteger(Number(raw))) {
+      const idx = Number(raw);
+      return idx >= 0 && idx < classes.length ? idx : 0;
+    }
+
+    const value = String(raw).trim();
+    const found = classes.findIndex((cls) => {
+      const candidates = [cls?.id, cls?.classId, cls?.name, cls?.title];
+      return candidates.some((item) => String(item ?? "").trim() === value);
+    });
+
+    return found >= 0 ? found : 0;
   }
 
   async function loadScheduleForAccount(user) {
@@ -586,6 +602,7 @@
         <div class="empty-state">
           <span class="material-symbols-outlined">error</span>
           <h3>Ошибка подключения к базе</h3>
+          <div>Проверьте права доступа и данные аккаунта.</div>
         </div>
       `;
     }
@@ -608,10 +625,12 @@
       console.error("Auth error:", error);
       user.displayName = user.email || "Пользователь";
       renderHeader(user);
+
       scheduleContainer.innerHTML = `
         <div class="empty-state">
           <span class="material-symbols-outlined">error</span>
           <h3>Ошибка подключения к базе</h3>
+          <div>Проверьте Firebase-правила и доступ к данным.</div>
         </div>
       `;
     }

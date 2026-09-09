@@ -274,537 +274,283 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-    import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
       authDomain: "digitalschool-f2c90.firebaseapp.com",
       projectId: "digitalschool-f2c90",
-      storageBucket: "digitalschool-f2c90.firebasestorage.app",
+      storageBucket: "digitalschool-f2c90.appspot.com",
       messagingSenderId: "797143730107",
       appId: "1:797143730107:web:b19437db896170d88b269e",
       measurementId: "G-FT9ENP491P"
     };
 
     const app = initializeApp(firebaseConfig);
-    getAnalytics(app);
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    const AUTH_URL = "auth.html";
-    const ACCOUNT_URL = "account.html";
-    const CONSOLE_URL = "console.html";
-    const NEWS_COUNT = 15;
-
-    const navLinks = document.getElementById("navLinks");
     const userArea = document.getElementById("userArea");
-    const newsContainer = document.getElementById("newsContainer");
-
-    const modal = document.getElementById("modal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalDate = document.getElementById("modalDate");
-    const modalText = document.getElementById("modalText");
-    const modalClose = document.getElementById("modalClose");
-
     const profileModal = document.getElementById("profileModal");
     const profileForm = document.getElementById("profileForm");
     const profileNameInput = document.getElementById("profileName");
     const profileSchoolSelect = document.getElementById("profileSchool");
     const profileClassSelect = document.getElementById("profileClass");
-
-    const FALLBACK_SCHOOLS = ["Школа №1", "Школа №2", "Школа №3", "Школа №4", "Школа №5", "Гимназия №1", "Лицей №1"];
-    const FALLBACK_CLASSES = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
+    const newsContainer = document.getElementById("newsContainer");
 
     let currentUser = null;
     let currentProfile = {};
     let schoolsData = [];
 
-    function escapeHtml(text) {
-      if (text === null || text === undefined) return "";
-      const div = document.createElement("div");
-      div.textContent = String(text);
-      return div.innerHTML;
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
-    function isProfileComplete(data = {}) {
-      const name = String(data.name || "").trim();
-      const school = String(data.school || "").trim();
-      const klass = String(data.class || "").trim();
-      return Boolean(name && school && klass);
+    function renderHeader(user) {
+      const profileName = currentProfile?.name || user?.displayName || user?.email || "Пользователь";
+      userArea.innerHTML = `
+        <a href="account.html" class="user-badge">
+          <span class="material-symbols-outlined">person</span>
+          ${escapeHtml(profileName)}
+        </a>
+      `;
     }
 
-    function fillSelect(select, values, label, type = "text") {
-      select.innerHTML = "";
-      const placeholder = document.createElement("option");
-      placeholder.value = "";
-      placeholder.textContent = `Выберите ${label}`;
-      placeholder.selected = true;
-      placeholder.disabled = true;
-      select.appendChild(placeholder);
+    async function loadSchools() {
+      try {
+        const snapshot = await get(ref(db, "schools"));
+        const raw = snapshot.exists() ? snapshot.val() : [];
+        schoolsData = Array.isArray(raw) ? raw : Object.values(raw || {});
+      } catch (error) {
+        console.error("schools load error:", error);
+        schoolsData = [];
+      }
 
-      const list = Array.isArray(values) ? values : [];
+      profileSchoolSelect.innerHTML = '<option value="" disabled selected>Выберите школу</option>';
+      schoolsData.forEach((school) => {
+        const schoolName = String(school?.name || school?.title || school?.schoolName || "").trim();
+        if (!schoolName) return;
 
-      list.forEach((item) => {
         const option = document.createElement("option");
-        let value = "";
-        let text = "";
-
-        if (typeof item === "object" && item !== null) {
-          value = item.value ?? item.name ?? item.title ?? item.label ?? item.school ?? item.class ?? "";
-          text = item.label ?? item.name ?? item.title ?? item.value ?? item.school ?? item.class ?? String(value);
-        } else {
-          value = String(item);
-          text = String(item);
-        }
-
-        option.value = String(value);
-
-        if (type === "class") {
-          option.textContent = `${String(text)} класс`;
-        } else {
-          option.textContent = String(text);
-        }
-
-        select.appendChild(option);
+        option.value = schoolName;
+        option.textContent = schoolName;
+        profileSchoolSelect.appendChild(option);
       });
-    }
-
-    function normalizeSchoolList(value) {
-      if (!value) return [];
-
-      if (Array.isArray(value)) {
-        return value.map((item, index) => ({
-          id: item.id ?? index,
-          name: item.name ?? item.title ?? item.label ?? item.school ?? String(index),
-          classes: Array.isArray(item.classes)
-            ? item.classes
-            : Array.isArray(item.classList)
-            ? item.classList
-            : Array.isArray(item.grades)
-            ? item.grades
-            : Array.isArray(item.levels)
-            ? item.levels
-            : []
-        }));
-      }
-
-      if (typeof value === "object") {
-        return Object.keys(value).map((key) => {
-          const item = value[key] || {};
-          return {
-            id: item.id ?? key,
-            name: item.name ?? item.title ?? item.label ?? item.school ?? String(key),
-            classes: Array.isArray(item.classes)
-              ? item.classes
-              : Array.isArray(item.classList)
-              ? item.classList
-              : Array.isArray(item.grades)
-              ? item.grades
-              : Array.isArray(item.levels)
-              ? item.levels
-              : []
-          };
-        });
-      }
-
-      return [];
     }
 
     function getSchoolByName(name) {
+      const target = String(name || "").trim();
+      if (!target) return null;
+
       return schoolsData.find((school) => {
-        const currentName = school.name ?? "";
-        return String(currentName) === String(name);
-      });
+        const schoolName = String(school?.name || school?.title || school?.schoolName || "").trim();
+        return schoolName === target;
+      }) || null;
     }
 
-    function getClassesForSelectedSchool() {
-      const selectedSchoolName = profileSchoolSelect.value;
-      const selectedSchool = getSchoolByName(selectedSchoolName);
+    function getClassByName(schoolName, className) {
+      const school = getSchoolByName(schoolName);
+      if (!school || !Array.isArray(school.classes)) return null;
 
-      if (selectedSchool && Array.isArray(selectedSchool.classes) && selectedSchool.classes.length) {
-        return selectedSchool.classes.map((item) => (typeof item === "object" ? (item.name ?? item.value ?? item.label ?? item.class ?? "") : String(item)));
-      }
+      const target = String(className || "").trim();
+      if (!target) return null;
 
-      return FALLBACK_CLASSES;
+      return school.classes.find((item) => {
+        const name = String(item?.name || item?.title || item?.className || "").trim();
+        return name === target;
+      }) || null;
     }
 
     function updateClassOptionsForSelectedSchool() {
-      const classes = getClassesForSelectedSchool();
-      fillSelect(profileClassSelect, classes, "класс", "class");
+      const selectedSchoolName = String(profileSchoolSelect.value || "").trim();
+      const school = getSchoolByName(selectedSchoolName);
+      const classList = Array.isArray(school?.classes) ? school.classes : [];
 
-      if (currentProfile.class) {
-        const match = classes.find((item) => String(item) === String(currentProfile.class));
-        if (match) {
-          profileClassSelect.value = String(match);
-        } else {
-          profileClassSelect.value = "";
-        }
-      }
+      profileClassSelect.innerHTML = '<option value="" disabled selected>Выберите класс</option>';
+
+      classList.forEach((item) => {
+        const className = String(item?.name || item?.title || item?.className || "").trim();
+        if (!className) return;
+
+        const option = document.createElement("option");
+        option.value = className;
+        option.textContent = className;
+        profileClassSelect.appendChild(option);
+      });
     }
-
-    async function loadProfileOptions() {
-      try {
-        const snapshot = await get(ref(db, "schools"));
-        const raw = snapshot.exists() ? snapshot.val() : null;
-
-        const normalized = normalizeSchoolList(raw);
-
-        if (normalized.length) {
-          schoolsData = normalized;
-          fillSelect(profileSchoolSelect, schoolsData.map((school) => school.name), "школу");
-
-          const savedSchool = currentProfile.school || "";
-          if (savedSchool) {
-            profileSchoolSelect.value = savedSchool;
-          }
-
-          updateClassOptionsForSelectedSchool();
-          return;
-        }
-
-        schoolsData = [];
-        fillSelect(profileSchoolSelect, FALLBACK_SCHOOLS, "школу");
-        fillSelect(profileClassSelect, FALLBACK_CLASSES, "класс", "class");
-      } catch (error) {
-        console.error("Ошибка загрузки списка школ:", error);
-        schoolsData = [];
-        fillSelect(profileSchoolSelect, FALLBACK_SCHOOLS, "школу");
-        fillSelect(profileClassSelect, FALLBACK_CLASSES, "класс", "class");
-      }
-    }
-
-    profileSchoolSelect.addEventListener("change", () => {
-      updateClassOptionsForSelectedSchool();
-    });
 
     function openProfileSetupModal(profile = {}) {
-      currentProfile = profile || {};
-      const name = (currentProfile.name || currentUser?.displayName || "").trim();
+      const data = profile || {};
+      profileNameInput.value = data.name || currentUser?.displayName || "";
 
-      profileNameInput.value = name;
-      profileSchoolSelect.value = currentProfile.school || "";
+      const savedSchool = String(data.school || "").trim();
+      const savedClass = String(data.class || "").trim();
+
+      profileSchoolSelect.innerHTML = '<option value="" disabled selected>Выберите школу</option>';
+      schoolsData.forEach((school) => {
+        const schoolName = String(school?.name || school?.title || school?.schoolName || "").trim();
+        if (!schoolName) return;
+
+        const option = document.createElement("option");
+        option.value = schoolName;
+        option.textContent = schoolName;
+
+        if (savedSchool && schoolName === savedSchool) option.selected = true;
+        profileSchoolSelect.appendChild(option);
+      });
+
       updateClassOptionsForSelectedSchool();
 
-      if (currentProfile.class) {
-        profileClassSelect.value = String(currentProfile.class);
+      if (savedClass) {
+        const school = getSchoolByName(profileSchoolSelect.value || savedSchool);
+        const list = Array.isArray(school?.classes) ? school.classes : [];
+        const match = list.find((item) => {
+          const name = String(item?.name || item?.title || item?.className || "").trim();
+          return name === savedClass;
+        });
+
+        if (match) {
+          profileClassSelect.value = String(match.name || match.title || match.className || savedClass);
+        }
       }
 
-      profileModal.classList.add("open");
       profileModal.style.display = "flex";
+      profileModal.classList.add("open");
       document.body.classList.add("profile-required");
     }
 
     function closeProfileSetupModal() {
-      if (!isProfileComplete(currentProfile) && currentUser) return;
-
-      profileModal.classList.remove("open");
       profileModal.style.display = "none";
+      profileModal.classList.remove("open");
       document.body.classList.remove("profile-required");
     }
 
-    function lockBodyScroll() {
-      if (!modal.classList.contains("open") && !profileModal.classList.contains("open")) {
-        document.body.style.overflow = "hidden";
-      }
-    }
+    async function saveProfileData(user, data) {
+      if (!user) throw new Error("Пользователь не найден");
 
-    function unlockBodyScroll() {
-      if (!modal.classList.contains("open") && !profileModal.classList.contains("open")) {
-        document.body.style.overflow = "";
-      }
-    }
+      const selectedSchool = String(profileSchoolSelect.value || "").trim();
+      const selectedClass = String(profileClassSelect.value || "").trim();
 
-    function openModal(title, date, text) {
-      modalTitle.textContent = title || "Без названия";
-      modalDate.textContent = date || "";
-      modalText.textContent = text || "Нет текста";
-      modal.classList.add("open");
-      lockBodyScroll();
-    }
+      if (!selectedSchool) throw new Error("Выберите школу");
+      if (!selectedClass) throw new Error("Выберите класс");
 
-    function closeModal() {
-      modal.classList.remove("open");
-      unlockBodyScroll();
-    }
-
-    modalClose.addEventListener("click", closeModal);
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    profileModal.addEventListener("click", (e) => {
-      if (e.target === profileModal && isProfileComplete(currentProfile)) {
-        closeProfileSetupModal();
-      }
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        if (profileModal.classList.contains("open") && isProfileComplete(currentProfile)) {
-          closeProfileSetupModal();
-        } else if (modal.classList.contains("open")) {
-          closeModal();
-        }
-      }
-    });
-
-    async function saveProfileData(user, profileData) {
-      if (!user) return;
-
-      const safeStatus = Number(profileData.status ?? currentProfile.status ?? 1);
-
-      const userRef = ref(db, "users/" + user.uid);
       const payload = {
         email: user.email,
-        name: profileData.name,
-        school: profileData.school,
-        class: profileData.class,
-        status: safeStatus,
-        createdAt: profileData.createdAt || new Date().toISOString(),
+        name: String(data.name || "").trim(),
+        school: selectedSchool,
+        class: selectedClass,
+        status: Number(data.status ?? currentProfile.status ?? 1),
+        createdAt: data.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
 
-      await set(userRef, payload);
+      await set(ref(db, "users/" + user.uid), payload);
       currentProfile = payload;
-      user.displayName = payload.name;
-      renderHeader(user, Number(payload.status) === 2);
-      closeProfileSetupModal();
+      return payload;
     }
 
-    function formatDate(timestamp) {
-      if (!timestamp) return "—";
-      return new Date(timestamp * 1000).toLocaleString("ru-RU", {
-        day: "numeric", month: "long", year: "numeric",
-        hour: "2-digit", minute: "2-digit"
-      });
-    }
+    async function loadNews() {
+      try {
+        const snapshot = await get(ref(db, "news"));
+        const news = snapshot.exists() ? snapshot.val() : [];
 
-    function renderNews(data) {
-      if (!data || Object.keys(data).length === 0) {
-        newsContainer.innerHTML = `
-          <div class="empty-state">
-            <span class="material-symbols-outlined">feed_off</span>
-            <h3>Новостей пока нет</h3>
-          </div>
-        `;
-        return;
-      }
-
-      const keys = Object.keys(data).map(Number).sort((a, b) => b - a);
-      const topKeys = keys.slice(0, NEWS_COUNT);
-
-      newsContainer.innerHTML = '<div class="news-list"></div>';
-      const newsList = newsContainer.querySelector(".news-list");
-
-      for (const key of topKeys) {
-        const item = data[key];
-        if (!item) continue;
-
-        const title = item.title || "Без названия";
-        const fullText = item.desc || "";
-        const date = formatDate(item.date);
-        const rawDate = item.date ? new Date(item.date * 1000).toLocaleString("ru-RU") : "";
-
-        const newsItem = document.createElement("div");
-        newsItem.className = "news-item";
-
-        const header = document.createElement("div");
-        header.className = "news-header";
-
-        const titleElement = document.createElement("div");
-        titleElement.className = "news-title";
-        titleElement.textContent = title;
-
-        const dateElement = document.createElement("div");
-        dateElement.className = "news-date";
-        dateElement.textContent = date;
-
-        header.appendChild(titleElement);
-        header.appendChild(dateElement);
-
-        const descElement = document.createElement("div");
-        descElement.className = "news-desc";
-        descElement.textContent = fullText;
-
-        newsItem.appendChild(header);
-        newsItem.appendChild(descElement);
-
-        newsItem.addEventListener("click", () => {
-          openModal(title, rawDate, fullText);
-        });
-
-        newsList.appendChild(newsItem);
-      }
-    }
-
-    function loadNews() {
-      const newsRef = ref(db, "news");
-
-      onValue(newsRef, (snapshot) => {
-        if (snapshot.exists()) {
-          renderNews(snapshot.val());
-        } else {
-          renderNews(null);
+        if (!Array.isArray(news) || !news.length) {
+          newsContainer.innerHTML = `
+            <div class="empty-state">
+              <span class="material-symbols-outlined">article</span>
+              <h3>Новостей пока нет</h3>
+            </div>
+          `;
+          return;
         }
-      }, (error) => {
-        console.error("Ошибка загрузки новостей:", error);
+
+        newsContainer.innerHTML = news
+          .slice()
+          .sort((a, b) => Number(b.date || 0) - Number(a.date || 0))
+          .map((item) => `
+            <div class="news-item">
+              <div class="news-header">
+                <div class="news-title">${escapeHtml(item.title || "Без заголовка")}</div>
+                <div class="news-date">${new Date(Number(item.date) * 1000).toLocaleDateString("ru-RU")}</div>
+              </div>
+              <div class="news-desc">${String(item.desc || "").replace(/\n/g, "<br>")}</div>
+            </div>
+          `).join("");
+      } catch (error) {
+        console.error("news load error:", error);
         newsContainer.innerHTML = `
           <div class="empty-state">
             <span class="material-symbols-outlined">error</span>
-            <h3>Ошибка загрузки</h3>
+            <h3>Не удалось загрузить новости</h3>
           </div>
         `;
-      });
-    }
-
-    function renderHeader(user, status = 1) {
-      const canAccessConsole = status === 2 || status === 3;
-
-      if (canAccessConsole) {
-        navLinks.innerHTML = `
-          <a href="diary.html" class="nav-link">
-            <span class="material-symbols-outlined">calendar_month</span> Дневник
-          </a>
-          <a href="${CONSOLE_URL}" class="nav-link">
-            <span class="material-symbols-outlined">admin_panel_settings</span> Консоль
-          </a>
-        `;
-      } else {
-        navLinks.innerHTML = `
-          <a href="diary.html" class="nav-link">
-            <span class="material-symbols-outlined">calendar_month</span> Дневник
-          </a>
-        `;
-      }
-
-      if (user) {
-        const displayName = user.displayName || user.email || "Пользователь";
-        userArea.innerHTML = `
-          <a href="${ACCOUNT_URL}" class="user-badge">
-            <span class="material-symbols-outlined">account_circle</span>
-            ${escapeHtml(displayName)}
-          </a>
-        `;
-      } else {
-        userArea.innerHTML = `
-          <a href="${AUTH_URL}" class="btn btn-primary">
-            <span class="material-symbols-outlined" style="font-size:18px;">login</span>
-            Войти
-          </a>
-        `;
       }
     }
 
-    async function ensureProfile(user) {
-      if (!user) return;
-
-      try {
-        const userRef = ref(db, "users/" + user.uid);
-        const snapshot = await get(userRef);
-
-        if (!snapshot.exists()) {
-          const defaultProfile = {
-            email: user.email,
-            name: "",
-            school: "",
-            class: "",
-            status: 1,
-            createdAt: new Date().toISOString()
-          };
-
-          await set(userRef, defaultProfile);
-          currentProfile = defaultProfile;
-          user.displayName = "";
-        } else {
-          currentProfile = snapshot.val() || {};
-          user.displayName = currentProfile.name || user.email || "";
-        }
-      } catch (error) {
-        console.error("Ошибка профиля:", error);
-      }
-    }
+    profileSchoolSelect.addEventListener("change", updateClassOptionsForSelectedSchool);
 
     profileForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      if (!currentUser) return;
+      const name = String(profileNameInput.value || "").trim();
 
-      const name = profileNameInput.value.trim();
-      const school = profileSchoolSelect.value.trim();
-      const klass = profileClassSelect.value.trim();
-
-      if (!name || !school || !klass) {
-        alert("Пожалуйста, заполните все поля: имя, школу и класс.");
+      if (!name) {
+        alert("Введите имя");
         return;
       }
 
       try {
         await saveProfileData(currentUser, {
           ...currentProfile,
-          name,
-          school,
-          class: klass,
-          status: currentProfile.status ?? 1,
-          createdAt: currentProfile.createdAt || new Date().toISOString()
+          name
         });
+
+        renderHeader(currentUser);
+        closeProfileSetupModal();
+        alert("Профиль сохранён");
       } catch (error) {
-        console.error("Ошибка сохранения профиля:", error);
-        alert("Не удалось сохранить профиль. Попробуйте ещё раз.");
+        console.error("save profile error:", error);
+        alert(error.message || "Не удалось сохранить профиль");
       }
     });
 
-    async function loadUser(user) {
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+
       if (!user) {
-        renderHeader(null, 1);
+        window.location.href = "auth.html";
         return;
       }
 
       try {
         const snapshot = await get(ref(db, "users/" + user.uid));
-
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          currentProfile = data || {};
-          user.displayName = data.name || user.email || "";
-          renderHeader(user, Number(data.status ?? 1));
-
-          if (!isProfileComplete(data)) {
-            openProfileSetupModal(data);
-          } else {
-            closeProfileSetupModal();
-          }
-        } else {
-          currentProfile = {};
-          renderHeader(user, 1);
-          openProfileSetupModal(currentProfile);
-        }
+        currentProfile = snapshot.exists() ? snapshot.val() || {} : {};
       } catch (error) {
-        console.warn("Ошибка загрузки пользователя:", error);
-        renderHeader(user, 1);
-        openProfileSetupModal(currentProfile);
+        console.error("load profile error:", error);
+        currentProfile = {};
       }
-    }
 
-    onAuthStateChanged(auth, async (user) => {
-      currentUser = user;
+      if (currentProfile.name) {
+        user.displayName = currentProfile.name;
+      }
 
-      if (user) {
-        profileModal.style.display = "none";
-        profileModal.classList.remove("open");
-        document.body.classList.remove("profile-required");
+      renderHeader(user);
 
-        await loadProfileOptions();
-        await ensureProfile(user);
-        await loadUser(user);
-        loadNews();
+      await loadSchools();
+      await loadNews();
+
+      if (!currentProfile.name || !currentProfile.school || !currentProfile.class) {
+        openProfileSetupModal(currentProfile);
       } else {
-        window.location.href = AUTH_URL;
+        closeProfileSetupModal();
       }
     });
-
-    console.log("Главная страница готова");
   </script>
 </body>
 </html>

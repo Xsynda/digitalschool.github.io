@@ -32,7 +32,7 @@
       margin: 0 auto;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       gap: 16px;
       flex-wrap: wrap;
     }
@@ -52,9 +52,9 @@
       border-radius: 12px;
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, #2a7de1, #67a8ff);
+      background: #2a7de1;
       color: white;
-      box-shadow: 0 8px 18px rgba(42,125,225,0.25);
+      box-shadow: 0 8px 18px rgba(42,125,225,0.18);
       font-size: 18px;
     }
 
@@ -85,6 +85,10 @@
       background: #f0f6ff;
       border-color: #d3e3ff;
       color: #2a7de1;
+    }
+
+    #userArea {
+      margin-left: auto;
     }
 
     .user-badge {
@@ -223,9 +227,7 @@
       gap: 8px;
     }
 
-    .btn-action:hover {
-      transform: translateY(-1px);
-    }
+    .btn-action:hover { transform: translateY(-1px); }
 
     .btn-primary {
       background: #2a7de1;
@@ -290,12 +292,6 @@
     }
 
     .hidden { display: none !important; }
-
-    .divider {
-      border: none;
-      border-top: 1px solid #edf2fb;
-      margin: 24px 0;
-    }
 
     @media (max-width: 700px) {
       body { padding-top: 120px; }
@@ -418,47 +414,57 @@
 
     function statusInfo(status) {
       const map = {
-        1: { title: "Ученик", desc: "Доступ к личным данным и расписанию." },
-        2: { title: "Администратор", desc: "Полный доступ к настройкам и управлению." },
-        3: { title: "Администратор школы", desc: "Доступ к школьным инструментам и административным функциям." }
+        1: { title: "Ученик" },
+        2: { title: "Администратор" },
+        3: { title: "Администратор класса" }
       };
-      return map[Number(status)] || { title: "Неизвестно", desc: "Статус не указан." };
+      return map[Number(status)] || { title: "Неизвестно" };
+    }
+
+    function getSchoolByName(name, schools = []) {
+      const target = String(name || "").trim();
+      if (!target) return null;
+
+      return schools.find((school) => {
+        const schoolName = String(school?.name || school?.title || school?.schoolName || "").trim();
+        return schoolName === target;
+      }) || null;
+    }
+
+    function getClassByName(schoolName, className, schools = []) {
+      const school = getSchoolByName(schoolName, schools);
+      if (!school || !Array.isArray(school.classes)) return null;
+
+      const target = String(className || "").trim();
+      if (!target) return null;
+
+      return school.classes.find((item) => {
+        const name = String(item?.name || item?.title || item?.className || "").trim();
+        return name === target;
+      }) || null;
     }
 
     function resolveSchoolAndClass(profileData = {}, schools = []) {
-      let schoolName = "—";
-      let className = "—";
+      const schoolNameInput = String(profileData.school || "").trim();
+      const classNameInput = String(profileData.class || "").trim();
 
-      const rawSchoolIndex = Number(profileData.schoolIndex ?? profileData.schoolId ?? 0);
-      const rawClassIndex = Number(profileData.classIndex ?? profileData.classId ?? 0);
+      const school = getSchoolByName(schoolNameInput, schools);
+      const classObject = school ? getClassByName(schoolNameInput, classNameInput, schools) : null;
 
-      if (Array.isArray(schools) && schools.length) {
-        const validSchoolIndex = Number.isFinite(rawSchoolIndex) && rawSchoolIndex >= 0 && rawSchoolIndex < schools.length ? rawSchoolIndex : 0;
-        const school = schools[validSchoolIndex];
-        if (school) {
-          schoolName = getProfileDisplayValue(school.name || school.title || school.schoolName, schoolName);
+      const schoolName = school
+        ? (school.name || school.title || school.schoolName || schoolNameInput)
+        : schoolNameInput || "—";
 
-          if (Array.isArray(school.classes) && school.classes.length) {
-            const validClassIndex = Number.isFinite(rawClassIndex) && rawClassIndex >= 0 && rawClassIndex < school.classes.length ? rawClassIndex : 0;
-            const cls = school.classes[validClassIndex];
-            if (cls) {
-              className = getProfileDisplayValue(cls.name || cls.title || cls.className, className);
-            }
-          }
-        }
-      }
-
-      if (profileData.schoolName) schoolName = getProfileDisplayValue(profileData.schoolName, schoolName);
-      if (profileData.className) className = getProfileDisplayValue(profileData.className, className);
+      const className = classObject
+        ? (classObject.name || classObject.title || classObject.className || classNameInput)
+        : classNameInput || "—";
 
       return { schoolName, className };
     }
 
     async function reauthenticateUser(currentPassword) {
       const user = auth.currentUser;
-      if (!user || !user.email) {
-        throw new Error("Пользователь не авторизован.");
-      }
+      if (!user || !user.email) throw new Error("Пользователь не авторизован.");
 
       if (!currentPassword || !String(currentPassword).trim()) {
         throw new Error("Введите текущий пароль.");
@@ -473,7 +479,6 @@
       if (!user) throw new Error("Пользователь не найден.");
 
       const trimmed = String(newName || "").trim();
-
       if (!trimmed) throw new Error("Введите имя.");
 
       await updateProfile(user, { displayName: trimmed });
@@ -484,9 +489,7 @@
 
       await update(profileRef, {
         ...profile,
-        name: trimmed,
-        fullName: trimmed,
-        displayName: trimmed
+        name: trimmed
       });
     }
 
@@ -511,7 +514,6 @@
     async function deleteAccount(targetPassword) {
       const user = auth.currentUser;
       if (!user) throw new Error("Пользователь не найден.");
-
       if (!targetPassword || !String(targetPassword).trim()) {
         throw new Error("Введите пароль для удаления аккаунта.");
       }
@@ -522,68 +524,7 @@
       await remove(profileRef);
 
       await deleteUser(user);
-
       window.location.href = "auth.html";
-    }
-
-    async function handleUpdateName() {
-      const input = document.getElementById("newNameInput");
-      const name = input ? input.value : "";
-      const errorBox = document.getElementById("nameError");
-      const successBox = document.getElementById("nameSuccess");
-
-      try {
-        hideMessage("nameError");
-        hideMessage("nameSuccess");
-        await updateCurrentName(name);
-
-        showMessage("nameSuccess", "Имя успешно обновлено.", "success");
-        renderUserBadge(auth.currentUser);
-        await loadProfile(auth.currentUser);
-      } catch (error) {
-        showMessage("nameError", error?.message || "Не удалось обновить имя.", "error");
-      }
-    }
-
-    async function handleChangePassword() {
-      const currentPassword = document.getElementById("currentPasswordInput")?.value || "";
-      const newPassword = document.getElementById("newPasswordInput")?.value || "";
-      const confirmPassword = document.getElementById("confirmPasswordInput")?.value || "";
-      const errorBox = document.getElementById("passwordError");
-      const successBox = document.getElementById("passwordSuccess");
-
-      try {
-        hideMessage("passwordError");
-        hideMessage("passwordSuccess");
-        await changePassword(currentPassword, newPassword, confirmPassword);
-
-        showMessage("passwordSuccess", "Пароль успешно изменён.", "success");
-
-        document.getElementById("currentPasswordInput").value = "";
-        document.getElementById("newPasswordInput").value = "";
-        document.getElementById("confirmPasswordInput").value = "";
-      } catch (error) {
-        showMessage("passwordError", error?.message || "Не удалось изменить пароль.", "error");
-      }
-    }
-
-    async function handleDeleteAccount() {
-      const password = document.getElementById("deleteAccountPasswordInput")?.value || "";
-      const errorBox = document.getElementById("deleteAccountError");
-      const successBox = document.getElementById("deleteAccountSuccess");
-
-      try {
-        hideMessage("deleteAccountError");
-        hideMessage("deleteAccountSuccess");
-
-        const confirmed = window.confirm("Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить.");
-        if (!confirmed) return;
-
-        await deleteAccount(password);
-
-      } catch (error) {
-        showMessage("deleteAccountError", error?.message || "Не удалось удалить аккаунт.", "error");
-      }
     }
 
     function renderProfile(user, profileData = {}, schools = []) {
@@ -610,7 +551,6 @@
           <div class="field-group">
             <label>Статус</label>
             <input type="text" value="${escapeHtml(status.title)}" disabled />
-            <div class="inline-note">Описание: ${escapeHtml(status.desc)}</div>
           </div>
 
           <div class="field-group">
@@ -692,13 +632,66 @@
         </div>
       `;
 
-      document.getElementById("updateNameBtn").addEventListener("click", handleUpdateName);
-      document.getElementById("updatePasswordBtn").addEventListener("click", handleChangePassword);
-      document.getElementById("logoutBtn").addEventListener("click", logoutUser);
-      document.getElementById("deleteAccountBtn").addEventListener("click", handleDeleteAccount);
+      document.getElementById("updateNameBtn").addEventListener("click", async () => {
+        const input = document.getElementById("newNameInput");
+        const newName = input ? input.value : "";
+
+        try {
+          hideMessage("nameError");
+          hideMessage("nameSuccess");
+          await updateCurrentName(newName);
+          showMessage("nameSuccess", "Имя успешно обновлено.", "success");
+
+          const currentUser = auth.currentUser;
+          if (currentUser) await refreshAccountPage(currentUser);
+        } catch (error) {
+          showMessage("nameError", error?.message || "Не удалось обновить имя.", "error");
+        }
+      });
+
+      document.getElementById("updatePasswordBtn").addEventListener("click", async () => {
+        const currentPassword = document.getElementById("currentPasswordInput")?.value || "";
+        const newPassword = document.getElementById("newPasswordInput")?.value || "";
+        const confirmPassword = document.getElementById("confirmPasswordInput")?.value || "";
+
+        try {
+          hideMessage("passwordError");
+          hideMessage("passwordSuccess");
+          await changePassword(currentPassword, newPassword, confirmPassword);
+          showMessage("passwordSuccess", "Пароль успешно изменён.", "success");
+
+          document.getElementById("currentPasswordInput").value = "";
+          document.getElementById("newPasswordInput").value = "";
+          document.getElementById("confirmPasswordInput").value = "";
+        } catch (error) {
+          showMessage("passwordError", error?.message || "Не удалось изменить пароль.", "error");
+        }
+      });
+
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await logoutUser();
+      });
+
+      document.getElementById("deleteAccountBtn").addEventListener("click", async () => {
+        const password = document.getElementById("deleteAccountPasswordInput")?.value || "";
+
+        try {
+          hideMessage("deleteAccountError");
+          hideMessage("deleteAccountSuccess");
+
+          const confirmed = window.confirm("Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить.");
+          if (!confirmed) return;
+
+          await deleteAccount(password);
+        } catch (error) {
+          showMessage("deleteAccountError", error?.message || "Не удалось удалить аккаунт.", "error");
+        }
+      });
     }
 
-    async function loadProfile(user) {
+    async function refreshAccountPage(user) {
+      if (!user) return;
+
       try {
         const profileSnapshot = await get(ref(db, `users/${user.uid}`));
         const schoolsSnapshot = await get(ref(db, "schools"));
@@ -706,9 +699,21 @@
         const profileData = profileSnapshot.exists() ? profileSnapshot.val() : {};
         const schools = schoolsSnapshot.exists() ? schoolsSnapshot.val() : [];
 
+        user.displayName =
+          profileData?.name ||
+          profileData?.fullName ||
+          user.displayName ||
+          user.email ||
+          "Пользователь";
+
+        renderUserBadge(user);
         renderProfile(user, profileData, schools);
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
+
+        user.displayName = user.displayName || user.email || "Пользователь";
+        renderUserBadge(user);
+
         profileContainer.innerHTML = `
           <div class="settings-card">
             <div class="card-title">
@@ -727,34 +732,7 @@
         return;
       }
 
-      try {
-        const profileSnapshot = await get(ref(db, `users/${user.uid}`));
-        const profileData = profileSnapshot.exists() ? profileSnapshot.val() : {};
-
-        user.displayName =
-          profileData?.name ||
-          profileData?.fullName ||
-          user.displayName ||
-          user.email ||
-          "Пользователь";
-
-        renderUserBadge(user);
-
-        await loadProfile(user);
-      } catch (error) {
-        console.error("Ошибка загрузки профиля:", error);
-        user.displayName = user.displayName || user.email || "Пользователь";
-        renderUserBadge(user);
-        profileContainer.innerHTML = `
-          <div class="settings-card">
-            <div class="card-title">
-              <span class="material-symbols-outlined">error</span>
-              Ошибка загрузки данных
-            </div>
-            <div class="error-msg" style="display:block;">Не удалось подключиться к базе данных.</div>
-          </div>
-        `;
-      }
+      await refreshAccountPage(user);
     });
   </script>
 </body>
