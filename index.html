@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Главная · Электронная школа</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { margin: 0; padding: 0; }
     body {
       font-family: "Inter", sans-serif;
@@ -31,9 +31,9 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 1000;
-      background: #fff;
+      background: #ffffff;
       border-bottom: 1px solid #eef3fa;
-      box-shadow: 0 4px 20px rgba(0,20,40,.06);
+      box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06);
       padding: 12px 24px;
       display: flex;
       justify-content: space-between;
@@ -42,8 +42,18 @@
       gap: 12px;
     }
 
-    .navbar-left { display: flex; align-items: center; gap: 16px; }
-    .logo-area { display: flex; align-items: center; gap: 10px; }
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     .logo-icon {
       width: 40px; height: 40px; border-radius: 12px;
       background: #2a7de1; color: #fff;
@@ -51,10 +61,17 @@
       font-size: 20px; font-weight: 700;
       box-shadow: 0 4px 12px rgba(42,125,225,.2);
     }
-    .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: #0a1e3c; }
+
+    .logo-text {
+      font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: #0a1e3c;
+    }
+
     .logo-text span { color: #2a7de1; }
 
-    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .nav-links {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+
     .nav-link {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 8px 18px; border-radius: 40px; font-weight: 500;
@@ -62,17 +79,51 @@
       background: transparent; border: 1.5px solid transparent;
       transition: .15s ease;
     }
-    .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
 
-    .navbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .nav-link:hover {
+      background: #f0f4fe; border-color: #d0dae9;
+    }
+
+    .nav-link.active {
+      background: #e5effb; border-color: #2a7de1; color: #2a7de1;
+    }
+
+    .nav-link .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    .nav-link.admin-link {
+      background: #fff3e0;
+      border-color: #ff9800;
+      color: #e65100;
+    }
+
+    .nav-link.admin-link:hover {
+      background: #ffe0b2;
+      border-color: #f57c00;
+    }
+
+    .navbar-right {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+
     .user-badge {
       display: inline-flex; align-items: center; gap: 8px;
       background: #f0f6ff; padding: 6px 16px 6px 12px; border-radius: 40px;
       font-size: 14px; font-weight: 500; color: #0a1e3c; text-decoration: none;
       transition: .15s ease;
+      cursor: pointer;
+      border: none;
+      font-family: "Inter", sans-serif;
     }
-    .user-badge:hover { background: #e5effb; transform: scale(.97); }
-    .user-badge .material-symbols-outlined { color: #2a7de1; font-size: 20px; }
+
+    .user-badge:hover {
+      background: #e5effb; transform: scale(.97);
+    }
+
+    .user-badge .material-symbols-outlined {
+      color: #2a7de1; font-size: 20px;
+    }
 
     .btn {
       border: none; padding: 6px 18px; border-radius: 40px;
@@ -80,11 +131,15 @@
       transition: .2s ease; display: inline-flex; align-items: center; gap: 6px;
       font-family: "Inter", sans-serif; text-decoration: none;
     }
+
     .btn-primary {
       background: #2a7de1; color: #fff;
       box-shadow: 0 4px 12px rgba(42,125,225,.2);
     }
-    .btn-primary:hover { background: #1a5fb0; transform: scale(.97); }
+
+    .btn-primary:hover {
+      background: #1a5fb0; transform: scale(.97);
+    }
 
     .container {
       max-width: 900px; margin: 0 auto;
@@ -98,48 +153,112 @@
       font-size: 22px; font-weight: 600; color: #0a1e3c;
       margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
     }
-    .section-title .material-symbols-outlined { color: #2a7de1; font-size: 28px; }
 
-    .news-list { display: flex; flex-direction: column; gap: 16px; }
+    .section-title .material-symbols-outlined {
+      color: #2a7de1; font-size: 28px;
+    }
+
+    .news-list {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
     .news-item {
       background: #f9fcff; border-radius: 24px; padding: 20px 24px;
       border: 1px solid #eef3fa; transition: .15s ease; cursor: pointer;
     }
-    .news-item:hover { border-color: #c7d9f0; background: #fff; }
+
+    .news-item:hover {
+      border-color: #c7d9f0; background: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,20,40,.06);
+    }
+
+    .news-item:active {
+      transform: scale(0.98);
+    }
+
     .news-header {
       display: flex; justify-content: space-between; align-items: flex-start;
       gap: 12px; flex-wrap: wrap; margin-bottom: 8px;
     }
-    .news-title { font-size: 18px; font-weight: 600; color: #0a1e3c; }
+
+    .news-title {
+      font-size: 18px; font-weight: 600; color: #0a1e3c;
+    }
+
     .news-date {
       font-size: 13px; color: #6a7f9e; background: #eef3fa;
       padding: 4px 14px; border-radius: 40px; white-space: nowrap;
     }
+
     .news-desc {
-      font-size: 15px; color: #3d5270; line-height: 1.5;
-      word-break: break-word; display: -webkit-box; -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; max-height: 4.5em;
+      font-size: 15px; color: #3d5270; line-height: 1.6;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-height: 4.8em;
     }
 
-    .empty-state { text-align: center; padding: 48px 20px; color: #6a7f9e; }
+    .news-desc-full {
+      font-size: 15px; color: #3d5270; line-height: 1.7;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .news-item .news-desc-full {
+      display: none;
+    }
+
+    .news-item.expanded .news-desc {
+      display: none;
+    }
+
+    .news-item.expanded .news-desc-full {
+      display: block;
+    }
+
+    .news-desc a, .news-desc-full a {
+      color: #2a7de1;
+      text-decoration: underline;
+    }
+
+    .news-desc a:hover, .news-desc-full a:hover {
+      text-decoration: none;
+    }
+
+    .empty-state {
+      text-align: center; padding: 48px 20px; color: #6a7f9e;
+    }
+
     .empty-state .material-symbols-outlined {
       font-size: 48px; color: #d0dae9; margin-bottom: 12px;
     }
-    .empty-state h3 { color: #0a1e3c; font-weight: 500; margin-bottom: 4px; }
+
+    .empty-state h3 {
+      color: #0a1e3c; font-weight: 500; margin-bottom: 4px;
+    }
 
     .footer {
       margin-top: 32px; padding-top: 20px; border-top: 1px solid #eef3fa;
       font-size: 13px; color: #889bb3; text-align: center;
     }
 
-    .loading { text-align: center; padding: 40px; color: #6a7f9e; }
+    .loading {
+      text-align: center; padding: 40px; color: #6a7f9e;
+    }
 
     .modal-overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(0,0,0,.4); backdrop-filter: blur(4px);
       align-items: center; justify-content: center; z-index: 9999; padding: 20px;
     }
-    .modal-overlay.open { display: flex; }
+
+    .modal-overlay.open {
+      display: flex;
+    }
 
     .modal-box {
       background: #fff; max-width: 520px; width: 100%;
@@ -148,42 +267,78 @@
       max-height: 80vh; overflow-y: auto;
       animation: pop .2s ease;
     }
+
     @keyframes pop {
       from { transform: scale(.95) translateY(10px); opacity: 0; }
       to { transform: scale(1) translateY(0); opacity: 1; }
     }
 
-    .modal-box .m-title { font-size: 22px; font-weight: 700; color: #0a1e3c; margin-bottom: 4px; }
+    .modal-box .m-title {
+      font-size: 22px; font-weight: 700; color: #0a1e3c; margin-bottom: 4px;
+    }
+
     .modal-box .m-date {
       font-size: 14px; color: #6a7f9e; margin-bottom: 16px;
       padding-bottom: 12px; border-bottom: 1px solid #eef3fa;
     }
+
     .modal-box .m-text {
       font-size: 15px; color: #1f2b48; line-height: 1.7;
-      word-break: break-word; overflow-wrap: anywhere; white-space: pre-wrap;
+      word-break: break-word; overflow-wrap: anywhere;
     }
+
+    .modal-box .m-text a {
+      color: #2a7de1;
+      text-decoration: underline;
+    }
+
+    .modal-box .m-text a:hover {
+      text-decoration: none;
+    }
+
     .modal-box .m-close {
       margin-top: 24px; width: 100%; padding: 14px; border: none;
       border-radius: 40px; background: #eef3fa; color: #1f2b48;
       font-weight: 600; font-size: 16px; cursor: pointer;
       font-family: "Inter", sans-serif; transition: .15s ease;
     }
-    .modal-box .m-close:hover { background: #dce4ef; }
 
-    .profile-form { display: flex; flex-direction: column; gap: 16px; }
-    .field-group { display: flex; flex-direction: column; gap: 8px; }
-    .field-group label { font-size: 13px; font-weight: 600; color: #20314d; }
+    .modal-box .m-close:hover {
+      background: #dce4ef;
+    }
+
+    .profile-form {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    .field-group {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+
+    .field-group label {
+      font-size: 13px; font-weight: 600; color: #20314d;
+    }
+
     .field-group input, .field-group select {
       width: 100%; padding: 12px 14px; border: 1px solid #dfe9f7;
       border-radius: 14px; background: #f9fbff; color: #0d1d34;
       font-size: 15px; font-family: "Inter", sans-serif; outline: none;
     }
+
     .field-group input:focus, .field-group select:focus {
       border-color: #2a7de1; box-shadow: 0 0 0 3px rgba(42,125,225,.12);
     }
-    .profile-actions { display: flex; justify-content: flex-end; margin-top: 4px; }
+
+    .profile-actions {
+      display: flex; justify-content: flex-end; margin-top: 4px;
+    }
+
     .profile-submit {
       width: 100%; justify-content: center; padding: 14px 18px; font-size: 15px;
+    }
+
+    .hidden {
+      display: none !important;
     }
 
     @media (max-width:700px) {
@@ -192,12 +347,15 @@
       .nav-links { justify-content: flex-start; }
       .navbar-right { justify-content: flex-start; }
       body { padding-top: 130px; }
+      .container { padding: 20px 16px 28px; border-radius: 32px; }
     }
 
     @media (max-width:480px) {
       .container { padding: 20px 16px 28px; border-radius: 32px; }
       .navbar-left { flex-direction: column; align-items: flex-start; gap: 6px; }
       .modal-box { padding: 24px 20px; max-height: 85vh; }
+      .news-item { padding: 16px 18px; }
+      .news-title { font-size: 16px; }
     }
   </style>
 </head>
@@ -212,6 +370,9 @@
       <nav class="nav-links" id="navLinks">
         <a href="diary.html" class="nav-link">
           <span class="material-symbols-outlined">calendar_month</span> Дневник
+        </a>
+        <a href="console.html" class="nav-link admin-link hidden" id="consoleLink">
+          <span class="material-symbols-outlined">dashboard</span> Консоль
         </a>
       </nav>
     </div>
@@ -298,18 +459,80 @@
     const profileSchoolSelect = document.getElementById("profileSchool");
     const profileClassSelect = document.getElementById("profileClass");
     const newsContainer = document.getElementById("newsContainer");
+    const consoleLink = document.getElementById("consoleLink");
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDate = document.getElementById("modalDate");
+    const modalText = document.getElementById("modalText");
+    const modalClose = document.getElementById("modalClose");
 
     let currentUser = null;
     let currentProfile = {};
     let schoolsData = [];
 
     function escapeHtml(value) {
-      return String(value ?? "")
+      if (value === null || value === undefined) return "";
+      return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+    }
+
+    // Экранирует для HTML, но сохраняет теги <br> и <a>
+    function sanitizeHtml(value) {
+      if (value === null || value === undefined) return "";
+      let result = String(value);
+      
+      // Сначала заменяем переносы строк на <br>
+      result = result.replace(/\n/g, "<br>");
+      
+      // Экранируем HTML, но сохраняем <br> и <a> теги
+      // Сначала защищаем <br> и <a> от экранирования
+      result = result.replace(/<br>/g, "___BR___");
+      result = result.replace(/<br \/>/g, "___BR___");
+      result = result.replace(/<a /g, "___A_OPEN___");
+      result = result.replace(/<\/a>/g, "___A_CLOSE___");
+      
+      // Экранируем всё остальное
+      result = result
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+      
+      // Восстанавливаем <br> и <a>
+      result = result.replace(/___BR___/g, "<br>");
+      result = result.replace(/___A_OPEN___/g, "<a ");
+      result = result.replace(/___A_CLOSE___/g, "</a>");
+      
+      return result;
+    }
+
+    function formatDateTime(timestamp) {
+      const date = new Date(Number(timestamp) * 1000);
+      const options = {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      };
+      return date.toLocaleDateString("ru-RU", options);
+    }
+
+    function formatDateShort(timestamp) {
+      const date = new Date(Number(timestamp) * 1000);
+      const options = {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      };
+      return date.toLocaleDateString("ru-RU", options);
     }
 
     function renderHeader(user) {
@@ -321,6 +544,32 @@
         </a>
       `;
     }
+
+    function updateConsoleLink() {
+      const status = Number(currentProfile?.status ?? 1);
+      if (status === 2 || status === 3) {
+        consoleLink.classList.remove("hidden");
+      } else {
+        consoleLink.classList.add("hidden");
+      }
+    }
+
+    function openNewsModal(title, date, text) {
+      modalTitle.textContent = title;
+      modalDate.textContent = date;
+      modalText.innerHTML = text; // Используем innerHTML для поддержки тегов
+      modal.classList.add("open");
+    }
+
+    modalClose.addEventListener("click", () => {
+      modal.classList.remove("open");
+    });
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.remove("open");
+      }
+    });
 
     async function loadSchools() {
       try {
@@ -470,18 +719,53 @@
           return;
         }
 
-        newsContainer.innerHTML = news
+        const sortedNews = news
           .slice()
-          .sort((a, b) => Number(b.date || 0) - Number(a.date || 0))
-          .map((item) => `
-            <div class="news-item">
+          .sort((a, b) => Number(b.date || 0) - Number(a.date || 0));
+
+        let html = '<div class="news-list">';
+
+        sortedNews.forEach((item) => {
+          const title = item.title || "Без заголовка";
+          const fullText = item.text || item.desc || "";
+          const desc = item.desc || fullText;
+          const dateFull = formatDateTime(item.date);
+          const dateShort = formatDateShort(item.date);
+
+          // Используем sanitizeHtml вместо escapeHtml для сохранения тегов
+          const titleSafe = escapeHtml(title);
+          const descSafe = sanitizeHtml(desc);
+          const fullTextSafe = sanitizeHtml(fullText);
+          const dateFullSafe = escapeHtml(dateFull);
+          const dateShortSafe = escapeHtml(dateShort);
+
+          html += `
+            <div class="news-item" 
+                 data-title="${titleSafe}" 
+                 data-date="${dateFullSafe}" 
+                 data-text="${fullTextSafe.replace(/"/g, '&quot;')}">
               <div class="news-header">
-                <div class="news-title">${escapeHtml(item.title || "Без заголовка")}</div>
-                <div class="news-date">${new Date(Number(item.date) * 1000).toLocaleDateString("ru-RU")}</div>
+                <div class="news-title">${titleSafe}</div>
+                <div class="news-date">${dateShortSafe}</div>
               </div>
-              <div class="news-desc">${String(item.desc || "").replace(/\n/g, "<br>")}</div>
+              <div class="news-desc">${descSafe}</div>
+              <div class="news-desc-full">${fullTextSafe}</div>
             </div>
-          `).join("");
+          `;
+        });
+
+        html += '</div>';
+        newsContainer.innerHTML = html;
+
+        document.querySelectorAll(".news-item").forEach((item) => {
+          item.addEventListener("click", function() {
+            const title = this.dataset.title || "Новость";
+            const date = this.dataset.date || "";
+            const text = this.dataset.text || "Нет содержимого";
+            openNewsModal(title, date, text);
+          });
+        });
+
       } catch (error) {
         console.error("news load error:", error);
         newsContainer.innerHTML = `
@@ -512,6 +796,7 @@
         });
 
         renderHeader(currentUser);
+        updateConsoleLink();
         closeProfileSetupModal();
         alert("Профиль сохранён");
       } catch (error) {
@@ -541,6 +826,7 @@
       }
 
       renderHeader(user);
+      updateConsoleLink();
 
       await loadSchools();
       await loadNews();
