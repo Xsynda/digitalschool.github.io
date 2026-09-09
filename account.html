@@ -4,390 +4,758 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Аккаунт · Электронная школа</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: #f8faff; min-height: 100vh; padding-top: 80px; }
-    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #ffffff; border-bottom: 1px solid #eef3fa; box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-    .navbar-left { display: flex; align-items: center; gap: 16px; }
-    .logo-area { display: flex; align-items: center; gap: 10px; }
-    .logo-icon { background: #2a7de1; color: white; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); }
-    .logo-text { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; color: #0a1e3c; }
-    .logo-text span { color: #2a7de1; }
-    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .nav-link { padding: 8px 18px; border-radius: 40px; font-weight: 500; font-size: 14px; color: #1f2b48; text-decoration: none; transition: 0.15s; display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid transparent; cursor: pointer; font-family: 'Inter', sans-serif; }
-    .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
-    .nav-link .material-symbols-outlined { font-size: 18px; }
-    .navbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .user-badge { display: flex; align-items: center; gap: 8px; background: #f0f6ff; padding: 6px 16px 6px 12px; border-radius: 40px; font-size: 14px; font-weight: 500; color: #0a1e3c; cursor: pointer; transition: 0.15s; text-decoration: none; border: none; font-family: 'Inter', sans-serif; }
-    .user-badge:hover { background: #e5effb; transform: scale(0.97); }
-    .user-badge .material-symbols-outlined { color: #2a7de1; font-size: 20px; }
-    .btn { border: none; padding: 6px 18px; border-radius: 40px; font-weight: 500; font-size: 13px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif; text-decoration: none; }
-    .btn-primary { background: #2a7de1; color: white; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); }
-    .btn-primary:hover { background: #1a5fb0; transform: scale(0.97); }
-    .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 48px; box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08); padding: 32px 40px 44px; border: 1px solid #f0f5fe; }
-    .page-title { font-size: 26px; font-weight: 600; color: #0a1e3c; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-    .page-title .material-symbols-outlined { color: #2a7de1; font-size: 32px; }
-    .page-sub { color: #5f7696; font-size: 16px; margin-bottom: 28px; }
-    .settings-card { background: #f9fcff; border-radius: 24px; padding: 24px; border: 1px solid #eef3fa; margin-bottom: 20px; }
-    .settings-card .card-title { font-size: 16px; font-weight: 600; color: #0a1e3c; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    .settings-card .card-title .material-symbols-outlined { color: #2a7de1; font-size: 22px; }
-    .field-group { margin-bottom: 16px; }
-    .field-group:last-child { margin-bottom: 0; }
-    .field-group label { display: block; font-weight: 500; font-size: 14px; color: #1f2b48; margin-bottom: 6px; }
-    .field-group input { width: 100%; padding: 12px 16px; border: 1.5px solid #dce4ef; border-radius: 30px; font-size: 15px; font-family: 'Inter', sans-serif; transition: 0.15s; background: #ffffff; }
-    .field-group input:focus { outline: none; border-color: #2a7de1; box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10); }
-    .field-group input:disabled { opacity: 0.6; background: #f5f7fa; cursor: not-allowed; }
-    .btn-action { border: none; padding: 10px 24px; border-radius: 40px; font-weight: 500; font-size: 14px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; }
-    .btn-action-primary { background: #2a7de1; color: white; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.25); }
-    .btn-action-primary:hover { background: #1a5fb0; transform: scale(0.97); }
-    .btn-action-success { background: #1a8a4a; color: white; box-shadow: 0 4px 12px rgba(26, 138, 74, 0.25); }
-    .btn-action-success:hover { background: #146e3a; transform: scale(0.97); }
-    .btn-action-danger { background: #c74a4a; color: white; box-shadow: 0 4px 12px rgba(199, 74, 74, 0.25); }
-    .btn-action-danger:hover { background: #a33a3a; transform: scale(0.97); }
-    .btn-full { width: 100%; justify-content: center; }
-    .error-msg { color: #c74a4a; font-size: 14px; margin: 8px 0 12px; background: #fff0f0; padding: 8px 16px; border-radius: 40px; display: block; line-height: 1.4; }
-    .error-msg.hidden { display: none; }
-    .success-msg { color: #1a8a4a; font-size: 14px; margin: 8px 0 12px; background: #e8f5ed; padding: 8px 16px; border-radius: 40px; display: block; line-height: 1.4; }
-    .success-msg.hidden { display: none; }
-    .divider { border: none; border-top: 1px solid #eef3fa; margin: 24px 0; }
-    .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid #eef3fa; font-size: 13px; color: #889bb3; text-align: center; }
-    .loading { text-align: center; padding: 40px; color: #6a7f9e; }
-    @media (max-width: 700px) { .navbar { padding: 10px 16px; flex-direction: column; align-items: stretch; gap: 8px; } .navbar-left { flex-wrap: wrap; justify-content: space-between; } .nav-links { justify-content: flex-start; } .navbar-right { justify-content: flex-start; } body { padding-top: 130px; } }
-    @media (max-width: 480px) { .container { padding: 20px 16px 28px; border-radius: 32px; } .navbar-left { flex-direction: column; align-items: flex-start; gap: 6px; } }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8faff;
+      min-height: 100vh;
+      padding-top: 90px;
+      color: #0a1e3c;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.96);
+      border-bottom: 1px solid #edf2fb;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 6px 22px rgba(12, 22, 36, 0.06);
+      padding: 12px 22px;
+      z-index: 50;
+    }
+
+    .navbar-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #2a7de1, #67a8ff);
+      color: white;
+      box-shadow: 0 8px 18px rgba(42,125,225,0.25);
+      font-size: 18px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid #e7edf8;
+      color: #172437;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.15s ease;
+      box-shadow: 0 2px 8px rgba(18, 31, 52, 0.04);
+    }
+
+    .nav-link:hover {
+      background: #f0f6ff;
+      border-color: #d3e3ff;
+      color: #2a7de1;
+    }
+
+    .user-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px 8px 12px;
+      background: #f0f6ff;
+      border: 1px solid #dfeaf8;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #0a1e3c;
+      text-decoration: none;
+    }
+
+    .user-badge .material-symbols-outlined {
+      color: #2a7de1;
+      font-size: 18px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #edf2fb;
+      border-radius: 32px;
+      box-shadow: 0 22px 50px rgba(13, 24, 44, 0.08);
+      padding: 28px 28px 34px;
+    }
+
+    .page-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      margin-bottom: 6px;
+    }
+
+    .page-title .material-symbols-outlined {
+      color: #2a7de1;
+      font-size: 32px;
+    }
+
+    .page-sub {
+      color: #647a9a;
+      font-size: 15px;
+      margin-bottom: 22px;
+    }
+
+    .settings-card {
+      background: #f9fbff;
+      border: 1px solid #edf2fb;
+      border-radius: 24px;
+      padding: 20px 18px;
+      margin-bottom: 18px;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #0a1e3c;
+    }
+
+    .card-title .material-symbols-outlined {
+      color: #2a7de1;
+      font-size: 21px;
+    }
+
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    .field-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1f2b48;
+      margin-bottom: 6px;
+    }
+
+    .field-group input {
+      width: 100%;
+      background: #ffffff;
+      border: 1.5px solid #dfe8f4;
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      color: #0a1e3c;
+      transition: 0.15s ease;
+    }
+
+    .field-group input:focus {
+      outline: none;
+      border-color: #2a7de1;
+      box-shadow: 0 0 0 4px rgba(42,125,225,0.10);
+    }
+
+    .field-group input:disabled {
+      background: #f5f8fb;
+      color: #556a8c;
+      cursor: not-allowed;
+      opacity: 0.9;
+    }
+
+    .inline-note {
+      color: #5f7696;
+      font-size: 12px;
+      margin-top: 8px;
+      line-height: 1.45;
+    }
+
+    .btn-action {
+      border: none;
+      border-radius: 999px;
+      padding: 11px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: #2a7de1;
+      color: white;
+      box-shadow: 0 8px 18px rgba(42,125,225,0.18);
+    }
+
+    .btn-primary:hover { background: #1f68c3; }
+
+    .btn-success {
+      background: #1d8f52;
+      color: white;
+      box-shadow: 0 8px 18px rgba(29,143,82,0.18);
+    }
+
+    .btn-success:hover { background: #167445; }
+
+    .btn-danger {
+      background: #d95454;
+      color: white;
+      box-shadow: 0 8px 18px rgba(217,84,84,0.18);
+    }
+
+    .btn-danger:hover { background: #b74343; }
+
+    .btn-ghost {
+      background: #eef5ff;
+      color: #1f2b48;
+      border: 1px solid #dfeaf9;
+    }
+
+    .btn-ghost:hover {
+      background: #e3eeff;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    .error-msg {
+      display: block;
+      font-size: 13px;
+      color: #b63a3a;
+      background: #fff2f2;
+      border: 1px solid #ffd4d4;
+      border-radius: 12px;
+      padding: 9px 12px;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .success-msg {
+      display: block;
+      font-size: 13px;
+      color: #146a3d;
+      background: #ecf9f1;
+      border: 1px solid #cdeedb;
+      border-radius: 12px;
+      padding: 9px 12px;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .hidden { display: none !important; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #edf2fb;
+      margin: 24px 0;
+    }
+
+    @media (max-width: 700px) {
+      body { padding-top: 120px; }
+      .navbar-inner { align-items: flex-start; }
+      .container { padding: 22px 18px 26px; border-radius: 24px; }
+      .page-title { font-size: 24px; }
+    }
   </style>
 </head>
 <body>
+  <header class="navbar">
+    <div class="navbar-inner">
+      <div class="brand">
+        <div class="brand-badge">Ш</div>
+        <div>Электронная школа</div>
+      </div>
 
-<header class="navbar" id="navbar">
-  <div class="navbar-left">
-    <div class="logo-area">
-      <div class="logo-icon">Ш</div>
-      <div class="logo-text">Электро<span>школа</span></div>
+      <nav class="nav-links">
+        <a class="nav-link" href="index.html">Главная</a>
+      </nav>
+
+      <div id="userArea"></div>
     </div>
-    <nav class="nav-links">
-      <a href="index.html" class="nav-link">
-        <span class="material-symbols-outlined">home</span>
-        Главная
-      </a>
-    </nav>
-  </div>
-  <div class="navbar-right" id="userArea">
-    <!-- Имя пользователя -->
-  </div>
-</header>
+  </header>
 
-<div class="container">
-  <div class="page-title">
-    <span class="material-symbols-outlined">account_circle</span>
-    Аккаунт
-  </div>
-  <div class="page-sub">Управление личными данными</div>
+  <main class="container">
+    <div class="page-title">
+      <span class="material-symbols-outlined">account_circle</span>
+      Аккаунт
+    </div>
+    <div class="page-sub">Управление данными профиля</div>
 
-  <div id="profileContainer">
-    <div class="loading">⏳ Загрузка данных...</div>
-  </div>
+    <div id="profileContainer">
+      <div class="settings-card">
+        <div class="card-title">
+          <span class="material-symbols-outlined">sync</span>
+          Загрузка...
+        </div>
+      </div>
+    </div>
+  </main>
 
-  <div class="footer">© 2026 · Электронная школа</div>
-</div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut,
+      updateProfile,
+      updatePassword,
+      deleteUser,
+      EmailAuthProvider,
+      reauthenticateWithCredential
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+    import {
+      getDatabase,
+      ref,
+      get,
+      update,
+      remove
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
-<!-- FIREBASE -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
-  import {
-    getAuth,
-    onAuthStateChanged,
-    signOut,
-    updatePassword,
-    reauthenticateWithCredential,
-    EmailAuthProvider
-  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-  import {
-    getDatabase,
-    ref,
-    get,
-    update,
-    child
-  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
+      authDomain: "digitalschool-f2c90.firebaseapp.com",
+      projectId: "digitalschool-f2c90",
+      storageBucket: "digitalschool-f2c90.firebasestorage.app",
+      messagingSenderId: "797143730107",
+      appId: "1:797143730107:web:b19437db896170d88b269e",
+      measurementId: "G-FT9ENP491P"
+    };
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
-    authDomain: "digitalschool-f2c90.firebaseapp.com",
-    projectId: "digitalschool-f2c90",
-    storageBucket: "digitalschool-f2c90.firebasestorage.app",
-    messagingSenderId: "797143730107",
-    appId: "1:797143730107:web:b19437db896170d88b269e",
-    measurementId: "G-FT9ENP491P"
-  };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
 
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const auth = getAuth(app);
-  const db = getDatabase(app);
+    const profileContainer = document.getElementById("profileContainer");
+    const userArea = document.getElementById("userArea");
 
-  const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
-  const ACCOUNT_URL = 'account.html';
-  const profileContainer = document.getElementById('profileContainer');
-  const userArea = document.getElementById('userArea');
+    function escapeHtml(value) {
+      if (value === null || value === undefined) return "";
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
-  function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
+    function getProfileDisplayValue(value, fallback = "—") {
+      if (value === null || value === undefined || value === "") return fallback;
+      return String(value);
+    }
 
-  function showError(element, message) {
-    if (!element) return;
-    element.textContent = message;
-    element.classList.remove('hidden');
-  }
+    function showMessage(elId, message, type = "error") {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.remove("hidden");
+      el.classList.remove("error-msg", "success-msg");
+      el.classList.add(type === "success" ? "success-msg" : "error-msg");
+    }
 
-  function hideError(element) {
-    if (!element) return;
-    element.classList.add('hidden');
-  }
+    function hideMessage(elId) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.classList.add("hidden");
+      el.textContent = "";
+    }
 
-  function showSuccess(element, message) {
-    if (!element) return;
-    element.textContent = message;
-    element.classList.remove('hidden');
-    setTimeout(() => element.classList.add('hidden'), 4000);
-  }
-
-  // ----- ОБНОВЛЕНИЕ ИМЕНИ В ШАПКЕ -----
-  function updateUserBadge(user) {
-    if (!user) return;
-    const displayName = user.displayName || user.email || 'Пользователь';
-    const badge = userArea.querySelector('.user-badge');
-    if (badge) {
-      badge.innerHTML = `
-        <span class="material-symbols-outlined">account_circle</span>
-        ${escapeHtml(displayName)}
+    function renderUserBadge(user) {
+      const name = user?.displayName || user?.email || "Пользователь";
+      userArea.innerHTML = `
+        <div class="user-badge">
+          <span class="material-symbols-outlined">person</span>
+          ${escapeHtml(name)}
+        </div>
       `;
     }
-  }
 
-  // ----- РЕНДЕР ШАПКИ (исправленный) -----
-  function renderHeader(user) {
-    if (user) {
-      let displayName = user.displayName || user.email || 'Пользователь';
-      
-      // Если имя не загружено, пытаемся получить из базы
-      if (!user.displayName || user.displayName === user.email) {
-        const userRef = ref(db, 'users/' + user.uid);
-        get(userRef).then((snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            const name = data.name || user.email || 'Пользователь';
-            user.displayName = name;
-            updateUserBadge(user);
+    function statusInfo(status) {
+      const map = {
+        1: { title: "Ученик", desc: "Доступ к личным данным и расписанию." },
+        2: { title: "Администратор", desc: "Полный доступ к настройкам и управлению." },
+        3: { title: "Администратор школы", desc: "Доступ к школьным инструментам и административным функциям." }
+      };
+      return map[Number(status)] || { title: "Неизвестно", desc: "Статус не указан." };
+    }
+
+    function resolveSchoolAndClass(profileData = {}, schools = []) {
+      let schoolName = "—";
+      let className = "—";
+
+      const rawSchoolIndex = Number(profileData.schoolIndex ?? profileData.schoolId ?? 0);
+      const rawClassIndex = Number(profileData.classIndex ?? profileData.classId ?? 0);
+
+      if (Array.isArray(schools) && schools.length) {
+        const validSchoolIndex = Number.isFinite(rawSchoolIndex) && rawSchoolIndex >= 0 && rawSchoolIndex < schools.length ? rawSchoolIndex : 0;
+        const school = schools[validSchoolIndex];
+        if (school) {
+          schoolName = getProfileDisplayValue(school.name || school.title || school.schoolName, schoolName);
+
+          if (Array.isArray(school.classes) && school.classes.length) {
+            const validClassIndex = Number.isFinite(rawClassIndex) && rawClassIndex >= 0 && rawClassIndex < school.classes.length ? rawClassIndex : 0;
+            const cls = school.classes[validClassIndex];
+            if (cls) {
+              className = getProfileDisplayValue(cls.name || cls.title || cls.className, className);
+            }
           }
-        }).catch(() => {});
+        }
       }
-      
-      userArea.innerHTML = `
-        <a href="${ACCOUNT_URL}" class="user-badge">
-          <span class="material-symbols-outlined">account_circle</span>
-          ${escapeHtml(displayName)}
-        </a>
-      `;
-    } else {
-      userArea.innerHTML = `
-        <a href="${AUTH_URL}" class="btn btn-primary">
-          <span class="material-symbols-outlined" style="font-size:18px;">login</span>
-          Войти
-        </a>
-      `;
+
+      if (profileData.schoolName) schoolName = getProfileDisplayValue(profileData.schoolName, schoolName);
+      if (profileData.className) className = getProfileDisplayValue(profileData.className, className);
+
+      return { schoolName, className };
     }
-  }
 
-  // ----- РЕНДЕР ПРОФИЛЯ -----
-  function renderProfile(user, profileData) {
-    const name = profileData?.name || user.email || 'Пользователь';
-    const email = user.email || '—';
-    const statusMap = { 1: 'ученик', 2: 'администратор' };
-    const status = statusMap[profileData?.status] || 'неизвестно';
-
-    // Обновляем имя в шапке
-    user.displayName = name;
-    updateUserBadge(user);
-
-    profileContainer.innerHTML = `
-      <div class="settings-card">
-        <div class="card-title">
-          <span class="material-symbols-outlined">info</span>
-          Информация
-        </div>
-        <div class="field-group">
-          <label>Email</label>
-          <input type="text" value="${escapeHtml(email)}" disabled />
-        </div>
-        <div class="field-group">
-          <label>Статус</label>
-          <input type="text" value="${escapeHtml(status)}" disabled />
-        </div>
-      </div>
-
-      <div class="settings-card">
-        <div class="card-title">
-          <span class="material-symbols-outlined">edit</span>
-          Изменить имя
-        </div>
-        <div class="field-group">
-          <label>Новое имя</label>
-          <input type="text" id="newNameInput" value="${escapeHtml(name)}" placeholder="Введите новое имя" />
-        </div>
-        <div id="nameError" class="error-msg hidden"></div>
-        <div id="nameSuccess" class="success-msg hidden"></div>
-        <button class="btn-action btn-action-primary" id="updateNameBtn">💾 Сохранить имя</button>
-      </div>
-
-      <div class="settings-card">
-        <div class="card-title">
-          <span class="material-symbols-outlined">lock</span>
-          Сменить пароль
-        </div>
-        <div class="field-group">
-          <label>Текущий пароль</label>
-          <input type="password" id="currentPasswordInput" placeholder="Введите текущий пароль" />
-        </div>
-        <div class="field-group">
-          <label>Новый пароль</label>
-          <input type="password" id="newPasswordInput" placeholder="Минимум 6 символов" />
-        </div>
-        <div class="field-group">
-          <label>Подтверждение пароля</label>
-          <input type="password" id="confirmPasswordInput" placeholder="Повторите новый пароль" />
-        </div>
-        <div id="passwordError" class="error-msg hidden"></div>
-        <div id="passwordSuccess" class="success-msg hidden"></div>
-        <button class="btn-action btn-action-success" id="updatePasswordBtn">🔑 Сменить пароль</button>
-      </div>
-
-      <hr class="divider" />
-
-      <button class="btn-action btn-action-danger btn-full" id="logoutBtn">
-        <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
-        Выйти из аккаунта
-      </button>
-    `;
-
-    // Обработчики
-    document.getElementById('updateNameBtn').addEventListener('click', async () => {
-      const nameError = document.getElementById('nameError');
-      const nameSuccess = document.getElementById('nameSuccess');
-      const newName = document.getElementById('newNameInput').value.trim();
-
-      hideError(nameError);
-      hideError(nameSuccess);
-
-      if (!newName) {
-        showError(nameError, '⚠️ Имя не может быть пустым');
-        return;
+    async function reauthenticateUser(currentPassword) {
+      const user = auth.currentUser;
+      if (!user || !user.email) {
+        throw new Error("Пользователь не авторизован.");
       }
+
+      if (!currentPassword || !String(currentPassword).trim()) {
+        throw new Error("Введите текущий пароль.");
+      }
+
+      const credential = EmailAuthProvider.credential(user.email, String(currentPassword).trim());
+      await reauthenticateWithCredential(user, credential);
+    }
+
+    async function updateCurrentName(newName) {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Пользователь не найден.");
+
+      const trimmed = String(newName || "").trim();
+
+      if (!trimmed) throw new Error("Введите имя.");
+
+      await updateProfile(user, { displayName: trimmed });
+
+      const profileRef = ref(db, `users/${user.uid}`);
+      const snapshot = await get(profileRef);
+      const profile = snapshot.exists() ? snapshot.val() : {};
+
+      await update(profileRef, {
+        ...profile,
+        name: trimmed,
+        fullName: trimmed,
+        displayName: trimmed
+      });
+    }
+
+    async function changePassword(currentPassword, newPassword, confirmPassword) {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Пользователь не найден.");
+
+      if (!currentPassword || !String(currentPassword).trim()) throw new Error("Введите текущий пароль.");
+      if (!newPassword || !String(newPassword).trim()) throw new Error("Введите новый пароль.");
+      if (String(newPassword).trim().length < 6) throw new Error("Новый пароль должен содержать минимум 6 символов.");
+      if (String(newPassword).trim() !== String(confirmPassword).trim()) throw new Error("Пароли не совпадают.");
+
+      await reauthenticateUser(currentPassword);
+      await updatePassword(user, String(newPassword).trim());
+    }
+
+    async function logoutUser() {
+      await signOut(auth);
+      window.location.href = "auth.html";
+    }
+
+    async function deleteAccount(targetPassword) {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Пользователь не найден.");
+
+      if (!targetPassword || !String(targetPassword).trim()) {
+        throw new Error("Введите пароль для удаления аккаунта.");
+      }
+
+      await reauthenticateUser(targetPassword);
+
+      const profileRef = ref(db, `users/${user.uid}`);
+      await remove(profileRef);
+
+      await deleteUser(user);
+
+      window.location.href = "auth.html";
+    }
+
+    async function handleUpdateName() {
+      const input = document.getElementById("newNameInput");
+      const name = input ? input.value : "";
+      const errorBox = document.getElementById("nameError");
+      const successBox = document.getElementById("nameSuccess");
 
       try {
-        await update(ref(db, 'users/' + user.uid), { name: newName });
-        showSuccess(nameSuccess, '✅ Имя успешно обновлено!');
-        document.getElementById('newNameInput').value = newName;
-        user.displayName = newName;
-        updateUserBadge(user);
+        hideMessage("nameError");
+        hideMessage("nameSuccess");
+        await updateCurrentName(name);
+
+        showMessage("nameSuccess", "Имя успешно обновлено.", "success");
+        renderUserBadge(auth.currentUser);
+        await loadProfile(auth.currentUser);
       } catch (error) {
-        console.error('Ошибка обновления имени:', error);
-        showError(nameError, '❌ Ошибка: ' + (error.message || 'попробуйте позже'));
+        showMessage("nameError", error?.message || "Не удалось обновить имя.", "error");
       }
-    });
+    }
 
-    document.getElementById('updatePasswordBtn').addEventListener('click', async () => {
-      const passwordError = document.getElementById('passwordError');
-      const passwordSuccess = document.getElementById('passwordSuccess');
-      const currentPassword = document.getElementById('currentPasswordInput').value;
-      const newPassword = document.getElementById('newPasswordInput').value;
-      const confirmPassword = document.getElementById('confirmPasswordInput').value;
-
-      hideError(passwordError);
-      hideError(passwordSuccess);
-
-      if (!currentPassword) {
-        showError(passwordError, '⚠️ Введите текущий пароль');
-        return;
-      }
-      if (newPassword.length < 6) {
-        showError(passwordError, '⚠️ Новый пароль должен содержать минимум 6 символов');
-        return;
-      }
-      if (newPassword !== confirmPassword) {
-        showError(passwordError, '⚠️ Пароли не совпадают');
-        return;
-      }
+    async function handleChangePassword() {
+      const currentPassword = document.getElementById("currentPasswordInput")?.value || "";
+      const newPassword = document.getElementById("newPasswordInput")?.value || "";
+      const confirmPassword = document.getElementById("confirmPasswordInput")?.value || "";
+      const errorBox = document.getElementById("passwordError");
+      const successBox = document.getElementById("passwordSuccess");
 
       try {
-        const credential = EmailAuthProvider.credential(user.email, currentPassword);
-        await reauthenticateWithCredential(user, credential);
-        await updatePassword(user, newPassword);
-        showSuccess(passwordSuccess, '✅ Пароль успешно изменён!');
-        document.getElementById('currentPasswordInput').value = '';
-        document.getElementById('newPasswordInput').value = '';
-        document.getElementById('confirmPasswordInput').value = '';
+        hideMessage("passwordError");
+        hideMessage("passwordSuccess");
+        await changePassword(currentPassword, newPassword, confirmPassword);
+
+        showMessage("passwordSuccess", "Пароль успешно изменён.", "success");
+
+        document.getElementById("currentPasswordInput").value = "";
+        document.getElementById("newPasswordInput").value = "";
+        document.getElementById("confirmPasswordInput").value = "";
       } catch (error) {
-        console.error('Ошибка смены пароля:', error);
-        if (error.code === 'auth/wrong-password') {
-          showError(passwordError, '❌ Неверный текущий пароль');
-        } else if (error.code === 'auth/requires-recent-login') {
-          showError(passwordError, '❌ Для безопасности требуется повторный вход. Выйдите и зайдите снова.');
-        } else {
-          showError(passwordError, '❌ Ошибка: ' + (error.message || 'попробуйте позже'));
-        }
+        showMessage("passwordError", error?.message || "Не удалось изменить пароль.", "error");
       }
-    });
+    }
 
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      if (confirm('Вы уверены, что хотите выйти из аккаунта?')) {
-        try {
-          await signOut(auth);
-          window.location.href = AUTH_URL;
-        } catch (error) {
-          console.error('Ошибка выхода:', error);
-          alert('Ошибка выхода: ' + error.message);
-        }
-      }
-    });
-  }
+    async function handleDeleteAccount() {
+      const password = document.getElementById("deleteAccountPasswordInput")?.value || "";
+      const errorBox = document.getElementById("deleteAccountError");
+      const successBox = document.getElementById("deleteAccountSuccess");
 
-  // ----- ЗАГРУЗКА ПРОФИЛЯ -----
-  async function loadProfile(user) {
-    renderHeader(user);
-    try {
-      const snapshot = await get(child(ref(db), 'users/' + user.uid));
-      if (snapshot.exists()) {
-        renderProfile(user, snapshot.val());
-      } else {
-        renderProfile(user, null);
+      try {
+        hideMessage("deleteAccountError");
+        hideMessage("deleteAccountSuccess");
+
+        const confirmed = window.confirm("Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить.");
+        if (!confirmed) return;
+
+        await deleteAccount(password);
+
+      } catch (error) {
+        showMessage("deleteAccountError", error?.message || "Не удалось удалить аккаунт.", "error");
       }
-    } catch (error) {
-      console.error('Ошибка загрузки профиля:', error);
+    }
+
+    function renderProfile(user, profileData = {}, schools = []) {
+      const status = statusInfo(profileData?.status ?? 1);
+      const { schoolName, className } = resolveSchoolAndClass(profileData, schools);
+
       profileContainer.innerHTML = `
         <div class="settings-card">
-          <div class="error-msg" style="display:block;">❌ Ошибка загрузки данных. Попробуйте обновить страницу.</div>
-          <button class="btn-action btn-action-primary" onclick="location.reload()">🔄 Обновить</button>
+          <div class="card-title">
+            <span class="material-symbols-outlined">info</span>
+            Информация
+          </div>
+
+          <div class="field-group">
+            <label>Email</label>
+            <input type="text" value="${escapeHtml(user.email || "—")}" disabled />
+          </div>
+
+          <div class="field-group">
+            <label>Имя</label>
+            <input type="text" value="${escapeHtml(profileData?.name || profileData?.fullName || user.displayName || "—")}" disabled />
+          </div>
+
+          <div class="field-group">
+            <label>Статус</label>
+            <input type="text" value="${escapeHtml(status.title)}" disabled />
+            <div class="inline-note">Описание: ${escapeHtml(status.desc)}</div>
+          </div>
+
+          <div class="field-group">
+            <label>Школа</label>
+            <input type="text" value="${escapeHtml(schoolName)}" disabled />
+          </div>
+
+          <div class="field-group">
+            <label>Класс</label>
+            <input type="text" value="${escapeHtml(className)}" disabled />
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="card-title">
+            <span class="material-symbols-outlined">edit</span>
+            Изменить имя
+          </div>
+
+          <div class="field-group">
+            <label>Новое имя</label>
+            <input type="text" id="newNameInput" value="${escapeHtml(profileData?.name || profileData?.fullName || user.displayName || "")}" placeholder="Введите новое имя" />
+          </div>
+
+          <div id="nameError" class="hidden error-msg"></div>
+          <div id="nameSuccess" class="hidden success-msg"></div>
+
+          <button class="btn-action btn-primary" id="updateNameBtn">Сохранить имя</button>
+        </div>
+
+        <div class="settings-card">
+          <div class="card-title">
+            <span class="material-symbols-outlined">lock</span>
+            Сменить пароль
+          </div>
+
+          <div class="field-group">
+            <label>Текущий пароль</label>
+            <input type="password" id="currentPasswordInput" placeholder="Введите текущий пароль" />
+          </div>
+
+          <div class="field-group">
+            <label>Новый пароль</label>
+            <input type="password" id="newPasswordInput" placeholder="Минимум 6 символов" />
+          </div>
+
+          <div class="field-group">
+            <label>Подтверждение пароля</label>
+            <input type="password" id="confirmPasswordInput" placeholder="Повторите новый пароль" />
+          </div>
+
+          <div id="passwordError" class="hidden error-msg"></div>
+          <div id="passwordSuccess" class="hidden success-msg"></div>
+
+          <button class="btn-action btn-success" id="updatePasswordBtn">Изменить пароль</button>
+        </div>
+
+        <div class="settings-card">
+          <div class="card-title">
+            <span class="material-symbols-outlined">logout</span>
+            Безопасность
+          </div>
+
+          <button class="btn-action btn-ghost btn-full" id="logoutBtn" style="margin-bottom: 12px;">
+            Выйти из аккаунта
+          </button>
+
+          <div class="field-group">
+            <label>Пароль для удаления аккаунта</label>
+            <input type="password" id="deleteAccountPasswordInput" placeholder="Введите пароль для удаления" />
+          </div>
+
+          <div id="deleteAccountError" class="hidden error-msg"></div>
+          <div id="deleteAccountSuccess" class="hidden success-msg"></div>
+
+          <button class="btn-action btn-danger btn-full" id="deleteAccountBtn">
+            Удалить аккаунт
+          </button>
         </div>
       `;
-    }
-  }
 
-  // ----- АВТОРИЗАЦИЯ -----
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      loadProfile(user);
-    } else {
-      window.location.href = AUTH_URL;
+      document.getElementById("updateNameBtn").addEventListener("click", handleUpdateName);
+      document.getElementById("updatePasswordBtn").addEventListener("click", handleChangePassword);
+      document.getElementById("logoutBtn").addEventListener("click", logoutUser);
+      document.getElementById("deleteAccountBtn").addEventListener("click", handleDeleteAccount);
     }
-  });
 
-  console.log('✅ Страница аккаунта с исправленным отображением имени');
-</script>
+    async function loadProfile(user) {
+      try {
+        const profileSnapshot = await get(ref(db, `users/${user.uid}`));
+        const schoolsSnapshot = await get(ref(db, "schools"));
+
+        const profileData = profileSnapshot.exists() ? profileSnapshot.val() : {};
+        const schools = schoolsSnapshot.exists() ? schoolsSnapshot.val() : [];
+
+        renderProfile(user, profileData, schools);
+      } catch (error) {
+        console.error("Ошибка загрузки данных:", error);
+        profileContainer.innerHTML = `
+          <div class="settings-card">
+            <div class="card-title">
+              <span class="material-symbols-outlined">error</span>
+              Ошибка загрузки данных
+            </div>
+            <div class="error-msg" style="display:block;">Не удалось подключиться к базе данных.</div>
+          </div>
+        `;
+      }
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "auth.html";
+        return;
+      }
+
+      try {
+        const profileSnapshot = await get(ref(db, `users/${user.uid}`));
+        const profileData = profileSnapshot.exists() ? profileSnapshot.val() : {};
+
+        user.displayName =
+          profileData?.name ||
+          profileData?.fullName ||
+          user.displayName ||
+          user.email ||
+          "Пользователь";
+
+        renderUserBadge(user);
+
+        await loadProfile(user);
+      } catch (error) {
+        console.error("Ошибка загрузки профиля:", error);
+        user.displayName = user.displayName || user.email || "Пользователь";
+        renderUserBadge(user);
+        profileContainer.innerHTML = `
+          <div class="settings-card">
+            <div class="card-title">
+              <span class="material-symbols-outlined">error</span>
+              Ошибка загрузки данных
+            </div>
+            <div class="error-msg" style="display:block;">Не удалось подключиться к базе данных.</div>
+          </div>
+        `;
+      }
+    });
+  </script>
 </body>
 </html>

@@ -34,10 +34,63 @@
     .page-title .material-symbols-outlined { color: #2a7de1; font-size: 32px; }
     .page-sub { color: #5f7696; font-size: 16px; margin-bottom: 28px; }
 
-    .schedule-grid { display: flex; flex-direction: column; gap: 24px; }
+    .schedule-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .section-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #5f7696;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0 4px;
+    }
+
+    .toggle-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .toggle-block {
+      display: flex;
+      justify-content: flex-end;
+      margin: 0 0 4px;
+    }
+
+    .toggle-btn {
+      background: #fff;
+      border: 1px solid #dce4ef;
+      color: #1f2b48;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s ease;
+    }
+
+    .toggle-btn:hover {
+      background: #f0f6ff;
+      border-color: #2a7de1;
+      color: #2a7de1;
+    }
 
     .day-card { background: #f9fcff; border-radius: 24px; border: 1px solid #eef3fa; overflow: hidden; }
-    .day-card.past { opacity: 0.6; border-color: #dce4ef; }
+    .day-card.past { opacity: 0.7; }
     .day-card.past .day-header { background: #f5f8fc; color: #6a7f9e; }
 
     .day-header { background: #f0f6ff; padding: 14px 24px; font-weight: 600; font-size: 18px; color: #0a1e3c; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #eef3fa; }
@@ -132,7 +185,24 @@
 <div class="container">
   <div class="page-title"><span class="material-symbols-outlined">calendar_month</span> Дневник</div>
   <div class="page-sub">Расписание уроков и домашние задания</div>
-  <div id="scheduleContainer"><div class="loading">⏳ Загрузка расписания...</div></div>
+  <div id="scheduleContainer">
+    <div class="loading">⏳ Загрузка расписания...</div>
+    <div class="schedule-grid">
+      <div class="day-card">
+        <div class="day-header">
+          <span class="material-symbols-outlined">event_note</span>
+          <span class="day-header-text">День</span>
+        </div>
+        <div class="day-body">
+          <div class="lessons-grid">
+            <div class="lesson-cell lesson-number" style="font-weight:600;background:#f5f8fc;">№</div>
+            <div class="lesson-cell lesson-name" style="font-weight:600;background:#f5f8fc;">Урок</div>
+            <div class="lesson-cell lesson-homework" style="font-weight:600;background:#f5f8fc;border-right:none;">Домашнее задание</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="footer">© 2026 · Электронная школа</div>
 </div>
 
@@ -151,9 +221,8 @@
 <!-- FIREBASE -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-  import { getDatabase, ref, get, onValue } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
@@ -166,155 +235,193 @@
   };
 
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
   const auth = getAuth(app);
   const db = getDatabase(app);
 
-  const AUTH_URL = 'https://xsynda.github.io/digitalschool.github.io/auth.html';
-  const ACCOUNT_URL = 'account.html';
-  const scheduleContainer = document.getElementById('scheduleContainer');
-  const userArea = document.getElementById('userArea');
+  const AUTH_URL = "https://xsynda.github.io/digitalschool.github.io/auth.html";
+  const ACCOUNT_URL = "account.html";
+  const scheduleContainer = document.getElementById("scheduleContainer");
+  const userArea = document.getElementById("userArea");
 
-  // ----- Модальное окно -----
-  const modal = document.getElementById('lessonModal');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalTime = document.getElementById('modalTime');
-  const modalCab = document.getElementById('modalCab');
-  const modalHomework = document.getElementById('modalHomework');
-  const modalCloseBtn = document.getElementById('modalCloseBtn');
-
-  // ----- Парсинг даты из формата ДД.ММ.ГГГГ -----
-  function parseDateFromString(dateStr) {
-    if (!dateStr) return null;
-    const match = String(dateStr).trim().match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
-    if (!match) return null;
-    const day = Number(match[1]);
-    const month = Number(match[2]);
-    const year = Number(match[3]);
-    const date = new Date(year, month - 1, day);
-    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return null;
-    return date;
+  function escapeHtml(value) {
+    if (value === null || value === undefined) return "";
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
-  function getDateSortValue(dateStr) {
-    const date = parseDateFromString(dateStr);
-    return date ? date.getTime() : Number.MAX_SAFE_INTEGER;
+  function redirectToAuth() {
+    window.location.href = AUTH_URL;
   }
 
-  function isDatePast(dateStr) {
-    const date = parseDateFromString(dateStr);
+  function resolveSchoolIndexFromProfile(profile = {}, schools = []) {
+    const raw = profile.schoolIndex ?? profile.school ?? profile.schoolId ?? profile.allowedSchoolIndex ?? 0;
+
+    if (raw === null || raw === undefined || raw === "") return 0;
+
+    if (Number.isInteger(Number(raw))) {
+      const idx = Number(raw);
+      return idx >= 0 && idx < schools.length ? idx : 0;
+    }
+
+    const value = String(raw).trim();
+    const foundIndex = schools.findIndex((school) => {
+      const candidates = [school?.id, school?.schoolId, school?.name, school?.title];
+      return candidates.some((item) => String(item ?? "").trim() === value);
+    });
+
+    return foundIndex >= 0 ? foundIndex : 0;
+  }
+
+  function resolveClassIndexFromProfile(profile = {}, school = null) {
+    const classes = Array.isArray(school?.classes) ? school.classes : [];
+    const raw = profile.classIndex ?? profile.class ?? profile.classId ?? profile.allowedClassIndex ?? 0;
+
+    if (raw === null || raw === undefined || raw === "") return 0;
+
+    if (Number.isInteger(Number(raw))) {
+      const idx = Number(raw);
+      return idx >= 0 && idx < classes.length ? idx : 0;
+    }
+
+    const value = String(raw).trim();
+    const foundIndex = classes.findIndex((cls) => {
+      const candidates = [cls?.id, cls?.classId, cls?.name, cls?.title];
+      return candidates.some((item) => String(item ?? "").trim() === value);
+    });
+
+    return foundIndex >= 0 ? foundIndex : 0;
+  }
+
+  function parseDateString(value) {
+    if (!value) return null;
+    const clean = String(value).trim();
+
+    if (/^\d{2}\.\d{2}\.\d{4}$/.test(clean)) {
+      const [d, m, y] = clean.split(".");
+      return new Date(Number(y), Number(m) - 1, Number(d));
+    }
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(clean)) {
+      const [y, m, d] = clean.split("-");
+      return new Date(Number(y), Number(m) - 1, Number(d));
+    }
+
+    return null;
+  }
+
+  function formatDayHeader(dateValue) {
+    const date = parseDateString(dateValue);
+    if (!date) return "День";
+
+    const days = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
+    const months = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+    return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]}`;
+  }
+
+  function isPastDate(dateValue) {
+    const date = parseDateString(dateValue);
     if (!date) return false;
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+
     return date < today;
   }
 
-  // ----- Форматирование даты для заголовка -----
-  const russianWeekdays = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-  const russianMonths = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+  function processHomeworkText(text) {
+    if (!text) return '<span class="homework-empty">нет задания</span>';
 
-  function formatDayHeader(dateStr) {
-    const date = parseDateFromString(dateStr);
-    if (!date) return dateStr || 'День';
-    return `${russianWeekdays[date.getDay()]}, ${date.getDate()} ${russianMonths[date.getMonth()]}`;
+    let html = escapeHtml(text)
+      .replace(/\n/g, "<br>")
+      .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+
+    return html;
   }
 
-  // ----- Обработка HTML в ДЗ (поддержка <a> и <img>) -----
-  function processHomeworkText(text, preserveNewlines = false) {
-    if (!text) return 'Нет задания';
-    
-    let processed = escapeHtml(text);
-    
-    // Восстанавливаем <a> теги
-    const linkRegex = /&lt;a\s+(.*?)&gt;(.*?)&lt;\/a&gt;/g;
-    processed = processed.replace(linkRegex, (match, attrs, content) => {
-      return `<a ${attrs}>${content}</a>`;
-    });
-    
-    // Восстанавливаем <img> теги
-    const imgRegex = /&lt;img\s+(.*?)\s*\/?&gt;/g;
-    processed = processed.replace(imgRegex, (match, attrs) => {
-      return `<img ${attrs}>`;
-    });
-    
-    // Автоссылки http/https
-    const urlRegex = /(https?:\/\/[^\s<]+)/g;
-    processed = processed.replace(urlRegex, (url) => {
-      return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-    });
-    
-    // Если не нужно сохранять переносы — заменяем \n на пробел
-    if (!preserveNewlines) {
-      processed = processed.replace(/\n/g, ' ');
-    }
-    
-    return processed;
+  function renderHeader(user) {
+    const displayName = user?.displayName || user?.email || "Пользователь";
+    userArea.innerHTML = `
+      <a href="${ACCOUNT_URL}" class="user-badge">
+        <span class="material-symbols-outlined">account_circle</span>
+        ${escapeHtml(displayName)}
+      </a>
+    `;
   }
 
-  function escapeHtml(text) {
-    if (!text) return '';
-    const d = document.createElement('div');
-    d.textContent = text;
-    return d.innerHTML;
+  function openLessonModal(lesson) {
+    const modal = document.getElementById("lessonModal");
+    const title = document.getElementById("modalTitle");
+    const time = document.getElementById("modalTime");
+    const cab = document.getElementById("modalCab");
+    const homework = document.getElementById("modalHomework");
+
+    title.textContent = lesson?.name || "Урок";
+    time.textContent = lesson?.time ? `⏰ ${lesson.time}` : "⏰ Время не указано";
+    cab.textContent = lesson?.cab ?? "—";
+    homework.innerHTML = lesson?.homework ? processHomeworkText(lesson.homework) : "Нет задания";
+
+    modal.classList.add("active");
   }
 
-  // ----- Модалка -----
-  function openModal(lesson) {
-    modalTitle.textContent = lesson.name || 'Без названия';
-    modalTime.textContent = lesson.time ? `⏰ ${lesson.time}` : '⏰ Время не указано';
-    modalCab.textContent = lesson.cab ?? '—';
-    modalHomework.innerHTML = processHomeworkText(lesson.homework, true);
-    modal.classList.add('active');
-  }
+  document.getElementById("modalCloseBtn").addEventListener("click", () => {
+    document.getElementById("lessonModal").classList.remove("active");
+  });
 
-  modalCloseBtn.addEventListener('click', () => modal.classList.remove('active'));
-  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
-
-  function redirectToAuth() { window.location.href = AUTH_URL; }
-
-  // ----- Рендер расписания -----
-  function renderSchedule(scheduleData) {
-    if (!scheduleData || Object.keys(scheduleData).length === 0) {
-      scheduleContainer.innerHTML = `<div class="empty-state"><span class="material-symbols-outlined">event_busy</span><h3>Расписание пока не загружено</h3></div>`;
+  function renderSchedule(scheduleArray) {
+    if (!Array.isArray(scheduleArray) || !scheduleArray.length) {
+      scheduleContainer.innerHTML = `
+        <div class="empty-state">
+          <span class="material-symbols-outlined">event_busy</span>
+          <h3>Расписание пока пустое</h3>
+          <div>Для этого класса ещё не создано ни одного дня.</div>
+        </div>
+      `;
       return;
     }
 
-    // Сортируем ключи по дате
-    const dayKeys = Object.keys(scheduleData)
-      .map(Number)
-      .sort((a, b) => {
-        const dateA = scheduleData[a]?.date ? getDateSortValue(scheduleData[a].date) : Number.MAX_SAFE_INTEGER;
-        const dateB = scheduleData[b]?.date ? getDateSortValue(scheduleData[b].date) : Number.MAX_SAFE_INTEGER;
-        return dateA - dateB || a - b;
-      });
+    const sorted = [...scheduleArray].sort((a, b) => {
+      const da = a?.date ? parseDateString(a.date) : null;
+      const db = b?.date ? parseDateString(b.date) : null;
 
-    let pastHtml = '';
-    let futureDayKeys = [];
-    let hasPast = false;
-    let hasFuture = false;
+      if (!da && !db) return 0;
+      if (!da) return 1;
+      if (!db) return -1;
+      return da - db;
+    });
 
-    for (const dayKey of dayKeys) {
-      const dayData = scheduleData[dayKey];
-      if (!dayData) continue;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-      let dayHeader = `День ${dayKey + 1}`;
-      if (dayData.date) {
-        dayHeader = formatDayHeader(dayData.date);
-      } else if (dayData.name) {
-        dayHeader = dayData.name;
-      }
+    const pastDays = sorted
+      .filter((day) => {
+        const d = parseDateString(day?.date);
+        return d && d < today;
+      })
+      .reverse();
 
-      const isPast = dayData.date ? isDatePast(dayData.date) : false;
+    const futureDays = sorted.filter((day) => {
+      const d = parseDateString(day?.date);
+      return d && d >= today;
+    });
 
-      const lessons = dayData.lessons || {};
-      const lessonKeys = Object.keys(lessons).map(Number).sort((a, b) => a - b);
+    let futureShown = Math.min(5, futureDays.length);
+    let showPast = false;
 
-      let dayHtml = `
-        <div class="day-card ${isPast ? 'past' : ''}" data-past="${isPast}">
+    const renderDayMarkup = (day) => {
+      const lessons = Array.isArray(day?.lessons) ? day.lessons : [];
+      const dayHeader = formatDayHeader(day?.date || "01.01.2000");
+      const past = isPastDate(day?.date);
+
+      let html = `
+        <div class="day-card ${past ? "past" : ""}">
           <div class="day-header">
-            <span class="material-symbols-outlined">${isPast ? 'history' : 'event_note'}</span>
+            <span class="material-symbols-outlined">${past ? "history" : "event_note"}</span>
             ${escapeHtml(dayHeader)}
-            ${isPast ? `<span class="past-badge">прошёл</span>` : ''}
+            ${past ? '<span class="past-badge">прошёл</span>' : ""}
           </div>
           <div class="day-body">
             <div class="lessons-grid">
@@ -323,259 +430,192 @@
               <div class="lesson-cell lesson-homework" style="font-weight:600;background:#f5f8fc;border-right:none;">Домашнее задание</div>
       `;
 
-      if (lessonKeys.length === 0) {
-        dayHtml += `
-          <div class="lesson-cell lesson-number">—</div>
-          <div class="lesson-cell lesson-name">Нет уроков</div>
-          <div class="lesson-cell lesson-homework" style="border-right:none;">—</div>
-        `;
-      } else {
-        for (const lessonKey of lessonKeys) {
-          const lesson = lessons[lessonKey];
-          if (!lesson) continue;
-          const name = lesson.name || `Урок ${lessonKey + 1}`;
-          const time = lesson.time || '';
-          const homework = lesson.homework || '';
-          const cab = lesson.cab ?? '';
-
-          // В превью \n заменяем на пробел
-          let homeworkDisplay = homework ? processHomeworkText(homework, false) : '<span class="homework-empty">нет задания</span>';
-          const lessonData = JSON.stringify({ name, time, cab, homework });
-
-          dayHtml += `
-            <div class="lesson-cell lesson-number">${lessonKey + 1}</div>
-            <div class="lesson-cell lesson-name" data-lesson='${lessonData}'>
-              ${escapeHtml(name)}${time ? `<span class="lesson-time">${escapeHtml(time)}</span>` : ''}
-            </div>
-            <div class="lesson-cell lesson-homework" style="border-right:none;" data-lesson='${lessonData}'>
-              <div class="homework-preview">${homeworkDisplay}</div>
-            </div>
-          `;
-        }
-      }
-
-      dayHtml += `</div></div></div>`;
-
-      if (isPast) {
-        pastHtml += dayHtml;
-        hasPast = true;
-      } else {
-        futureDayKeys.push(dayKey);
-        hasFuture = true;
-      }
-    }
-
-    let result = '<div class="schedule-grid">';
-
-    // Прошедшие дни — наверх, скрыты по умолчанию
-    if (hasPast) {
-      result += `
-        <button class="show-past-btn" onclick="togglePast()">
-          <span class="material-symbols-outlined">unfold_more</span>
-          Показать прошедшие дни
-        </button>
-        <div class="past-section" id="pastSection">
-          ${pastHtml}
-        </div>
-      `;
-    }
-
-    // Будущие дни — снизу, показываем по 5 штук
-    if (hasFuture) {
-      result += `<div class="future-days-wrapper" id="futureDaysWrapper">`;
-
-      let visibleCount = 0;
-      const totalFuture = futureDayKeys.length;
-
-      for (let i = 0; i < futureDayKeys.length; i++) {
-        const dayKey = futureDayKeys[i];
-        const dayData = scheduleData[dayKey];
-        if (!dayData) continue;
-
-        let dayHeader = `День ${dayKey + 1}`;
-        if (dayData.date) {
-          dayHeader = formatDayHeader(dayData.date);
-        } else if (dayData.name) {
-          dayHeader = dayData.name;
-        }
-
-        const lessons = dayData.lessons || {};
-        const lessonKeys = Object.keys(lessons).map(Number).sort((a, b) => a - b);
-
-        let dayHtml = `
-          <div class="day-card ${i < 5 ? 'visible' : ''}" data-index="${i}">
-            <div class="day-header">
-              <span class="material-symbols-outlined">event_note</span>
-              ${escapeHtml(dayHeader)}
-            </div>
-            <div class="day-body">
-              <div class="lessons-grid">
-                <div class="lesson-cell lesson-number" style="font-weight:600;background:#f5f8fc;">№</div>
-                <div class="lesson-cell lesson-name" style="font-weight:600;background:#f5f8fc;">Урок</div>
-                <div class="lesson-cell lesson-homework" style="font-weight:600;background:#f5f8fc;border-right:none;">Домашнее задание</div>
-        `;
-
-        if (lessonKeys.length === 0) {
-          dayHtml += `
+      if (!lessons.length) {
+        html += `
             <div class="lesson-cell lesson-number">—</div>
             <div class="lesson-cell lesson-name">Нет уроков</div>
             <div class="lesson-cell lesson-homework" style="border-right:none;">—</div>
+        `;
+      } else {
+        lessons.forEach((lesson, lessonIndex) => {
+          const name = lesson?.name || `Урок ${lessonIndex + 1}`;
+          const time = lesson?.time ? `<span class="lesson-time">${escapeHtml(lesson.time)}</span>` : "";
+          const homework = lesson?.homework ? processHomeworkText(lesson.homework) : '<span class="homework-empty">нет задания</span>';
+
+          html += `
+            <div class="lesson-cell lesson-number">${lessonIndex + 1}</div>
+            <div class="lesson-cell lesson-name" data-name="${escapeHtml(name)}" data-time="${escapeHtml(lesson?.time || "")}" data-cab="${escapeHtml(lesson?.cab ?? "")}" data-homework="${escapeHtml(lesson?.homework || "")}">
+              ${escapeHtml(name)}${time}
+            </div>
+            <div class="lesson-cell lesson-homework" style="border-right:none;" data-homework="${escapeHtml(lesson?.homework || "")}">
+              <div class="homework-preview">${homework}</div>
+            </div>
           `;
-        } else {
-          for (const lessonKey of lessonKeys) {
-            const lesson = lessons[lessonKey];
-            if (!lesson) continue;
-            const name = lesson.name || `Урок ${lessonKey + 1}`;
-            const time = lesson.time || '';
-            const homework = lesson.homework || '';
-            const cab = lesson.cab ?? '';
-
-            // В превью \n заменяем на пробел
-            let homeworkDisplay = homework ? processHomeworkText(homework, false) : '<span class="homework-empty">нет задания</span>';
-            const lessonData = JSON.stringify({ name, time, cab, homework });
-
-            dayHtml += `
-              <div class="lesson-cell lesson-number">${lessonKey + 1}</div>
-              <div class="lesson-cell lesson-name" data-lesson='${lessonData}'>
-                ${escapeHtml(name)}${time ? `<span class="lesson-time">${escapeHtml(time)}</span>` : ''}
-              </div>
-              <div class="lesson-cell lesson-homework" style="border-right:none;" data-lesson='${lessonData}'>
-                <div class="homework-preview">${homeworkDisplay}</div>
-              </div>
-            `;
-          }
-        }
-
-        dayHtml += `</div></div></div>`;
-        result += dayHtml;
+        });
       }
 
-      // Кнопка "Загрузить ещё"
-      if (totalFuture > 5) {
-        result += `
-          <button class="load-more-btn visible" id="loadMoreBtn" onclick="loadMoreDays()">
-            <span class="material-symbols-outlined">expand_more</span>
-            Показать ещё 5 дней
-          </button>
+      html += `
+            </div>
+          </div>
+        </div>
+      `;
+
+      return html;
+    };
+
+    const renderView = () => {
+      const visiblePast = showPast ? pastDays.slice(0, 5) : [];
+      const visibleFuture = futureDays.slice(0, futureShown);
+
+      // Создаем контейнер schedule-grid с gap для отступов между днями
+      let html = `<div class="schedule-grid">`;
+
+      // Кнопка показа прошедших
+      if (pastDays.length > 0) {
+        html += `
+          <div class="toggle-block">
+            <button class="toggle-btn" data-toggle="past">
+              ${showPast ? "Скрыть прошедшие" : "Показать прошедшие"}
+            </button>
+          </div>
         `;
       }
 
-      result += `</div>`;
-    }
-
-    result += '</div>';
-    scheduleContainer.innerHTML = result;
-
-    // Сохраняем состояние для кнопки прошедших дней
-    window.pastVisible = false;
-    window.togglePast = function() {
-      const section = document.getElementById('pastSection');
-      const btn = document.querySelector('.show-past-btn');
-      if (!section || !btn) return;
-      window.pastVisible = !window.pastVisible;
-      section.classList.toggle('visible', window.pastVisible);
-      btn.innerHTML = window.pastVisible
-        ? '<span class="material-symbols-outlined">unfold_less</span> Скрыть прошедшие дни'
-        : '<span class="material-symbols-outlined">unfold_more</span> Показать прошедшие дни';
-    };
-
-    // Логика "Загрузить ещё 5 дней"
-    window.loadMoreDays = function() {
-      const wrapper = document.getElementById('futureDaysWrapper');
-      if (!wrapper) return;
-      const cards = wrapper.querySelectorAll('.day-card');
-      let visibleCount = 0;
-      for (const card of cards) {
-        if (card.classList.contains('visible')) visibleCount++;
+      // Прошедшие дни
+      if (showPast && visiblePast.length) {
+        html += visiblePast.map(renderDayMarkup).join("");
       }
-      let loaded = 0;
-      for (const card of cards) {
-        if (!card.classList.contains('visible')) {
-          card.classList.add('visible');
-          loaded++;
-          if (loaded >= 5) break;
-        }
+
+      // Будущие дни (каждый день в отдельной карточке)
+      if (visibleFuture.length) {
+        html += visibleFuture.map(renderDayMarkup).join("");
       }
-      const btn = document.getElementById('loadMoreBtn');
-      if (btn) {
-        const allVisible = cards.length === wrapper.querySelectorAll('.day-card.visible').length;
-        if (allVisible) {
-          btn.classList.remove('visible');
-        }
+
+      // Кнопка показа еще будущих дней
+      const remainingFuture = Math.max(0, futureDays.length - futureShown);
+      if (remainingFuture > 0) {
+        html += `
+          <div class="toggle-block">
+            <button class="toggle-btn" data-toggle="future-more">
+              Показать ещё ${Math.min(5, remainingFuture)} будущих
+            </button>
+          </div>
+        `;
       }
-    };
 
-    // Клик по уроку
-    document.querySelectorAll('.lesson-name, .lesson-homework').forEach(el => {
-      el.addEventListener('click', () => {
-        const data = el.dataset.lesson;
-        if (data) {
-          try {
-            const lesson = JSON.parse(data);
-            openModal(lesson);
-          } catch (e) { console.warn('Ошибка парсинга урока', e); }
-        }
-      });
-    });
-  }
+      html += `</div>`;
 
-  function loadSchedule() {
-    const scheduleRef = ref(db, 'schedule');
-    onValue(scheduleRef, (snapshot) => {
-      if (snapshot.exists()) renderSchedule(snapshot.val());
-      else renderSchedule(null);
-    }, (error) => {
-      console.error('Ошибка загрузки расписания:', error);
-      scheduleContainer.innerHTML = `<div class="empty-state"><span class="material-symbols-outlined">error</span><h3>Ошибка загрузки</h3></div>`;
-    });
-  }
+      scheduleContainer.innerHTML = html;
 
-  // ----- Шапка -----
-  function updateUserBadge(user) {
-    if (!user) return;
-    const displayName = user.displayName || user.email || 'Пользователь';
-    const badge = userArea.querySelector('.user-badge');
-    if (badge) {
-      badge.innerHTML = `<span class="material-symbols-outlined">account_circle</span>${escapeHtml(displayName)}`;
-    }
-  }
-
-  function renderHeader(user) {
-    if (user) {
-      let displayName = user.displayName || user.email || 'Пользователь';
-      if (!user.displayName || user.displayName === user.email) {
-        get(ref(db, 'users/' + user.uid)).then((snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            user.displayName = data.name || user.email || 'Пользователь';
-            updateUserBadge(user);
+      // Обработчики для кнопок
+      scheduleContainer.querySelectorAll("[data-toggle]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (btn.dataset.toggle === "past") {
+            showPast = !showPast;
+            renderView();
           }
-        }).catch(() => {});
+
+          if (btn.dataset.toggle === "future-more") {
+            futureShown = Math.min(futureShown + 5, futureDays.length);
+            renderView();
+          }
+        });
+      });
+
+      // Обработчики клика для открытия модального окна
+      scheduleContainer.querySelectorAll(".lesson-name, .lesson-homework").forEach((el) => {
+        el.addEventListener("click", () => {
+          const lesson = {
+            name: el.dataset.name || "Урок",
+            time: el.dataset.time || "",
+            cab: el.dataset.cab || "",
+            homework: el.dataset.homework || ""
+          };
+
+          if (lesson.homework || lesson.time || lesson.cab) {
+            openLessonModal(lesson);
+          }
+        });
+      });
+    };
+
+    renderView();
+  }
+
+  async function loadScheduleForAccount(user) {
+    try {
+      const profileSnap = await get(ref(db, `users/${user.uid}`));
+      const profile = profileSnap.exists() ? profileSnap.val() : {};
+
+      const schoolsSnap = await get(ref(db, "schools"));
+      const schools = schoolsSnap.exists() ? schoolsSnap.val() : [];
+
+      const schoolIndex = resolveSchoolIndexFromProfile(profile, schools);
+      const school = Array.isArray(schools) ? schools[schoolIndex] : null;
+
+      if (!school || !Array.isArray(school.classes) || !school.classes.length) {
+        scheduleContainer.innerHTML = `
+          <div class="empty-state">
+            <span class="material-symbols-outlined">school</span>
+            <h3>Расписание не назначено</h3>
+            <div>У этого аккаунта не указаны школа или класс.</div>
+          </div>
+        `;
+        return;
       }
-      userArea.innerHTML = `<a href="${ACCOUNT_URL}" class="user-badge"><span class="material-symbols-outlined">account_circle</span>${escapeHtml(displayName)}</a>`;
-    } else {
-      userArea.innerHTML = `<a href="${AUTH_URL}" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:18px;">login</span> Войти</a>`;
+
+      const classIndex = resolveClassIndexFromProfile(profile, school);
+      const classData = school.classes[classIndex];
+
+      if (!classData) {
+        scheduleContainer.innerHTML = `
+          <div class="empty-state">
+            <span class="material-symbols-outlined">warning</span>
+            <h3>Класс не найден</h3>
+            <div>Проверьте настройки профиля аккаунта.</div>
+          </div>
+        `;
+        return;
+      }
+
+      const schedule = Array.isArray(classData.schedule) ? classData.schedule : [];
+      renderSchedule(schedule);
+    } catch (error) {
+      console.error("Ошибка загрузки расписания:", error);
+      scheduleContainer.innerHTML = `
+        <div class="empty-state">
+          <span class="material-symbols-outlined">error</span>
+          <h3>Ошибка подключения к базе</h3>
+        </div>
+      `;
     }
   }
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      get(ref(db, 'users/' + user.uid)).then((snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          user.displayName = data.name || user.email;
-        } else {
-          user.displayName = user.email;
-        }
-        renderHeader(user);
-      }).catch(() => { renderHeader(user); });
-      loadSchedule();
-    } else {
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
       redirectToAuth();
+      return;
+    }
+
+    try {
+      const profileSnap = await get(ref(db, `users/${user.uid}`));
+      const profile = profileSnap.exists() ? profileSnap.val() : {};
+
+      user.displayName = profile.fullName || profile.name || profile.displayName || user.email || "Пользователь";
+      renderHeader(user);
+      await loadScheduleForAccount(user);
+    } catch (error) {
+      console.error("Auth error:", error);
+      user.displayName = user.email || "Пользователь";
+      renderHeader(user);
+      scheduleContainer.innerHTML = `
+        <div class="empty-state">
+          <span class="material-symbols-outlined">error</span>
+          <h3>Ошибка подключения к базе</h3>
+        </div>
+      `;
     }
   });
-
-  console.log('✅ Дневник: \n заменяется на пробел в превью, сохраняется в модалке');
 </script>
 </body>
 </html>

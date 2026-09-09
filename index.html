@@ -4,358 +4,807 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Главная · Электронная школа</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: #f8faff; min-height: 100vh; padding-top: 80px; }
-    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #fff; border-bottom: 1px solid #eef3fa; box-shadow: 0 4px 20px rgba(0,20,40,.06); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: "Inter", sans-serif;
+      background: #f8faff;
+      min-height: 100vh;
+      padding-top: 80px;
+    }
+
+    body.profile-required {
+      overflow: hidden;
+    }
+
+    body.profile-required .navbar,
+    body.profile-required .container {
+      filter: blur(1px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: #fff;
+      border-bottom: 1px solid #eef3fa;
+      box-shadow: 0 4px 20px rgba(0,20,40,.06);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
     .navbar-left { display: flex; align-items: center; gap: 16px; }
     .logo-area { display: flex; align-items: center; gap: 10px; }
-    .logo-icon { background:#2a7de1; color:#fff; width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:600; box-shadow:0 4px 12px rgba(42,125,225,.20); }
-    .logo-text { font-size:22px; font-weight:600; letter-spacing:-.3px; color:#0a1e3c; }
-    .logo-text span { color:#2a7de1; }
-    .nav-links { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-    .nav-link { padding:8px 18px; border-radius:40px; font-weight:500; font-size:14px; color:#1f2b48; text-decoration:none; transition:.15s; display:inline-flex; align-items:center; gap:6px; background:transparent; border:1.5px solid transparent; }
-    .nav-link:hover { background:#f0f4fe; border-color:#d0dae9; }
-    .nav-link .material-symbols-outlined { font-size:18px; }
-    .navbar-right { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-    .user-badge { display:flex; align-items:center; gap:8px; background:#f0f6ff; padding:6px 16px 6px 12px; border-radius:40px; font-size:14px; font-weight:500; color:#0a1e3c; cursor:pointer; transition:.15s; text-decoration:none; border:none; font-family:'Inter',sans-serif; }
-    .user-badge:hover { background:#e5effb; transform:scale(.97); }
-    .user-badge .material-symbols-outlined { color:#2a7de1; font-size:20px; }
-    .btn { border:none; padding:6px 18px; border-radius:40px; font-weight:500; font-size:13px; cursor:pointer; transition:.2s; display:inline-flex; align-items:center; gap:6px; font-family:'Inter',sans-serif; text-decoration:none; }
-    .btn-primary { background:#2a7de1; color:#fff; box-shadow:0 4px 12px rgba(42,125,225,.20); }
-    .btn-primary:hover { background:#1a5fb0; transform:scale(.97); }
-    .container { max-width:900px; margin:0 auto; background:#fff; border-radius:48px; box-shadow:0 24px 60px rgba(0,20,40,.08); padding:32px 40px 44px; border:1px solid #f0f5fe; }
-    .section-title { font-size:22px; font-weight:600; color:#0a1e3c; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
-    .section-title .material-symbols-outlined { color:#2a7de1; font-size:28px; }
-    .news-list { display:flex; flex-direction:column; gap:16px; }
-    .news-item { background:#f9fcff; border-radius:24px; padding:20px 24px; border:1px solid #eef3fa; transition:.15s; cursor:pointer; }
-    .news-item:hover { border-color:#c7d9f0; background:#fff; }
-    .news-header { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:8px; }
-    .news-title { font-size:18px; font-weight:600; color:#0a1e3c; }
-    .news-date { font-size:13px; color:#6a7f9e; background:#eef3fa; padding:4px 14px; border-radius:40px; white-space:nowrap; }
-    .news-desc { font-size:15px; color:#3d5270; line-height:1.5; word-break:break-word; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis; max-height:4.5em; }
-    .empty-state { text-align:center; padding:48px 20px; color:#6a7f9e; }
-    .empty-state .material-symbols-outlined { font-size:48px; color:#d0dae9; margin-bottom:12px; }
-    .empty-state h3 { color:#0a1e3c; font-weight:500; margin-bottom:4px; }
-    .footer { margin-top:32px; padding-top:20px; border-top:1px solid #eef3fa; font-size:13px; color:#889bb3; text-align:center; }
-    .loading { text-align:center; padding:40px; color:#6a7f9e; }
+    .logo-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: #2a7de1; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 700;
+      box-shadow: 0 4px 12px rgba(42,125,225,.2);
+    }
+    .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: #0a1e3c; }
+    .logo-text span { color: #2a7de1; }
 
-    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:9999; padding:20px; }
-    .modal-overlay.open { display:flex; }
-    .modal-box { background:#fff; max-width:520px; width:100%; padding:32px 28px 28px; border-radius:32px; box-shadow:0 30px 60px rgba(0,0,0,.2); max-height:80vh; overflow-y:auto; animation:pop .2s ease; }
-    @keyframes pop { from { transform:scale(.95) translateY(10px); opacity:0; } to { transform:scale(1) translateY(0); opacity:1; } }
-    .modal-box .m-title { font-size:22px; font-weight:700; color:#0a1e3c; margin-bottom:4px; }
-    .modal-box .m-date { font-size:14px; color:#6a7f9e; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid #eef3fa; }
-    .modal-box .m-text { font-size:15px; color:#1f2b48; line-height:1.7; word-break:break-word; overflow-wrap:anywhere; white-space:pre-wrap; }
-    .modal-box .m-close { margin-top:24px; width:100%; padding:14px; border:none; border-radius:40px; background:#eef3fa; color:#1f2b48; font-weight:600; font-size:16px; cursor:pointer; font-family:'Inter',sans-serif; transition:.15s; }
-    .modal-box .m-close:hover { background:#dce4ef; }
+    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .nav-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border-radius: 40px; font-weight: 500;
+      font-size: 14px; color: #1f2b48; text-decoration: none;
+      background: transparent; border: 1.5px solid transparent;
+      transition: .15s ease;
+    }
+    .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
+
+    .navbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .user-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #f0f6ff; padding: 6px 16px 6px 12px; border-radius: 40px;
+      font-size: 14px; font-weight: 500; color: #0a1e3c; text-decoration: none;
+      transition: .15s ease;
+    }
+    .user-badge:hover { background: #e5effb; transform: scale(.97); }
+    .user-badge .material-symbols-outlined { color: #2a7de1; font-size: 20px; }
+
+    .btn {
+      border: none; padding: 6px 18px; border-radius: 40px;
+      font-weight: 500; font-size: 13px; cursor: pointer;
+      transition: .2s ease; display: inline-flex; align-items: center; gap: 6px;
+      font-family: "Inter", sans-serif; text-decoration: none;
+    }
+    .btn-primary {
+      background: #2a7de1; color: #fff;
+      box-shadow: 0 4px 12px rgba(42,125,225,.2);
+    }
+    .btn-primary:hover { background: #1a5fb0; transform: scale(.97); }
+
+    .container {
+      max-width: 900px; margin: 0 auto;
+      background: #fff; border-radius: 48px;
+      box-shadow: 0 24px 60px rgba(0,20,40,.08);
+      padding: 32px 40px 44px;
+      border: 1px solid #f0f5fe;
+    }
+
+    .section-title {
+      font-size: 22px; font-weight: 600; color: #0a1e3c;
+      margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+    }
+    .section-title .material-symbols-outlined { color: #2a7de1; font-size: 28px; }
+
+    .news-list { display: flex; flex-direction: column; gap: 16px; }
+    .news-item {
+      background: #f9fcff; border-radius: 24px; padding: 20px 24px;
+      border: 1px solid #eef3fa; transition: .15s ease; cursor: pointer;
+    }
+    .news-item:hover { border-color: #c7d9f0; background: #fff; }
+    .news-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 12px; flex-wrap: wrap; margin-bottom: 8px;
+    }
+    .news-title { font-size: 18px; font-weight: 600; color: #0a1e3c; }
+    .news-date {
+      font-size: 13px; color: #6a7f9e; background: #eef3fa;
+      padding: 4px 14px; border-radius: 40px; white-space: nowrap;
+    }
+    .news-desc {
+      font-size: 15px; color: #3d5270; line-height: 1.5;
+      word-break: break-word; display: -webkit-box; -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; max-height: 4.5em;
+    }
+
+    .empty-state { text-align: center; padding: 48px 20px; color: #6a7f9e; }
+    .empty-state .material-symbols-outlined {
+      font-size: 48px; color: #d0dae9; margin-bottom: 12px;
+    }
+    .empty-state h3 { color: #0a1e3c; font-weight: 500; margin-bottom: 4px; }
+
+    .footer {
+      margin-top: 32px; padding-top: 20px; border-top: 1px solid #eef3fa;
+      font-size: 13px; color: #889bb3; text-align: center;
+    }
+
+    .loading { text-align: center; padding: 40px; color: #6a7f9e; }
+
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.4); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; z-index: 9999; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: #fff; max-width: 520px; width: 100%;
+      padding: 32px 28px 28px; border-radius: 32px;
+      box-shadow: 0 30px 60px rgba(0,0,0,.2);
+      max-height: 80vh; overflow-y: auto;
+      animation: pop .2s ease;
+    }
+    @keyframes pop {
+      from { transform: scale(.95) translateY(10px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .modal-box .m-title { font-size: 22px; font-weight: 700; color: #0a1e3c; margin-bottom: 4px; }
+    .modal-box .m-date {
+      font-size: 14px; color: #6a7f9e; margin-bottom: 16px;
+      padding-bottom: 12px; border-bottom: 1px solid #eef3fa;
+    }
+    .modal-box .m-text {
+      font-size: 15px; color: #1f2b48; line-height: 1.7;
+      word-break: break-word; overflow-wrap: anywhere; white-space: pre-wrap;
+    }
+    .modal-box .m-close {
+      margin-top: 24px; width: 100%; padding: 14px; border: none;
+      border-radius: 40px; background: #eef3fa; color: #1f2b48;
+      font-weight: 600; font-size: 16px; cursor: pointer;
+      font-family: "Inter", sans-serif; transition: .15s ease;
+    }
+    .modal-box .m-close:hover { background: #dce4ef; }
+
+    .profile-form { display: flex; flex-direction: column; gap: 16px; }
+    .field-group { display: flex; flex-direction: column; gap: 8px; }
+    .field-group label { font-size: 13px; font-weight: 600; color: #20314d; }
+    .field-group input, .field-group select {
+      width: 100%; padding: 12px 14px; border: 1px solid #dfe9f7;
+      border-radius: 14px; background: #f9fbff; color: #0d1d34;
+      font-size: 15px; font-family: "Inter", sans-serif; outline: none;
+    }
+    .field-group input:focus, .field-group select:focus {
+      border-color: #2a7de1; box-shadow: 0 0 0 3px rgba(42,125,225,.12);
+    }
+    .profile-actions { display: flex; justify-content: flex-end; margin-top: 4px; }
+    .profile-submit {
+      width: 100%; justify-content: center; padding: 14px 18px; font-size: 15px;
+    }
 
     @media (max-width:700px) {
-      .navbar { padding:10px 16px; flex-direction:column; align-items:stretch; gap:8px; }
-      .navbar-left { flex-wrap:wrap; justify-content:space-between; }
-      .nav-links { justify-content:flex-start; }
-      .navbar-right { justify-content:flex-start; }
-      body { padding-top:130px; }
+      .navbar { padding: 10px 16px; flex-direction: column; align-items: stretch; gap: 8px; }
+      .navbar-left { flex-wrap: wrap; justify-content: space-between; }
+      .nav-links { justify-content: flex-start; }
+      .navbar-right { justify-content: flex-start; }
+      body { padding-top: 130px; }
     }
+
     @media (max-width:480px) {
-      .container { padding:20px 16px 28px; border-radius:32px; }
-      .navbar-left { flex-direction:column; align-items:flex-start; gap:6px; }
-      .modal-box { padding:24px 20px; max-height:85vh; }
+      .container { padding: 20px 16px 28px; border-radius: 32px; }
+      .navbar-left { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .modal-box { padding: 24px 20px; max-height: 85vh; }
     }
   </style>
 </head>
 <body>
+  <header class="navbar" id="navbar">
+    <div class="navbar-left">
+      <div class="logo-area">
+        <div class="logo-icon">Ш</div>
+        <div class="logo-text">Электро<span>школа</span></div>
+      </div>
 
-<header class="navbar" id="navbar">
-  <div class="navbar-left">
-    <div class="logo-area">
-      <div class="logo-icon">Ш</div>
-      <div class="logo-text">Электро<span>школа</span></div>
+      <nav class="nav-links" id="navLinks">
+        <a href="diary.html" class="nav-link">
+          <span class="material-symbols-outlined">calendar_month</span> Дневник
+        </a>
+      </nav>
     </div>
-    <nav class="nav-links" id="navLinks">
-      <a href="diary.html" class="nav-link">
-        <span class="material-symbols-outlined">calendar_month</span> Дневник
-      </a>
-    </nav>
+
+    <div class="navbar-right" id="userArea"></div>
+  </header>
+
+  <div class="container">
+    <div class="section-title">
+      <span class="material-symbols-outlined">newspaper</span> Последние новости
+    </div>
+
+    <div id="newsContainer">
+      <div class="loading">⏳ Загрузка новостей...</div>
+    </div>
+
+    <div class="footer">© 2026 · Электронная школа</div>
   </div>
-  <div class="navbar-right" id="userArea"></div>
-</header>
 
-<div class="container">
-  <div class="section-title">
-    <span class="material-symbols-outlined">newspaper</span> Последние новости
+  <div class="modal-overlay" id="modal">
+    <div class="modal-box">
+      <div class="m-title" id="modalTitle">Заголовок</div>
+      <div class="m-date" id="modalDate">Дата</div>
+      <div class="m-text" id="modalText">Текст</div>
+      <button class="m-close" id="modalClose">Закрыть</button>
+    </div>
   </div>
-  <div id="newsContainer">
-    <div class="loading">⏳ Загрузка новостей...</div>
+
+  <div class="modal-overlay" id="profileModal" style="display: none;">
+    <div class="modal-box">
+      <div class="m-title">Заполните профиль</div>
+      <div class="m-date">Чтобы продолжить, укажите имя, школу и класс.</div>
+
+      <form id="profileForm" class="profile-form">
+        <div class="field-group">
+          <label for="profileName">Имя</label>
+          <input id="profileName" type="text" placeholder="Введите имя" maxlength="50" required />
+        </div>
+
+        <div class="field-group">
+          <label for="profileSchool">Школа</label>
+          <select id="profileSchool" required>
+            <option value="" selected disabled>Загрузка...</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label for="profileClass">Класс</label>
+          <select id="profileClass" required>
+            <option value="" selected disabled>Загрузка...</option>
+          </select>
+        </div>
+
+        <div class="profile-actions">
+          <button type="submit" class="btn btn-primary profile-submit">Сохранить</button>
+        </div>
+      </form>
+    </div>
   </div>
-  <div class="footer">© 2026 · Электронная школа</div>
-</div>
 
-<div class="modal-overlay" id="modal">
-  <div class="modal-box">
-    <div class="m-title" id="modalTitle">Заголовок</div>
-    <div class="m-date" id="modalDate">Дата</div>
-    <div class="m-text" id="modalText">Текст</div>
-    <button class="m-close" id="modalClose">Закрыть</button>
-  </div>
-</div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+    import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-  import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
+      authDomain: "digitalschool-f2c90.firebaseapp.com",
+      projectId: "digitalschool-f2c90",
+      storageBucket: "digitalschool-f2c90.firebasestorage.app",
+      messagingSenderId: "797143730107",
+      appId: "1:797143730107:web:b19437db896170d88b269e",
+      measurementId: "G-FT9ENP491P"
+    };
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
-    authDomain: "digitalschool-f2c90.firebaseapp.com",
-    projectId: "digitalschool-f2c90",
-    storageBucket: "digitalschool-f2c90.firebasestorage.app",
-    messagingSenderId: "797143730107",
-    appId: "1:797143730107:web:b19437db896170d88b269e",
-    measurementId: "G-FT9ENP491P"
-  };
+    const app = initializeApp(firebaseConfig);
+    getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
 
-  const app = initializeApp(firebaseConfig);
-  getAnalytics(app);
-  const auth = getAuth(app);
-  const db = getDatabase(app);
+    const AUTH_URL = "auth.html";
+    const ACCOUNT_URL = "account.html";
+    const CONSOLE_URL = "console.html";
+    const NEWS_COUNT = 15;
 
-  const AUTH_URL = "https://xsynda.github.io/digitalschool.github.io/auth.html";
-  const ACCOUNT_URL = "account.html";
-  const CONSOLE_URL = "console.html";
-  const NEWS_COUNT = 15;
+    const navLinks = document.getElementById("navLinks");
+    const userArea = document.getElementById("userArea");
+    const newsContainer = document.getElementById("newsContainer");
 
-  const navLinks = document.getElementById("navLinks");
-  const userArea = document.getElementById("userArea");
-  const newsContainer = document.getElementById("newsContainer");
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDate = document.getElementById("modalDate");
+    const modalText = document.getElementById("modalText");
+    const modalClose = document.getElementById("modalClose");
 
-  const modal = document.getElementById("modal");
-  const modalTitle = document.getElementById("modalTitle");
-  const modalDate = document.getElementById("modalDate");
-  const modalText = document.getElementById("modalText");
-  const modalClose = document.getElementById("modalClose");
+    const profileModal = document.getElementById("profileModal");
+    const profileForm = document.getElementById("profileForm");
+    const profileNameInput = document.getElementById("profileName");
+    const profileSchoolSelect = document.getElementById("profileSchool");
+    const profileClassSelect = document.getElementById("profileClass");
 
-  function openModal(title, date, text) {
-    modalTitle.textContent = title || "Без названия";
-    modalDate.textContent = date || "";
-    modalText.textContent = text || "Нет текста";
-    modal.classList.add("open");
-    document.body.style.overflow = "hidden";
-  }
+    const FALLBACK_SCHOOLS = ["Школа №1", "Школа №2", "Школа №3", "Школа №4", "Школа №5", "Гимназия №1", "Лицей №1"];
+    const FALLBACK_CLASSES = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 
-  function closeModal() {
-    modal.classList.remove("open");
-    document.body.style.overflow = "";
-  }
+    let currentUser = null;
+    let currentProfile = {};
+    let schoolsData = [];
 
-  modalClose.addEventListener("click", closeModal);
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) closeModal();
-  });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeModal();
-  });
+    function escapeHtml(text) {
+      if (text === null || text === undefined) return "";
+      const div = document.createElement("div");
+      div.textContent = String(text);
+      return div.innerHTML;
+    }
 
-  function escapeHtml(text) {
-    if (text === null || text === undefined) return "";
-    const div = document.createElement("div");
-    div.textContent = String(text);
-    return div.innerHTML;
-  }
+    function isProfileComplete(data = {}) {
+      const name = String(data.name || "").trim();
+      const school = String(data.school || "").trim();
+      const klass = String(data.class || "").trim();
+      return Boolean(name && school && klass);
+    }
 
-  function formatDate(timestamp) {
-    if (!timestamp) return "—";
-    return new Date(timestamp * 1000).toLocaleString("ru-RU", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
+    function fillSelect(select, values, label, type = "text") {
+      select.innerHTML = "";
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = `Выберите ${label}`;
+      placeholder.selected = true;
+      placeholder.disabled = true;
+      select.appendChild(placeholder);
+
+      const list = Array.isArray(values) ? values : [];
+
+      list.forEach((item) => {
+        const option = document.createElement("option");
+        let value = "";
+        let text = "";
+
+        if (typeof item === "object" && item !== null) {
+          value = item.value ?? item.name ?? item.title ?? item.label ?? item.school ?? item.class ?? "";
+          text = item.label ?? item.name ?? item.title ?? item.value ?? item.school ?? item.class ?? String(value);
+        } else {
+          value = String(item);
+          text = String(item);
+        }
+
+        option.value = String(value);
+
+        if (type === "class") {
+          option.textContent = `${String(text)} класс`;
+        } else {
+          option.textContent = String(text);
+        }
+
+        select.appendChild(option);
+      });
+    }
+
+    function normalizeSchoolList(value) {
+      if (!value) return [];
+
+      if (Array.isArray(value)) {
+        return value.map((item, index) => ({
+          id: item.id ?? index,
+          name: item.name ?? item.title ?? item.label ?? item.school ?? String(index),
+          classes: Array.isArray(item.classes)
+            ? item.classes
+            : Array.isArray(item.classList)
+            ? item.classList
+            : Array.isArray(item.grades)
+            ? item.grades
+            : Array.isArray(item.levels)
+            ? item.levels
+            : []
+        }));
+      }
+
+      if (typeof value === "object") {
+        return Object.keys(value).map((key) => {
+          const item = value[key] || {};
+          return {
+            id: item.id ?? key,
+            name: item.name ?? item.title ?? item.label ?? item.school ?? String(key),
+            classes: Array.isArray(item.classes)
+              ? item.classes
+              : Array.isArray(item.classList)
+              ? item.classList
+              : Array.isArray(item.grades)
+              ? item.grades
+              : Array.isArray(item.levels)
+              ? item.levels
+              : []
+          };
+        });
+      }
+
+      return [];
+    }
+
+    function getSchoolByName(name) {
+      return schoolsData.find((school) => {
+        const currentName = school.name ?? "";
+        return String(currentName) === String(name);
+      });
+    }
+
+    function getClassesForSelectedSchool() {
+      const selectedSchoolName = profileSchoolSelect.value;
+      const selectedSchool = getSchoolByName(selectedSchoolName);
+
+      if (selectedSchool && Array.isArray(selectedSchool.classes) && selectedSchool.classes.length) {
+        return selectedSchool.classes.map((item) => (typeof item === "object" ? (item.name ?? item.value ?? item.label ?? item.class ?? "") : String(item)));
+      }
+
+      return FALLBACK_CLASSES;
+    }
+
+    function updateClassOptionsForSelectedSchool() {
+      const classes = getClassesForSelectedSchool();
+      fillSelect(profileClassSelect, classes, "класс", "class");
+
+      if (currentProfile.class) {
+        const match = classes.find((item) => String(item) === String(currentProfile.class));
+        if (match) {
+          profileClassSelect.value = String(match);
+        } else {
+          profileClassSelect.value = "";
+        }
+      }
+    }
+
+    async function loadProfileOptions() {
+      try {
+        const snapshot = await get(ref(db, "schools"));
+        const raw = snapshot.exists() ? snapshot.val() : null;
+
+        const normalized = normalizeSchoolList(raw);
+
+        if (normalized.length) {
+          schoolsData = normalized;
+          fillSelect(profileSchoolSelect, schoolsData.map((school) => school.name), "школу");
+
+          const savedSchool = currentProfile.school || "";
+          if (savedSchool) {
+            profileSchoolSelect.value = savedSchool;
+          }
+
+          updateClassOptionsForSelectedSchool();
+          return;
+        }
+
+        schoolsData = [];
+        fillSelect(profileSchoolSelect, FALLBACK_SCHOOLS, "школу");
+        fillSelect(profileClassSelect, FALLBACK_CLASSES, "класс", "class");
+      } catch (error) {
+        console.error("Ошибка загрузки списка школ:", error);
+        schoolsData = [];
+        fillSelect(profileSchoolSelect, FALLBACK_SCHOOLS, "школу");
+        fillSelect(profileClassSelect, FALLBACK_CLASSES, "класс", "class");
+      }
+    }
+
+    profileSchoolSelect.addEventListener("change", () => {
+      updateClassOptionsForSelectedSchool();
     });
-  }
 
-  async function ensureProfile(user) {
-    if (!user) return;
+    function openProfileSetupModal(profile = {}) {
+      currentProfile = profile || {};
+      const name = (currentProfile.name || currentUser?.displayName || "").trim();
 
-    try {
+      profileNameInput.value = name;
+      profileSchoolSelect.value = currentProfile.school || "";
+      updateClassOptionsForSelectedSchool();
+
+      if (currentProfile.class) {
+        profileClassSelect.value = String(currentProfile.class);
+      }
+
+      profileModal.classList.add("open");
+      profileModal.style.display = "flex";
+      document.body.classList.add("profile-required");
+    }
+
+    function closeProfileSetupModal() {
+      if (!isProfileComplete(currentProfile) && currentUser) return;
+
+      profileModal.classList.remove("open");
+      profileModal.style.display = "none";
+      document.body.classList.remove("profile-required");
+    }
+
+    function lockBodyScroll() {
+      if (!modal.classList.contains("open") && !profileModal.classList.contains("open")) {
+        document.body.style.overflow = "hidden";
+      }
+    }
+
+    function unlockBodyScroll() {
+      if (!modal.classList.contains("open") && !profileModal.classList.contains("open")) {
+        document.body.style.overflow = "";
+      }
+    }
+
+    function openModal(title, date, text) {
+      modalTitle.textContent = title || "Без названия";
+      modalDate.textContent = date || "";
+      modalText.textContent = text || "Нет текста";
+      modal.classList.add("open");
+      lockBodyScroll();
+    }
+
+    function closeModal() {
+      modal.classList.remove("open");
+      unlockBodyScroll();
+    }
+
+    modalClose.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    profileModal.addEventListener("click", (e) => {
+      if (e.target === profileModal && isProfileComplete(currentProfile)) {
+        closeProfileSetupModal();
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (profileModal.classList.contains("open") && isProfileComplete(currentProfile)) {
+          closeProfileSetupModal();
+        } else if (modal.classList.contains("open")) {
+          closeModal();
+        }
+      }
+    });
+
+    async function saveProfileData(user, profileData) {
+      if (!user) return;
+
+      const safeStatus = Number(profileData.status ?? currentProfile.status ?? 1);
+
       const userRef = ref(db, "users/" + user.uid);
-      const snapshot = await get(userRef);
+      const payload = {
+        email: user.email,
+        name: profileData.name,
+        school: profileData.school,
+        class: profileData.class,
+        status: safeStatus,
+        createdAt: profileData.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
 
-      if (!snapshot.exists()) {
-        const name = localStorage.getItem("pending_user_name") || user.email.split("@")[0];
-        localStorage.removeItem("pending_user_name");
+      await set(userRef, payload);
+      currentProfile = payload;
+      user.displayName = payload.name;
+      renderHeader(user, Number(payload.status) === 2);
+      closeProfileSetupModal();
+    }
 
-        await set(userRef, {
-          email: user.email,
-          name: name,
-          status: 1,
-          createdAt: new Date().toISOString()
+    function formatDate(timestamp) {
+      if (!timestamp) return "—";
+      return new Date(timestamp * 1000).toLocaleString("ru-RU", {
+        day: "numeric", month: "long", year: "numeric",
+        hour: "2-digit", minute: "2-digit"
+      });
+    }
+
+    function renderNews(data) {
+      if (!data || Object.keys(data).length === 0) {
+        newsContainer.innerHTML = `
+          <div class="empty-state">
+            <span class="material-symbols-outlined">feed_off</span>
+            <h3>Новостей пока нет</h3>
+          </div>
+        `;
+        return;
+      }
+
+      const keys = Object.keys(data).map(Number).sort((a, b) => b - a);
+      const topKeys = keys.slice(0, NEWS_COUNT);
+
+      newsContainer.innerHTML = '<div class="news-list"></div>';
+      const newsList = newsContainer.querySelector(".news-list");
+
+      for (const key of topKeys) {
+        const item = data[key];
+        if (!item) continue;
+
+        const title = item.title || "Без названия";
+        const fullText = item.desc || "";
+        const date = formatDate(item.date);
+        const rawDate = item.date ? new Date(item.date * 1000).toLocaleString("ru-RU") : "";
+
+        const newsItem = document.createElement("div");
+        newsItem.className = "news-item";
+
+        const header = document.createElement("div");
+        header.className = "news-header";
+
+        const titleElement = document.createElement("div");
+        titleElement.className = "news-title";
+        titleElement.textContent = title;
+
+        const dateElement = document.createElement("div");
+        dateElement.className = "news-date";
+        dateElement.textContent = date;
+
+        header.appendChild(titleElement);
+        header.appendChild(dateElement);
+
+        const descElement = document.createElement("div");
+        descElement.className = "news-desc";
+        descElement.textContent = fullText;
+
+        newsItem.appendChild(header);
+        newsItem.appendChild(descElement);
+
+        newsItem.addEventListener("click", () => {
+          openModal(title, rawDate, fullText);
         });
 
-        user.displayName = name;
-      } else {
-        user.displayName = snapshot.val().name || user.email;
+        newsList.appendChild(newsItem);
       }
-    } catch (error) {
-      console.error("Ошибка профиля:", error);
-    }
-  }
-
-  function renderNews(data) {
-    if (!data || Object.keys(data).length === 0) {
-      newsContainer.innerHTML = `
-        <div class="empty-state">
-          <span class="material-symbols-outlined">feed_off</span>
-          <h3>Новостей пока нет</h3>
-        </div>
-      `;
-      return;
     }
 
-    const keys = Object.keys(data).map(Number).sort((a, b) => b - a);
-    const topKeys = keys.slice(0, NEWS_COUNT);
+    function loadNews() {
+      const newsRef = ref(db, "news");
 
-    newsContainer.innerHTML = '<div class="news-list"></div>';
-    const newsList = newsContainer.querySelector(".news-list");
-
-    for (const key of topKeys) {
-      const item = data[key];
-      if (!item) continue;
-
-      const title = item.title || "Без названия";
-      const fullText = item.desc || "";
-      const date = formatDate(item.date);
-      const rawDate = item.date
-        ? new Date(item.date * 1000).toLocaleString("ru-RU")
-        : "";
-
-      const newsItem = document.createElement("div");
-      newsItem.className = "news-item";
-
-      const header = document.createElement("div");
-      header.className = "news-header";
-
-      const titleElement = document.createElement("div");
-      titleElement.className = "news-title";
-      titleElement.textContent = title;
-
-      const dateElement = document.createElement("div");
-      dateElement.className = "news-date";
-      dateElement.textContent = date;
-
-      header.appendChild(titleElement);
-      header.appendChild(dateElement);
-
-      const descElement = document.createElement("div");
-      descElement.className = "news-desc";
-      descElement.textContent = fullText;
-
-      newsItem.appendChild(header);
-      newsItem.appendChild(descElement);
-
-      newsItem.addEventListener("click", () => {
-        openModal(title, rawDate, fullText);
+      onValue(newsRef, (snapshot) => {
+        if (snapshot.exists()) {
+          renderNews(snapshot.val());
+        } else {
+          renderNews(null);
+        }
+      }, (error) => {
+        console.error("Ошибка загрузки новостей:", error);
+        newsContainer.innerHTML = `
+          <div class="empty-state">
+            <span class="material-symbols-outlined">error</span>
+            <h3>Ошибка загрузки</h3>
+          </div>
+        `;
       });
-
-      newsList.appendChild(newsItem);
     }
-  }
 
-  function loadNews() {
-    const newsRef = ref(db, "news");
+    function renderHeader(user, status = 1) {
+      const canAccessConsole = status === 2 || status === 3;
 
-    onValue(newsRef, (snapshot) => {
-      if (snapshot.exists()) {
-        renderNews(snapshot.val());
+      if (canAccessConsole) {
+        navLinks.innerHTML = `
+          <a href="diary.html" class="nav-link">
+            <span class="material-symbols-outlined">calendar_month</span> Дневник
+          </a>
+          <a href="${CONSOLE_URL}" class="nav-link">
+            <span class="material-symbols-outlined">admin_panel_settings</span> Консоль
+          </a>
+        `;
       } else {
-        renderNews(null);
+        navLinks.innerHTML = `
+          <a href="diary.html" class="nav-link">
+            <span class="material-symbols-outlined">calendar_month</span> Дневник
+          </a>
+        `;
       }
-    }, (error) => {
-      console.error("Ошибка загрузки новостей:", error);
 
-      newsContainer.innerHTML = `
-        <div class="empty-state">
-          <span class="material-symbols-outlined">error</span>
-          <h3>Ошибка загрузки</h3>
-        </div>
-      `;
+      if (user) {
+        const displayName = user.displayName || user.email || "Пользователь";
+        userArea.innerHTML = `
+          <a href="${ACCOUNT_URL}" class="user-badge">
+            <span class="material-symbols-outlined">account_circle</span>
+            ${escapeHtml(displayName)}
+          </a>
+        `;
+      } else {
+        userArea.innerHTML = `
+          <a href="${AUTH_URL}" class="btn btn-primary">
+            <span class="material-symbols-outlined" style="font-size:18px;">login</span>
+            Войти
+          </a>
+        `;
+      }
+    }
+
+    async function ensureProfile(user) {
+      if (!user) return;
+
+      try {
+        const userRef = ref(db, "users/" + user.uid);
+        const snapshot = await get(userRef);
+
+        if (!snapshot.exists()) {
+          const defaultProfile = {
+            email: user.email,
+            name: "",
+            school: "",
+            class: "",
+            status: 1,
+            createdAt: new Date().toISOString()
+          };
+
+          await set(userRef, defaultProfile);
+          currentProfile = defaultProfile;
+          user.displayName = "";
+        } else {
+          currentProfile = snapshot.val() || {};
+          user.displayName = currentProfile.name || user.email || "";
+        }
+      } catch (error) {
+        console.error("Ошибка профиля:", error);
+      }
+    }
+
+    profileForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (!currentUser) return;
+
+      const name = profileNameInput.value.trim();
+      const school = profileSchoolSelect.value.trim();
+      const klass = profileClassSelect.value.trim();
+
+      if (!name || !school || !klass) {
+        alert("Пожалуйста, заполните все поля: имя, школу и класс.");
+        return;
+      }
+
+      try {
+        await saveProfileData(currentUser, {
+          ...currentProfile,
+          name,
+          school,
+          class: klass,
+          status: currentProfile.status ?? 1,
+          createdAt: currentProfile.createdAt || new Date().toISOString()
+        });
+      } catch (error) {
+        console.error("Ошибка сохранения профиля:", error);
+        alert("Не удалось сохранить профиль. Попробуйте ещё раз.");
+      }
     });
-  }
 
-  function renderHeader(user, isAdmin) {
-    if (isAdmin) {
-      navLinks.innerHTML = `
-        <a href="diary.html" class="nav-link">
-          <span class="material-symbols-outlined">calendar_month</span> Дневник
-        </a>
-        <a href="${CONSOLE_URL}" class="nav-link">
-          <span class="material-symbols-outlined">admin_panel_settings</span> Консоль
-        </a>
-      `;
-    } else {
-      navLinks.innerHTML = `
-        <a href="diary.html" class="nav-link">
-          <span class="material-symbols-outlined">calendar_month</span> Дневник
-        </a>
-      `;
-    }
-
-    if (user) {
-      const displayName = user.displayName || user.email || "Пользователь";
-
-      userArea.innerHTML = `
-        <a href="${ACCOUNT_URL}" class="user-badge">
-          <span class="material-symbols-outlined">account_circle</span>
-          ${escapeHtml(displayName)}
-        </a>
-      `;
-    } else {
-      userArea.innerHTML = `
-        <a href="${AUTH_URL}" class="btn btn-primary">
-          <span class="material-symbols-outlined" style="font-size:18px;">login</span>
-          Войти
-        </a>
-      `;
-    }
-  }
-
-  async function loadUser(user) {
-    if (!user) {
-      renderHeader(null, false);
-      return;
-    }
-
-    try {
-      const snapshot = await get(ref(db, "users/" + user.uid));
-
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        user.displayName = data.name || user.email;
-        renderHeader(user, data.status === 2);
-      } else {
-        renderHeader(user, false);
+    async function loadUser(user) {
+      if (!user) {
+        renderHeader(null, 1);
+        return;
       }
-    } catch (error) {
-      console.warn("Ошибка загрузки пользователя:", error);
-      renderHeader(user, false);
+
+      try {
+        const snapshot = await get(ref(db, "users/" + user.uid));
+
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          currentProfile = data || {};
+          user.displayName = data.name || user.email || "";
+          renderHeader(user, Number(data.status ?? 1));
+
+          if (!isProfileComplete(data)) {
+            openProfileSetupModal(data);
+          } else {
+            closeProfileSetupModal();
+          }
+        } else {
+          currentProfile = {};
+          renderHeader(user, 1);
+          openProfileSetupModal(currentProfile);
+        }
+      } catch (error) {
+        console.warn("Ошибка загрузки пользователя:", error);
+        renderHeader(user, 1);
+        openProfileSetupModal(currentProfile);
+      }
     }
-  }
 
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      await ensureProfile(user);
-      await loadUser(user);
-      loadNews();
-    } else {
-      window.location.href = AUTH_URL;
-    }
-  });
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
 
-  console.log("Главная страница готова");
-</script>
+      if (user) {
+        profileModal.style.display = "none";
+        profileModal.classList.remove("open");
+        document.body.classList.remove("profile-required");
 
+        await loadProfileOptions();
+        await ensureProfile(user);
+        await loadUser(user);
+        loadNews();
+      } else {
+        window.location.href = AUTH_URL;
+      }
+    });
+
+    console.log("Главная страница готова");
+  </script>
 </body>
 </html>

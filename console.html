@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --blue: #2a7de1;
@@ -29,7 +29,7 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: "Inter", sans-serif;
       background: var(--page);
       color: var(--text);
       min-height: 100vh;
@@ -79,7 +79,6 @@
       letter-spacing: -.3px;
       white-space: nowrap;
     }
-    .logo-text span { color: var(--blue); }
 
     .nav-link, .user-badge {
       text-decoration: none;
@@ -127,7 +126,12 @@
       margin-bottom: 8px;
     }
     .page-title .material-symbols-outlined { color: var(--purple); font-size: 32px; }
-    .page-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 26px; }
+
+    .page-sub {
+      color: var(--text-soft);
+      font-size: 15px;
+      margin-bottom: 26px;
+    }
 
     .tab-bar {
       display: flex;
@@ -176,11 +180,9 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
     }
-
     .field-grid.three { grid-template-columns: 1.2fr 1fr .7fr; }
 
-    .input, .console-card input, .console-card textarea, .console-card select,
-    .edit-fields input, .edit-fields textarea {
+    .input, .console-card input, .console-card textarea, .console-card select {
       width: 100%;
       border: 1.5px solid var(--input-border);
       background: #fff;
@@ -194,8 +196,7 @@
 
     textarea { resize: vertical; min-height: 84px; }
 
-    .console-card input:focus, .console-card textarea:focus, .console-card select:focus,
-    .edit-fields input:focus, .edit-fields textarea:focus {
+    .console-card input:focus, .console-card textarea:focus, .console-card select:focus {
       border-color: var(--blue);
       box-shadow: 0 0 0 4px rgba(42,125,225,.10);
     }
@@ -227,7 +228,11 @@
     .btn-console-primary:hover { background: var(--blue-dark); }
     .btn-console-success { background: var(--green); color: #fff; }
     .btn-console-danger { background: var(--red); color: #fff; }
-    .btn-console-outline { background: #fff; color: #1f2b48; border: 1.5px solid #d0dae9; }
+    .btn-console-outline {
+      background: #fff;
+      color: #1f2b48;
+      border: 1.5px solid #d0dae9;
+    }
 
     .console-message {
       display: none;
@@ -249,16 +254,7 @@
       margin-bottom: 14px;
     }
 
-    .schedule-toolbar h3 {
-      font-size: 17px;
-      font-weight: 600;
-    }
-
-    .day-list {
-      display: grid;
-      gap: 10px;
-    }
-
+    .day-list { display: grid; gap: 10px; }
     .day-item {
       background: #fff;
       border: 1px solid var(--border);
@@ -306,19 +302,7 @@
     }
     .day-edit.open { display: block; padding-top: 14px; }
 
-    .editor-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .editor-header h3 { font-size: 18px; }
-    .editor-header small { color: var(--text-soft); }
-
     .lesson-list { display: grid; gap: 10px; }
-
     .lesson-card {
       background: #fff;
       border: 1px solid var(--border);
@@ -348,10 +332,7 @@
       font-size: 14px;
     }
 
-    .lesson-title {
-      font-weight: 600;
-      word-break: break-word;
-    }
+    .lesson-title { font-weight: 600; word-break: break-word; }
     .lesson-meta {
       color: var(--text-soft);
       font-size: 12px;
@@ -367,7 +348,6 @@
     }
 
     .lesson-actions { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
-
     .lesson-edit {
       display: none;
       border-top: 1px solid var(--border);
@@ -381,10 +361,6 @@
       color: var(--text-soft);
       margin: 0 0 5px 4px;
       display: block;
-    }
-
-    .homework-editor {
-      margin-top: 10px;
     }
 
     .editor-tools {
@@ -409,14 +385,6 @@
     }
     .tool-btn:hover { background: #f0f4fe; }
 
-    .attachment-box {
-      background: #f0f6ff;
-      border: 1px dashed #b9d2ef;
-      border-radius: 15px;
-      padding: 11px;
-      margin-top: 8px;
-    }
-
     .add-lesson-card {
       margin-top: 12px;
       background: #f7fbff;
@@ -424,7 +392,6 @@
       border-radius: 18px;
       padding: 15px;
     }
-
     .add-lesson-card summary {
       cursor: pointer;
       font-weight: 600;
@@ -447,8 +414,6 @@
       color: #889bb3;
       text-align: center;
     }
-
-    .hidden { display: none !important; }
 
     .modal-overlay {
       display: none;
@@ -481,13 +446,19 @@
     }
 
     .modal h2 { font-size: 21px; margin-bottom: 8px; }
-    .modal-sub { color: var(--text-soft); font-size: 13px; line-height: 1.5; margin-bottom: 17px; }
+    .modal-sub {
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 17px;
+    }
 
     .modal-actions {
       display: flex;
       gap: 8px;
       justify-content: flex-end;
       margin-top: 18px;
+      flex-wrap: wrap;
     }
 
     .news-list { display: grid; gap: 10px; }
@@ -516,12 +487,7 @@
         align-items: stretch;
         gap: 7px;
       }
-
-      .navbar-left {
-        justify-content: space-between;
-        width: 100%;
-      }
-
+      .navbar-left { justify-content: space-between; width: 100%; }
       .nav-links { display: block; }
       .nav-link { padding: 7px 12px; }
       .navbar-right { justify-content: flex-end; }
@@ -553,9 +519,7 @@
         grid-template-columns: 1fr;
         padding: 14px;
       }
-      .day-actions {
-        justify-content: flex-start;
-      }
+      .day-actions { justify-content: flex-start; }
       .day-edit { padding-left: 14px; padding-right: 14px; }
 
       .lesson-summary {
@@ -567,11 +531,6 @@
         justify-content: flex-start;
       }
 
-      .editor-header {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
       .modal {
         border-radius: 25px;
         padding: 20px 16px;
@@ -580,7 +539,6 @@
 
       .modal-actions { flex-direction: column-reverse; }
       .modal-actions .btn-console { width: 100%; }
-
       .btn-console { min-height: 40px; }
     }
 
@@ -595,1069 +553,1539 @@
 </head>
 
 <body>
-<header class="navbar">
-  <div class="navbar-left">
-    <div class="logo-area">
-      <div class="logo-icon">Ш</div>
-      <div class="logo-text">Электро<span>школа</span></div>
-    </div>
-    <nav class="nav-links">
-      <a href="index.html" class="nav-link">
-        <span class="material-symbols-outlined">home</span> Главная
-      </a>
-    </nav>
-  </div>
-  <div class="navbar-right" id="userArea"></div>
-</header>
-
-<main class="container">
-  <div class="page-title">
-    <span class="material-symbols-outlined">admin_panel_settings</span>
-    Консоль администратора
-  </div>
-  <div class="page-sub">Удобное редактирование новостей, расписания и домашних заданий</div>
-
-  <div class="tab-bar">
-    <button class="tab-btn active" data-tab="news">📰 Новости</button>
-    <button class="tab-btn" data-tab="schedule">📅 Расписание</button>
-  </div>
-
-  <section class="tab-content active" id="tab-news">
-    <div class="grid-2">
-      <div class="console-card">
-        <div class="card-label">➕ Добавить новость</div>
-        <input type="text" id="addTitle" placeholder="Заголовок" />
-        <textarea id="addDesc" placeholder="Текст новости"></textarea>
-        <input type="number" id="addDate" placeholder="Unix timestamp" />
-        <div class="actions">
-          <button class="btn-console btn-console-success" id="addNewsBtn">➕ Добавить</button>
-        </div>
-        <div id="addMessage" class="console-message"></div>
+  <header class="navbar">
+    <div class="navbar-left">
+      <div class="logo-area">
+        <div class="logo-icon">Ш</div>
+        <div class="logo-text">Электронная школа</div>
       </div>
-
-      <div class="console-card">
-        <div class="card-label">🗑️ Удалить новость</div>
-        <input type="number" id="deleteIndex" placeholder="Индекс новости" />
-        <div class="actions">
-          <button class="btn-console btn-console-danger" id="deleteNewsBtn">🗑️ Удалить</button>
-        </div>
-        <div id="deleteMessage" class="console-message"></div>
-      </div>
-    </div>
-
-    <div class="console-card">
-      <div class="card-label">✏️ Новости</div>
-      <div id="editNewsList" class="news-list"></div>
-    </div>
-  </section>
-
-  <section class="tab-content" id="tab-schedule">
-    <div class="console-card">
-      <div class="schedule-toolbar">
-        <div>
-          <div class="card-label" style="margin-bottom:3px;">📅 Дни расписания</div>
-          <div style="font-size:13px;color:#6a7f9e;">Выберите день, чтобы открыть его уроки</div>
-        </div>
-        <button class="btn-console btn-console-success" id="addDayOpenBtn">➕ Добавить день</button>
-      </div>
-
-      <div id="dayList" class="day-list"></div>
-      <div id="dayMessage" class="console-message"></div>
-    </div>
-  </section>
-
-  <div class="footer">© 2026 · Электронная школа</div>
-</main>
-
-<div class="modal-overlay" id="addDayModal">
-  <div class="modal">
-    <h2>Добавить день</h2>
-    <div class="modal-sub">Создайте новый день расписания. Дата будет отображаться в удобном виде, например: «Среда, 9 сентября».</div>
-    <label class="form-label">Дата дня</label>
-    <input class="input" id="addDayDate" type="date" />
-    <div class="modal-actions">
-      <button class="btn-console btn-console-outline close-modal">Отмена</button>
-      <button class="btn-console btn-console-success" id="addDayBtn">➕ Добавить</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="linkModal">
-  <div class="modal">
-    <h2>🔗 Вставить ссылку</h2>
-    <div class="modal-sub">Ссылка сохранится внутри домашнего задания и будет доступна ученикам.</div>
-    <label class="form-label">URL</label>
-    <input class="input" id="linkUrl" placeholder="https://example.com" />
-    <label class="form-label" style="margin-top:10px;">Текст ссылки</label>
-    <input class="input" id="linkText" placeholder="Открыть материал" />
-    <div class="modal-actions">
-      <button class="btn-console btn-console-outline close-modal">Отмена</button>
-      <button class="btn-console btn-console-primary" id="confirmLinkBtn">🔗 Вставить</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="imageModal">
-  <div class="modal">
-    <h2>🖼️ Добавить изображение</h2>
-    <div class="modal-sub">Можно указать прямую ссылку на изображение. Это удобно для картинок из вашего сайта или другого хостинга.</div>
-    <label class="form-label">URL изображения</label>
-    <input class="input" id="imageUrl" placeholder="https://example.com/image.jpg" />
-    <label class="form-label" style="margin-top:10px;">Описание</label>
-    <input class="input" id="imageAlt" placeholder="Изображение к заданию" />
-    <div class="modal-actions">
-      <button class="btn-console btn-console-outline close-modal">Отмена</button>
-      <button class="btn-console btn-console-primary" id="confirmImageBtn">🖼️ Вставить</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="copyDayModal">
-  <div class="modal">
-    <h2>📋 Копировать уроки</h2>
-    <div class="modal-sub">Введите дату для нового дня. Уроки будут скопированы без домашних заданий.</div>
-    <label class="form-label">Новая дата (ДД.ММ.ГГГГ)</label>
-    <input class="input" id="copyDayDate" placeholder="09.09.2026" />
-    <div class="modal-actions">
-      <button class="btn-console btn-console-outline close-modal">Отмена</button>
-      <button class="btn-console btn-console-success" id="confirmCopyBtn">📋 Копировать</button>
-    </div>
-  </div>
-</div>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-  import { getDatabase, ref, get, set, remove, onValue, update } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
-    authDomain: "digitalschool-f2c90.firebaseapp.com",
-    projectId: "digitalschool-f2c90",
-    storageBucket: "digitalschool-f2c90.firebasestorage.app",
-    messagingSenderId: "797143730107",
-    appId: "1:797143730107:web:b19437db896170d88b269e",
-    measurementId: "G-FT9ENP491P"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  getAnalytics(app);
-  const auth = getAuth(app);
-  const db = getDatabase(app);
-
-  const AUTH_URL = "https://xsynda.github.io/digitalschool.github.io/auth.html";
-  const ACCOUNT_URL = "account.html";
-  const userArea = document.getElementById("userArea");
-
-  let selectedDayKey = null;
-  let selectedHomeworkField = null;
-  let scheduleCache = null;
-  let copySourceKey = null;
-
-  function escapeHtml(value) {
-    if (value === null || value === undefined) return "";
-    const d = document.createElement("div");
-    d.textContent = String(value);
-    return d.innerHTML;
-  }
-
-  function safeUrl(value) {
-    try {
-      const url = new URL(value);
-      if (url.protocol === "http:" || url.protocol === "https:") return url.href;
-    } catch (e) {}
-    return null;
-  }
-
-  function showMessage(element, text, type) {
-    element.textContent = text;
-    element.className = "console-message show " + type;
-    clearTimeout(element._timer);
-    element._timer = setTimeout(() => {
-      element.className = "console-message";
-    }, 4000);
-  }
-
-  function openModal(id) {
-    document.getElementById(id).classList.add("open");
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeAllModals() {
-    document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("open"));
-    document.body.style.overflow = "";
-  }
-
-  document.querySelectorAll(".modal-overlay").forEach(overlay => {
-    overlay.addEventListener("click", e => {
-      if (e.target === overlay) closeAllModals();
-    });
-  });
-
-  document.querySelectorAll(".close-modal").forEach(btn => {
-    btn.addEventListener("click", closeAllModals);
-  });
-
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape") closeAllModals();
-  });
-
-  function renderHeader(user) {
-    if (!user) {
-      userArea.innerHTML = `<a href="${AUTH_URL}" class="nav-link">Войти</a>`;
-      return;
-    }
-
-    get(ref(db, "users/" + user.uid)).then(snapshot => {
-      const data = snapshot.exists() ? snapshot.val() : {};
-      const displayName = data.name || user.displayName || user.email || "Пользователь";
-
-      userArea.innerHTML = `
-        <a href="${ACCOUNT_URL}" class="user-badge">
-          <span class="material-symbols-outlined">account_circle</span>
-          ${escapeHtml(displayName)}
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">
+          <span class="material-symbols-outlined">home</span> Главная
         </a>
-      `;
-    }).catch(() => {});
-  }
+      </nav>
+    </div>
+    <div class="navbar-right" id="userArea"></div>
+  </header>
 
-  document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-      btn.classList.add("active");
-      document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
-    });
-  });
+  <main class="container">
+    <div class="page-title">
+      <span class="material-symbols-outlined">admin_panel_settings</span>
+      Консоль администратора
+    </div>
+    <div class="page-sub">Удобное редактирование расписания, новостей и домашних заданий</div>
 
-  // ===== НОВОСТИ =====
-  function renderEditNewsList(data) {
-    const container = document.getElementById("editNewsList");
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="news">📰 Новости</button>
+      <button class="tab-btn" data-tab="schedule">📅 Расписание</button>
+    </div>
 
-    if (!data || !Object.keys(data).length) {
-      container.innerHTML = `<div class="empty-state">Новостей пока нет</div>`;
-      return;
-    }
-
-    const keys = Object.keys(data).map(Number).sort((a,b) => b-a);
-
-    container.innerHTML = keys.map(key => {
-      const item = data[key];
-      if (!item) return "";
-
-      const date = item.date
-        ? new Date(item.date * 1000).toLocaleString("ru-RU")
-        : "—";
-
-      return `
-        <div class="news-item" data-key="${key}">
-          <div class="news-item-head">
-            <div style="min-width:0;">
-              <div class="news-item-title">#${key} · ${escapeHtml(item.title || "Без названия")}</div>
-              <div class="news-item-meta">${escapeHtml(date)}</div>
-            </div>
-            <div class="news-actions">
-              <button class="btn-console btn-console-outline edit-news-btn">✏️</button>
-              <button class="btn-console btn-console-danger delete-news-btn">🗑️</button>
-            </div>
+    <section class="tab-content active" id="tab-news">
+      <div class="grid-2">
+        <div class="console-card">
+          <div class="card-label">➕ Добавить новость</div>
+          <input type="text" id="addTitle" placeholder="Заголовок" />
+          <textarea id="addDesc" placeholder="Текст новости"></textarea>
+          <input type="number" id="addDate" placeholder="Unix timestamp" />
+          <div class="actions">
+            <button class="btn-console btn-console-success" id="addNewsBtn">➕ Добавить</button>
           </div>
+          <div id="addMessage" class="console-message"></div>
+        </div>
 
-          <div class="lesson-edit news-edit">
-            <label class="form-label">Заголовок</label>
-            <input class="edit-news-title" value="${escapeHtml(item.title || "")}" />
+        <div class="console-card">
+          <div class="card-label">🗑️ Удалить новость</div>
+          <input type="number" id="deleteIndex" placeholder="Индекс новости" />
+          <div class="actions">
+            <button class="btn-console btn-console-danger" id="deleteNewsBtn">🗑️ Удалить</button>
+          </div>
+          <div id="deleteMessage" class="console-message"></div>
+        </div>
+      </div>
 
-            <label class="form-label">Текст</label>
-            <textarea class="edit-news-desc">${escapeHtml(item.desc || "")}</textarea>
+      <div class="console-card">
+        <div class="card-label">✏️ Новости</div>
+        <div id="editNewsList" class="news-list"></div>
+      </div>
+    </section>
 
-            <label class="form-label">Unix timestamp</label>
-            <input type="number" class="edit-news-date" value="${item.date || ""}" />
+    <section class="tab-content" id="tab-schedule">
+      <div class="console-card">
+        <div class="card-label">🏫 Выбор школы и класса</div>
 
-            <div class="actions">
-              <button class="btn-console btn-console-primary save-news-btn">💾 Сохранить</button>
-              <button class="btn-console btn-console-outline cancel-news-btn">Отмена</button>
-            </div>
-            <div class="console-message news-edit-message"></div>
+        <div class="field-grid">
+          <div>
+            <label class="form-label">Школа</label>
+            <select id="schoolSelect" class="input"></select>
+          </div>
+          <div>
+            <label class="form-label">Класс</label>
+            <select id="classSelect" class="input"></select>
           </div>
         </div>
-      `;
-    }).join("");
 
-    container.querySelectorAll(".edit-news-btn").forEach(btn => {
+        <div class="actions" style="margin-top: 16px; flex-wrap: wrap;">
+          <button class="btn-console btn-console-primary" id="openSchoolClassModalBtn">
+            ➕ Добавить школу / класс
+          </button>
+
+          <button class="btn-console btn-console-danger" id="deleteSchoolBtn">
+            🗑️ Удалить школу
+          </button>
+
+          <button class="btn-console btn-console-danger" id="deleteClassBtn">
+            🗑️ Удалить класс
+          </button>
+        </div>
+
+        <div id="schoolClassMessage" class="console-message"></div>
+      </div>
+
+      <div class="console-card">
+        <div class="schedule-toolbar">
+          <div>
+            <div class="card-label" style="margin-bottom:3px;">📅 Дни расписания</div>
+            <div style="font-size:13px;color:#6a7f9e;">Выберите день, чтобы открыть его уроки</div>
+          </div>
+          <button class="btn-console btn-console-success" id="addDayOpenBtn">➕ Добавить день</button>
+        </div>
+
+        <div id="dayList" class="day-list"></div>
+        <div id="dayMessage" class="console-message"></div>
+      </div>
+    </section>
+
+    <div class="footer">© 2026 · Электронная школа</div>
+  </main>
+
+  <div class="modal-overlay" id="schoolClassModal">
+    <div class="modal">
+      <h2>Добавить школу или класс</h2>
+      <div class="modal-sub">Добавляйте новую школу или новый класс в выбранную школу.</div>
+
+      <label class="form-label">Новая школа</label>
+      <input class="input" id="newSchoolName" placeholder="Например: Школа №7" />
+
+      <div class="modal-actions" style="justify-content:flex-start; flex-wrap:wrap; margin-top:12px;">
+        <button class="btn-console btn-console-success" id="addSchoolBtn">➕ Добавить школу</button>
+      </div>
+
+      <div style="height:1px; background:#edf2fa; margin:18px 0;"></div>
+
+      <label class="form-label">Новый класс для выбранной школы</label>
+      <input class="input" id="newClassName" placeholder="Например: 9Б" />
+
+      <div class="modal-actions" style="flex-wrap:wrap;">
+        <button class="btn-console btn-console-primary" id="addClassBtn">➕ Добавить класс</button>
+        <button class="btn-console btn-console-outline close-modal">Отмена</button>
+      </div>
+
+      <div id="schoolClassMessageModal" class="console-message"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="addDayModal">
+    <div class="modal">
+      <h2>Добавить день</h2>
+      <div class="modal-sub">Создайте новый день расписания.</div>
+      <label class="form-label">Дата дня</label>
+      <input class="input" id="addDayDate" type="date" />
+      <div class="modal-actions">
+        <button class="btn-console btn-console-outline close-modal">Отмена</button>
+        <button class="btn-console btn-console-success" id="addDayBtn">➕ Добавить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="linkModal">
+    <div class="modal">
+      <h2>🔗 Вставить ссылку</h2>
+      <div class="modal-sub">Ссылка сохранится внутри домашнего задания.</div>
+      <label class="form-label">URL</label>
+      <input class="input" id="linkUrl" placeholder="https://example.com" />
+      <label class="form-label" style="margin-top:10px;">Текст ссылки</label>
+      <input class="input" id="linkText" placeholder="Открыть материал" />
+      <div class="modal-actions">
+        <button class="btn-console btn-console-outline close-modal">Отмена</button>
+        <button class="btn-console btn-console-primary" id="confirmLinkBtn">🔗 Вставить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="imageModal">
+    <div class="modal">
+      <h2>🖼️ Добавить изображение</h2>
+      <div class="modal-sub">Можно указать прямую ссылку на изображение.</div>
+      <label class="form-label">URL изображения</label>
+      <input class="input" id="imageUrl" placeholder="https://example.com/image.jpg" />
+      <label class="form-label" style="margin-top:10px;">Описание</label>
+      <input class="input" id="imageAlt" placeholder="Изображение к заданию" />
+      <div class="modal-actions">
+        <button class="btn-console btn-console-outline close-modal">Отмена</button>
+        <button class="btn-console btn-console-primary" id="confirmImageBtn">🖼️ Вставить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="copyDayModal">
+    <div class="modal">
+      <h2>📋 Копировать уроки</h2>
+      <div class="modal-sub">Введите дату для нового дня. Уроки будут скопированы.</div>
+      <label class="form-label">Новая дата</label>
+      <input class="input" id="copyDayDate" type="date" />
+      <div class="modal-actions">
+        <button class="btn-console btn-console-outline close-modal">Отмена</button>
+        <button class="btn-console btn-console-success" id="confirmCopyBtn">📋 Копировать</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
+      authDomain: "digitalschool-f2c90.firebaseapp.com",
+      projectId: "digitalschool-f2c90",
+      storageBucket: "digitalschool-f2c90.firebasestorage.app",
+      messagingSenderId: "797143730107",
+      appId: "1:797143730107:web:b19437db896170d88b269e",
+      measurementId: "G-FT9ENP491P"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const AUTH_URL = "auth.html";
+    const userArea = document.getElementById("userArea");
+
+    let selectedSchoolIndex = 0;
+    let selectedClassIndex = 0;
+    let selectedDayIndex = null;
+    let selectedHomeworkField = null;
+    let schoolsCache = [];
+    let currentUserProfile = null;
+    let isLocalAdmin = false;
+    let restrictedSchoolIndex = null;
+    let restrictedClassIndex = null;
+
+    function escapeHtml(value) {
+      if (value === null || value === undefined) return "";
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function safeUrl(value) {
+      if (!value) return "";
+      return /^https?:\/\//i.test(value) ? value : "";
+    }
+
+    function showMessage(node, text, type = "success") {
+      if (!node) return;
+      node.textContent = text;
+      node.className = "console-message show " + type;
+    }
+
+    function openModal(id) {
+      document.getElementById(id)?.classList.add("open");
+    }
+
+    function closeAllModals() {
+      document.querySelectorAll(".modal-overlay").forEach((el) => el.classList.remove("open"));
+    }
+
+    document.querySelectorAll(".close-modal").forEach((btn) => {
+      btn.addEventListener("click", closeAllModals);
+    });
+
+    document.querySelectorAll(".modal-overlay").forEach((modal) => {
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeAllModals();
+      });
+    });
+
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        btn.closest(".news-item").querySelector(".news-edit").classList.toggle("open");
+        const tab = btn.dataset.tab;
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b === btn));
+        document.querySelectorAll(".tab-content").forEach((el) => {
+          el.classList.toggle("active", el.id === "tab-" + tab);
+        });
       });
     });
 
-    container.querySelectorAll(".cancel-news-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        btn.closest(".news-item").querySelector(".news-edit").classList.remove("open");
-      });
-    });
+    async function getProfileName(user) {
+      if (!user) return "Пользователь";
 
-    container.querySelectorAll(".save-news-btn").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const item = btn.closest(".news-item");
-        const key = Number(item.dataset.key);
-        const title = item.querySelector(".edit-news-title").value.trim();
-        const desc = item.querySelector(".edit-news-desc").value;
-        const date = Number(item.querySelector(".edit-news-date").value);
-        const msg = item.querySelector(".news-edit-message");
-
-        if (!title || !date) {
-          showMessage(msg, "⚠️ Заполните заголовок и дату", "error");
-          return;
-        }
-
-        try {
-          await set(ref(db, "news/" + key), { title, desc, date });
-          showMessage(msg, "✅ Новость сохранена", "success");
-        } catch (e) {
-          showMessage(msg, "❌ Ошибка: " + e.message, "error");
-        }
-      });
-    });
-
-    container.querySelectorAll(".delete-news-btn").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const key = Number(btn.closest(".news-item").dataset.key);
-        if (!confirm("Удалить новость #" + key + "?")) return;
-
-        try {
-          await remove(ref(db, "news/" + key));
-          showMessage(document.getElementById("deleteMessage"), "✅ Новость удалена", "success");
-        } catch (e) {
-          showMessage(document.getElementById("deleteMessage"), "❌ Ошибка: " + e.message, "error");
-        }
-      });
-    });
-  }
-
-  document.getElementById("addNewsBtn").addEventListener("click", async () => {
-    const title = document.getElementById("addTitle").value.trim();
-    const desc = document.getElementById("addDesc").value;
-    const date = Number(document.getElementById("addDate").value);
-    const msg = document.getElementById("addMessage");
-
-    if (!title || !date) {
-      showMessage(msg, "⚠️ Заполните заголовок и дату", "error");
-      return;
-    }
-
-    try {
-      const snapshot = await get(ref(db, "news"));
-      const data = snapshot.exists() ? snapshot.val() : {};
-      const keys = Object.keys(data).map(Number).filter(Number.isFinite);
-      const newKey = keys.length ? Math.max(...keys) + 1 : 0;
-
-      await set(ref(db, "news/" + newKey), { title, desc, date });
-
-      document.getElementById("addTitle").value = "";
-      document.getElementById("addDesc").value = "";
-      document.getElementById("addDate").value = "";
-      showMessage(msg, "✅ Новость добавлена", "success");
-    } catch (e) {
-      showMessage(msg, "❌ Ошибка: " + e.message, "error");
-    }
-  });
-
-  document.getElementById("deleteNewsBtn").addEventListener("click", async () => {
-    const index = Number(document.getElementById("deleteIndex").value);
-    const msg = document.getElementById("deleteMessage");
-
-    if (!Number.isInteger(index) || index < 0) {
-      showMessage(msg, "⚠️ Введите корректный индекс", "error");
-      return;
-    }
-
-    if (!confirm("Удалить новость #" + index + "?")) return;
-
-    try {
-      await remove(ref(db, "news/" + index));
-      document.getElementById("deleteIndex").value = "";
-      showMessage(msg, "✅ Новость удалена", "success");
-    } catch (e) {
-      showMessage(msg, "❌ Ошибка: " + e.message, "error");
-    }
-  });
-
-  onValue(ref(db, "news"), snapshot => {
-    renderEditNewsList(snapshot.exists() ? snapshot.val() : null);
-  });
-
-  // ===== ДАТЫ ДНЕЙ =====
-  const russianWeekdays = [
-    "Воскресенье", "Понедельник", "Вторник", "Среда",
-    "Четверг", "Пятница", "Суббота"
-  ];
-
-  const russianMonths = [
-    "января", "февраля", "марта", "апреля", "мая", "июня",
-    "июля", "августа", "сентября", "октября", "ноября", "декабря"
-  ];
-
-  function parseScheduleDate(value) {
-    if (!value) return null;
-
-    const match = String(value).trim().match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
-    if (!match) return null;
-
-    const day = Number(match[1]);
-    const month = Number(match[2]);
-    const year = Number(match[3]);
-    const date = new Date(year, month - 1, day);
-
-    if (
-      date.getFullYear() !== year ||
-      date.getMonth() !== month - 1 ||
-      date.getDate() !== day
-    ) return null;
-
-    return date;
-  }
-
-  function isValidDateString(value) {
-    return parseScheduleDate(value) !== null;
-  }
-
-  function formatScheduleDate(value) {
-    const date = parseScheduleDate(value);
-    if (!date) return value ? String(value) : "Дата не указана";
-
-    return `${russianWeekdays[date.getDay()]}, ${date.getDate()} ${russianMonths[date.getMonth()]}`;
-  }
-
-  function dateInputToScheduleDate(value) {
-    if (!value) return "";
-    const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    return match ? `${match[3]}.${match[2]}.${match[1]}` : "";
-  }
-
-  function scheduleDateToInput(value) {
-    const date = parseScheduleDate(value);
-    if (!date) return "";
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function scheduleDateSortValue(value) {
-    const date = parseScheduleDate(value);
-    return date ? date.getTime() : Number.MAX_SAFE_INTEGER;
-  }
-
-  document.getElementById("addDayOpenBtn").addEventListener("click", () => {
-    document.getElementById("addDayDate").value = "";
-    openModal("addDayModal");
-    setTimeout(() => document.getElementById("addDayDate").focus(), 50);
-  });
-
-  document.getElementById("addDayBtn").addEventListener("click", async () => {
-    const date = dateInputToScheduleDate(document.getElementById("addDayDate").value);
-    const msg = document.getElementById("dayMessage");
-
-    if (!date) {
-      closeAllModals();
-      showMessage(msg, "⚠️ Выберите дату дня", "error");
-      return;
-    }
-
-    if (scheduleCache) {
-      const duplicate = Object.keys(scheduleCache).some(key =>
-        scheduleCache[key] && scheduleCache[key].date === date
-      );
-      if (duplicate) {
-        closeAllModals();
-        showMessage(msg, "⚠️ День с такой датой уже существует", "error");
-        return;
+      try {
+        const snap = await get(ref(db, `users/${user.uid}`));
+        const data = snap.exists() ? snap.val() : {};
+        return data.fullName || data.name || data.displayName || user.displayName || user.email || "Пользователь";
+      } catch {
+        return user.displayName || user.email || "Пользователь";
       }
     }
 
-    try {
-      const snapshot = await get(ref(db, "schedule"));
-      const data = snapshot.exists() ? snapshot.val() : {};
-      const keys = Object.keys(data).map(Number).filter(Number.isFinite);
-      const newKey = keys.length ? Math.max(...keys) + 1 : 0;
+    async function getUserProfile(user) {
+      if (!user) return { status: 0 };
 
-      await set(ref(db, "schedule/" + newKey), {
-        date,
-        lessons: {}
+      try {
+        const snap = await get(ref(db, `users/${user.uid}`));
+        return snap.exists() ? snap.val() : { status: 0 };
+      } catch {
+        return { status: 0 };
+      }
+    }
+
+    function applyAccessRights(profile = {}) {
+      const status = Number(profile.status ?? 0);
+      currentUserProfile = profile;
+
+      isLocalAdmin = status === 3;
+
+      restrictedSchoolIndex = resolveSchoolIndexFromProfile(profile, schoolsCache);
+      restrictedClassIndex = null;
+
+      if (isLocalAdmin && schoolsCache.length) {
+        const school = schoolsCache[restrictedSchoolIndex];
+        const classes = Array.isArray(school?.classes) ? school.classes : [];
+        restrictedClassIndex = resolveClassIndexFromProfile(profile, school, classes);
+      }
+
+      const newsTabBtn = document.querySelector('.tab-btn[data-tab="news"]');
+      const newsTab = document.getElementById("tab-news");
+      const scheduleTabBtn = document.querySelector('.tab-btn[data-tab="schedule"]');
+      const openSchoolClassModalBtn = document.getElementById("openSchoolClassModalBtn");
+      const deleteSchoolBtn = document.getElementById("deleteSchoolBtn");
+      const deleteClassBtn = document.getElementById("deleteClassBtn");
+
+      if (isLocalAdmin) {
+        if (newsTabBtn) newsTabBtn.style.display = "none";
+        if (newsTab) newsTab.classList.remove("active");
+        if (scheduleTabBtn) {
+          scheduleTabBtn.classList.add("active");
+          scheduleTabBtn.click();
+        }
+
+        if (openSchoolClassModalBtn) openSchoolClassModalBtn.style.display = "none";
+        if (deleteSchoolBtn) deleteSchoolBtn.style.display = "none";
+        if (deleteClassBtn) deleteClassBtn.style.display = "none";
+      } else {
+        if (newsTabBtn) newsTabBtn.style.display = "";
+        if (openSchoolClassModalBtn) openSchoolClassModalBtn.style.display = "";
+        if (deleteSchoolBtn) deleteSchoolBtn.style.display = "";
+        if (deleteClassBtn) deleteClassBtn.style.display = "";
+      }
+    }
+
+    async function renderHeader(user) {
+      const name = await getProfileName(user);
+
+      if (!user) {
+        userArea.innerHTML = `
+          <a href="${AUTH_URL}" class="btn-console btn-console-primary">
+            <span class="material-symbols-outlined" style="font-size:18px;">login</span> Войти
+          </a>
+        `;
+        return;
+      }
+
+      userArea.innerHTML = `
+        <a href="account.html" class="user-badge">
+          <span class="material-symbols-outlined">account_circle</span>
+          ${escapeHtml(name)}
+        </a>
+      `;
+    }
+
+    async function checkAdmin(user) {
+      if (!user) return false;
+
+      try {
+        const snap = await get(ref(db, `users/${user.uid}`));
+        const data = snap.exists() ? snap.val() : {};
+        const status = Number(data.status ?? 0);
+        return status === 2 || status === 3;
+      } catch {
+        return false;
+      }
+    }
+
+    function getSelectedSchool() {
+      if (!Array.isArray(schoolsCache) || !schoolsCache.length) return null;
+
+      const allowedIndex = isLocalAdmin
+        ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
+        : selectedSchoolIndex;
+
+      return schoolsCache[allowedIndex] || null;
+    }
+
+    function getSelectedClass() {
+      const school = getSelectedSchool();
+      if (!school || !Array.isArray(school.classes)) return null;
+
+      const allowedIndex = isLocalAdmin
+        ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0)
+        : selectedClassIndex;
+
+      return school.classes[allowedIndex] || null;
+    }
+
+    function getSelectedSchedule() {
+      const schoolClass = getSelectedClass();
+      if (!schoolClass || !Array.isArray(schoolClass.schedule)) return [];
+      return schoolClass.schedule;
+    }
+
+    function fillSchoolSelect() {
+      const schoolSelect = document.getElementById("schoolSelect");
+      schoolSelect.innerHTML = "";
+
+      if (isLocalAdmin) {
+        const allowedSchoolIndex = restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex]
+          ? restrictedSchoolIndex
+          : 0;
+
+        const option = document.createElement("option");
+        option.value = String(allowedSchoolIndex);
+        option.textContent = schoolsCache[allowedSchoolIndex]?.name || "Моя школа";
+        schoolSelect.appendChild(option);
+        schoolSelect.value = String(allowedSchoolIndex);
+        schoolSelect.disabled = true;
+        return;
+      }
+
+      if (!schoolsCache.length) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Школы не найдены";
+        schoolSelect.appendChild(opt);
+        return;
+      }
+
+      schoolsCache.forEach((school, index) => {
+        const option = document.createElement("option");
+        option.value = String(index);
+        option.textContent = school.name || `Школа ${index + 1}`;
+        schoolSelect.appendChild(option);
       });
 
-      closeAllModals();
-      showMessage(msg, "✅ День добавлен", "success");
-    } catch (e) {
-      showMessage(msg, "❌ Ошибка: " + e.message, "error");
-    }
-  });
-
-  // ===== ДНИ =====
-  function renderDayList(data) {
-    const container = document.getElementById("dayList");
-
-    if (!data || !Object.keys(data).length) {
-      container.innerHTML = `<div class="empty-state">Дней пока нет. Добавьте первый день.</div>`;
-      return;
+      schoolSelect.value = String(selectedSchoolIndex);
+      schoolSelect.disabled = false;
     }
 
-    const keys = Object.keys(data).map(Number).sort((a,b) => {
-      const dateA = scheduleDateSortValue(data[a]?.date);
-      const dateB = scheduleDateSortValue(data[b]?.date);
-      return dateA - dateB || a - b;
-    });
+    function fillClassSelect() {
+      const classSelect = document.getElementById("classSelect");
+      classSelect.innerHTML = "";
 
-    container.innerHTML = keys.map(key => {
-      const day = data[key];
-      if (!day) return "";
+      const school = getSelectedSchool();
+      const classes = school && Array.isArray(school.classes) ? school.classes : [];
 
-      const count = day.lessons ? Object.keys(day.lessons).length : 0;
-      const selected = selectedDayKey === key ? "selected" : "";
+      if (isLocalAdmin) {
+        const allowedClassIndex = restrictedClassIndex !== null && classes[restrictedClassIndex]
+          ? restrictedClassIndex
+          : (classes.length ? 0 : null);
 
+        if (allowedClassIndex === null) {
+          const opt = document.createElement("option");
+          opt.value = "";
+          opt.textContent = "Классы не найдены";
+          classSelect.appendChild(opt);
+          classSelect.disabled = true;
+          return;
+        }
+
+        const option = document.createElement("option");
+        option.value = String(allowedClassIndex);
+        option.textContent = classes[allowedClassIndex]?.name || "Мой класс";
+        classSelect.appendChild(option);
+        classSelect.value = String(allowedClassIndex);
+        classSelect.disabled = true;
+        return;
+      }
+
+      if (!classes.length) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Классы не найдены";
+        classSelect.appendChild(opt);
+        return;
+      }
+
+      classes.forEach((classItem, index) => {
+        const option = document.createElement("option");
+        option.value = String(index);
+        option.textContent = classItem.name || `Класс ${index + 1}`;
+        classSelect.appendChild(option);
+      });
+
+      classSelect.value = String(selectedClassIndex);
+      classSelect.disabled = false;
+    }
+
+    function parseScheduleDate(value) {
+      if (!value) return null;
+      const match = String(value).trim().match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+
+      if (!match) return null;
+
+      const day = Number(match[1]);
+      const month = Number(match[2]);
+      const year = Number(match[3]);
+
+      const date = new Date(year, month - 1, day);
+      if (
+        date.getFullYear() !== year ||
+        date.getMonth() !== month - 1 ||
+        date.getDate() !== day
+      ) return null;
+
+      return date;
+    }
+
+    function formatScheduleDate(value) {
+      const date = parseScheduleDate(value);
+      if (!date) return String(value || "Дата не указана");
+
+      const russianWeekdays = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
+      const russianMonths = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+
+      return `${russianWeekdays[date.getDay()]}, ${date.getDate()} ${russianMonths[date.getMonth()]}`;
+    }
+
+    function dateInputToScheduleDate(value) {
+      if (!value) return "";
+      const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!match) return "";
+      return `${match[3]}.${match[2]}.${match[1]}`;
+    }
+
+    function scheduleDateToInput(value) {
+      const date = parseScheduleDate(value);
+      if (!date) return "";
+
+      const d = String(date.getDate()).padStart(2, "0");
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const y = date.getFullYear();
+      return `${y}-${m}-${d}`;
+    }
+
+    function syncSelectedClassSchedule(schedule) {
+      const school = getSelectedSchool();
+      if (!school || !Array.isArray(school.classes)) return;
+
+      const effectiveClassIndex = isLocalAdmin
+        ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0)
+        : selectedClassIndex;
+
+      if (!school.classes[effectiveClassIndex]) return;
+      school.classes[effectiveClassIndex].schedule = schedule;
+      schoolsCache[isLocalAdmin ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0) : selectedSchoolIndex] = school;
+    }
+
+    async function loadSchools() {
+      try {
+        const snapshot = await get(ref(db, "schools"));
+        const data = snapshot.exists() ? snapshot.val() : [];
+        schoolsCache = Array.isArray(data) ? data : [];
+
+        if (isLocalAdmin) {
+          restrictedSchoolIndex = resolveSchoolIndexFromProfile(currentUserProfile, schoolsCache);
+
+          const school = schoolsCache[restrictedSchoolIndex];
+          const classes = Array.isArray(school?.classes) ? school.classes : [];
+          restrictedClassIndex = resolveClassIndexFromProfile(currentUserProfile, school, classes);
+
+          selectedSchoolIndex = restrictedSchoolIndex;
+          selectedClassIndex = restrictedClassIndex;
+
+          selectedDayIndex = null;
+
+          fillSchoolSelect();
+          fillClassSelect();
+          renderSelectedSchedule();
+          return;
+        }
+
+        if (!schoolsCache.length) {
+          selectedSchoolIndex = 0;
+          selectedClassIndex = 0;
+          selectedDayIndex = null;
+          fillSchoolSelect();
+          fillClassSelect();
+          renderDayList([]);
+          return;
+        }
+
+        selectedSchoolIndex = Number.isInteger(selectedSchoolIndex) && selectedSchoolIndex < schoolsCache.length
+          ? selectedSchoolIndex
+          : 0;
+
+        const school = schoolsCache[selectedSchoolIndex];
+        const classes = school && Array.isArray(school.classes) ? school.classes : [];
+        selectedClassIndex = Number.isInteger(selectedClassIndex) && selectedClassIndex < classes.length
+          ? selectedClassIndex
+          : 0;
+
+        fillSchoolSelect();
+        fillClassSelect();
+        renderSelectedSchedule();
+      } catch (error) {
+        console.error("Ошибка загрузки школ:", error);
+        schoolsCache = [];
+        fillSchoolSelect();
+        fillClassSelect();
+        renderDayList([]);
+      }
+    }
+
+    function renderLessonHtml(lesson, lessonIndex) {
+      lesson = lesson || {};
       return `
-        <div class="day-item ${selected}" data-key="${key}">
-          <div class="day-main">
-            <div class="day-info">
-              <div class="day-name">${escapeHtml(formatScheduleDate(day.date))}</div>
-              <div class="day-meta">${escapeHtml(day.date || "Дата не указана")} · ${count} ${count === 1 ? "урок" : "уроков"}</div>
-            </div>
-            <div class="day-actions">
-              <button class="btn-console btn-console-primary open-day-btn">📂 Открыть</button>
-              <button class="btn-console btn-console-outline copy-day-btn">📋 Копировать уроки</button>
-              <button class="btn-console btn-console-outline rename-day-btn">✏️ Изменить дату</button>
-              <button class="btn-console btn-console-danger delete-day-btn">🗑️ Удалить</button>
-            </div>
-          </div>
+        <div class="lesson-card" data-key="${lessonIndex}">
+          <div class="lesson-summary">
+            <div class="lesson-number">${lessonIndex + 1}</div>
 
-          <div class="day-edit">
-            <label class="form-label">Дата дня</label>
-            <input class="day-date-input" type="date" value="${escapeHtml(scheduleDateToInput(day.date))}" />
-            <div class="actions">
-              <button class="btn-console btn-console-primary save-day-name-btn">💾 Сохранить дату</button>
-              <button class="btn-console btn-console-outline cancel-day-name-btn">Отмена</button>
+            <div style="min-width:0;">
+              <div class="lesson-title">${escapeHtml(lesson.name || "Без названия")}</div>
+              <div class="lesson-meta">${escapeHtml(lesson.time || "Время не указано")} · Каб. ${escapeHtml(lesson.cab ?? "—")}</div>
+              <div class="lesson-homework-preview">${escapeHtml(lesson.homework || "Домашнее задание не задано")}</div>
+            </div>
+
+            <div class="lesson-actions">
+              <button class="btn-console btn-console-outline edit-lesson-btn">✏️ Редактировать</button>
+              <button class="btn-console btn-console-danger delete-lesson-btn">🗑️ Удалить</button>
             </div>
           </div>
 
-          ${selected ? renderLessonEditorHtml(day) : ""}
-        </div>
-      `;
-    }).join("");
-
-    bindDayEvents();
-  }
-
-  function renderLessonEditorHtml(day) {
-    const lessons = day.lessons || {};
-    const keys = Object.keys(lessons).map(Number).sort((a,b) => a-b);
-
-    return `
-      <div class="day-edit open" style="padding-top:16px;">
-        <div class="editor-header">
-          <div>
-            <h3>📚 Уроки</h3>
-            <small>Изменяйте уроки и домашние задания прямо здесь</small>
-          </div>
-        </div>
-
-        <div class="lesson-list">
-          ${keys.length ? keys.map(key => renderLessonHtml(key, lessons[key])).join("") : `<div class="empty-state">Уроков пока нет.</div>`}
-        </div>
-
-        <details class="add-lesson-card">
-          <summary>➕ Добавить новый урок</summary>
-          <div style="margin-top:14px;">
+          <div class="lesson-edit">
             <div class="field-grid three">
               <div>
-                <label class="form-label">Название</label>
-                <input class="new-lesson-name" placeholder="Математика" />
+                <label class="form-label">Название урока</label>
+                <input class="lesson-name-input" value="${escapeHtml(lesson.name || "")}" />
               </div>
               <div>
                 <label class="form-label">Время</label>
-                <input class="new-lesson-time" placeholder="08:30-09:15" />
+                <input class="lesson-time-input" value="${escapeHtml(lesson.time || "")}" />
               </div>
               <div>
                 <label class="form-label">Кабинет</label>
-                <input type="number" class="new-lesson-cab" placeholder="204" />
+                <input type="number" class="lesson-cab-input" value="${escapeHtml(lesson.cab ?? "")}" />
               </div>
             </div>
 
             <div style="margin-top:10px;">
               <label class="form-label">Домашнее задание</label>
-              <textarea class="new-lesson-homework" placeholder="Текст домашнего задания..."></textarea>
+              <textarea class="lesson-homework-input">${escapeHtml(lesson.homework || "")}</textarea>
+
               <div class="editor-tools">
-                <button type="button" class="tool-btn new-link-tool">🔗 Ссылка</button>
-                <button type="button" class="tool-btn new-image-tool">🖼️ Изображение</button>
+                <button type="button" class="tool-btn lesson-link-tool">🔗 Ссылка</button>
+                <button type="button" class="tool-btn lesson-image-tool">🖼️ Изображение</button>
               </div>
             </div>
 
             <div class="actions">
-              <button class="btn-console btn-console-success add-lesson-btn">➕ Добавить урок</button>
+              <button class="btn-console btn-console-primary save-lesson-btn">💾 Сохранить урок</button>
+              <button class="btn-console btn-console-outline cancel-lesson-btn">Отмена</button>
             </div>
-            <div class="console-message add-lesson-message"></div>
-          </div>
-        </details>
-      </div>
-    `;
-  }
-
-  function renderLessonHtml(key, lesson) {
-    lesson = lesson || {};
-
-    return `
-      <div class="lesson-card" data-key="${key}">
-        <div class="lesson-summary">
-          <div class="lesson-number">${key + 1}</div>
-
-          <div style="min-width:0;">
-            <div class="lesson-title">${escapeHtml(lesson.name || "Без названия")}</div>
-            <div class="lesson-meta">${escapeHtml(lesson.time || "Время не указано")} · Каб. ${escapeHtml(lesson.cab ?? "—")}</div>
-            <div class="lesson-homework-preview">${escapeHtml(lesson.homework || "Домашнее задание не задано")}</div>
-          </div>
-
-          <div class="lesson-actions">
-            <button class="btn-console btn-console-outline edit-lesson-btn">✏️ Редактировать</button>
-            <button class="btn-console btn-console-danger delete-lesson-btn">🗑️ Удалить</button>
+            <div class="console-message lesson-edit-message"></div>
           </div>
         </div>
+      `;
+    }
 
-        <div class="lesson-edit">
-          <div class="field-grid three">
-            <div>
-              <label class="form-label">Название урока</label>
-              <input class="lesson-name-input" value="${escapeHtml(lesson.name || "")}" />
-            </div>
-            <div>
-              <label class="form-label">Время</label>
-              <input class="lesson-time-input" value="${escapeHtml(lesson.time || "")}" />
-            </div>
-            <div>
-              <label class="form-label">Кабинет</label>
-              <input type="number" class="lesson-cab-input" value="${escapeHtml(lesson.cab ?? "")}" />
-            </div>
-          </div>
+    function renderDayList(schedule) {
+      const container = document.getElementById("dayList");
+      if (!container) return;
 
-          <div class="homework-editor">
-            <label class="form-label">Домашнее задание</label>
-            <textarea class="lesson-homework-input" placeholder="Введите домашнее задание...">${escapeHtml(lesson.homework || "")}</textarea>
+      if (!Array.isArray(schedule) || !schedule.length) {
+        container.innerHTML = `<div class="empty-state">Дней пока нет. Добавьте первый день.</div>`;
+        return;
+      }
 
-            <div class="editor-tools">
-              <button type="button" class="tool-btn lesson-link-tool">🔗 Вставить ссылку</button>
-              <button type="button" class="tool-btn lesson-image-tool">🖼️ Вставить изображение</button>
-            </div>
+      container.innerHTML = schedule.map((day, index) => {
+        const selected = selectedDayIndex === index ? "selected" : "";
+        const lessons = Array.isArray(day.lessons) ? day.lessons : [];
+        const lessonCount = lessons.length;
 
-            <div class="attachment-box">
-              <div style="font-size:12px;color:#5f7696;">
-                💡 Можно хранить ссылки и изображения прямо в тексте ДЗ. Для изображений используется HTML-тег <b>&lt;img&gt;</b>.
+        return `
+          <div class="day-item ${selected}" data-key="${index}">
+            <div class="day-main">
+              <div class="day-info">
+                <div class="day-name">${escapeHtml(formatScheduleDate(day.date))}</div>
+                <div class="day-meta">${escapeHtml(day.date || "Дата не указана")} · ${lessonCount} ${lessonCount === 1 ? "урок" : "уроков"}</div>
+              </div>
+
+              <div class="day-actions">
+                <button class="btn-console btn-console-primary open-day-btn">📂 Открыть</button>
+                <button class="btn-console btn-console-outline rename-day-btn">✏️ Дата</button>
+                <button class="btn-console btn-console-outline copy-day-btn">📋 Копировать</button>
+                <button class="btn-console btn-console-danger delete-day-btn">🗑️ Удалить</button>
               </div>
             </div>
+
+            <div class="day-edit ${selected ? "open" : ""}">
+              <label class="form-label">Дата дня</label>
+              <input class="day-date-input" type="date" value="${escapeHtml(scheduleDateToInput(day.date))}" />
+              <div class="actions">
+                <button class="btn-console btn-console-primary save-day-name-btn">💾 Сохранить дату</button>
+                <button class="btn-console btn-console-outline cancel-day-name-btn">Отмена</button>
+              </div>
+            </div>
+
+            ${selected ? `
+              <div class="day-edit open" style="padding-top:16px;">
+                <div class="editor-header" style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px;">
+                  <div><h3 style="font-size:18px;">📚 Уроки</h3></div>
+                </div>
+
+                <div class="lesson-list">
+                  ${lessons.length ? lessons.map((lesson, lessonIndex) => renderLessonHtml(lesson, lessonIndex)).join("") : `<div class="empty-state">Уроков пока нет.</div>`}
+                </div>
+
+                <details class="add-lesson-card">
+                  <summary>➕ Добавить новый урок</summary>
+                  <div style="margin-top:14px;">
+                    <div class="field-grid three">
+                      <div>
+                        <label class="form-label">Название</label>
+                        <input class="new-lesson-name" placeholder="Математика" />
+                      </div>
+                      <div>
+                        <label class="form-label">Время</label>
+                        <input class="new-lesson-time" placeholder="08:30-09:15" />
+                      </div>
+                      <div>
+                        <label class="form-label">Кабинет</label>
+                        <input type="number" class="new-lesson-cab" placeholder="204" />
+                      </div>
+                    </div>
+
+                    <div style="margin-top:10px;">
+                      <label class="form-label">Домашнее задание</label>
+                      <textarea class="new-lesson-homework" placeholder="Текст домашнего задания..."></textarea>
+                      <div class="editor-tools">
+                        <button type="button" class="tool-btn new-link-tool">🔗 Ссылка</button>
+                        <button type="button" class="tool-btn new-image-tool">🖼️ Изображение</button>
+                      </div>
+                    </div>
+
+                    <div class="actions">
+                      <button class="btn-console btn-console-success add-lesson-btn">➕ Добавить урок</button>
+                    </div>
+                    <div class="console-message add-lesson-message"></div>
+                  </div>
+                </details>
+              </div>
+            ` : ""}
           </div>
+        `;
+      }).join("");
 
-          <div class="actions">
-            <button class="btn-console btn-console-primary save-lesson-btn">💾 Сохранить урок</button>
-            <button class="btn-console btn-console-outline cancel-lesson-btn">Отмена</button>
-          </div>
-          <div class="console-message lesson-edit-message"></div>
-        </div>
-      </div>
-    `;
-  }
+      bindScheduleEvents();
+    }
 
-  function bindDayEvents() {
-    const container = document.getElementById("dayList");
+    function bindScheduleEvents() {
+      const container = document.getElementById("dayList");
+      if (!container) return;
 
-    container.querySelectorAll(".open-day-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        selectedDayKey = Number(btn.closest(".day-item").dataset.key);
-        renderCurrentSchedule();
+      container.querySelectorAll(".open-day-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const item = btn.closest(".day-item");
+          selectedDayIndex = Number(item.dataset.key);
+          renderSelectedSchedule();
+        });
       });
-    });
 
-    container.querySelectorAll(".rename-day-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const edit = btn.closest(".day-item").querySelector(".day-edit");
-        edit.classList.toggle("open");
+      container.querySelectorAll(".rename-day-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const edit = btn.closest(".day-item").querySelector(".day-edit");
+          if (edit) edit.classList.toggle("open");
+        });
       });
-    });
 
-    container.querySelectorAll(".cancel-day-name-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        btn.closest(".day-edit").classList.remove("open");
+      container.querySelectorAll(".cancel-day-name-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          btn.closest(".day-edit").classList.remove("open");
+        });
       });
-    });
 
-    container.querySelectorAll(".save-day-name-btn").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const item = btn.closest(".day-item");
-        const key = Number(item.dataset.key);
-        const date = dateInputToScheduleDate(item.querySelector(".day-date-input").value);
-        const msg = document.getElementById("dayMessage");
+      container.querySelectorAll(".save-day-name-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const item = btn.closest(".day-item");
+          const dayIndex = Number(item.dataset.key);
+          const newDate = dateInputToScheduleDate(item.querySelector(".day-date-input").value);
 
-        if (!date) {
-          showMessage(msg, "⚠️ Выберите корректную дату", "error");
-          return;
-        }
-
-        if (scheduleCache) {
-          const duplicate = Object.keys(scheduleCache).some(existingKey =>
-            existingKey !== String(key) &&
-            scheduleCache[existingKey] &&
-            scheduleCache[existingKey].date === date
-          );
-          if (duplicate) {
-            showMessage(msg, "⚠️ День с такой датой уже существует", "error");
+          if (!newDate) {
+            showMessage(document.getElementById("dayMessage"), "⚠️ Выберите корректную дату", "error");
             return;
           }
-        }
 
-        try {
-          await update(ref(db, "schedule/" + key), { date });
-          showMessage(msg, "✅ Дата дня изменена", "success");
-        } catch (e) {
-          showMessage(msg, "❌ Ошибка: " + e.message, "error");
-        }
+          const school = getSelectedSchool();
+          const classItem = school && school.classes ? school.classes[isLocalAdmin ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0) : selectedClassIndex] : null;
+
+          if (!classItem) return;
+
+          const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
+          if (schedule[dayIndex]) {
+            schedule[dayIndex].date = newDate;
+          }
+
+          try {
+            const targetSchoolIndex = isLocalAdmin
+              ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
+              : selectedSchoolIndex;
+
+            const targetClassIndex = isLocalAdmin
+              ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
+              : selectedClassIndex;
+
+            await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), schedule);
+            syncSelectedClassSchedule(schedule);
+            renderSelectedSchedule();
+            showMessage(document.getElementById("dayMessage"), "✅ Дата обновлена", "success");
+          } catch (error) {
+            showMessage(document.getElementById("dayMessage"), "❌ Ошибка: " + error.message, "error");
+          }
+        });
       });
+
+      container.querySelectorAll(".delete-day-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const dayIndex = Number(btn.closest(".day-item").dataset.key);
+          if (!confirm("Удалить этот день расписания?")) return;
+
+          const school = getSelectedSchool();
+          const classItem = school && school.classes ? school.classes[isLocalAdmin ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0) : selectedClassIndex] : null;
+          if (!classItem) return;
+
+          const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
+          schedule.splice(dayIndex, 1);
+
+          try {
+            const targetSchoolIndex = isLocalAdmin
+              ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
+              : selectedSchoolIndex;
+
+            const targetClassIndex = isLocalAdmin
+              ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
+              : selectedClassIndex;
+
+            await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), schedule);
+            syncSelectedClassSchedule(schedule);
+            selectedDayIndex = null;
+            renderSelectedSchedule();
+            showMessage(document.getElementById("dayMessage"), "✅ День удалён", "success");
+          } catch (error) {
+            showMessage(document.getElementById("dayMessage"), "❌ Ошибка: " + error.message, "error");
+          }
+        });
+      });
+
+      container.querySelectorAll(".copy-day-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const dayIndex = Number(btn.closest(".day-item").dataset.key);
+          document.getElementById("copyDayDate").value = "";
+          document.getElementById("copyDayDate").dataset.from = String(dayIndex);
+          openModal("copyDayModal");
+        });
+      });
+
+      container.querySelectorAll(".edit-lesson-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const edit = btn.closest(".lesson-card").querySelector(".lesson-edit");
+          edit.classList.toggle("open");
+        });
+      });
+
+      container.querySelectorAll(".cancel-lesson-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          btn.closest(".lesson-edit").classList.remove("open");
+        });
+      });
+
+      container.querySelectorAll(".save-lesson-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const card = btn.closest(".lesson-card");
+          const lessonIndex = Number(card.dataset.key);
+
+          const school = getSelectedSchool();
+          const classItem = school && school.classes ? school.classes[isLocalAdmin ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0) : selectedClassIndex] : null;
+
+          if (!classItem || selectedDayIndex === null) return;
+
+          const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
+          const day = schedule[selectedDayIndex];
+          const lessons = Array.isArray(day.lessons) ? [...day.lessons] : [];
+
+          lessons[lessonIndex] = {
+            name: card.querySelector(".lesson-name-input").value.trim(),
+            time: card.querySelector(".lesson-time-input").value.trim(),
+            cab: card.querySelector(".lesson-cab-input").value === "" ? null : Number(card.querySelector(".lesson-cab-input").value),
+            homework: card.querySelector(".lesson-homework-input").value
+          };
+
+          day.lessons = lessons;
+          schedule[selectedDayIndex] = day;
+
+          try {
+            const targetSchoolIndex = isLocalAdmin
+              ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
+              : selectedSchoolIndex;
+
+            const targetClassIndex = isLocalAdmin
+              ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
+              : selectedClassIndex;
+
+            await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), schedule);
+            syncSelectedClassSchedule(schedule);
+            renderSelectedSchedule();
+            showMessage(card.querySelector(".lesson-edit-message"), "✅ Урок сохранён", "success");
+          } catch (error) {
+            showMessage(card.querySelector(".lesson-edit-message"), "❌ Ошибка: " + error.message, "error");
+          }
+        });
+      });
+
+      container.querySelectorAll(".delete-lesson-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const lessonIndex = Number(btn.closest(".lesson-card").dataset.key);
+
+          const school = getSelectedSchool();
+          const classItem = school && school.classes ? school.classes[isLocalAdmin ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0) : selectedClassIndex] : null;
+          if (!classItem || selectedDayIndex === null) return;
+
+          const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
+          const day = schedule[selectedDayIndex];
+          const lessons = Array.isArray(day.lessons) ? [...day.lessons] : [];
+
+          lessons.splice(lessonIndex, 1);
+          day.lessons = lessons;
+          schedule[selectedDayIndex] = day;
+
+          try {
+            const targetSchoolIndex = isLocalAdmin
+              ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
+              : selectedSchoolIndex;
+
+            const targetClassIndex = isLocalAdmin
+              ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
+              : selectedClassIndex;
+
+            await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), schedule);
+            syncSelectedClassSchedule(schedule);
+            renderSelectedSchedule();
+          } catch (error) {
+            showMessage(document.getElementById("dayMessage"), "❌ Ошибка: " + error.message, "error");
+          }
+        });
+      });
+
+      container.querySelectorAll(".lesson-link-tool").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectedHomeworkField = btn.closest(".lesson-edit").querySelector(".lesson-homework-input");
+          document.getElementById("linkUrl").value = "";
+          document.getElementById("linkText").value = "";
+          openModal("linkModal");
+        });
+      });
+
+      container.querySelectorAll(".lesson-image-tool").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectedHomeworkField = btn.closest(".lesson-edit").querySelector(".lesson-homework-input");
+          document.getElementById("imageUrl").value = "";
+          document.getElementById("imageAlt").value = "";
+          openModal("imageModal");
+        });
+      });
+
+      container.querySelectorAll(".new-link-tool").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectedHomeworkField = btn.closest(".add-lesson-card").querySelector(".new-lesson-homework");
+          document.getElementById("linkUrl").value = "";
+          document.getElementById("linkText").value = "";
+          openModal("linkModal");
+        });
+      });
+
+      container.querySelectorAll(".new-image-tool").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectedHomeworkField = btn.closest(".add-lesson-card").querySelector(".new-lesson-homework");
+          document.getElementById("imageUrl").value = "";
+          document.getElementById("imageAlt").value = "";
+          openModal("imageModal");
+        });
+      });
+
+      container.querySelectorAll(".add-lesson-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const card = btn.closest(".add-lesson-card");
+          const school = getSelectedSchool();
+          const classItem = school && school.classes ? school.classes[isLocalAdmin ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0) : selectedClassIndex] : null;
+
+          if (!classItem || selectedDayIndex === null) return;
+
+          const name = card.querySelector(".new-lesson-name").value.trim();
+          const time = card.querySelector(".new-lesson-time").value.trim();
+          const cab = card.querySelector(".new-lesson-cab").value === "" ? null : Number(card.querySelector(".new-lesson-cab").value);
+          const homework = card.querySelector(".new-lesson-homework").value;
+
+          if (!name) {
+            showMessage(card.querySelector(".add-lesson-message"), "⚠️ Введите название урока", "error");
+            return;
+          }
+
+          const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
+          const day = schedule[selectedDayIndex];
+          const lessons = Array.isArray(day.lessons) ? [...day.lessons] : [];
+
+          lessons.push({ name, time, cab, homework });
+          day.lessons = lessons;
+          schedule[selectedDayIndex] = day;
+
+          try {
+            const targetSchoolIndex = isLocalAdmin
+              ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
+              : selectedSchoolIndex;
+
+            const targetClassIndex = isLocalAdmin
+              ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
+              : selectedClassIndex;
+
+            await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), schedule);
+            syncSelectedClassSchedule(schedule);
+            renderSelectedSchedule();
+            showMessage(card.querySelector(".add-lesson-message"), "✅ Урок добавлен", "success");
+          } catch (error) {
+            showMessage(card.querySelector(".add-lesson-message"), "❌ Ошибка: " + error.message, "error");
+          }
+        });
+      });
+    }
+
+    function renderSelectedSchedule() {
+      const schedule = getSelectedSchedule();
+      renderDayList(schedule);
+    }
+
+    function insertAtCursor(field, text) {
+      const start = field.selectionStart ?? field.value.length;
+      const end = field.selectionEnd ?? field.value.length;
+      const before = field.value.substring(0, start);
+      const after = field.value.substring(end);
+
+      field.value = before + text + after;
+      const pos = before.length + text.length;
+      field.selectionStart = pos;
+      field.selectionEnd = pos;
+    }
+
+    document.getElementById("schoolSelect").addEventListener("change", (e) => {
+      selectedSchoolIndex = Number(e.target.value);
+      const school = schoolsCache[selectedSchoolIndex];
+      const classes = school && Array.isArray(school.classes) ? school.classes : [];
+      selectedClassIndex = classes.length ? 0 : 0;
+      selectedDayIndex = null;
+      fillClassSelect();
+      renderSelectedSchedule();
     });
 
-    // ===== КОПИРОВАНИЕ УРОКОВ =====
-    container.querySelectorAll(".copy-day-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        copySourceKey = Number(btn.closest(".day-item").dataset.key);
-        document.getElementById("copyDayDate").value = "";
-        openModal("copyDayModal");
-        setTimeout(() => document.getElementById("copyDayDate").focus(), 50);
-      });
+    document.getElementById("classSelect").addEventListener("change", (e) => {
+      selectedClassIndex = Number(e.target.value);
+      selectedDayIndex = null;
+      renderSelectedSchedule();
     });
 
-    document.getElementById("confirmCopyBtn").addEventListener("click", async () => {
-      const date = document.getElementById("copyDayDate").value.trim();
-      const msg = document.getElementById("dayMessage");
+    document.getElementById("openSchoolClassModalBtn").addEventListener("click", () => {
+      document.getElementById("newSchoolName").value = "";
+      document.getElementById("newClassName").value = "";
+      const msg = document.getElementById("schoolClassMessageModal");
+      msg.textContent = "";
+      msg.className = "console-message";
+      openModal("schoolClassModal");
+    });
 
-      if (!date) {
-        showMessage(msg, "⚠️ Введите дату", "error");
-        return;
-      }
+    document.getElementById("addSchoolBtn").addEventListener("click", async () => {
+      if (isLocalAdmin) return;
 
-      if (!isValidDateString(date)) {
-        showMessage(msg, "⚠️ Введите корректную дату в формате ДД.ММ.ГГГГ", "error");
-        return;
-      }
+      const name = document.getElementById("newSchoolName").value.trim();
+      const msg = document.getElementById("schoolClassMessageModal");
 
-      if (copySourceKey === null) {
-        showMessage(msg, "❌ Ошибка: источник не выбран", "error");
-        return;
-      }
-
-      const sourceDay = scheduleCache && scheduleCache[copySourceKey];
-      if (!sourceDay) {
-        showMessage(msg, "❌ Исходный день не найден", "error");
+      if (!name) {
+        showMessage(msg, "⚠️ Введите название школы", "error");
         return;
       }
 
       try {
-        const snapshot = await get(ref(db, "schedule"));
-        const data = snapshot.exists() ? snapshot.val() : {};
+        const nextSchools = Array.isArray(schoolsCache) ? [...schoolsCache] : [];
+        nextSchools.push({ name, classes: [] });
 
-        const duplicate = Object.keys(data).some(existingKey =>
-          existingKey !== String(copySourceKey) &&
-          data[existingKey] &&
-          data[existingKey].date === date
-        );
+        await set(ref(db, "schools"), nextSchools);
+        schoolsCache = nextSchools;
 
-        if (duplicate) {
-          showMessage(msg, "⚠️ День с такой датой уже существует", "error");
-          return;
-        }
+        selectedSchoolIndex = nextSchools.length - 1;
+        selectedClassIndex = 0;
+        selectedDayIndex = null;
 
-        const keys = Object.keys(data).map(Number).filter(Number.isFinite);
-        const newKey = keys.length ? Math.max(...keys) + 1 : 0;
-
-        const copiedLessons = {};
-        const sourceLessons = sourceDay.lessons || {};
-
-        Object.keys(sourceLessons).forEach(lessonKey => {
-          const lesson = sourceLessons[lessonKey] || {};
-          copiedLessons[lessonKey] = {
-            name: lesson.name || "",
-            time: lesson.time || "",
-            cab: lesson.cab ?? null
-          };
-        });
-
-        await set(ref(db, "schedule/" + newKey), {
-          date,
-          lessons: copiedLessons
-        });
-
+        document.getElementById("newSchoolName").value = "";
+        fillSchoolSelect();
+        fillClassSelect();
+        renderSelectedSchedule();
         closeAllModals();
 
-        const updatedSnapshot = await get(ref(db, "schedule"));
-        scheduleCache = updatedSnapshot.exists() ? updatedSnapshot.val() : null;
-        renderCurrentSchedule();
-
-        showMessage(msg, "✅ Уроки скопированы на " + formatScheduleDate(date), "success");
-      } catch (e) {
-        showMessage(msg, "❌ Ошибка: " + e.message, "error");
+        showMessage(msg, "✅ Школа добавлена", "success");
+      } catch (error) {
+        showMessage(msg, "❌ Ошибка: " + error.message, "error");
       }
     });
 
-    container.querySelectorAll(".delete-day-btn").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const key = Number(btn.closest(".day-item").dataset.key);
+    document.getElementById("deleteSchoolBtn").addEventListener("click", async () => {
+      if (isLocalAdmin) return;
 
-        if (!confirm("Удалить весь день и все его уроки?")) return;
+      const msg = document.getElementById("schoolClassMessage");
 
-        try {
-          await remove(ref(db, "schedule/" + key));
+      if (!Array.isArray(schoolsCache) || !schoolsCache.length) {
+        showMessage(msg, "⚠️ Школ нет", "error");
+        return;
+      }
 
-          if (selectedDayKey === key) selectedDayKey = null;
-          showMessage(document.getElementById("dayMessage"), "✅ День удалён", "success");
-        } catch (e) {
-          showMessage(document.getElementById("dayMessage"), "❌ Ошибка: " + e.message, "error");
-        }
-      });
+      const currentSchoolName = schoolsCache[selectedSchoolIndex]?.name || "выбранную школу";
+      if (!confirm(`Удалить школу "${currentSchoolName}"?`)) return;
+
+      try {
+        const nextSchools = schoolsCache.filter((_, index) => index !== selectedSchoolIndex);
+
+        await set(ref(db, "schools"), nextSchools);
+        schoolsCache = nextSchools;
+
+        selectedSchoolIndex = nextSchools.length ? Math.min(selectedSchoolIndex, nextSchools.length - 1) : 0;
+        selectedClassIndex = 0;
+        selectedDayIndex = null;
+
+        fillSchoolSelect();
+        fillClassSelect();
+        renderSelectedSchedule();
+        showMessage(msg, "✅ Школа удалена", "success");
+      } catch (error) {
+        showMessage(msg, "❌ Ошибка: " + error.message, "error");
+      }
     });
 
-    container.querySelectorAll(".edit-lesson-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        btn.closest(".lesson-card").querySelector(".lesson-edit").classList.toggle("open");
-      });
-    });
+    document.getElementById("addClassBtn").addEventListener("click", async () => {
+      if (isLocalAdmin) return;
 
-    container.querySelectorAll(".cancel-lesson-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        btn.closest(".lesson-edit").classList.remove("open");
-      });
-    });
+      const name = document.getElementById("newClassName").value.trim();
+      const msg = document.getElementById("schoolClassMessageModal");
 
-    container.querySelectorAll(".save-lesson-btn").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const item = btn.closest(".lesson-card");
-        const key = Number(item.dataset.key);
+      if (!name) {
+        showMessage(msg, "⚠️ Введите название класса", "error");
+        return;
+      }
 
-        const name = item.querySelector(".lesson-name-input").value.trim();
-        const time = item.querySelector(".lesson-time-input").value.trim();
-        const cabRaw = item.querySelector(".lesson-cab-input").value.trim();
-        const cab = cabRaw === "" ? null : Number(cabRaw);
-        const homework = item.querySelector(".lesson-homework-input").value;
-
-        const msg = item.querySelector(".lesson-edit-message");
-
-        if (!name) {
-          showMessage(msg, "⚠️ Введите название урока", "error");
+      try {
+        const school = getSelectedSchool();
+        if (!school) {
+          showMessage(msg, "⚠️ Сначала выберите или создайте школу", "error");
           return;
         }
 
-        try {
-          await update(ref(db, `schedule/${selectedDayKey}/lessons/${key}`), {
-            name, time, cab, homework
-          });
+        const nextSchool = {
+          ...school,
+          classes: Array.isArray(school.classes) ? [...school.classes] : []
+        };
 
-          showMessage(msg, "✅ Урок и ДЗ сохранены", "success");
-        } catch (e) {
-          showMessage(msg, "❌ Ошибка: " + e.message, "error");
-        }
-      });
+        nextSchool.classes.push({ name, schedule: [] });
+
+        await set(ref(db, `schools/${selectedSchoolIndex}`), nextSchool);
+
+        schoolsCache[selectedSchoolIndex] = nextSchool;
+        selectedClassIndex = nextSchool.classes.length - 1;
+        selectedDayIndex = null;
+
+        document.getElementById("newClassName").value = "";
+        fillClassSelect();
+        renderSelectedSchedule();
+        closeAllModals();
+
+        showMessage(msg, "✅ Класс добавлен", "success");
+      } catch (error) {
+        showMessage(msg, "❌ Ошибка: " + error.message, "error");
+      }
     });
 
-    container.querySelectorAll(".delete-lesson-btn").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const key = Number(btn.closest(".lesson-card").dataset.key);
+    document.getElementById("deleteClassBtn").addEventListener("click", async () => {
+      if (isLocalAdmin) return;
 
-        if (!confirm("Удалить этот урок вместе с домашним заданием?")) return;
+      const msg = document.getElementById("schoolClassMessage");
 
-        try {
-          await remove(ref(db, `schedule/${selectedDayKey}/lessons/${key}`));
-        } catch (e) {
-          showMessage(document.getElementById("dayMessage"), "❌ Ошибка: " + e.message, "error");
-        }
-      });
+      const school = getSelectedSchool();
+      if (!school || !Array.isArray(school.classes) || !school.classes.length) {
+        showMessage(msg, "⚠️ В выбранной школе нет классов", "error");
+        return;
+      }
+
+      const currentClassName = school.classes[selectedClassIndex]?.name || "выбранный класс";
+      if (!confirm(`Удалить класс "${currentClassName}"?`)) return;
+
+      try {
+        const nextSchool = {
+          ...school,
+          classes: school.classes.filter((_, index) => index !== selectedClassIndex)
+        };
+
+        await set(ref(db, `schools/${selectedSchoolIndex}`), nextSchool);
+
+        schoolsCache[selectedSchoolIndex] = nextSchool;
+        selectedClassIndex = nextSchool.classes.length ? Math.min(selectedClassIndex, nextSchool.classes.length - 1) : 0;
+        selectedDayIndex = null;
+
+        fillClassSelect();
+        renderSelectedSchedule();
+        showMessage(msg, "✅ Класс удалён", "success");
+      } catch (error) {
+        showMessage(msg, "❌ Ошибка: " + error.message, "error");
+      }
     });
 
-    container.querySelectorAll(".lesson-link-tool").forEach(btn => {
-      btn.addEventListener("click", () => {
-        selectedHomeworkField = btn.closest(".lesson-edit").querySelector(".lesson-homework-input");
-        document.getElementById("linkUrl").value = "";
-        document.getElementById("linkText").value = "";
-        openModal("linkModal");
-        setTimeout(() => document.getElementById("linkUrl").focus(), 50);
-      });
+    document.getElementById("addDayOpenBtn").addEventListener("click", () => {
+      if (isLocalAdmin) {
+        document.getElementById("addDayDate").value = "";
+        openModal("addDayModal");
+        return;
+      }
+
+      document.getElementById("addDayDate").value = "";
+      openModal("addDayModal");
     });
 
-    container.querySelectorAll(".lesson-image-tool").forEach(btn => {
-      btn.addEventListener("click", () => {
-        selectedHomeworkField = btn.closest(".lesson-edit").querySelector(".lesson-homework-input");
-        document.getElementById("imageUrl").value = "";
-        document.getElementById("imageAlt").value = "";
-        openModal("imageModal");
-        setTimeout(() => document.getElementById("imageUrl").focus(), 50);
-      });
+    document.getElementById("addDayBtn").addEventListener("click", async () => {
+      const date = dateInputToScheduleDate(document.getElementById("addDayDate").value);
+      const msg = document.getElementById("dayMessage");
+
+      if (!date) {
+        closeAllModals();
+        showMessage(msg, "⚠️ Выберите дату дня", "error");
+        return;
+      }
+
+      const targetSchoolIndex = isLocalAdmin
+        ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
+        : selectedSchoolIndex;
+
+      const targetClassIndex = isLocalAdmin
+        ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
+        : selectedClassIndex;
+
+      const school = schoolsCache[targetSchoolIndex];
+      const classItem = school && school.classes ? school.classes[targetClassIndex] : null;
+
+      if (!classItem) {
+        showMessage(msg, "⚠️ Сначала выберите класс", "error");
+        return;
+      }
+
+      const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
+      const exists = schedule.some((day) => day.date === date);
+
+      if (exists) {
+        closeAllModals();
+        showMessage(msg, "⚠️ Такой день уже существует", "error");
+        return;
+      }
+
+      schedule.push({ date, lessons: [] });
+
+      try {
+        await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), schedule);
+        syncSelectedClassSchedule(schedule);
+
+        closeAllModals();
+        selectedDayIndex = schedule.length - 1;
+        renderSelectedSchedule();
+        showMessage(msg, "✅ День добавлен", "success");
+      } catch (error) {
+        showMessage(msg, "❌ Ошибка: " + error.message, "error");
+      }
     });
 
-    container.querySelectorAll(".new-link-tool").forEach(btn => {
-      btn.addEventListener("click", () => {
-        selectedHomeworkField = btn.closest(".add-lesson-card").querySelector(".new-lesson-homework");
-        document.getElementById("linkUrl").value = "";
-        document.getElementById("linkText").value = "";
-        openModal("linkModal");
-      });
+    document.getElementById("confirmCopyBtn").addEventListener("click", async () => {
+      const dateInputValue = document.getElementById("copyDayDate").value;
+      const fromIndex = Number(document.getElementById("copyDayDate").dataset.from || "0");
+      const date = dateInputToScheduleDate(dateInputValue);
+      const msg = document.getElementById("dayMessage");
+
+      if (!date) {
+        showMessage(msg, "⚠️ Выберите корректную дату", "error");
+        return;
+      }
+
+      const targetSchoolIndex = isLocalAdmin
+        ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
+        : selectedSchoolIndex;
+
+      const targetClassIndex = isLocalAdmin
+        ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
+        : selectedClassIndex;
+
+      const school = schoolsCache[targetSchoolIndex];
+      const classItem = school && school.classes ? school.classes[targetClassIndex] : null;
+      if (!classItem) return;
+
+      const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
+      const alreadyExists = schedule.some((d) => d.date === date);
+
+      if (alreadyExists) {
+        showMessage(msg, "⚠️ День с такой датой уже существует", "error");
+        return;
+      }
+
+      const source = schedule[fromIndex];
+      if (!source) {
+        showMessage(msg, "⚠️ Источник не найден", "error");
+        return;
+      }
+
+      const copied = {
+        date,
+        lessons: Array.isArray(source.lessons) ? source.lessons.map((lesson) => ({ ...lesson })) : []
+      };
+
+      schedule.push(copied);
+
+      try {
+        await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), schedule);
+        syncSelectedClassSchedule(schedule);
+        closeAllModals();
+        selectedDayIndex = schedule.length - 1;
+        renderSelectedSchedule();
+        showMessage(msg, "✅ Уроки скопированы", "success");
+      } catch (error) {
+        showMessage(msg, "❌ Ошибка: " + error.message, "error");
+      }
     });
 
-    container.querySelectorAll(".new-image-tool").forEach(btn => {
-      btn.addEventListener("click", () => {
-        selectedHomeworkField = btn.closest(".add-lesson-card").querySelector(".new-lesson-homework");
-        document.getElementById("imageUrl").value = "";
-        document.getElementById("imageAlt").value = "";
-        openModal("imageModal");
-      });
+    document.getElementById("confirmLinkBtn").addEventListener("click", () => {
+      const url = safeUrl(document.getElementById("linkUrl").value.trim());
+      const text = document.getElementById("linkText").value.trim();
+
+      if (!url || !selectedHomeworkField) return;
+
+      const link = `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(text || url)}</a>`;
+      insertAtCursor(selectedHomeworkField, link);
+
+      closeAllModals();
+      selectedHomeworkField.focus();
     });
 
-    container.querySelectorAll(".add-lesson-btn").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const box = btn.closest(".add-lesson-card");
-        const name = box.querySelector(".new-lesson-name").value.trim();
-        const time = box.querySelector(".new-lesson-time").value.trim();
-        const cabRaw = box.querySelector(".new-lesson-cab").value.trim();
-        const cab = cabRaw === "" ? null : Number(cabRaw);
-        const homework = box.querySelector(".new-lesson-homework").value;
-        const msg = box.querySelector(".add-lesson-message");
+    document.getElementById("confirmImageBtn").addEventListener("click", () => {
+      const url = safeUrl(document.getElementById("imageUrl").value.trim());
+      const alt = document.getElementById("imageAlt").value.trim();
 
-        if (!name) {
-          showMessage(msg, "⚠️ Введите название урока", "error");
+      if (!url || !selectedHomeworkField) return;
+
+      const image = `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt || "Изображение")}" style="max-width:100%;height:auto;border-radius:12px;">`;
+      insertAtCursor(selectedHomeworkField, image);
+
+      closeAllModals();
+      selectedHomeworkField.focus();
+    });
+
+    document.getElementById("addNewsBtn").addEventListener("click", async () => {
+      if (isLocalAdmin) return;
+
+      const title = document.getElementById("addTitle").value.trim();
+      const desc = document.getElementById("addDesc").value.trim();
+      const rawDate = Number(document.getElementById("addDate").value || Date.now() / 1000);
+
+      if (!title || !desc) {
+        showMessage(document.getElementById("addMessage"), "⚠️ Заполните заголовок и текст", "error");
+        return;
+      }
+
+      try {
+        const snap = await get(ref(db, "news"));
+        const data = snap.exists() ? snap.val() : {};
+        const nextKey = Date.now().toString();
+
+        const payload = { ...data, [nextKey]: { title, desc, date: rawDate } };
+        await set(ref(db, "news"), payload);
+
+        document.getElementById("addTitle").value = "";
+        document.getElementById("addDesc").value = "";
+        document.getElementById("addDate").value = "";
+        showMessage(document.getElementById("addMessage"), "✅ Новость добавлена", "success");
+        renderNewsList();
+      } catch (error) {
+        showMessage(document.getElementById("addMessage"), "❌ Ошибка: " + error.message, "error");
+      }
+    });
+
+    document.getElementById("deleteNewsBtn").addEventListener("click", async () => {
+      if (isLocalAdmin) return;
+
+      const index = Number(document.getElementById("deleteIndex").value);
+      if (!Number.isFinite(index)) {
+        showMessage(document.getElementById("deleteMessage"), "⚠️ Укажите индекс новости", "error");
+        return;
+      }
+
+      try {
+        const snap = await get(ref(db, "news"));
+        const data = snap.exists() ? snap.val() : {};
+        const keys = Object.keys(data);
+
+        if (!keys[index]) {
+          showMessage(document.getElementById("deleteMessage"), "⚠️ Такой новости нет", "error");
           return;
         }
 
-        try {
-          const snapshot = await get(ref(db, `schedule/${selectedDayKey}/lessons`));
-          const data = snapshot.exists() ? snapshot.val() : {};
-          const keys = Object.keys(data).map(Number).filter(Number.isFinite);
-          const newKey = keys.length ? Math.max(...keys) + 1 : 0;
+        const target = keys[index];
+        const newData = { ...data };
+        delete newData[target];
 
-          await set(ref(db, `schedule/${selectedDayKey}/lessons/${newKey}`), {
-            name, time, cab, homework
-          });
-
-          showMessage(msg, "✅ Урок добавлен", "success");
-          box.querySelector(".new-lesson-name").value = "";
-          box.querySelector(".new-lesson-time").value = "";
-          box.querySelector(".new-lesson-cab").value = "";
-          box.querySelector(".new-lesson-homework").value = "";
-        } catch (e) {
-          showMessage(msg, "❌ Ошибка: " + e.message, "error");
-        }
-      });
+        await set(ref(db, "news"), newData);
+        showMessage(document.getElementById("deleteMessage"), "✅ Новость удалена", "success");
+        renderNewsList();
+      } catch (error) {
+        showMessage(document.getElementById("deleteMessage"), "❌ Ошибка: " + error.message, "error");
+      }
     });
-  }
 
-  function renderCurrentSchedule() {
-    renderDayList(scheduleCache);
-  }
+    async function renderNewsList() {
+      if (isLocalAdmin) return;
 
-  onValue(ref(db, "schedule"), snapshot => {
-    scheduleCache = snapshot.exists() ? snapshot.val() : null;
+      const list = document.getElementById("editNewsList");
 
-    if (selectedDayKey !== null && scheduleCache && !scheduleCache[selectedDayKey]) {
-      selectedDayKey = null;
+      try {
+        const snap = await get(ref(db, "news"));
+        const data = snap.exists() ? snap.val() : {};
+        const keys = Object.keys(data);
+
+        if (!keys.length) {
+          list.innerHTML = `<div class="empty-state">Новостей пока нет.</div>`;
+          return;
+        }
+
+        list.innerHTML = keys.map((key) => {
+          const item = data[key];
+          return `
+            <div class="news-item">
+              <div class="news-item-head">
+                <div>
+                  <div class="news-item-title">${escapeHtml(item.title || "Без названия")}</div>
+                  <div class="news-item-meta">${new Date(Number(item.date || 0) * 1000).toLocaleString("ru-RU")}</div>
+                </div>
+                <div class="news-actions">
+                  <button class="btn-console btn-console-danger" data-delete-news="${key}">🗑️</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        list.querySelectorAll("[data-delete-news]").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            const key = btn.dataset.deleteNews;
+
+            try {
+              const snap = await get(ref(db, "news"));
+              const data = snap.exists() ? snap.val() : {};
+              const newData = { ...data };
+              delete newData[key];
+              await set(ref(db, "news"), newData);
+              renderNewsList();
+            } catch (error) {
+              console.error("Delete news error:", error);
+            }
+          });
+        });
+      } catch (error) {
+        console.error("renderNewsList error:", error);
+        list.innerHTML = `<div class="empty-state">Не удалось загрузить новости.</div>`;
+      }
     }
 
-    renderCurrentSchedule();
-  });
+    function resolveSchoolIndexFromProfile(profile, schools = []) {
+      const raw = profile?.schoolIndex ?? profile?.allowedSchoolIndex ?? profile?.school ?? profile?.schoolId ?? 0;
 
-  // ===== ССЫЛКИ / ИЗОБРАЖЕНИЯ =====
-  document.getElementById("confirmLinkBtn").addEventListener("click", () => {
-    const url = safeUrl(document.getElementById("linkUrl").value.trim());
-    const text = document.getElementById("linkText").value.trim();
+      if (raw === null || raw === undefined || raw === "") return 0;
 
-    if (!url) {
-      alert("Введите корректный URL, начинающийся с http:// или https://");
-      return;
+      if (Number.isInteger(Number(raw))) {
+        const idx = Number(raw);
+        return idx >= 0 && idx < schools.length ? idx : 0;
+      }
+
+      const value = String(raw).trim();
+      const found = schools.findIndex((school) => {
+        const candidates = [school?.id, school?.schoolId, school?.name, school?.title];
+        return candidates.some((item) => String(item ?? "").trim() === value);
+      });
+
+      return found >= 0 ? found : 0;
     }
 
-    if (!selectedHomeworkField) return;
+    function resolveClassIndexFromProfile(profile, school, classes = []) {
+      const raw = profile?.classIndex ?? profile?.allowedClassIndex ?? profile?.class ?? profile?.classId ?? 0;
 
-    const link = `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(text || url)}</a>`;
-    insertAtCursor(selectedHomeworkField, link);
+      if (raw === null || raw === undefined || raw === "") return 0;
 
-    closeAllModals();
-    selectedHomeworkField.focus();
-  });
+      if (Number.isInteger(Number(raw))) {
+        const idx = Number(raw);
+        return idx >= 0 && idx < classes.length ? idx : 0;
+      }
 
-  document.getElementById("confirmImageBtn").addEventListener("click", () => {
-    const url = safeUrl(document.getElementById("imageUrl").value.trim());
-    const alt = document.getElementById("imageAlt").value.trim();
+      const value = String(raw).trim();
+      const found = classes.findIndex((cls) => {
+        const candidates = [cls?.id, cls?.classId, cls?.name, cls?.title];
+        return candidates.some((item) => String(item ?? "").trim() === value);
+      });
 
-    if (!url) {
-      alert("Введите корректный URL изображения");
-      return;
+      return found >= 0 ? found : 0;
     }
 
-    if (!selectedHomeworkField) return;
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = AUTH_URL;
+        return;
+      }
 
-    const image = `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt || "Изображение")}" style="max-width:100%;height:auto;border-radius:12px;">`;
-    insertAtCursor(selectedHomeworkField, image);
+      const profile = await getUserProfile(user);
+      applyAccessRights(profile);
 
-    closeAllModals();
-    selectedHomeworkField.focus();
-  });
+      await renderHeader(user);
 
-  function insertAtCursor(field, text) {
-    const start = field.selectionStart ?? field.value.length;
-    const end = field.selectionEnd ?? field.value.length;
-    const before = field.value.substring(0, start);
-    const after = field.value.substring(end);
+      const status = Number(profile.status ?? 0);
+      const isFullAdmin = status === 2;
+      const isLocalAdminUser = status === 3;
 
-    field.value = before + (before && !/\s$/.test(before) ? " " : "") + text +
-      (after && !/^\s/.test(after) ? " " : "") + after;
+      if (!isFullAdmin && !isLocalAdminUser) {
+        userArea.innerHTML = `
+          <a href="account.html" class="user-badge">
+            <span class="material-symbols-outlined">account_circle</span>
+            ${escapeHtml(user.email || "Пользователь")}
+          </a>
+        `;
+        alert("Доступ только для администратора.");
+        window.location.href = "index.html";
+        return;
+      }
 
-    const pos = (before + (before && !/\s$/.test(before) ? " " : "") + text).length;
-    field.selectionStart = pos;
-    field.selectionEnd = pos;
-  }
+      await loadSchools();
 
-  document.addEventListener("keydown", e => {
-    if (e.key !== "Enter" || e.shiftKey) return;
-
-    if (e.target.matches("input") && e.target.closest(".modal")) {
-      e.preventDefault();
-      const modal = e.target.closest(".modal");
-      const button = modal.querySelector(".btn-console-primary, .btn-console-success");
-      if (button) button.click();
-    }
-  });
-
-  async function checkAdmin(user) {
-    if (!user) {
-      window.location.href = AUTH_URL;
-      return false;
-    }
-
-    try {
-      const snapshot = await get(ref(db, "users/" + user.uid));
-
-      if (snapshot.exists() && snapshot.val().status === 2) return true;
-
-      alert("⛔ У вас нет прав администратора");
-      window.location.href = "index.html";
-      return false;
-    } catch (e) {
-      console.error("Ошибка проверки прав:", e);
-      return false;
-    }
-  }
-
-  onAuthStateChanged(auth, async user => {
-    if (!user) {
-      window.location.href = AUTH_URL;
-      return;
-    }
-
-    renderHeader(user);
-
-    const isAdmin = await checkAdmin(user);
-    if (!isAdmin) return;
-  });
-
-  console.log("✅ Консоль готова");
-</script>
+      if (status === 2) {
+        await renderNewsList();
+      }
+    });
+  </script>
 </body>
 </html>
