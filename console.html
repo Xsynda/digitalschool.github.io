@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <link rel="icon" type="image/png" href="logo.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Консоль · Электронная школа</title>
@@ -41,7 +42,6 @@
     button, input, textarea, select { font: inherit; }
     button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
 
-    /* ===== Единая навигация ===== */
     .navbar {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -49,7 +49,7 @@
       background: #ffffff;
       border-bottom: 1px solid var(--border);
       box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06);
-      padding: 12px 24px;
+      padding: 10px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -61,782 +61,635 @@
       display: flex;
       align-items: center;
       gap: 16px;
+      flex-wrap: wrap;
+      min-width: 0;
     }
 
     .logo-area {
       display: flex;
       align-items: center;
       gap: 10px;
+      text-decoration: none;
+      flex-shrink: 0;
     }
 
-    .logo-icon {
-      width: 40px;
-      height: 40px;
+    .logo-img {
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
+      object-fit: cover;
+      display: block;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.18);
+      background: #ffffff;
+    }
+
+    .logo-fallback {
+      display: none;
       background: var(--blue);
       color: #fff;
-      display: flex;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
       align-items: center;
       justify-content: center;
       font-size: 20px;
       font-weight: 700;
       box-shadow: 0 4px 12px rgba(42,125,225,.2);
+      flex-shrink: 0;
     }
 
-    .logo-text {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      color: var(--text);
-    }
+    .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: var(--text); white-space: nowrap; }
+    .logo-text span { color: var(--blue); }
 
-    .logo-text span {
-      color: var(--blue);
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
     .nav-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 18px;
-      border-radius: 40px;
-      font-weight: 500;
-      font-size: 14px;
-      color: #1f2b48;
-      text-decoration: none;
-      background: transparent;
-      border: 1.5px solid transparent;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border-radius: 40px; font-weight: 500;
+      font-size: 14px; color: #1f2b48; text-decoration: none;
+      background: transparent; border: 1.5px solid transparent;
       transition: .15s ease;
+      white-space: nowrap;
     }
 
-    .nav-link:hover {
-      background: #f0f4fe;
-      border-color: #d0dae9;
+    .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
+    .nav-link.active { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+    .nav-link .material-symbols-outlined { font-size: 18px; }
+
+    .nav-link.admin-link {
+      background: #fff3e0;
+      border-color: #ff9800;
+      color: #e65100;
+    }
+    .nav-link.admin-link:hover {
+      background: #ffe0b2;
+      border-color: #f57c00;
+    }
+    .nav-link.admin-link.active {
+      background: #ffe0b2;
+      border-color: #f57c00;
+      color: #e65100;
     }
 
-    .nav-link.active {
-      background: var(--blue-soft);
-      border-color: var(--blue);
-      color: var(--blue);
-    }
-
-    .nav-link .material-symbols-outlined {
-      font-size: 18px;
-    }
-
-    .navbar-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    .navbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex-shrink: 0; }
 
     .user-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #f0f6ff;
-      padding: 6px 16px 6px 12px;
-      border-radius: 40px;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
-      text-decoration: none;
-      transition: .15s ease;
-      cursor: pointer;
-      border: none;
-      font-family: "Inter", sans-serif;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #f0f6ff; padding: 6px 16px 6px 12px; border-radius: 40px;
+      font-size: 14px; font-weight: 500; color: var(--text);
+      text-decoration: none; transition: .15s ease;
+      cursor: pointer; border: none; font-family: "Inter", sans-serif;
+      max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    .user-badge:hover {
-      background: #e5effb;
-      transform: scale(.97);
+    .user-badge:hover { background: #e5effb; transform: scale(.97); }
+    .user-badge .material-symbols-outlined { color: var(--blue); font-size: 20px; flex-shrink: 0; }
+    .user-badge .user-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .user-badge .material-symbols-outlined {
-      color: var(--blue);
-      font-size: 20px;
-    }
-
-    /* ===== Контейнер ===== */
     .container {
-      max-width: 1100px;
-      margin: 24px auto;
-      background: var(--card);
-      border-radius: 48px;
+      max-width: 1100px; margin: 24px auto;
+      background: var(--card); border-radius: 48px;
       box-shadow: 0 24px 60px rgba(0,20,40,.08);
-      padding: 32px 40px 44px;
-      border: 1px solid #f0f5fe;
+      padding: 32px 40px 44px; border: 1px solid #f0f5fe;
     }
 
     .page-title {
-      font-size: 26px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
+      font-size: 26px; font-weight: 600;
+      display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
     }
 
-    .page-title .material-symbols-outlined {
-      color: var(--purple);
-      font-size: 32px;
-    }
+    .page-title .material-symbols-outlined { color: var(--purple); font-size: 32px; }
 
-    .page-sub {
-      color: var(--text-soft);
-      font-size: 15px;
-      margin-bottom: 26px;
-    }
+    .page-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 26px; }
 
     .tab-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 12px;
-      flex-wrap: wrap;
+      display: flex; gap: 8px; margin-bottom: 24px;
+      border-bottom: 1px solid var(--border); padding-bottom: 12px; flex-wrap: wrap;
     }
 
     .tab-btn {
-      border: 0;
-      background: transparent;
-      color: #6a7f9e;
-      padding: 9px 18px;
-      border-radius: 40px;
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 14px;
-      transition: .15s;
+      border: 0; background: transparent; color: #6a7f9e;
+      padding: 9px 18px; border-radius: 40px;
+      cursor: pointer; font-weight: 500; font-size: 14px; transition: .15s;
     }
 
-    .tab-btn:hover {
-      background: #f0f4fe;
-      color: var(--text);
-    }
+    .tab-btn:hover { background: #f0f4fe; color: var(--text); }
+    .tab-btn.active { background: var(--blue-soft); color: var(--blue); }
 
-    .tab-btn.active {
-      background: var(--blue-soft);
-      color: var(--blue);
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
     .console-card {
-      background: var(--soft-card);
-      border-radius: 24px;
-      padding: 20px 24px;
-      border: 1px solid var(--border);
-      margin-bottom: 20px;
+      background: var(--soft-card); border-radius: 24px;
+      padding: 20px 24px; border: 1px solid var(--border); margin-bottom: 20px;
     }
 
     .card-label {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 15px; font-weight: 600; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
     }
 
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
     .field-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;
     }
 
-    .field-grid.three {
-      grid-template-columns: 1.2fr 1fr .7fr;
+    .field-grid.three { grid-template-columns: 1.2fr 1fr .7fr; }
+
+    .input, .console-card input, .console-card textarea, .console-card select {
+      width: 100%; border: 1.5px solid var(--input-border);
+      background: #fff; color: var(--text);
+      border-radius: 15px; padding: 11px 14px;
+      font-size: 14px; outline: none; transition: .15s;
     }
 
-    .input,
-    .console-card input,
-    .console-card textarea,
-    .console-card select {
-      width: 100%;
-      border: 1.5px solid var(--input-border);
-      background: #fff;
-      color: var(--text);
-      border-radius: 15px;
-      padding: 11px 14px;
-      font-size: 14px;
-      outline: none;
-      transition: .15s;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 84px;
-    }
+    textarea { resize: vertical; min-height: 84px; }
 
     .console-card input:focus,
     .console-card textarea:focus,
     .console-card select:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 4px rgba(42,125,225,.10);
+      border-color: var(--blue); box-shadow: 0 0 0 4px rgba(42,125,225,.10);
     }
 
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 
     .btn-console {
-      border: 0;
-      min-height: 38px;
-      padding: 8px 16px;
-      border-radius: 40px;
-      font-weight: 500;
-      font-size: 13px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      border: 0; min-height: 38px; padding: 8px 16px; border-radius: 40px;
+      font-weight: 500; font-size: 13px; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
       transition: .2s;
     }
 
-    .btn-console:hover {
-      transform: scale(.98);
-    }
+    .btn-console:hover { transform: scale(.98); }
+    .btn-console:disabled { opacity: .55; cursor: not-allowed; transform: none; }
 
-    .btn-console:disabled {
-      opacity: .55;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .btn-console-primary { background: var(--blue); color: #fff; }
+    .btn-console-primary:hover { background: var(--blue-dark); }
 
-    .btn-console-primary {
-      background: var(--blue);
-      color: #fff;
-    }
+    .btn-console-success { background: var(--green); color: #fff; }
+    .btn-console-danger { background: var(--red); color: #fff; }
+    .btn-console-outline { background: #fff; color: #1f2b48; border: 1.5px solid #d0dae9; }
 
-    .btn-console-primary:hover {
-      background: var(--blue-dark);
-    }
-
-    .btn-console-success {
-      background: var(--green);
-      color: #fff;
-    }
-
-    .btn-console-danger {
-      background: var(--red);
-      color: #fff;
-    }
-
-    .btn-console-outline {
-      background: #fff;
-      color: #1f2b48;
-      border: 1.5px solid #d0dae9;
-    }
-
-    .btn-console-warning {
-      background: var(--orange);
-      color: #fff;
-    }
-
-    .btn-console-warning:hover {
-      background: #d97706;
-    }
+    .btn-console-warning { background: var(--orange); color: #fff; }
+    .btn-console-warning:hover { background: #d97706; }
 
     .console-message {
-      display: none;
-      font-size: 13px;
-      padding: 9px 14px;
-      border-radius: 40px;
-      margin-top: 10px;
-      line-height: 1.4;
+      display: none; font-size: 13px; padding: 9px 14px;
+      border-radius: 40px; margin-top: 10px; line-height: 1.4;
     }
 
-    .console-message.show {
-      display: block;
-    }
-
-    .console-message.success {
-      background: var(--green-soft);
-      color: var(--green);
-    }
-
-    .console-message.error {
-      background: var(--red-soft);
-      color: var(--red);
-    }
+    .console-message.show { display: block; }
+    .console-message.success { background: var(--green-soft); color: var(--green); }
+    .console-message.error { background: var(--red-soft); color: var(--red); }
 
     .schedule-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 12px; margin-bottom: 14px; flex-wrap: wrap;
     }
 
-    .day-list {
-      display: grid;
-      gap: 10px;
+    .week-list { display: grid; gap: 16px; }
+
+    .week-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 24px; overflow: hidden; transition: .15s;
     }
 
-    .day-item {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-      transition: .15s;
-    }
-
-    .day-item.selected {
+    .week-card.current {
       border-color: #c7d9f0;
       box-shadow: 0 5px 18px rgba(42,125,225,.08);
     }
 
-    .day-main {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 12px;
-      padding: 15px 18px;
-    }
-
-    .day-info {
-      min-width: 0;
-    }
-
-    .day-name {
-      font-size: 16px;
-      font-weight: 600;
-      word-break: break-word;
-    }
-
-    .day-meta {
-      color: var(--text-soft);
-      font-size: 13px;
-      margin-top: 3px;
-    }
-
-    .day-actions {
-      display: flex;
-      gap: 7px;
+    .week-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 14px 18px;
+      background: #f7fbff; border-bottom: 1px solid var(--border);
       flex-wrap: wrap;
-      justify-content: flex-end;
     }
 
-    .day-edit {
+    .week-title {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 16px; font-weight: 600; color: var(--text);
+      flex-wrap: wrap;
+    }
+
+    .week-badge {
+      font-size: 11px; font-weight: 600; padding: 3px 10px;
+      border-radius: 40px; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+
+    .week-badge.current { background: var(--blue-soft); color: var(--blue); }
+    .week-badge.past { background: #eef3fa; color: #6a7f9e; }
+    .week-badge.future { background: var(--green-soft); color: var(--green); }
+
+    .week-actions { display: flex; gap: 7px; flex-wrap: wrap; }
+
+    .week-days {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      padding: 14px 14px;
+    }
+
+    .week-day {
+      background: #f9fcff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 10px 10px;
+      min-height: 90px;
+      display: flex; flex-direction: column; gap: 6px;
+      transition: .15s;
+    }
+
+    .week-day.has-day { cursor: pointer; background: #fff; }
+
+    .week-day.has-day:hover {
+      border-color: #c7d9f0;
+      box-shadow: 0 4px 12px rgba(42,125,225,.08);
+      transform: translateY(-1px);
+    }
+
+    .week-day.empty { opacity: 0.5; border-style: dashed; }
+    .week-day.past { opacity: 0.75; }
+
+    .week-day.selected {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(42,125,225,.12);
+      background: #fff;
+    }
+
+    .week-day-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 6px;
+    }
+
+    .week-day-name {
+      font-size: 12px; font-weight: 700; color: #1f2b48;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+
+    .week-day-date { font-size: 11px; color: var(--text-soft); }
+
+    .week-day-lessons {
+      font-size: 12px; color: #3d5270;
+      line-height: 1.35; flex: 1; overflow: hidden;
+    }
+
+    .week-day-lessons .lesson-line {
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .week-day-empty {
+      font-size: 11px; color: #a0b3cc; font-style: italic;
+      margin-top: auto;
+    }
+
+    .week-day-count {
+      font-size: 11px; color: var(--text-soft);
+      margin-top: auto;
+    }
+
+    .week-detail {
       display: none;
-      padding: 0 18px 16px;
       border-top: 1px solid var(--border);
       background: #fbfdff;
+      padding: 16px 18px;
     }
 
-    .day-edit.open {
-      display: block;
-      padding-top: 14px;
+    .week-detail.open { display: block; }
+
+    .day-list { display: grid; gap: 10px; }
+
+    .day-item {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 20px; overflow: hidden; transition: .15s;
     }
 
-    .lesson-list {
-      display: grid;
-      gap: 10px;
+    .day-item.selected { border-color: #c7d9f0; box-shadow: 0 5px 18px rgba(42,125,225,.08); }
+    .day-item.past { opacity: 0.75; }
+    .day-item.past .day-name { color: #6a7f9e; }
+
+    .day-main {
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: center; gap: 12px; padding: 15px 18px;
     }
+
+    .day-info { min-width: 0; }
+
+    .day-name {
+      font-size: 16px; font-weight: 600; word-break: break-word;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+
+    .day-past-badge {
+      font-size: 11px; font-weight: 500; color: #6a7f9e;
+      background: #eef3fa; padding: 2px 10px; border-radius: 40px;
+    }
+
+    .day-meta { color: var(--text-soft); font-size: 13px; margin-top: 3px; }
+
+    .day-actions { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .day-edit {
+      display: none; padding: 0 18px 16px;
+      border-top: 1px solid var(--border); background: #fbfdff;
+    }
+
+    .day-edit.open { display: block; padding-top: 14px; }
+
+    .lesson-list { display: grid; gap: 10px; }
 
     .lesson-card {
-      background: #fff;
-      border: 1px solid var(--border);
+      background: #fff; border: 1px solid var(--border);
       border-left: 3px solid var(--blue);
-      border-radius: 18px;
-      overflow: hidden;
+      border-radius: 18px; overflow: hidden;
     }
 
     .lesson-summary {
       padding: 14px 16px;
-      display: grid;
-      grid-template-columns: 46px 1fr auto;
-      gap: 12px;
-      align-items: center;
+      display: grid; grid-template-columns: 46px 1fr auto;
+      gap: 12px; align-items: center;
     }
 
     .lesson-number {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      background: var(--blue-soft);
-      color: var(--blue);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 14px;
+      width: 38px; height: 38px; border-radius: 12px;
+      background: var(--blue-soft); color: var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 14px;
     }
 
-    .lesson-title {
-      font-weight: 600;
-      word-break: break-word;
-    }
-
-    .lesson-meta {
-      color: var(--text-soft);
-      font-size: 12px;
-      margin-top: 4px;
-    }
+    .lesson-title { font-weight: 600; word-break: break-word; }
+    .lesson-meta { color: var(--text-soft); font-size: 12px; margin-top: 4px; }
 
     .lesson-homework-preview {
-      color: #3d5270;
-      font-size: 13px;
-      margin-top: 5px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      color: #3d5270; font-size: 13px; margin-top: 5px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    .lesson-actions {
-      display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
+    .lesson-actions { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
 
     .lesson-edit {
-      display: none;
-      border-top: 1px solid var(--border);
-      padding: 16px;
-      background: #fbfdff;
+      display: none; border-top: 1px solid var(--border);
+      padding: 16px; background: #fbfdff;
     }
 
-    .lesson-edit.open {
-      display: block;
-    }
+    .lesson-edit.open { display: block; }
 
     .form-label {
-      font-size: 12px;
-      color: var(--text-soft);
-      margin: 0 0 5px 4px;
-      display: block;
+      font-size: 12px; color: var(--text-soft);
+      margin: 0 0 5px 4px; display: block;
     }
 
-    .editor-tools {
-      display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
-      margin: 8px 0;
-    }
+    .editor-tools { display: flex; gap: 7px; flex-wrap: wrap; margin: 8px 0; }
 
     .tool-btn {
-      min-height: 36px;
-      padding: 7px 12px;
-      border-radius: 12px;
-      border: 1.5px solid #d0dae9;
-      background: #fff;
-      color: #1f2b48;
-      cursor: pointer;
-      font-size: 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+      min-height: 36px; padding: 7px 12px; border-radius: 12px;
+      border: 1.5px solid #d0dae9; background: #fff; color: #1f2b48;
+      cursor: pointer; font-size: 12px;
+      display: inline-flex; align-items: center; gap: 5px;
     }
 
-    .tool-btn:hover {
-      background: #f0f4fe;
-    }
+    .tool-btn:hover { background: #f0f4fe; }
 
     .add-lesson-card {
-      margin-top: 12px;
-      background: #f7fbff;
-      border: 1px dashed #c5d9ef;
-      border-radius: 18px;
-      padding: 15px;
+      margin-top: 12px; background: #f7fbff;
+      border: 1px dashed #c5d9ef; border-radius: 18px; padding: 15px;
     }
 
     .add-lesson-card summary {
-      cursor: pointer;
-      font-weight: 600;
-      color: var(--blue);
-      list-style: none;
+      cursor: pointer; font-weight: 600; color: var(--blue); list-style: none;
     }
 
-    .add-lesson-card summary::-webkit-details-marker {
-      display: none;
-    }
+    .add-lesson-card summary::-webkit-details-marker { display: none; }
 
-    .empty-state {
-      text-align: center;
-      padding: 30px 20px;
-      color: var(--text-soft);
-    }
+    .empty-state { text-align: center; padding: 30px 20px; color: var(--text-soft); }
 
     .footer {
-      margin-top: 32px;
-      padding-top: 20px;
+      margin-top: 32px; padding-top: 20px;
       border-top: 1px solid var(--border);
-      font-size: 13px;
-      color: #889bb3;
-      text-align: center;
+      font-size: 13px; color: #889bb3; text-align: center;
     }
 
-    /* Модальные окна */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 5000;
-      background: rgba(0,20,40,.42);
-      backdrop-filter: blur(5px);
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
+      display: none; position: fixed; inset: 0; z-index: 5000;
+      background: rgba(0,20,40,.42); backdrop-filter: blur(5px);
+      align-items: center; justify-content: center; padding: 18px;
     }
 
-    .modal-overlay.open {
-      display: flex;
-    }
+    .modal-overlay.open { display: flex; }
 
     .modal {
-      width: 100%;
-      max-width: 520px;
-      max-height: 90vh;
-      overflow-y: auto;
-      background: #fff;
-      border-radius: 30px;
+      width: 100%; max-width: 520px; max-height: 90vh;
+      overflow-y: auto; background: #fff; border-radius: 30px;
       box-shadow: 0 30px 70px rgba(0,20,40,.22);
-      padding: 25px;
-      animation: modalPop .18s ease;
+      padding: 25px; animation: modalPop .18s ease;
     }
 
     @keyframes modalPop {
-      from {
-        opacity: 0;
-        transform: translateY(10px) scale(.97);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      from { opacity: 0; transform: translateY(10px) scale(.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    .modal h2 {
-      font-size: 21px;
-      margin-bottom: 8px;
-    }
-
-    .modal-sub {
-      color: var(--text-soft);
-      font-size: 13px;
-      line-height: 1.5;
-      margin-bottom: 17px;
-    }
+    .modal h2 { font-size: 21px; margin-bottom: 8px; }
+    .modal-sub { color: var(--text-soft); font-size: 13px; line-height: 1.5; margin-bottom: 17px; }
 
     .modal-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-      margin-top: 18px;
-      flex-wrap: wrap;
+      display: flex; gap: 8px; justify-content: flex-end;
+      margin-top: 18px; flex-wrap: wrap;
     }
 
-    /* Новости */
-    .news-list {
-      display: grid;
-      gap: 10px;
-    }
+    .news-list { display: grid; gap: 10px; }
 
     .news-item {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 17px;
-      padding: 14px 16px;
-      transition: .15s;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 17px; padding: 14px 16px; transition: .15s;
     }
 
-    .news-item:hover {
-      border-color: #c7d9f0;
-    }
+    .news-item:hover { border-color: #c7d9f0; }
 
     .news-item-head {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 10px;
+    }
+
+    .news-item-title { font-weight: 600; }
+    .news-item-meta { color: var(--text-soft); font-size: 12px; margin-top: 4px; }
+    .news-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    .hidden { display: none !important; }
+
+    .checkbox-row {
+      display: flex; align-items: center; gap: 8px;
+      margin: 12px 0 4px;
+      font-size: 14px; color: #1f2b48;
+      cursor: pointer; user-select: none;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 18px; height: 18px;
+      accent-color: var(--blue);
+      cursor: pointer;
+    }
+
+    .danger-box {
+      background: var(--red-soft);
+      border: 1px solid #ffd4d4;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: #8a3030;
+      line-height: 1.5;
+    }
+
+    /* Универсальная обёртка для поля с кнопкой справа */
+    .input-with-button {
+      position: relative;
       display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
+      gap: 8px;
+      align-items: stretch;
     }
 
-    .news-item-title {
-      font-weight: 600;
+    .input-with-button input {
+      flex: 1;
+      min-width: 0;
     }
 
-    .news-item-meta {
-      color: var(--text-soft);
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    .news-actions {
-      display: flex;
-      gap: 6px;
+    .btn-now {
+      border: 1.5px solid #d0dae9;
+      background: #fff;
+      color: #1f2b48;
+      padding: 0 14px;
+      border-radius: 15px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
       flex-shrink: 0;
     }
 
-    .hidden {
-      display: none !important;
+    .btn-now:hover {
+      background: #e5effb;
+      border-color: var(--blue);
+      color: var(--blue);
     }
 
+    .btn-now .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    /* ===== Адаптив: планшет ===== */
+    @media (max-width: 900px) {
+      .week-days { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 860px) {
+      .navbar { padding: 10px 18px; }
+      .logo-text { font-size: 20px; }
+      .nav-link { padding: 7px 14px; font-size: 13px; }
+      .user-badge { max-width: 160px; padding: 6px 12px 6px 10px; font-size: 13px; }
+    }
+
+    /* ===== Адаптив: мобильный ===== */
     @media (max-width: 760px) {
-      body {
-        padding-top: 130px;
-      }
+      body { padding-top: 74px; }
 
       .navbar {
-        padding: 10px 16px;
-        flex-direction: column;
-        align-items: stretch;
+        padding: 8px 14px;
+        flex-wrap: nowrap;
         gap: 8px;
       }
 
       .navbar-left {
-        flex-wrap: wrap;
-        justify-content: space-between;
+        flex-wrap: nowrap;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
       }
+
+      .logo-area { gap: 8px; flex-shrink: 0; }
+      .logo-img, .logo-fallback { width: 36px; height: 36px; border-radius: 10px; font-size: 18px; }
+      .logo-text { display: none; }
 
       .nav-links {
-        justify-content: flex-start;
-      }
-
-      .navbar-right {
-        justify-content: flex-start;
-      }
-
-      .container {
-        margin: 12px 10px 20px;
-        padding: 22px 14px 30px;
-        border-radius: 32px;
-      }
-
-      .page-title {
-        font-size: 22px;
-      }
-
-      .page-title .material-symbols-outlined {
-        font-size: 27px;
-      }
-
-      .page-sub {
-        font-size: 14px;
-      }
-
-      .tab-bar {
-        overflow-x: auto;
         flex-wrap: nowrap;
+        overflow-x: auto;
         scrollbar-width: none;
+        -ms-overflow-style: none;
+        gap: 4px;
+        flex: 1;
+        min-width: 0;
       }
+      .nav-links::-webkit-scrollbar { display: none; }
 
-      .tab-bar::-webkit-scrollbar {
-        display: none;
+      .nav-link {
+        padding: 7px 14px;
+        font-size: 13px;
+        flex-shrink: 0;
       }
+      .nav-link .material-symbols-outlined { font-size: 16px; }
 
-      .tab-btn {
-        white-space: nowrap;
-        flex: 0 0 auto;
-      }
+      .navbar-right { flex-shrink: 0; }
 
-      .grid-2 {
-        grid-template-columns: 1fr;
-        gap: 12px;
+      .user-badge {
+        padding: 6px 12px 6px 10px;
+        font-size: 13px;
+        max-width: 130px;
       }
+      .user-badge .material-symbols-outlined { font-size: 18px; }
 
-      .field-grid,
-      .field-grid.three {
-        grid-template-columns: 1fr;
-      }
+      .container { margin: 12px 10px 20px; padding: 22px 14px 30px; border-radius: 32px; }
 
-      .console-card {
-        padding: 16px 14px;
-        border-radius: 20px;
-      }
+      .page-title { font-size: 22px; }
+      .page-title .material-symbols-outlined { font-size: 27px; }
+      .page-sub { font-size: 14px; }
 
-      .day-main {
-        grid-template-columns: 1fr;
-        padding: 14px;
-      }
+      .tab-bar { overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
+      .tab-bar::-webkit-scrollbar { display: none; }
+      .tab-btn { white-space: nowrap; flex: 0 0 auto; }
 
-      .day-actions {
-        justify-content: flex-start;
-      }
+      .grid-2 { grid-template-columns: 1fr; gap: 12px; }
+      .field-grid, .field-grid.three { grid-template-columns: 1fr; }
 
-      .day-edit {
-        padding-left: 14px;
-        padding-right: 14px;
-      }
+      .console-card { padding: 16px 14px; border-radius: 20px; }
 
-      .lesson-summary {
-        grid-template-columns: 42px 1fr;
-        padding: 13px;
-      }
+      .week-days { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-      .lesson-actions {
-        grid-column: 1 / -1;
-        justify-content: flex-start;
-      }
+      .day-main { grid-template-columns: 1fr; padding: 14px; }
+      .day-actions { justify-content: flex-start; }
+      .day-edit { padding-left: 14px; padding-right: 14px; }
 
-      .modal {
-        border-radius: 25px;
-        padding: 20px 16px;
-        max-height: 94vh;
-      }
+      .lesson-summary { grid-template-columns: 42px 1fr; padding: 13px; }
+      .lesson-actions { grid-column: 1 / -1; justify-content: flex-start; }
 
-      .modal-actions {
-        flex-direction: column-reverse;
-      }
+      .modal { border-radius: 25px; padding: 20px 16px; max-height: 94vh; }
+      .modal-actions { flex-direction: column-reverse; }
+      .modal-actions .btn-console { width: 100%; }
+      .btn-console { min-height: 40px; }
+    }
 
-      .modal-actions .btn-console {
-        width: 100%;
-      }
-
-      .btn-console {
-        min-height: 40px;
-      }
+    @media (max-width: 480px) {
+      .week-days { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 420px) {
-      .logo-text {
-        font-size: 19px;
-      }
+      .user-badge .user-name { display: none; }
+      .user-badge { padding: 6px 8px; max-width: none; }
+      .user-badge .material-symbols-outlined { margin: 0; }
 
-      .logo-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 18px;
-        border-radius: 11px;
-      }
+      .nav-link { padding: 6px 12px; font-size: 12px; }
+      .nav-link .material-symbols-outlined { font-size: 15px; }
 
-      .user-badge {
-        font-size: 12px;
-        padding-right: 11px;
-      }
-
-      .news-item-head {
-        flex-direction: column;
-      }
-
-      .news-actions {
-        width: 100%;
-      }
+      .news-item-head { flex-direction: column; }
+      .news-actions { width: 100%; }
     }
   </style>
 </head>
@@ -844,10 +697,11 @@
 <body>
   <header class="navbar">
     <div class="navbar-left">
-      <div class="logo-area">
-        <div class="logo-icon">Ш</div>
+      <a href="index.html" class="logo-area">
+        <img src="logo.png" alt="Электронная школа" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <div class="logo-fallback">Ш</div>
         <div class="logo-text">Электро<span>школа</span></div>
-      </div>
+      </a>
       <nav class="nav-links">
         <a href="index.html" class="nav-link">
           <span class="material-symbols-outlined">home</span> Главная
@@ -855,7 +709,7 @@
         <a href="diary.html" class="nav-link">
           <span class="material-symbols-outlined">calendar_month</span> Дневник
         </a>
-        <a href="console.html" class="nav-link active">
+        <a href="console.html" class="nav-link admin-link active">
           <span class="material-symbols-outlined">dashboard</span> Консоль
         </a>
       </nav>
@@ -875,28 +729,25 @@
       <button class="tab-btn" data-tab="schedule">📅 Расписание</button>
     </div>
 
-    <!-- Вкладка Новости -->
     <section class="tab-content active" id="tab-news">
-      <div class="grid-2">
-        <div class="console-card">
-          <div class="card-label">➕ Добавить новость</div>
-          <input type="text" id="addTitle" placeholder="Заголовок" />
-          <textarea id="addDesc" placeholder="Текст новости"></textarea>
-          <input type="number" id="addDate" placeholder="Unix timestamp" />
-          <div class="actions">
-            <button class="btn-console btn-console-success" id="addNewsBtn">➕ Добавить</button>
-          </div>
-          <div id="addMessage" class="console-message"></div>
+      <div class="console-card">
+        <div class="card-label">➕ Добавить новость</div>
+        <input type="text" id="addTitle" placeholder="Заголовок" />
+        <textarea id="addDesc" placeholder="Текст новости" style="margin-top:10px;"></textarea>
+
+        <label class="form-label" style="margin-top:10px;">Unix timestamp</label>
+        <div class="input-with-button">
+          <input type="number" id="addDate" placeholder="Например: 1735000000" />
+          <button type="button" class="btn-now" id="addNowBtn" title="Подставить текущее время">
+            <span class="material-symbols-outlined">schedule</span>
+            Сейчас
+          </button>
         </div>
 
-        <div class="console-card">
-          <div class="card-label">🗑️ Удалить новость</div>
-          <input type="number" id="deleteIndex" placeholder="Индекс новости" />
-          <div class="actions">
-            <button class="btn-console btn-console-danger" id="deleteNewsBtn">🗑️ Удалить</button>
-          </div>
-          <div id="deleteMessage" class="console-message"></div>
+        <div class="actions">
+          <button class="btn-console btn-console-success" id="addNewsBtn">➕ Добавить</button>
         </div>
+        <div id="addMessage" class="console-message"></div>
       </div>
 
       <div class="console-card">
@@ -905,7 +756,6 @@
       </div>
     </section>
 
-    <!-- Вкладка Расписание -->
     <section class="tab-content" id="tab-schedule">
       <div class="console-card">
         <div class="card-label">🏫 Выбор школы и класса</div>
@@ -941,13 +791,13 @@
       <div class="console-card">
         <div class="schedule-toolbar">
           <div>
-            <div class="card-label" style="margin-bottom:3px;">📅 Дни расписания</div>
-            <div style="font-size:13px;color:#6a7f9e;">Выберите день, чтобы открыть его уроки</div>
+            <div class="card-label" style="margin-bottom:3px;">📅 Расписание по неделям</div>
+            <div style="font-size:13px;color:#6a7f9e;">Понедельник – суббота. Нажмите на день, чтобы открыть уроки</div>
           </div>
           <button class="btn-console btn-console-success" id="addDayOpenBtn">➕ Добавить день</button>
         </div>
 
-        <div id="dayList" class="day-list"></div>
+        <div id="weekList" class="week-list"></div>
         <div id="dayMessage" class="console-message"></div>
       </div>
     </section>
@@ -955,7 +805,6 @@
     <div class="footer">© 2026 · Электронная школа</div>
   </main>
 
-  <!-- Модальные окна -->
   <div class="modal-overlay" id="schoolClassModal">
     <div class="modal">
       <h2>Добавить школу или класс</h2>
@@ -985,7 +834,7 @@
   <div class="modal-overlay" id="addDayModal">
     <div class="modal">
       <h2>Добавить день</h2>
-      <div class="modal-sub">Создайте новый день расписания.</div>
+      <div class="modal-sub">Выберите дату. День попадёт в соответствующую неделю.</div>
       <label class="form-label">Дата дня</label>
       <input class="input" id="addDayDate" type="date" />
       <div class="modal-actions">
@@ -1038,6 +887,42 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="copyWeekModal">
+    <div class="modal">
+      <h2>📆 Копировать неделю</h2>
+      <div class="modal-sub">Все дни недели (Пн–Сб) будут скопированы на другую неделю. Домашние задания <b>не копируются</b>.</div>
+
+      <label class="form-label">Дата понедельника новой недели</label>
+      <input class="input" id="copyWeekDate" type="date" />
+
+      <label class="checkbox-row">
+        <input type="checkbox" id="copyWeekHomework" />
+        Копировать домашние задания (по умолчанию выкл.)
+      </label>
+
+      <div class="modal-actions">
+        <button class="btn-console btn-console-outline close-modal">Отмена</button>
+        <button class="btn-console btn-console-success" id="confirmCopyWeekBtn">📆 Копировать неделю</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="deleteWeekModal">
+    <div class="modal">
+      <h2>🗑️ Удалить неделю</h2>
+      <div class="modal-sub">Все дни этой недели (Пн–Сб) и все их уроки будут удалены. Это действие нельзя отменить.</div>
+
+      <div class="danger-box" id="deleteWeekInfo">
+        Неделя: —
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-console btn-console-outline close-modal">Отмена</button>
+        <button class="btn-console btn-console-danger" id="confirmDeleteWeekBtn">🗑️ Удалить неделю</button>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-overlay" id="editNewsModal">
     <div class="modal">
       <h2>✏️ Редактировать новость</h2>
@@ -1046,8 +931,16 @@
       <input class="input" id="editNewsTitle" placeholder="Заголовок" />
       <label class="form-label" style="margin-top:10px;">Текст</label>
       <textarea class="input" id="editNewsText" rows="4" placeholder="Текст новости"></textarea>
+
       <label class="form-label" style="margin-top:10px;">Unix timestamp</label>
-      <input class="input" id="editNewsDate" type="number" placeholder="Unix timestamp" />
+      <div class="input-with-button">
+        <input type="number" id="editNewsDate" placeholder="Например: 1735000000" />
+        <button type="button" class="btn-now" id="editNowBtn" title="Подставить текущее время">
+          <span class="material-symbols-outlined">schedule</span>
+          Сейчас
+        </button>
+      </div>
+
       <div class="modal-actions">
         <button class="btn-console btn-console-outline close-modal">Отмена</button>
         <button class="btn-console btn-console-primary" id="confirmEditNewsBtn">💾 Сохранить</button>
@@ -1080,7 +973,7 @@
 
     let selectedSchoolIndex = 0;
     let selectedClassIndex = 0;
-    let selectedDayIndex = null;
+    let selectedDayKey = null;
     let selectedHomeworkField = null;
     let schoolsCache = [];
     let currentUserProfile = null;
@@ -1088,6 +981,11 @@
     let restrictedSchoolIndex = null;
     let restrictedClassIndex = null;
     let editingNewsKey = null;
+
+    let showPastWeeks = false;
+    let pastWeeksShown = 2;
+
+    const expandedWeeks = new Set();
 
     function escapeHtml(value) {
       if (value === null || value === undefined) return "";
@@ -1110,12 +1008,11 @@
       node.className = "console-message show " + type;
     }
 
-    function openModal(id) {
-      document.getElementById(id)?.classList.add("open");
-    }
+    function openModal(id) { document.getElementById(id)?.classList.add("open"); }
+    function closeAllModals() { document.querySelectorAll(".modal-overlay").forEach((el) => el.classList.remove("open")); }
 
-    function closeAllModals() {
-      document.querySelectorAll(".modal-overlay").forEach((el) => el.classList.remove("open"));
+    function nowUnix() {
+      return Math.floor(Date.now() / 1000);
     }
 
     document.querySelectorAll(".close-modal").forEach((btn) => {
@@ -1138,9 +1035,125 @@
       });
     });
 
+    // Кнопки «Сейчас» для Unix timestamp
+    document.getElementById("addNowBtn").addEventListener("click", () => {
+      document.getElementById("addDate").value = nowUnix();
+    });
+
+    document.getElementById("editNowBtn").addEventListener("click", () => {
+      document.getElementById("editNewsDate").value = nowUnix();
+    });
+
+    function parseScheduleDate(value) {
+      if (!value) return null;
+      const match = String(value).trim().match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+      if (!match) return null;
+      const day = Number(match[1]);
+      const month = Number(match[2]);
+      const year = Number(match[3]);
+      const date = new Date(year, month - 1, day);
+      if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return null;
+      return date;
+    }
+
+    function getWeekStart(date) {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      const day = d.getDay();
+      const diff = (day === 0 ? -6 : 1 - day);
+      d.setDate(d.getDate() + diff);
+      return d;
+    }
+
+    function getWeekKey(date) {
+      const ws = getWeekStart(date);
+      const y = ws.getFullYear();
+      const m = String(ws.getMonth() + 1).padStart(2, "0");
+      const d = String(ws.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function formatWeekTitle(weekStart) {
+      const end = new Date(weekStart);
+      end.setDate(end.getDate() + 5);
+      const months = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+      const sm = months[weekStart.getMonth()];
+      const em = months[end.getMonth()];
+      if (weekStart.getMonth() === end.getMonth()) {
+        return `${weekStart.getDate()}–${end.getDate()} ${sm} ${weekStart.getFullYear()}`;
+      }
+      return `${weekStart.getDate()} ${sm} – ${end.getDate()} ${em} ${end.getFullYear()}`;
+    }
+
+    function formatScheduleDate(value) {
+      const date = parseScheduleDate(value);
+      if (!date) return String(value || "Дата не указана");
+      const weekdays = ["Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"];
+      const months = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+      return `${weekdays[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]}`;
+    }
+
+    function dateInputToScheduleDate(value) {
+      if (!value) return "";
+      const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!match) return "";
+      return `${match[3]}.${match[2]}.${match[1]}`;
+    }
+
+    function scheduleDateToInput(value) {
+      const date = parseScheduleDate(value);
+      if (!date) return "";
+      const d = String(date.getDate()).padStart(2, "0");
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const y = date.getFullYear();
+      return `${y}-${m}-${d}`;
+    }
+
+    function dateToScheduleDateString(d) {
+      const dd = String(d.getDate()).padStart(2, "0");
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const yyyy = d.getFullYear();
+      return `${dd}.${mm}.${yyyy}`;
+    }
+
+    function isPastScheduleDate(value) {
+      const date = parseScheduleDate(value);
+      if (!date) return false;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return date < today;
+    }
+
+    function sortScheduleByDate(schedule) {
+      if (!Array.isArray(schedule)) return [];
+      return [...schedule].sort((a, b) => {
+        const da = parseScheduleDate(a?.date);
+        const db = parseScheduleDate(b?.date);
+        if (!da && !db) return 0;
+        if (!da) return 1;
+        if (!db) return -1;
+        return da - db;
+      });
+    }
+
+    function groupScheduleByWeeks(schedule) {
+      const weeksMap = new Map();
+      (schedule || []).forEach((day) => {
+        const date = parseScheduleDate(day?.date);
+        if (!date) return;
+        const key = getWeekKey(date);
+        if (!weeksMap.has(key)) {
+          weeksMap.set(key, { key, start: getWeekStart(date), days: [] });
+        }
+        weeksMap.get(key).days.push(day);
+      });
+      const weeks = [...weeksMap.values()].sort((a, b) => a.start - b.start);
+      weeks.forEach((w) => { w.days = sortScheduleByDate(w.days); });
+      return weeks;
+    }
+
     async function getProfileName(user) {
       if (!user) return "Пользователь";
-
       try {
         const snap = await get(ref(db, `users/${user.uid}`));
         const data = snap.exists() ? snap.val() : {};
@@ -1152,7 +1165,6 @@
 
     async function getUserProfile(user) {
       if (!user) return { status: 0 };
-
       try {
         const snap = await get(ref(db, `users/${user.uid}`));
         return snap.exists() ? snap.val() : { status: 0 };
@@ -1164,7 +1176,6 @@
     function applyAccessRights(profile = {}) {
       const status = Number(profile.status ?? 0);
       currentUserProfile = profile;
-
       isLocalAdmin = status === 3;
 
       restrictedSchoolIndex = resolveSchoolIndexFromProfile(profile, schoolsCache);
@@ -1190,7 +1201,6 @@
           scheduleTabBtn.classList.add("active");
           scheduleTabBtn.click();
         }
-
         if (openSchoolClassModalBtn) openSchoolClassModalBtn.style.display = "none";
         if (deleteSchoolBtn) deleteSchoolBtn.style.display = "none";
         if (deleteClassBtn) deleteClassBtn.style.display = "none";
@@ -1204,7 +1214,6 @@
 
     async function renderHeader(user) {
       const name = await getProfileName(user);
-
       if (!user) {
         userArea.innerHTML = `
           <a href="${AUTH_URL}" class="btn-console btn-console-primary">
@@ -1213,46 +1222,28 @@
         `;
         return;
       }
-
       userArea.innerHTML = `
         <a href="account.html" class="user-badge">
           <span class="material-symbols-outlined">person</span>
-          ${escapeHtml(name)}
+          <span class="user-name">${escapeHtml(name)}</span>
         </a>
       `;
     }
 
-    async function checkAdmin(user) {
-      if (!user) return false;
-
-      try {
-        const snap = await get(ref(db, `users/${user.uid}`));
-        const data = snap.exists() ? snap.val() : {};
-        const status = Number(data.status ?? 0);
-        return status === 2 || status === 3;
-      } catch {
-        return false;
-      }
-    }
-
     function getSelectedSchool() {
       if (!Array.isArray(schoolsCache) || !schoolsCache.length) return null;
-
       const allowedIndex = isLocalAdmin
         ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
         : selectedSchoolIndex;
-
       return schoolsCache[allowedIndex] || null;
     }
 
     function getSelectedClass() {
       const school = getSelectedSchool();
       if (!school || !Array.isArray(school.classes)) return null;
-
       const allowedIndex = isLocalAdmin
         ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0)
         : selectedClassIndex;
-
       return school.classes[allowedIndex] || null;
     }
 
@@ -1268,9 +1259,7 @@
 
       if (isLocalAdmin) {
         const allowedSchoolIndex = restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex]
-          ? restrictedSchoolIndex
-          : 0;
-
+          ? restrictedSchoolIndex : 0;
         const option = document.createElement("option");
         option.value = String(allowedSchoolIndex);
         option.textContent = schoolsCache[allowedSchoolIndex]?.name || "Моя школа";
@@ -1348,53 +1337,6 @@
       classSelect.disabled = false;
     }
 
-    function parseScheduleDate(value) {
-      if (!value) return null;
-      const match = String(value).trim().match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
-
-      if (!match) return null;
-
-      const day = Number(match[1]);
-      const month = Number(match[2]);
-      const year = Number(match[3]);
-
-      const date = new Date(year, month - 1, day);
-      if (
-        date.getFullYear() !== year ||
-        date.getMonth() !== month - 1 ||
-        date.getDate() !== day
-      ) return null;
-
-      return date;
-    }
-
-    function formatScheduleDate(value) {
-      const date = parseScheduleDate(value);
-      if (!date) return String(value || "Дата не указана");
-
-      const russianWeekdays = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
-      const russianMonths = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
-
-      return `${russianWeekdays[date.getDay()]}, ${date.getDate()} ${russianMonths[date.getMonth()]}`;
-    }
-
-    function dateInputToScheduleDate(value) {
-      if (!value) return "";
-      const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-      if (!match) return "";
-      return `${match[3]}.${match[2]}.${match[1]}`;
-    }
-
-    function scheduleDateToInput(value) {
-      const date = parseScheduleDate(value);
-      if (!date) return "";
-
-      const d = String(date.getDate()).padStart(2, "0");
-      const m = String(date.getMonth() + 1).padStart(2, "0");
-      const y = date.getFullYear();
-      return `${y}-${m}-${d}`;
-    }
-
     function syncSelectedClassSchedule(schedule) {
       const school = getSelectedSchool();
       if (!school || !Array.isArray(school.classes)) return;
@@ -1416,16 +1358,12 @@
 
         if (isLocalAdmin) {
           restrictedSchoolIndex = resolveSchoolIndexFromProfile(currentUserProfile, schoolsCache);
-
           const school = schoolsCache[restrictedSchoolIndex];
           const classes = Array.isArray(school?.classes) ? school.classes : [];
           restrictedClassIndex = resolveClassIndexFromProfile(currentUserProfile, school, classes);
-
           selectedSchoolIndex = restrictedSchoolIndex;
           selectedClassIndex = restrictedClassIndex;
-
-          selectedDayIndex = null;
-
+          selectedDayKey = null;
           fillSchoolSelect();
           fillClassSelect();
           renderSelectedSchedule();
@@ -1435,22 +1373,20 @@
         if (!schoolsCache.length) {
           selectedSchoolIndex = 0;
           selectedClassIndex = 0;
-          selectedDayIndex = null;
+          selectedDayKey = null;
           fillSchoolSelect();
           fillClassSelect();
-          renderDayList([]);
+          renderWeekList([]);
           return;
         }
 
         selectedSchoolIndex = Number.isInteger(selectedSchoolIndex) && selectedSchoolIndex < schoolsCache.length
-          ? selectedSchoolIndex
-          : 0;
+          ? selectedSchoolIndex : 0;
 
         const school = schoolsCache[selectedSchoolIndex];
         const classes = school && Array.isArray(school.classes) ? school.classes : [];
         selectedClassIndex = Number.isInteger(selectedClassIndex) && selectedClassIndex < classes.length
-          ? selectedClassIndex
-          : 0;
+          ? selectedClassIndex : 0;
 
         fillSchoolSelect();
         fillClassSelect();
@@ -1460,7 +1396,7 @@
         schoolsCache = [];
         fillSchoolSelect();
         fillClassSelect();
-        renderDayList([]);
+        renderWeekList([]);
       }
     }
 
@@ -1519,105 +1455,346 @@
       `;
     }
 
-    function renderDayList(schedule) {
-      const container = document.getElementById("dayList");
+    function renderDayItem(day, isPast) {
+      const dayKey = day.date;
+      const selected = selectedDayKey === dayKey ? "selected" : "";
+      const pastClass = isPast ? "past" : "";
+      const lessons = Array.isArray(day.lessons) ? day.lessons : [];
+      const lessonCount = lessons.length;
+
+      return `
+        <div class="day-item ${selected} ${pastClass}" data-day-key="${escapeHtml(dayKey)}">
+          <div class="day-main">
+            <div class="day-info">
+              <div class="day-name">
+                ${escapeHtml(formatScheduleDate(day.date))}
+                ${isPast ? '<span class="day-past-badge">прошёл</span>' : ""}
+              </div>
+              <div class="day-meta">${escapeHtml(day.date || "Дата не указана")} · ${lessonCount} ${lessonCount === 1 ? "урок" : "уроков"}</div>
+            </div>
+
+            <div class="day-actions">
+              <button class="btn-console btn-console-primary open-day-btn">📂 ${selected ? "Свернуть" : "Открыть"}</button>
+              <button class="btn-console btn-console-outline rename-day-btn">✏️ Дата</button>
+              <button class="btn-console btn-console-outline copy-day-btn">📋 Копировать</button>
+              <button class="btn-console btn-console-danger delete-day-btn">🗑️ Удалить</button>
+            </div>
+          </div>
+
+          <div class="day-edit ${selected ? "open" : ""}">
+            <label class="form-label">Дата дня</label>
+            <input class="day-date-input" type="date" value="${escapeHtml(scheduleDateToInput(day.date))}" />
+            <div class="actions">
+              <button class="btn-console btn-console-primary save-day-name-btn">💾 Сохранить дату</button>
+              <button class="btn-console btn-console-outline cancel-day-name-btn">Отмена</button>
+            </div>
+          </div>
+
+          ${selected ? `
+            <div class="day-edit open" style="padding-top:16px;">
+              <div class="editor-header" style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px;">
+                <div><h3 style="font-size:18px;">📚 Уроки</h3></div>
+              </div>
+
+              <div class="lesson-list">
+                ${lessons.length ? lessons.map((lesson, lessonIndex) => renderLessonHtml(lesson, lessonIndex)).join("") : `<div class="empty-state">Уроков пока нет.</div>`}
+              </div>
+
+              <details class="add-lesson-card">
+                <summary>➕ Добавить новый урок</summary>
+                <div style="margin-top:14px;">
+                  <div class="field-grid three">
+                    <div>
+                      <label class="form-label">Название</label>
+                      <input class="new-lesson-name" placeholder="Математика" />
+                    </div>
+                    <div>
+                      <label class="form-label">Время</label>
+                      <input class="new-lesson-time" placeholder="08:30-09:15" />
+                    </div>
+                    <div>
+                      <label class="form-label">Кабинет</label>
+                      <input type="number" class="new-lesson-cab" placeholder="204" />
+                    </div>
+                  </div>
+
+                  <div style="margin-top:10px;">
+                    <label class="form-label">Домашнее задание</label>
+                    <textarea class="new-lesson-homework" placeholder="Текст домашнего задания..."></textarea>
+                    <div class="editor-tools">
+                      <button type="button" class="tool-btn new-link-tool">🔗 Ссылка</button>
+                      <button type="button" class="tool-btn new-image-tool">🖼️ Изображение</button>
+                    </div>
+                  </div>
+
+                  <div class="actions">
+                    <button class="btn-console btn-console-success add-lesson-btn">➕ Добавить урок</button>
+                  </div>
+                  <div class="console-message add-lesson-message"></div>
+                </div>
+              </details>
+            </div>
+          ` : ""}
+        </div>
+      `;
+    }
+
+    const WEEK_DAY_NAMES = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+
+    function renderWeekCard(week, isCurrentWeek, isPastWeek) {
+      const weekStart = week.start;
+      const open = expandedWeeks.has(week.key);
+
+      const daysByKey = new Map();
+      week.days.forEach((d) => daysByKey.set(d.date, d));
+
+      const cells = [];
+      for (let i = 0; i < 6; i++) {
+        const d = new Date(weekStart);
+        d.setDate(d.getDate() + i);
+
+        const dateStr = dateToScheduleDateString(d);
+        const day = daysByKey.get(dateStr);
+        const isPastDay = d < new Date(new Date().setHours(0, 0, 0, 0));
+
+        if (day) {
+          const lessons = Array.isArray(day.lessons) ? day.lessons : [];
+          const previewLines = lessons.slice(0, 3).map((l) =>
+            `<div class="lesson-line">${escapeHtml(l.name || "—")}</div>`
+          ).join("");
+          const more = lessons.length > 3 ? `<div class="lesson-line">… ещё ${lessons.length - 3}</div>` : "";
+
+          cells.push(`
+            <div class="week-day has-day ${isPastDay ? "past" : ""} ${selectedDayKey === day.date ? "selected" : ""}" data-day-key="${escapeHtml(day.date)}">
+              <div class="week-day-head">
+                <span class="week-day-name">${WEEK_DAY_NAMES[i]}</span>
+                <span class="week-day-date">${d.getDate()}.${String(d.getMonth() + 1).padStart(2, "0")}</span>
+              </div>
+              <div class="week-day-lessons">${previewLines}${more}</div>
+              <div class="week-day-count">${lessons.length} ${lessons.length === 1 ? "урок" : "уроков"}</div>
+            </div>
+          `);
+        } else {
+          cells.push(`
+            <div class="week-day empty">
+              <div class="week-day-head">
+                <span class="week-day-name">${WEEK_DAY_NAMES[i]}</span>
+                <span class="week-day-date">${d.getDate()}.${String(d.getMonth() + 1).padStart(2, "0")}</span>
+              </div>
+              <div class="week-day-empty">нет дня</div>
+            </div>
+          `);
+        }
+      }
+
+      const badge = isCurrentWeek
+        ? `<span class="week-badge current">текущая</span>`
+        : (isPastWeek
+            ? `<span class="week-badge past">прошедшая</span>`
+            : `<span class="week-badge future">предстоящая</span>`);
+
+      const detail = open
+        ? `
+          <div class="week-detail open">
+            <div class="day-list">
+              ${week.days.length
+                ? week.days.map((d) => renderDayItem(d, isPastScheduleDate(d.date))).join("")
+                : `<div class="empty-state">В этой неделе пока нет дней.</div>`}
+            </div>
+          </div>
+        `
+        : "";
+
+      return `
+        <div class="week-card ${isCurrentWeek ? "current" : ""}" data-week-key="${week.key}">
+          <div class="week-header">
+            <div class="week-title">
+              <span class="material-symbols-outlined" style="font-size:20px;color:#2a7de1;">calendar_view_week</span>
+              <span>${escapeHtml(formatWeekTitle(weekStart))}</span>
+              ${badge}
+            </div>
+            <div class="week-actions">
+              <button class="btn-console btn-console-outline toggle-week-btn" data-week-key="${week.key}">
+                ${open ? "▲ Свернуть" : "▼ Показать дни"}
+              </button>
+              <button class="btn-console btn-console-primary copy-week-btn" data-week-key="${week.key}">
+                📆 Копировать
+              </button>
+              <button class="btn-console btn-console-danger delete-week-btn" data-week-key="${week.key}">
+                🗑️ Удалить
+              </button>
+            </div>
+          </div>
+
+          <div class="week-days">${cells.join("")}</div>
+          ${detail}
+        </div>
+      `;
+    }
+
+    function renderWeekList(schedule) {
+      const container = document.getElementById("weekList");
       if (!container) return;
 
-      if (!Array.isArray(schedule) || !schedule.length) {
+      const weeks = groupScheduleByWeeks(schedule);
+
+      if (!weeks.length) {
         container.innerHTML = `<div class="empty-state">Дней пока нет. Добавьте первый день.</div>`;
         return;
       }
 
-      container.innerHTML = schedule.map((day, index) => {
-        const selected = selectedDayIndex === index ? "selected" : "";
-        const lessons = Array.isArray(day.lessons) ? day.lessons : [];
-        const lessonCount = lessons.length;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const currentWeekKey = getWeekKey(today);
 
-        return `
-          <div class="day-item ${selected}" data-key="${index}">
-            <div class="day-main">
-              <div class="day-info">
-                <div class="day-name">${escapeHtml(formatScheduleDate(day.date))}</div>
-                <div class="day-meta">${escapeHtml(day.date || "Дата не указана")} · ${lessonCount} ${lessonCount === 1 ? "урок" : "уроков"}</div>
+      const currentIdx = weeks.findIndex((w) => w.key === currentWeekKey);
+      const currentOrLast = currentIdx >= 0 ? currentIdx : weeks.length - 1;
+
+      const pastWeeks = weeks.slice(0, currentOrLast);
+      const visibleFrom = Math.max(0, currentOrLast);
+      const futureAndCurrentWeeks = weeks.slice(visibleFrom);
+
+      const hiddenPastCount = Math.max(0, pastWeeks.length - pastWeeksShown);
+
+      let html = "";
+
+      if (pastWeeks.length > 0) {
+        html += `
+          <div class="console-card" style="background:#f5f8fc;border-style:dashed;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+              <div style="font-size:13px;color:#5f7696;display:flex;align-items:center;gap:6px;">
+                <span class="material-symbols-outlined" style="font-size:18px;">history</span>
+                Прошедших недель: ${pastWeeks.length}
               </div>
-
-              <div class="day-actions">
-                <button class="btn-console btn-console-primary open-day-btn">📂 Открыть</button>
-                <button class="btn-console btn-console-outline rename-day-btn">✏️ Дата</button>
-                <button class="btn-console btn-console-outline copy-day-btn">📋 Копировать</button>
-                <button class="btn-console btn-console-danger delete-day-btn">🗑️ Удалить</button>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn-console btn-console-outline" data-action="toggle-past-weeks">
+                  ${showPastWeeks ? "Скрыть прошедшие недели" : "Показать прошедшие недели"}
+                </button>
+                ${showPastWeeks && hiddenPastCount > 0 ? `
+                  <button class="btn-console btn-console-outline" data-action="show-more-past-weeks">
+                    Показать ещё ${Math.min(2, hiddenPastCount)} ${hiddenPastCount === 1 ? "неделю" : "недели"}
+                  </button>
+                ` : ""}
               </div>
             </div>
-
-            <div class="day-edit ${selected ? "open" : ""}">
-              <label class="form-label">Дата дня</label>
-              <input class="day-date-input" type="date" value="${escapeHtml(scheduleDateToInput(day.date))}" />
-              <div class="actions">
-                <button class="btn-console btn-console-primary save-day-name-btn">💾 Сохранить дату</button>
-                <button class="btn-console btn-console-outline cancel-day-name-btn">Отмена</button>
-              </div>
-            </div>
-
-            ${selected ? `
-              <div class="day-edit open" style="padding-top:16px;">
-                <div class="editor-header" style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px;">
-                  <div><h3 style="font-size:18px;">📚 Уроки</h3></div>
-                </div>
-
-                <div class="lesson-list">
-                  ${lessons.length ? lessons.map((lesson, lessonIndex) => renderLessonHtml(lesson, lessonIndex)).join("") : `<div class="empty-state">Уроков пока нет.</div>`}
-                </div>
-
-                <details class="add-lesson-card">
-                  <summary>➕ Добавить новый урок</summary>
-                  <div style="margin-top:14px;">
-                    <div class="field-grid three">
-                      <div>
-                        <label class="form-label">Название</label>
-                        <input class="new-lesson-name" placeholder="Математика" />
-                      </div>
-                      <div>
-                        <label class="form-label">Время</label>
-                        <input class="new-lesson-time" placeholder="08:30-09:15" />
-                      </div>
-                      <div>
-                        <label class="form-label">Кабинет</label>
-                        <input type="number" class="new-lesson-cab" placeholder="204" />
-                      </div>
-                    </div>
-
-                    <div style="margin-top:10px;">
-                      <label class="form-label">Домашнее задание</label>
-                      <textarea class="new-lesson-homework" placeholder="Текст домашнего задания..."></textarea>
-                      <div class="editor-tools">
-                        <button type="button" class="tool-btn new-link-tool">🔗 Ссылка</button>
-                        <button type="button" class="tool-btn new-image-tool">🖼️ Изображение</button>
-                      </div>
-                    </div>
-
-                    <div class="actions">
-                      <button class="btn-console btn-console-success add-lesson-btn">➕ Добавить урок</button>
-                    </div>
-                    <div class="console-message add-lesson-message"></div>
-                  </div>
-                </details>
-              </div>
-            ` : ""}
           </div>
         `;
-      }).join("");
+      }
 
-      bindScheduleEvents();
+      if (showPastWeeks && pastWeeks.length > 0) {
+        const visiblePast = pastWeeks.slice(-pastWeeksShown);
+        visiblePast.forEach((w) => {
+          html += renderWeekCard(w, w.key === currentWeekKey, true);
+        });
+      }
+
+      futureAndCurrentWeeks.forEach((w) => {
+        html += renderWeekCard(w, w.key === currentWeekKey, false);
+      });
+
+      container.innerHTML = html;
+
+      container.querySelectorAll("[data-action]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const action = btn.dataset.action;
+          if (action === "toggle-past-weeks") {
+            showPastWeeks = !showPastWeeks;
+            if (showPastWeeks) pastWeeksShown = 2;
+            renderSelectedSchedule();
+          }
+          if (action === "show-more-past-weeks") {
+            pastWeeksShown += 2;
+            renderSelectedSchedule();
+          }
+        });
+      });
+
+      container.querySelectorAll(".toggle-week-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const key = btn.dataset.weekKey;
+          if (expandedWeeks.has(key)) expandedWeeks.delete(key);
+          else expandedWeeks.add(key);
+          renderSelectedSchedule();
+        });
+      });
+
+      container.querySelectorAll(".copy-week-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const weekKey = btn.dataset.weekKey;
+          if (!weekKey) return;
+          const [y, m, d] = weekKey.split("-").map(Number);
+          const nextMon = new Date(y, m - 1, d);
+          nextMon.setDate(nextMon.getDate() + 7);
+
+          const input = document.getElementById("copyWeekDate");
+          const ny = nextMon.getFullYear();
+          const nm = String(nextMon.getMonth() + 1).padStart(2, "0");
+          const nd = String(nextMon.getDate()).padStart(2, "0");
+          input.value = `${ny}-${nm}-${nd}`;
+
+          document.getElementById("copyWeekHomework").checked = false;
+          input.dataset.fromWeekKey = weekKey;
+
+          openModal("copyWeekModal");
+        });
+      });
+
+      container.querySelectorAll(".delete-week-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const weekKey = btn.dataset.weekKey;
+          if (!weekKey) return;
+
+          const [y, m, d] = weekKey.split("-").map(Number);
+          const weekStart = new Date(y, m - 1, d);
+          const weekEnd = new Date(weekStart);
+          weekEnd.setDate(weekEnd.getDate() + 5);
+
+          const info = document.getElementById("deleteWeekInfo");
+          const daysCount = (function () {
+            const sch = getSelectedSchedule();
+            return sch.filter((day) => {
+              const dt = parseScheduleDate(day.date);
+              return dt && getWeekKey(dt) === weekKey;
+            }).length;
+          })();
+
+          info.innerHTML = `
+            Неделя: <b>${escapeHtml(formatWeekTitle(weekStart))}</b><br>
+            Дней в неделе: <b>${daysCount}</b>
+          `;
+
+          document.getElementById("confirmDeleteWeekBtn").dataset.weekKey = weekKey;
+          openModal("deleteWeekModal");
+        });
+      });
+
+      container.querySelectorAll(".week-day.has-day").forEach((cell) => {
+        cell.addEventListener("click", (e) => {
+          if (e.target.closest(".day-actions") || e.target.closest(".day-edit")) return;
+          const dayKey = cell.dataset.dayKey;
+          if (!dayKey) return;
+          const weekCard = cell.closest(".week-card");
+          if (weekCard?.dataset.weekKey) {
+            expandedWeeks.add(weekCard.dataset.weekKey);
+          }
+          selectedDayKey = selectedDayKey === dayKey ? null : dayKey;
+          renderSelectedSchedule();
+        });
+      });
+
+      bindDayEvents();
     }
 
-    function bindScheduleEvents() {
-      const container = document.getElementById("dayList");
+    function bindDayEvents() {
+      const container = document.getElementById("weekList");
       if (!container) return;
 
       container.querySelectorAll(".open-day-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
           const item = btn.closest(".day-item");
-          selectedDayIndex = Number(item.dataset.key);
+          const key = item?.dataset.dayKey;
+          if (!key) return;
+          selectedDayKey = selectedDayKey === key ? null : key;
           renderSelectedSchedule();
         });
       });
@@ -1638,7 +1815,7 @@
       container.querySelectorAll(".save-day-name-btn").forEach((btn) => {
         btn.addEventListener("click", async () => {
           const item = btn.closest(".day-item");
-          const dayIndex = Number(item.dataset.key);
+          const oldDate = item?.dataset.dayKey;
           const newDate = dateInputToScheduleDate(item.querySelector(".day-date-input").value);
 
           if (!newDate) {
@@ -1648,25 +1825,37 @@
 
           const school = getSelectedSchool();
           const classItem = school && school.classes ? school.classes[isLocalAdmin ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0) : selectedClassIndex] : null;
-
           if (!classItem) return;
 
           const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
-          if (schedule[dayIndex]) {
-            schedule[dayIndex].date = newDate;
+
+          const idx = schedule.findIndex((d) => d.date === oldDate);
+          if (idx === -1) return;
+
+          if (schedule.some((d) => d.date === newDate && d !== schedule[idx])) {
+            showMessage(document.getElementById("dayMessage"), "⚠️ День с такой датой уже существует", "error");
+            return;
           }
+
+          schedule[idx].date = newDate;
+          const sorted = sortScheduleByDate(schedule);
 
           try {
             const targetSchoolIndex = isLocalAdmin
               ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
               : selectedSchoolIndex;
-
             const targetClassIndex = isLocalAdmin
               ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
               : selectedClassIndex;
 
-            await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), schedule);
-            syncSelectedClassSchedule(schedule);
+            await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), sorted);
+            syncSelectedClassSchedule(sorted);
+
+            if (selectedDayKey === oldDate) selectedDayKey = newDate;
+
+            const newWeekKey = getWeekKey(parseScheduleDate(newDate));
+            expandedWeeks.add(newWeekKey);
+
             renderSelectedSchedule();
             showMessage(document.getElementById("dayMessage"), "✅ Дата обновлена", "success");
           } catch (error) {
@@ -1677,7 +1866,9 @@
 
       container.querySelectorAll(".delete-day-btn").forEach((btn) => {
         btn.addEventListener("click", async () => {
-          const dayIndex = Number(btn.closest(".day-item").dataset.key);
+          const item = btn.closest(".day-item");
+          const dayKey = item?.dataset.dayKey;
+          if (!dayKey) return;
           if (!confirm("Удалить этот день расписания?")) return;
 
           const school = getSelectedSchool();
@@ -1685,20 +1876,21 @@
           if (!classItem) return;
 
           const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
-          schedule.splice(dayIndex, 1);
+          const idx = schedule.findIndex((d) => d.date === dayKey);
+          if (idx === -1) return;
+          schedule.splice(idx, 1);
 
           try {
             const targetSchoolIndex = isLocalAdmin
               ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
               : selectedSchoolIndex;
-
             const targetClassIndex = isLocalAdmin
               ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
               : selectedClassIndex;
 
             await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), schedule);
             syncSelectedClassSchedule(schedule);
-            selectedDayIndex = null;
+            if (selectedDayKey === dayKey) selectedDayKey = null;
             renderSelectedSchedule();
             showMessage(document.getElementById("dayMessage"), "✅ День удалён", "success");
           } catch (error) {
@@ -1709,9 +1901,11 @@
 
       container.querySelectorAll(".copy-day-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
-          const dayIndex = Number(btn.closest(".day-item").dataset.key);
+          const item = btn.closest(".day-item");
+          const dayKey = item?.dataset.dayKey;
+          if (!dayKey) return;
           document.getElementById("copyDayDate").value = "";
-          document.getElementById("copyDayDate").dataset.from = String(dayIndex);
+          document.getElementById("copyDayDate").dataset.from = dayKey;
           openModal("copyDayModal");
         });
       });
@@ -1736,11 +1930,13 @@
 
           const school = getSelectedSchool();
           const classItem = school && school.classes ? school.classes[isLocalAdmin ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0) : selectedClassIndex] : null;
-
-          if (!classItem || selectedDayIndex === null) return;
+          if (!classItem || !selectedDayKey) return;
 
           const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
-          const day = schedule[selectedDayIndex];
+          const dayIdx = schedule.findIndex((d) => d.date === selectedDayKey);
+          if (dayIdx === -1) return;
+
+          const day = schedule[dayIdx];
           const lessons = Array.isArray(day.lessons) ? [...day.lessons] : [];
 
           lessons[lessonIndex] = {
@@ -1751,13 +1947,12 @@
           };
 
           day.lessons = lessons;
-          schedule[selectedDayIndex] = day;
+          schedule[dayIdx] = day;
 
           try {
             const targetSchoolIndex = isLocalAdmin
               ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
               : selectedSchoolIndex;
-
             const targetClassIndex = isLocalAdmin
               ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
               : selectedClassIndex;
@@ -1765,9 +1960,9 @@
             await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), schedule);
             syncSelectedClassSchedule(schedule);
             renderSelectedSchedule();
-            showMessage(card.querySelector(".lesson-edit-message"), "✅ Урок сохранён", "success");
+            showMessage(document.getElementById("dayMessage"), "✅ Урок сохранён", "success");
           } catch (error) {
-            showMessage(card.querySelector(".lesson-edit-message"), "❌ Ошибка: " + error.message, "error");
+            showMessage(document.getElementById("dayMessage"), "❌ Ошибка: " + error.message, "error");
           }
         });
       });
@@ -1778,21 +1973,23 @@
 
           const school = getSelectedSchool();
           const classItem = school && school.classes ? school.classes[isLocalAdmin ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0) : selectedClassIndex] : null;
-          if (!classItem || selectedDayIndex === null) return;
+          if (!classItem || !selectedDayKey) return;
 
           const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
-          const day = schedule[selectedDayIndex];
+          const dayIdx = schedule.findIndex((d) => d.date === selectedDayKey);
+          if (dayIdx === -1) return;
+
+          const day = schedule[dayIdx];
           const lessons = Array.isArray(day.lessons) ? [...day.lessons] : [];
 
           lessons.splice(lessonIndex, 1);
           day.lessons = lessons;
-          schedule[selectedDayIndex] = day;
+          schedule[dayIdx] = day;
 
           try {
             const targetSchoolIndex = isLocalAdmin
               ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
               : selectedSchoolIndex;
-
             const targetClassIndex = isLocalAdmin
               ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
               : selectedClassIndex;
@@ -1848,7 +2045,7 @@
           const school = getSelectedSchool();
           const classItem = school && school.classes ? school.classes[isLocalAdmin ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0) : selectedClassIndex] : null;
 
-          if (!classItem || selectedDayIndex === null) return;
+          if (!classItem || !selectedDayKey) return;
 
           const name = card.querySelector(".new-lesson-name").value.trim();
           const time = card.querySelector(".new-lesson-time").value.trim();
@@ -1861,18 +2058,20 @@
           }
 
           const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
-          const day = schedule[selectedDayIndex];
+          const dayIdx = schedule.findIndex((d) => d.date === selectedDayKey);
+          if (dayIdx === -1) return;
+
+          const day = schedule[dayIdx];
           const lessons = Array.isArray(day.lessons) ? [...day.lessons] : [];
 
           lessons.push({ name, time, cab, homework });
           day.lessons = lessons;
-          schedule[selectedDayIndex] = day;
+          schedule[dayIdx] = day;
 
           try {
             const targetSchoolIndex = isLocalAdmin
               ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
               : selectedSchoolIndex;
-
             const targetClassIndex = isLocalAdmin
               ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
               : selectedClassIndex;
@@ -1880,9 +2079,9 @@
             await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), schedule);
             syncSelectedClassSchedule(schedule);
             renderSelectedSchedule();
-            showMessage(card.querySelector(".add-lesson-message"), "✅ Урок добавлен", "success");
+            showMessage(document.getElementById("dayMessage"), "✅ Урок добавлен", "success");
           } catch (error) {
-            showMessage(card.querySelector(".add-lesson-message"), "❌ Ошибка: " + error.message, "error");
+            showMessage(document.getElementById("dayMessage"), "❌ Ошибка: " + error.message, "error");
           }
         });
       });
@@ -1890,7 +2089,7 @@
 
     function renderSelectedSchedule() {
       const schedule = getSelectedSchedule();
-      renderDayList(schedule);
+      renderWeekList(schedule);
     }
 
     function insertAtCursor(field, text) {
@@ -1898,21 +2097,20 @@
       const end = field.selectionEnd ?? field.value.length;
       const before = field.value.substring(0, start);
       const after = field.value.substring(end);
-
       field.value = before + text + after;
       const pos = before.length + text.length;
       field.selectionStart = pos;
       field.selectionEnd = pos;
     }
 
-    // Обработчики для выбора школы/класса
     document.getElementById("schoolSelect").addEventListener("change", (e) => {
       if (isLocalAdmin) return;
       selectedSchoolIndex = Number(e.target.value);
-      const school = schoolsCache[selectedSchoolIndex];
-      const classes = school && Array.isArray(school.classes) ? school.classes : [];
-      selectedClassIndex = classes.length ? 0 : 0;
-      selectedDayIndex = null;
+      selectedClassIndex = 0;
+      selectedDayKey = null;
+      expandedWeeks.clear();
+      showPastWeeks = false;
+      pastWeeksShown = 2;
       fillClassSelect();
       renderSelectedSchedule();
     });
@@ -1920,11 +2118,13 @@
     document.getElementById("classSelect").addEventListener("change", (e) => {
       if (isLocalAdmin) return;
       selectedClassIndex = Number(e.target.value);
-      selectedDayIndex = null;
+      selectedDayKey = null;
+      expandedWeeks.clear();
+      showPastWeeks = false;
+      pastWeeksShown = 2;
       renderSelectedSchedule();
     });
 
-    // Модальные окна для школ и классов
     document.getElementById("openSchoolClassModalBtn").addEventListener("click", () => {
       if (isLocalAdmin) return;
       document.getElementById("newSchoolName").value = "";
@@ -1937,32 +2137,24 @@
 
     document.getElementById("addSchoolBtn").addEventListener("click", async () => {
       if (isLocalAdmin) return;
-
       const name = document.getElementById("newSchoolName").value.trim();
       const msg = document.getElementById("schoolClassMessageModal");
-
-      if (!name) {
-        showMessage(msg, "⚠️ Введите название школы", "error");
-        return;
-      }
+      if (!name) { showMessage(msg, "⚠️ Введите название школы", "error"); return; }
 
       try {
         const nextSchools = Array.isArray(schoolsCache) ? [...schoolsCache] : [];
         nextSchools.push({ name, classes: [] });
-
         await set(ref(db, "schools"), nextSchools);
         schoolsCache = nextSchools;
-
         selectedSchoolIndex = nextSchools.length - 1;
         selectedClassIndex = 0;
-        selectedDayIndex = null;
-
+        selectedDayKey = null;
+        expandedWeeks.clear();
         document.getElementById("newSchoolName").value = "";
         fillSchoolSelect();
         fillClassSelect();
         renderSelectedSchedule();
         closeAllModals();
-
         showMessage(msg, "✅ Школа добавлена", "success");
       } catch (error) {
         showMessage(msg, "❌ Ошибка: " + error.message, "error");
@@ -1971,27 +2163,21 @@
 
     document.getElementById("deleteSchoolBtn").addEventListener("click", async () => {
       if (isLocalAdmin) return;
-
       const msg = document.getElementById("schoolClassMessage");
-
       if (!Array.isArray(schoolsCache) || !schoolsCache.length) {
-        showMessage(msg, "⚠️ Школ нет", "error");
-        return;
+        showMessage(msg, "⚠️ Школ нет", "error"); return;
       }
-
       const currentSchoolName = schoolsCache[selectedSchoolIndex]?.name || "выбранную школу";
       if (!confirm(`Удалить школу "${currentSchoolName}"?`)) return;
 
       try {
         const nextSchools = schoolsCache.filter((_, index) => index !== selectedSchoolIndex);
-
         await set(ref(db, "schools"), nextSchools);
         schoolsCache = nextSchools;
-
         selectedSchoolIndex = nextSchools.length ? Math.min(selectedSchoolIndex, nextSchools.length - 1) : 0;
         selectedClassIndex = 0;
-        selectedDayIndex = null;
-
+        selectedDayKey = null;
+        expandedWeeks.clear();
         fillSchoolSelect();
         fillClassSelect();
         renderSelectedSchedule();
@@ -2003,40 +2189,26 @@
 
     document.getElementById("addClassBtn").addEventListener("click", async () => {
       if (isLocalAdmin) return;
-
       const name = document.getElementById("newClassName").value.trim();
       const msg = document.getElementById("schoolClassMessageModal");
-
-      if (!name) {
-        showMessage(msg, "⚠️ Введите название класса", "error");
-        return;
-      }
+      if (!name) { showMessage(msg, "⚠️ Введите название класса", "error"); return; }
 
       try {
         const school = getSelectedSchool();
-        if (!school) {
-          showMessage(msg, "⚠️ Сначала выберите или создайте школу", "error");
-          return;
-        }
+        if (!school) { showMessage(msg, "⚠️ Сначала выберите или создайте школу", "error"); return; }
 
-        const nextSchool = {
-          ...school,
-          classes: Array.isArray(school.classes) ? [...school.classes] : []
-        };
-
+        const nextSchool = { ...school, classes: Array.isArray(school.classes) ? [...school.classes] : [] };
         nextSchool.classes.push({ name, schedule: [] });
 
         await set(ref(db, `schools/${selectedSchoolIndex}`), nextSchool);
-
         schoolsCache[selectedSchoolIndex] = nextSchool;
         selectedClassIndex = nextSchool.classes.length - 1;
-        selectedDayIndex = null;
-
+        selectedDayKey = null;
+        expandedWeeks.clear();
         document.getElementById("newClassName").value = "";
         fillClassSelect();
         renderSelectedSchedule();
         closeAllModals();
-
         showMessage(msg, "✅ Класс добавлен", "success");
       } catch (error) {
         showMessage(msg, "❌ Ошибка: " + error.message, "error");
@@ -2045,30 +2217,21 @@
 
     document.getElementById("deleteClassBtn").addEventListener("click", async () => {
       if (isLocalAdmin) return;
-
       const msg = document.getElementById("schoolClassMessage");
-
       const school = getSelectedSchool();
       if (!school || !Array.isArray(school.classes) || !school.classes.length) {
-        showMessage(msg, "⚠️ В выбранной школе нет классов", "error");
-        return;
+        showMessage(msg, "⚠️ В выбранной школе нет классов", "error"); return;
       }
-
       const currentClassName = school.classes[selectedClassIndex]?.name || "выбранный класс";
       if (!confirm(`Удалить класс "${currentClassName}"?`)) return;
 
       try {
-        const nextSchool = {
-          ...school,
-          classes: school.classes.filter((_, index) => index !== selectedClassIndex)
-        };
-
+        const nextSchool = { ...school, classes: school.classes.filter((_, index) => index !== selectedClassIndex) };
         await set(ref(db, `schools/${selectedSchoolIndex}`), nextSchool);
-
         schoolsCache[selectedSchoolIndex] = nextSchool;
         selectedClassIndex = nextSchool.classes.length ? Math.min(selectedClassIndex, nextSchool.classes.length - 1) : 0;
-        selectedDayIndex = null;
-
+        selectedDayKey = null;
+        expandedWeeks.clear();
         fillClassSelect();
         renderSelectedSchedule();
         showMessage(msg, "✅ Класс удалён", "success");
@@ -2077,7 +2240,6 @@
       }
     });
 
-    // Добавление дня
     document.getElementById("addDayOpenBtn").addEventListener("click", () => {
       document.getElementById("addDayDate").value = "";
       openModal("addDayModal");
@@ -2086,46 +2248,38 @@
     document.getElementById("addDayBtn").addEventListener("click", async () => {
       const date = dateInputToScheduleDate(document.getElementById("addDayDate").value);
       const msg = document.getElementById("dayMessage");
-
-      if (!date) {
-        closeAllModals();
-        showMessage(msg, "⚠️ Выберите дату дня", "error");
-        return;
-      }
+      if (!date) { closeAllModals(); showMessage(msg, "⚠️ Выберите дату дня", "error"); return; }
 
       const targetSchoolIndex = isLocalAdmin
         ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
         : selectedSchoolIndex;
-
       const targetClassIndex = isLocalAdmin
         ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
         : selectedClassIndex;
 
       const school = schoolsCache[targetSchoolIndex];
       const classItem = school && school.classes ? school.classes[targetClassIndex] : null;
-
-      if (!classItem) {
-        showMessage(msg, "⚠️ Сначала выберите класс", "error");
-        return;
-      }
+      if (!classItem) { showMessage(msg, "⚠️ Сначала выберите класс", "error"); return; }
 
       const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
-      const exists = schedule.some((day) => day.date === date);
-
-      if (exists) {
+      if (schedule.some((day) => day.date === date)) {
         closeAllModals();
         showMessage(msg, "⚠️ Такой день уже существует", "error");
         return;
       }
 
       schedule.push({ date, lessons: [] });
+      const sorted = sortScheduleByDate(schedule);
 
       try {
-        await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), schedule);
-        syncSelectedClassSchedule(schedule);
-
+        await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), sorted);
+        syncSelectedClassSchedule(sorted);
         closeAllModals();
-        selectedDayIndex = schedule.length - 1;
+
+        const wk = getWeekKey(parseScheduleDate(date));
+        expandedWeeks.add(wk);
+        selectedDayKey = date;
+
         renderSelectedSchedule();
         showMessage(msg, "✅ День добавлен", "success");
       } catch (error) {
@@ -2133,22 +2287,17 @@
       }
     });
 
-    // Копирование дня
     document.getElementById("confirmCopyBtn").addEventListener("click", async () => {
       const dateInputValue = document.getElementById("copyDayDate").value;
-      const fromIndex = Number(document.getElementById("copyDayDate").dataset.from || "0");
+      const fromKey = document.getElementById("copyDayDate").dataset.from;
       const date = dateInputToScheduleDate(dateInputValue);
       const msg = document.getElementById("dayMessage");
 
-      if (!date) {
-        showMessage(msg, "⚠️ Выберите корректную дату", "error");
-        return;
-      }
+      if (!date) { showMessage(msg, "⚠️ Выберите корректную дату", "error"); return; }
 
       const targetSchoolIndex = isLocalAdmin
         ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
         : selectedSchoolIndex;
-
       const targetClassIndex = isLocalAdmin
         ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
         : selectedClassIndex;
@@ -2158,31 +2307,29 @@
       if (!classItem) return;
 
       const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
-      const alreadyExists = schedule.some((d) => d.date === date);
-
-      if (alreadyExists) {
-        showMessage(msg, "⚠️ День с такой датой уже существует", "error");
-        return;
+      if (schedule.some((d) => d.date === date)) {
+        showMessage(msg, "⚠️ День с такой датой уже существует", "error"); return;
       }
 
-      const source = schedule[fromIndex];
-      if (!source) {
-        showMessage(msg, "⚠️ Источник не найден", "error");
-        return;
-      }
+      const source = schedule.find((d) => d.date === fromKey);
+      if (!source) { showMessage(msg, "⚠️ Источник не найден", "error"); return; }
 
       const copied = {
         date,
         lessons: Array.isArray(source.lessons) ? source.lessons.map((lesson) => ({ ...lesson })) : []
       };
-
       schedule.push(copied);
+      const sorted = sortScheduleByDate(schedule);
 
       try {
-        await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), schedule);
-        syncSelectedClassSchedule(schedule);
+        await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), sorted);
+        syncSelectedClassSchedule(sorted);
         closeAllModals();
-        selectedDayIndex = schedule.length - 1;
+
+        const wk = getWeekKey(parseScheduleDate(date));
+        expandedWeeks.add(wk);
+        selectedDayKey = date;
+
         renderSelectedSchedule();
         showMessage(msg, "✅ Уроки скопированы", "success");
       } catch (error) {
@@ -2190,16 +2337,170 @@
       }
     });
 
-    // Вставка ссылки и изображения
+    document.getElementById("confirmCopyWeekBtn").addEventListener("click", async () => {
+      const fromWeekKey = document.getElementById("copyWeekDate").dataset.fromWeekKey;
+      const toDateStr = document.getElementById("copyWeekDate").value;
+      const copyHomework = document.getElementById("copyWeekHomework").checked;
+      const msg = document.getElementById("dayMessage");
+
+      if (!fromWeekKey) { showMessage(msg, "⚠️ Исходная неделя не найдена", "error"); return; }
+      if (!toDateStr) { showMessage(msg, "⚠️ Выберите дату понедельника новой недели", "error"); return; }
+
+      const [ty, tm, td] = toDateStr.split("-").map(Number);
+      const targetDate = new Date(ty, tm - 1, td);
+      targetDate.setHours(0, 0, 0, 0);
+      const targetMonday = getWeekStart(targetDate);
+      const targetWeekKey = getWeekKey(targetMonday);
+
+      if (targetWeekKey === fromWeekKey) {
+        showMessage(msg, "⚠️ Нельзя копировать неделю в саму себя", "error");
+        return;
+      }
+
+      const school = getSelectedSchool();
+      const classItem = school && school.classes ? school.classes[isLocalAdmin ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0) : selectedClassIndex] : null;
+      if (!classItem) return;
+
+      const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
+
+      const sourceDays = schedule.filter((d) => {
+        const date = parseScheduleDate(d.date);
+        if (!date) return false;
+        return getWeekKey(date) === fromWeekKey;
+      });
+
+      if (!sourceDays.length) {
+        showMessage(msg, "⚠️ В исходной неделе нет дней", "error");
+        return;
+      }
+
+      const conflictDays = schedule.filter((d) => {
+        const date = parseScheduleDate(d.date);
+        if (!date) return false;
+        return getWeekKey(date) === targetWeekKey;
+      });
+
+      if (conflictDays.length > 0) {
+        const confirmOverwrite = confirm(
+          `В целевой неделе уже есть ${conflictDays.length} ${conflictDays.length === 1 ? "день" : "дней"}. Заменить их?`
+        );
+        if (!confirmOverwrite) return;
+
+        for (let i = schedule.length - 1; i >= 0; i--) {
+          const date = parseScheduleDate(schedule[i].date);
+          if (date && getWeekKey(date) === targetWeekKey) {
+            schedule.splice(i, 1);
+          }
+        }
+      }
+
+      sourceDays.forEach((day) => {
+        const srcDate = parseScheduleDate(day.date);
+        if (!srcDate) return;
+        const srcDayIdx = (srcDate.getDay() + 6) % 7;
+        if (srcDayIdx > 5) return;
+
+        const newDate = new Date(targetMonday);
+        newDate.setDate(newDate.getDate() + srcDayIdx);
+        const newDateStr = dateToScheduleDateString(newDate);
+
+        const lessons = Array.isArray(day.lessons)
+          ? day.lessons.map((lesson) => ({
+              name: lesson?.name || "",
+              time: lesson?.time || "",
+              cab: lesson?.cab ?? null,
+              homework: copyHomework ? (lesson?.homework || "") : ""
+            }))
+          : [];
+
+        schedule.push({ date: newDateStr, lessons });
+      });
+
+      const sorted = sortScheduleByDate(schedule);
+
+      try {
+        const targetSchoolIndex = isLocalAdmin
+          ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
+          : selectedSchoolIndex;
+        const targetClassIndex = isLocalAdmin
+          ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
+          : selectedClassIndex;
+
+        await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), sorted);
+        syncSelectedClassSchedule(sorted);
+        closeAllModals();
+
+        expandedWeeks.add(targetWeekKey);
+        renderSelectedSchedule();
+
+        showMessage(msg, `✅ Неделя скопирована (${sourceDays.length} ${sourceDays.length === 1 ? "день" : "дней"})`, "success");
+      } catch (error) {
+        showMessage(msg, "❌ Ошибка: " + error.message, "error");
+      }
+    });
+
+    document.getElementById("confirmDeleteWeekBtn").addEventListener("click", async () => {
+      const weekKey = document.getElementById("confirmDeleteWeekBtn").dataset.weekKey;
+      const msg = document.getElementById("dayMessage");
+
+      if (!weekKey) { showMessage(msg, "⚠️ Неделя не найдена", "error"); return; }
+
+      const school = getSelectedSchool();
+      const classItem = school && school.classes ? school.classes[isLocalAdmin ? (restrictedClassIndex !== null && school.classes[restrictedClassIndex] ? restrictedClassIndex : 0) : selectedClassIndex] : null;
+      if (!classItem) return;
+
+      const schedule = Array.isArray(classItem.schedule) ? [...classItem.schedule] : [];
+
+      const beforeCount = schedule.length;
+      const filtered = schedule.filter((d) => {
+        const date = parseScheduleDate(d.date);
+        if (!date) return true;
+        return getWeekKey(date) !== weekKey;
+      });
+      const removedCount = beforeCount - filtered.length;
+
+      if (removedCount === 0) {
+        closeAllModals();
+        showMessage(msg, "⚠️ В этой неделе нет дней", "error");
+        return;
+      }
+
+      const sorted = sortScheduleByDate(filtered);
+
+      try {
+        const targetSchoolIndex = isLocalAdmin
+          ? (restrictedSchoolIndex !== null && schoolsCache[restrictedSchoolIndex] ? restrictedSchoolIndex : 0)
+          : selectedSchoolIndex;
+        const targetClassIndex = isLocalAdmin
+          ? (restrictedClassIndex !== null && schoolsCache[targetSchoolIndex].classes[restrictedClassIndex] ? restrictedClassIndex : 0)
+          : selectedClassIndex;
+
+        await set(ref(db, `schools/${targetSchoolIndex}/classes/${targetClassIndex}/schedule`), sorted);
+        syncSelectedClassSchedule(sorted);
+
+        if (selectedDayKey) {
+          const selDate = parseScheduleDate(selectedDayKey);
+          if (selDate && getWeekKey(selDate) === weekKey) {
+            selectedDayKey = null;
+          }
+        }
+
+        expandedWeeks.delete(weekKey);
+
+        closeAllModals();
+        renderSelectedSchedule();
+        showMessage(msg, `✅ Неделя удалена (${removedCount} ${removedCount === 1 ? "день" : "дней"})`, "success");
+      } catch (error) {
+        showMessage(msg, "❌ Ошибка: " + error.message, "error");
+      }
+    });
+
     document.getElementById("confirmLinkBtn").addEventListener("click", () => {
       const url = safeUrl(document.getElementById("linkUrl").value.trim());
       const text = document.getElementById("linkText").value.trim();
-
       if (!url || !selectedHomeworkField) return;
-
       const link = `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(text || url)}</a>`;
       insertAtCursor(selectedHomeworkField, link);
-
       closeAllModals();
       selectedHomeworkField.focus();
     });
@@ -2207,37 +2508,27 @@
     document.getElementById("confirmImageBtn").addEventListener("click", () => {
       const url = safeUrl(document.getElementById("imageUrl").value.trim());
       const alt = document.getElementById("imageAlt").value.trim();
-
       if (!url || !selectedHomeworkField) return;
-
       const image = `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt || "Изображение")}" style="max-width:100%;height:auto;border-radius:12px;">`;
       insertAtCursor(selectedHomeworkField, image);
-
       closeAllModals();
       selectedHomeworkField.focus();
     });
 
-    // Добавление новости
     document.getElementById("addNewsBtn").addEventListener("click", async () => {
       if (isLocalAdmin) return;
-
       const title = document.getElementById("addTitle").value.trim();
       const desc = document.getElementById("addDesc").value.trim();
-      const rawDate = Number(document.getElementById("addDate").value || Date.now() / 1000);
-
+      const rawDate = Number(document.getElementById("addDate").value || nowUnix());
       if (!title || !desc) {
-        showMessage(document.getElementById("addMessage"), "⚠️ Заполните заголовок и текст", "error");
-        return;
+        showMessage(document.getElementById("addMessage"), "⚠️ Заполните заголовок и текст", "error"); return;
       }
-
       try {
         const snap = await get(ref(db, "news"));
         const data = snap.exists() ? snap.val() : {};
         const nextKey = Date.now().toString();
-
         const payload = { ...data, [nextKey]: { title, desc, date: rawDate } };
         await set(ref(db, "news"), payload);
-
         document.getElementById("addTitle").value = "";
         document.getElementById("addDesc").value = "";
         document.getElementById("addDate").value = "";
@@ -2248,44 +2539,9 @@
       }
     });
 
-    // Удаление новости
-    document.getElementById("deleteNewsBtn").addEventListener("click", async () => {
-      if (isLocalAdmin) return;
-
-      const index = Number(document.getElementById("deleteIndex").value);
-      if (!Number.isFinite(index)) {
-        showMessage(document.getElementById("deleteMessage"), "⚠️ Укажите индекс новости", "error");
-        return;
-      }
-
-      try {
-        const snap = await get(ref(db, "news"));
-        const data = snap.exists() ? snap.val() : {};
-        const keys = Object.keys(data);
-
-        if (!keys[index]) {
-          showMessage(document.getElementById("deleteMessage"), "⚠️ Такой новости нет", "error");
-          return;
-        }
-
-        const target = keys[index];
-        const newData = { ...data };
-        delete newData[target];
-
-        await set(ref(db, "news"), newData);
-        showMessage(document.getElementById("deleteMessage"), "✅ Новость удалена", "success");
-        renderNewsList();
-      } catch (error) {
-        showMessage(document.getElementById("deleteMessage"), "❌ Ошибка: " + error.message, "error");
-      }
-    });
-
-    // Редактирование новости
     async function renderNewsList() {
       if (isLocalAdmin) return;
-
       const list = document.getElementById("editNewsList");
-
       try {
         const snap = await get(ref(db, "news"));
         const data = snap.exists() ? snap.val() : {};
@@ -2304,7 +2560,7 @@
               <div class="news-item-head">
                 <div>
                   <div class="news-item-title">${escapeHtml(item.title || "Без названия")}</div>
-                  <div class="news-item-meta">${escapeHtml(dateStr)} · Индекс: ${index}</div>
+                  <div class="news-item-meta">${escapeHtml(dateStr)}</div>
                 </div>
                 <div class="news-actions">
                   <button class="btn-console btn-console-warning edit-news-btn" data-key="${key}">✏️</button>
@@ -2315,12 +2571,10 @@
           `;
         }).join("");
 
-        // Удаление новости
         list.querySelectorAll(".delete-news-btn").forEach((btn) => {
           btn.addEventListener("click", async () => {
             const key = btn.dataset.key;
             if (!confirm("Удалить эту новость?")) return;
-
             try {
               const snap = await get(ref(db, "news"));
               const data = snap.exists() ? snap.val() : {};
@@ -2335,30 +2589,21 @@
           });
         });
 
-        // Редактирование новости
         list.querySelectorAll(".edit-news-btn").forEach((btn) => {
           btn.addEventListener("click", async () => {
             const key = btn.dataset.key;
             editingNewsKey = key;
-
             try {
               const snap = await get(ref(db, "news"));
               const data = snap.exists() ? snap.val() : {};
               const item = data[key];
-
-              if (!item) {
-                alert("Новость не найдена");
-                return;
-              }
-
+              if (!item) { alert("Новость не найдена"); return; }
               document.getElementById("editNewsTitle").value = item.title || "";
               document.getElementById("editNewsText").value = item.desc || "";
               document.getElementById("editNewsDate").value = item.date || "";
-
               const msg = document.getElementById("editNewsMessage");
               msg.textContent = "";
               msg.className = "console-message";
-
               openModal("editNewsModal");
             } catch (error) {
               console.error("Edit news error:", error);
@@ -2372,38 +2617,22 @@
       }
     }
 
-    // Сохранение отредактированной новости
     document.getElementById("confirmEditNewsBtn").addEventListener("click", async () => {
       if (isLocalAdmin) return;
-
       const title = document.getElementById("editNewsTitle").value.trim();
       const desc = document.getElementById("editNewsText").value.trim();
       const date = Number(document.getElementById("editNewsDate").value);
-
       const msg = document.getElementById("editNewsMessage");
 
-      if (!title || !desc) {
-        showMessage(msg, "⚠️ Заполните заголовок и текст", "error");
-        return;
-      }
-
-      if (!date) {
-        showMessage(msg, "⚠️ Укажите корректную дату (Unix timestamp)", "error");
-        return;
-      }
+      if (!title || !desc) { showMessage(msg, "⚠️ Заполните заголовок и текст", "error"); return; }
+      if (!date) { showMessage(msg, "⚠️ Укажите корректную дату (Unix timestamp)", "error"); return; }
 
       try {
         const snap = await get(ref(db, "news"));
         const data = snap.exists() ? snap.val() : {};
-
-        if (!data[editingNewsKey]) {
-          showMessage(msg, "⚠️ Новость не найдена", "error");
-          return;
-        }
-
+        if (!data[editingNewsKey]) { showMessage(msg, "⚠️ Новость не найдена", "error"); return; }
         data[editingNewsKey] = { title, desc, date };
         await set(ref(db, "news"), data);
-
         closeAllModals();
         renderNewsList();
         showMessage(document.getElementById("addMessage"), "✅ Новость обновлена", "success");
@@ -2412,51 +2641,38 @@
       }
     });
 
-    // Вспомогательные функции
     function resolveSchoolIndexFromProfile(profile, schools = []) {
       const raw = profile?.schoolIndex ?? profile?.allowedSchoolIndex ?? profile?.school ?? profile?.schoolId ?? 0;
-
       if (raw === null || raw === undefined || raw === "") return 0;
-
       if (Number.isInteger(Number(raw))) {
         const idx = Number(raw);
         return idx >= 0 && idx < schools.length ? idx : 0;
       }
-
       const value = String(raw).trim();
       const found = schools.findIndex((school) => {
         const candidates = [school?.id, school?.schoolId, school?.name, school?.title];
         return candidates.some((item) => String(item ?? "").trim() === value);
       });
-
       return found >= 0 ? found : 0;
     }
 
     function resolveClassIndexFromProfile(profile, school, classes = []) {
       const raw = profile?.classIndex ?? profile?.allowedClassIndex ?? profile?.class ?? profile?.classId ?? 0;
-
       if (raw === null || raw === undefined || raw === "") return 0;
-
       if (Number.isInteger(Number(raw))) {
         const idx = Number(raw);
         return idx >= 0 && idx < classes.length ? idx : 0;
       }
-
       const value = String(raw).trim();
       const found = classes.findIndex((cls) => {
         const candidates = [cls?.id, cls?.classId, cls?.name, cls?.title];
         return candidates.some((item) => String(item ?? "").trim() === value);
       });
-
       return found >= 0 ? found : 0;
     }
 
-    // Авторизация
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = AUTH_URL;
-        return;
-      }
+      if (!user) { window.location.href = AUTH_URL; return; }
 
       const profile = await getUserProfile(user);
       applyAccessRights(profile);

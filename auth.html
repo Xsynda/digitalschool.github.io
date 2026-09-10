@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <link rel="icon" type="image/png" href="logo.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Вход · Электронная школа</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -18,7 +20,7 @@
     }
 
     .auth-card {
-      max-width: 440px;
+      max-width: 460px;
       width: 100%;
       background: #ffffff;
       border-radius: 48px;
@@ -34,18 +36,28 @@
       margin-bottom: 28px;
     }
 
-    .logo-icon {
+    .logo-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      object-fit: cover;
+      box-shadow: 0 8px 18px rgba(42, 125, 225, 0.20);
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+    .logo-fallback {
+      display: none;
       background: #2a7de1;
       color: white;
       width: 48px;
       height: 48px;
       border-radius: 16px;
-      display: flex;
       align-items: center;
       justify-content: center;
       font-size: 24px;
       font-weight: 600;
-      box-shadow: 0 8px 18px rgba(42, 125, 225, 0.20);
+      flex-shrink: 0;
     }
 
     .logo-text {
@@ -79,6 +91,13 @@
       margin-bottom: 6px;
     }
 
+    /* Поле пароля с глазиком */
+    .input-with-icon {
+      position: relative;
+      width: 100%;
+    }
+
+    .input-with-icon input,
     .input-group input,
     .input-group select {
       width: 100%;
@@ -92,6 +111,11 @@
       color: #1f2b48;
     }
 
+    .input-with-icon input {
+      padding-right: 48px;
+    }
+
+    .input-with-icon input:focus,
     .input-group input:focus,
     .input-group select:focus {
       outline: none;
@@ -100,17 +124,44 @@
       box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10);
     }
 
+    .toggle-password {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6a7f9e;
+      transition: 0.15s;
+      padding: 0;
+    }
+
+    .toggle-password:hover {
+      background: #eef3fa;
+      color: #2a7de1;
+    }
+
+    .toggle-password .material-symbols-outlined {
+      font-size: 22px;
+    }
+
     .error-msg {
       color: #c74a4a;
       font-size: 14px;
       margin: 8px 0 12px;
       background: #fff0f0;
-      padding: 10px 16px;
-      border-radius: 40px;
+      padding: 12px 16px;
+      border-radius: 20px;
       display: block;
-      line-height: 1.4;
+      line-height: 1.5;
     }
-
     .error-msg.hidden { display: none; }
 
     .success-msg {
@@ -118,12 +169,11 @@
       font-size: 14px;
       margin: 8px 0 12px;
       background: #e8f5ed;
-      padding: 10px 16px;
-      border-radius: 40px;
+      padding: 12px 16px;
+      border-radius: 20px;
       display: block;
-      line-height: 1.4;
+      line-height: 1.5;
     }
-
     .success-msg.hidden { display: none; }
 
     .info-msg {
@@ -131,12 +181,11 @@
       font-size: 14px;
       margin: 8px 0 12px;
       background: #e5effb;
-      padding: 10px 16px;
-      border-radius: 40px;
+      padding: 12px 16px;
+      border-radius: 20px;
       display: block;
-      line-height: 1.4;
+      line-height: 1.5;
     }
-
     .info-msg.hidden { display: none; }
 
     .btn {
@@ -160,35 +209,56 @@
       color: white;
       box-shadow: 0 8px 20px rgba(42, 125, 225, 0.25);
     }
-
     .btn-primary:hover:not(:disabled) {
       background: #1a5fb0;
       transform: scale(0.98);
     }
-
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .btn-outline {
-      background: transparent;
-      color: #1f2b48;
-      border: 1.5px solid #d0dae9;
-      margin-top: 12px;
-    }
-
-    .btn-outline:hover {
-      background: #f0f4fe;
-      border-color: #2a7de1;
-    }
 
     .btn-success {
       background: #1a8a4a;
       color: white;
       box-shadow: 0 8px 20px rgba(26, 138, 74, 0.25);
     }
-
-    .btn-success:hover {
+    .btn-success:hover:not(:disabled) {
       background: #146e3a;
       transform: scale(0.98);
+    }
+    .btn-success:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-outline {
+      background: transparent;
+      color: #1f2b48;
+      border: 1.5px solid #d0dae9;
+      margin-top: 10px;
+    }
+    .btn-outline:hover:not(:disabled) {
+      background: #f0f4fe;
+      border-color: #2a7de1;
+    }
+    .btn-outline:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Ссылка "Забыли пароль?" */
+    .forgot-row {
+      text-align: right;
+      margin-top: -8px;
+      margin-bottom: 18px;
+    }
+
+    .forgot-link {
+      color: #2a7de1;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      padding: 4px 0;
+      transition: 0.1s;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
     }
 
     .switch-row {
@@ -205,7 +275,6 @@
       margin-left: 4px;
       transition: 0.1s;
     }
-
     .switch-row span:hover { text-decoration: underline; }
 
     .footer-note {
@@ -227,6 +296,7 @@
       font-size: 14px;
       color: #1f2b48;
       cursor: pointer;
+      user-select: none;
     }
 
     .remember-me input[type="checkbox"] {
@@ -236,10 +306,114 @@
       cursor: pointer;
     }
 
+    /* ===== Экран «Подтвердите почту» ===== */
+    .verify-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #e5effb 0%, #d5e6fb 100%);
+      color: #2a7de1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .verify-icon .material-symbols-outlined { font-size: 38px; }
+
+    .verify-email-highlight {
+      background: #eef3fa;
+      color: #1a5fb0;
+      padding: 4px 14px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-block;
+      margin-top: 8px;
+      word-break: break-all;
+      max-width: 100%;
+    }
+
+    .verify-checklist {
+      background: #f9fcff;
+      border: 1px solid #eef3fa;
+      border-radius: 22px;
+      padding: 16px 18px;
+      margin: 18px 0 22px;
+      font-size: 14px;
+      color: #3d5270;
+      line-height: 1.55;
+    }
+
+    .verify-checklist .check-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .verify-checklist .check-item:last-child { margin-bottom: 0; }
+
+    .verify-checklist .check-bullet {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #e5effb;
+      color: #2a7de1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    .verify-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ===== Экран «Почта подтверждена» ===== */
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #d5f0e0 0%, #b9e6cb 100%);
+      color: #1a8a4a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .success-icon .material-symbols-outlined { font-size: 46px; }
+
+    /* ===== Иконка сброса пароля ===== */
+    .reset-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .reset-icon .material-symbols-outlined { font-size: 38px; }
+
     @media (max-width: 480px) {
       .auth-card { padding: 28px 20px 32px; border-radius: 32px; }
       .logo-text { font-size: 22px; }
-      .logo-icon { width: 42px; height: 42px; font-size: 20px; }
+      .logo-img, .logo-fallback { width: 42px; height: 42px; border-radius: 14px; font-size: 20px; }
+      .auth-title { font-size: 24px; }
+      .verify-icon, .reset-icon { width: 60px; height: 60px; border-radius: 18px; }
+      .verify-icon .material-symbols-outlined,
+      .reset-icon .material-symbols-outlined { font-size: 30px; }
+      .success-icon { width: 68px; height: 68px; }
+      .success-icon .material-symbols-outlined { font-size: 38px; }
     }
   </style>
 </head>
@@ -247,22 +421,29 @@
 
   <div class="auth-card" id="authCard">
     <div class="logo-area">
-      <div class="logo-icon">Ш</div>
+      <img src="logo.png" alt="Электронная школа" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      <div class="logo-fallback" id="logoFallback">Ш</div>
       <div class="logo-text">Электро<span>школа</span></div>
     </div>
 
+    <!-- === ЭКРАН 1: Форма входа/регистрации === -->
     <div id="authFormBlock">
       <div class="auth-title" id="formTitle">Вход</div>
       <div class="auth-sub" id="formSub">Введите email и пароль</div>
 
       <div class="input-group">
         <label>Email</label>
-        <input type="email" id="emailInput" placeholder="example@school.ru" />
+        <input type="email" id="emailInput" placeholder="example@school.ru" autocomplete="email" />
       </div>
 
       <div class="input-group">
         <label>Пароль</label>
-        <input type="password" id="passwordInput" placeholder="••••••••" />
+        <div class="input-with-icon">
+          <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" />
+          <button type="button" class="toggle-password" id="togglePasswordBtn" aria-label="Показать пароль">
+            <span class="material-symbols-outlined" id="togglePasswordIcon">visibility</span>
+          </button>
+        </div>
       </div>
 
       <div class="remember-me">
@@ -270,12 +451,15 @@
         <label for="rememberCheckbox">Запомнить меня</label>
       </div>
 
+      <div class="forgot-row" id="forgotRow">
+        <button type="button" class="forgot-link" id="forgotPasswordBtn">Забыли пароль?</button>
+      </div>
+
       <div id="authError" class="error-msg hidden"></div>
       <div id="authSuccess" class="success-msg hidden"></div>
       <div id="authInfo" class="info-msg hidden"></div>
 
       <button class="btn btn-primary" id="submitBtn">Войти</button>
-      <button class="btn btn-outline" id="switchModeBtn">Зарегистрироваться</button>
 
       <div class="switch-row" id="switchText">
         <span id="switchActionLabel">Нет аккаунта?</span>
@@ -283,6 +467,65 @@
       </div>
     </div>
 
+    <!-- === ЭКРАН 2: Подтвердите почту === -->
+    <div id="verifyBlock" class="hidden">
+      <div class="verify-icon">
+        <span class="material-symbols-outlined">mark_email_unread</span>
+      </div>
+
+      <div class="auth-title">Подтвердите почту</div>
+      <div class="auth-sub" style="margin-bottom:14px;">
+        Мы отправили письмо со ссылкой для подтверждения на:
+        <div class="verify-email-highlight" id="verifyEmailText">—</div>
+      </div>
+
+      <div class="verify-checklist">
+        <div class="check-item">
+          <div class="check-bullet">1</div>
+          <div>Откройте письмо от <b>Электронной школы</b> в вашей почте.</div>
+        </div>
+        <div class="check-item">
+          <div class="check-bullet">2</div>
+          <div>Если письма нет — проверьте папку <b>«Спам»</b> или <b>«Промоакции»</b>.</div>
+        </div>
+        <div class="check-item">
+          <div class="check-bullet">3</div>
+          <div>Перейдите по ссылке в письме и подтвердите почту.</div>
+        </div>
+        <div class="check-item">
+          <div class="check-bullet">4</div>
+          <div>Вернитесь сюда и нажмите <b>«Я подтвердил почту»</b>.</div>
+        </div>
+      </div>
+
+      <div id="verifyError" class="error-msg hidden"></div>
+      <div id="verifySuccess" class="success-msg hidden"></div>
+      <div id="verifyInfo" class="info-msg hidden"></div>
+
+      <div class="verify-actions">
+        <button class="btn btn-success" id="continueBtn">Я подтвердил почту</button>
+        <button class="btn btn-outline" id="resendBtn">Отправить письмо заново</button>
+        <button class="btn btn-outline" id="backBtn">Назад к регистрации</button>
+      </div>
+    </div>
+
+    <!-- === ЭКРАН 3: Почта подтверждена === -->
+    <div id="verifiedBlock" class="hidden">
+      <div class="success-icon">
+        <span class="material-symbols-outlined">verified</span>
+      </div>
+
+      <div class="auth-title">Почта подтверждена</div>
+      <div class="auth-sub">Отлично! Теперь вы можете войти в свой аккаунт.</div>
+
+      <div class="info-msg" style="display:block; margin-bottom:20px;">
+        ✅ Аккаунт <b id="verifiedEmailText">—</b> успешно подтверждён.
+      </div>
+
+      <button class="btn btn-primary" id="goToProfileBtn">Продолжить</button>
+    </div>
+
+    <!-- === ЭКРАН 4: Заполнение профиля === -->
     <div id="profileSetupBlock" class="hidden">
       <div class="auth-title">Заполните профиль</div>
       <div class="auth-sub">Укажите имя, школу и класс</div>
@@ -312,6 +555,28 @@
       <button class="btn btn-success" id="saveProfileBtn">Сохранить профиль</button>
     </div>
 
+    <!-- === ЭКРАН 5: Сброс пароля === -->
+    <div id="resetBlock" class="hidden">
+      <div class="reset-icon">
+        <span class="material-symbols-outlined">lock_reset</span>
+      </div>
+
+      <div class="auth-title">Сброс пароля</div>
+      <div class="auth-sub">Введите email, на который зарегистрирован аккаунт — мы отправим ссылку для сброса пароля.</div>
+
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" id="resetEmailInput" placeholder="example@school.ru" autocomplete="email" />
+      </div>
+
+      <div id="resetError" class="error-msg hidden"></div>
+      <div id="resetSuccess" class="success-msg hidden"></div>
+      <div id="resetInfo" class="info-msg hidden"></div>
+
+      <button class="btn btn-primary" id="resetPasswordBtn">Отправить ссылку</button>
+      <button class="btn btn-outline" id="backFromResetBtn">Назад ко входу</button>
+    </div>
+
     <div class="footer-note">© 2026 · Электронная школа</div>
   </div>
 
@@ -324,6 +589,9 @@
       onAuthStateChanged,
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
+      sendEmailVerification,
+      sendPasswordResetEmail,
+      signOut,
       setPersistence,
       browserLocalPersistence,
       browserSessionPersistence
@@ -340,27 +608,50 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+    getAnalytics(app);
     const auth = getAuth(app);
     const db = getDatabase(app);
 
     const REDIRECT_URL = "index.html";
 
+    // === Блоки экранов ===
     const authFormBlock = document.getElementById("authFormBlock");
+    const verifyBlock = document.getElementById("verifyBlock");
+    const verifiedBlock = document.getElementById("verifiedBlock");
     const profileSetupBlock = document.getElementById("profileSetupBlock");
+    const resetBlock = document.getElementById("resetBlock");
+
+    // === Элементы формы ===
     const formTitle = document.getElementById("formTitle");
     const formSub = document.getElementById("formSub");
     const emailInput = document.getElementById("emailInput");
     const passwordInput = document.getElementById("passwordInput");
     const submitBtn = document.getElementById("submitBtn");
-    const switchModeBtn = document.getElementById("switchModeBtn");
     const switchActionLabel = document.getElementById("switchActionLabel");
     const switchActionBtn = document.getElementById("switchActionBtn");
     const authError = document.getElementById("authError");
     const authSuccess = document.getElementById("authSuccess");
     const authInfo = document.getElementById("authInfo");
     const rememberCheckbox = document.getElementById("rememberCheckbox");
+    const forgotRow = document.getElementById("forgotRow");
+    const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
+    const togglePasswordBtn = document.getElementById("togglePasswordBtn");
+    const togglePasswordIcon = document.getElementById("togglePasswordIcon");
 
+    // === Экран подтверждения ===
+    const verifyEmailText = document.getElementById("verifyEmailText");
+    const verifyError = document.getElementById("verifyError");
+    const verifySuccess = document.getElementById("verifySuccess");
+    const verifyInfo = document.getElementById("verifyInfo");
+    const continueBtn = document.getElementById("continueBtn");
+    const resendBtn = document.getElementById("resendBtn");
+    const backBtn = document.getElementById("backBtn");
+
+    // === Экран «почта подтверждена» ===
+    const verifiedEmailText = document.getElementById("verifiedEmailText");
+    const goToProfileBtn = document.getElementById("goToProfileBtn");
+
+    // === Профиль ===
     const profileNameInput = document.getElementById("profileNameInput");
     const schoolSelect = document.getElementById("schoolSelect");
     const classSelect = document.getElementById("classSelect");
@@ -368,13 +659,38 @@
     const profileError = document.getElementById("profileError");
     const profileInfo = document.getElementById("profileInfo");
 
+    // === Сброс пароля ===
+    const resetEmailInput = document.getElementById("resetEmailInput");
+    const resetPasswordBtn = document.getElementById("resetPasswordBtn");
+    const backFromResetBtn = document.getElementById("backFromResetBtn");
+    const resetError = document.getElementById("resetError");
+    const resetSuccess = document.getElementById("resetSuccess");
+    const resetInfo = document.getElementById("resetInfo");
+
     let isLoginMode = true;
     let schoolOptions = [];
     let classOptions = [];
     let schoolsRawData = [];
 
+    /* ============ Утилиты ============ */
+
     function redirectToMain() {
       window.location.href = REDIRECT_URL;
+    }
+
+    function clearAllMessages() {
+      [
+        authError, authSuccess, authInfo,
+        verifyError, verifySuccess, verifyInfo,
+        profileError, profileInfo,
+        resetError, resetSuccess, resetInfo
+      ].forEach(el => el && el.classList.add("hidden"));
+    }
+
+    function showMessage(element, text) {
+      if (!element) return;
+      element.textContent = text;
+      element.classList.remove("hidden");
     }
 
     function updateFormMode() {
@@ -382,65 +698,45 @@
         formTitle.textContent = "Вход";
         formSub.textContent = "Введите email и пароль";
         submitBtn.textContent = "Войти";
-        switchModeBtn.textContent = "Зарегистрироваться";
         switchActionLabel.textContent = "Нет аккаунта?";
         switchActionBtn.textContent = "Зарегистрироваться";
+        forgotRow.classList.remove("hidden");
+        passwordInput.setAttribute("autocomplete", "current-password");
       } else {
         formTitle.textContent = "Регистрация";
         formSub.textContent = "Создайте новый аккаунт";
         submitBtn.textContent = "Создать";
-        switchModeBtn.textContent = "Войти";
         switchActionLabel.textContent = "Уже есть аккаунт?";
         switchActionBtn.textContent = "Войти";
+        forgotRow.classList.add("hidden");
+        passwordInput.setAttribute("autocomplete", "new-password");
       }
-
-      authError.classList.add("hidden");
-      authSuccess.classList.add("hidden");
-      authInfo.classList.add("hidden");
+      clearAllMessages();
     }
 
     function toggleMode() {
       isLoginMode = !isLoginMode;
       updateFormMode();
-      emailInput.value = "";
       passwordInput.value = "";
-      authError.classList.add("hidden");
-      authSuccess.classList.add("hidden");
-      authInfo.classList.add("hidden");
     }
 
-    switchModeBtn.addEventListener("click", toggleMode);
     switchActionBtn.addEventListener("click", toggleMode);
 
     function getErrorMessage(error) {
       const codes = {
         "auth/user-not-found": "Пользователь с таким email не найден.",
         "auth/wrong-password": "Неверный пароль.",
+        "auth/invalid-credential": "Неверный email или пароль.",
         "auth/email-already-in-use": "Этот email уже зарегистрирован.",
         "auth/invalid-email": "Некорректный формат email.",
         "auth/weak-password": "Пароль слишком простой (мин. 6 символов).",
         "auth/user-disabled": "Аккаунт отключён.",
         "auth/too-many-requests": "Слишком много попыток. Подождите.",
         "auth/network-request-failed": "Проблема с интернетом.",
-        "auth/internal-error": "Внутренняя ошибка сервера."
+        "auth/internal-error": "Внутренняя ошибка сервера.",
+        "auth/missing-email": "Введите email."
       };
       return codes[error.code] || error.message || "Неизвестная ошибка.";
-    }
-
-    function showMessage(element, text) {
-      authError.classList.add("hidden");
-      authSuccess.classList.add("hidden");
-      authInfo.classList.add("hidden");
-      profileError.classList.add("hidden");
-      profileInfo.classList.add("hidden");
-
-      element.textContent = text;
-      element.classList.remove("hidden");
-    }
-
-    function hideProfileMessages() {
-      profileError.classList.add("hidden");
-      profileInfo.classList.add("hidden");
     }
 
     function loadSavedEmail() {
@@ -453,40 +749,49 @@
       } catch (e) {}
     }
 
+    /* ============ Показ/скрытие пароля ============ */
+
+    let passwordVisible = false;
+
+    togglePasswordBtn.addEventListener("click", () => {
+      passwordVisible = !passwordVisible;
+      passwordInput.type = passwordVisible ? "text" : "password";
+      togglePasswordIcon.textContent = passwordVisible ? "visibility_off" : "visibility";
+      togglePasswordBtn.setAttribute("aria-label", passwordVisible ? "Скрыть пароль" : "Показать пароль");
+      passwordInput.focus();
+      // Курсор в конец
+      const len = passwordInput.value.length;
+      try { passwordInput.setSelectionRange(len, len); } catch (e) {}
+    });
+
+    /* ============ Школы/классы ============ */
+
     function normalizeOptions(raw) {
       if (!raw) return [];
-
       if (Array.isArray(raw)) {
-        return raw
-          .map((item, index) => {
-            if (item && typeof item === "object") {
-              const id = item.id ?? String(index);
-              const name = item.name ?? item.title ?? item.label ?? item.value ?? item.fullName ?? `Элемент ${index + 1}`;
-              return { id: String(id), name: String(name), raw: item };
-            }
-            return { id: String(index), name: String(item), raw: item };
-          })
-          .filter(item => item && item.name);
+        return raw.map((item, index) => {
+          if (item && typeof item === "object") {
+            const id = item.id ?? String(index);
+            const name = item.name ?? item.title ?? item.label ?? item.value ?? item.fullName ?? `Элемент ${index + 1}`;
+            return { id: String(id), name: String(name), raw: item };
+          }
+          return { id: String(index), name: String(item), raw: item };
+        }).filter(item => item && item.name);
       }
-
       if (typeof raw === "object") {
-        return Object.entries(raw)
-          .map(([id, value]) => {
-            if (value && typeof value === "object") {
-              const name = value.name ?? value.title ?? value.label ?? value.value ?? value.fullName ?? id;
-              return { id: String(id), name: String(name), raw: value };
-            }
-            return { id: String(id), name: String(value), raw: value };
-          })
-          .filter(item => item && item.name);
+        return Object.entries(raw).map(([id, value]) => {
+          if (value && typeof value === "object") {
+            const name = value.name ?? value.title ?? value.label ?? value.value ?? value.fullName ?? id;
+            return { id: String(id), name: String(name), raw: value };
+          }
+          return { id: String(id), name: String(value), raw: value };
+        }).filter(item => item && item.name);
       }
-
       return [];
     }
 
     function fillSelect(select, options, placeholder) {
       select.innerHTML = "";
-
       const emptyOption = document.createElement("option");
       emptyOption.value = "";
       emptyOption.textContent = placeholder;
@@ -496,7 +801,6 @@
         select.disabled = true;
         return;
       }
-
       select.disabled = false;
 
       options.forEach(option => {
@@ -511,38 +815,25 @@
       if (Array.isArray(schoolsRawData)) {
         return schoolsRawData[Number(id)] ?? schoolsRawData[id];
       }
-
       if (typeof schoolsRawData === "object") {
         return schoolsRawData[id] ?? Object.values(schoolsRawData).find((_, index) => String(index) === String(id));
       }
-
       return null;
     }
 
     function fillClassesForSchool(schoolId) {
       const schoolRecord = getSchoolRecordById(schoolId);
-
-      const rawClasses =
-        schoolRecord?.classes ??
-        schoolRecord?.classList ??
-        schoolRecord?.items ??
-        [];
-
+      const rawClasses = schoolRecord?.classes ?? schoolRecord?.classList ?? schoolRecord?.items ?? [];
       classOptions = normalizeOptions(rawClasses);
       fillSelect(classSelect, classOptions, "Выберите класс");
-
-      if (!classOptions.length) {
-        classSelect.value = "";
-      }
+      if (!classOptions.length) classSelect.value = "";
     }
 
     async function loadProfileOptions() {
       try {
         const snapshot = await get(ref(db, "schools"));
         const data = snapshot.val() || [];
-
         schoolsRawData = Array.isArray(data) ? data : (typeof data === "object" ? data : []);
-
         schoolOptions = normalizeOptions(schoolsRawData);
         fillSelect(schoolSelect, schoolOptions, "Выберите школу");
 
@@ -554,9 +845,7 @@
           fillSelect(classSelect, [], "Выберите класс");
         }
 
-        schoolSelect.onchange = () => {
-          fillClassesForSchool(schoolSelect.value);
-        };
+        schoolSelect.onchange = () => fillClassesForSchool(schoolSelect.value);
       } catch (error) {
         console.error("Ошибка загрузки школ:", error);
         fillSelect(schoolSelect, [], "Школы не найдены");
@@ -564,13 +853,62 @@
       }
     }
 
+    /* ============ Переключение экранов ============ */
+
+    function showAuthForm() {
+      authFormBlock.classList.remove("hidden");
+      verifyBlock.classList.add("hidden");
+      verifiedBlock.classList.add("hidden");
+      profileSetupBlock.classList.add("hidden");
+      resetBlock.classList.add("hidden");
+      clearAllMessages();
+      loadSavedEmail();
+      updateFormMode();
+    }
+
+    function showVerifyScreen(email) {
+      authFormBlock.classList.add("hidden");
+      verifyBlock.classList.remove("hidden");
+      verifiedBlock.classList.add("hidden");
+      profileSetupBlock.classList.add("hidden");
+      resetBlock.classList.add("hidden");
+      clearAllMessages();
+      verifyEmailText.textContent = email || "—";
+    }
+
+    function showVerifiedScreen(email) {
+      authFormBlock.classList.add("hidden");
+      verifyBlock.classList.add("hidden");
+      verifiedBlock.classList.remove("hidden");
+      profileSetupBlock.classList.add("hidden");
+      resetBlock.classList.add("hidden");
+      clearAllMessages();
+      verifiedEmailText.textContent = email || "—";
+    }
+
     async function showProfileSetup() {
       authFormBlock.classList.add("hidden");
+      verifyBlock.classList.add("hidden");
+      verifiedBlock.classList.add("hidden");
       profileSetupBlock.classList.remove("hidden");
-      hideProfileMessages();
+      resetBlock.classList.add("hidden");
+      clearAllMessages();
       await loadProfileOptions();
       profileNameInput.focus();
     }
+
+    function showResetScreen() {
+      authFormBlock.classList.add("hidden");
+      verifyBlock.classList.add("hidden");
+      verifiedBlock.classList.add("hidden");
+      profileSetupBlock.classList.add("hidden");
+      resetBlock.classList.remove("hidden");
+      clearAllMessages();
+      resetEmailInput.value = emailInput.value.trim();
+      resetEmailInput.focus();
+    }
+
+    /* ============ Профиль ============ */
 
     async function saveProfile() {
       const user = auth.currentUser;
@@ -580,20 +918,9 @@
       const schoolId = schoolSelect.value;
       const classId = classSelect.value;
 
-      if (!name) {
-        showMessage(profileError, "⚠️ Введите имя");
-        return;
-      }
-
-      if (!schoolId) {
-        showMessage(profileError, "⚠️ Выберите школу");
-        return;
-      }
-
-      if (!classId) {
-        showMessage(profileError, "⚠️ Выберите класс");
-        return;
-      }
+      if (!name) { showMessage(profileError, "⚠️ Введите имя"); return; }
+      if (!schoolId) { showMessage(profileError, "⚠️ Выберите школу"); return; }
+      if (!classId) { showMessage(profileError, "⚠️ Выберите класс"); return; }
 
       const selectedSchool = schoolOptions.find(item => item.id === schoolId) || { name: schoolId };
       const selectedClass = classOptions.find(item => item.id === classId) || { name: classId };
@@ -611,9 +938,9 @@
           classId: classId,
           status: 1,
           profileComplete: true,
+          emailVerified: true,
           createdAt: new Date().toISOString()
         });
-
         redirectToMain();
       } catch (error) {
         console.error("Ошибка сохранения профиля:", error);
@@ -625,6 +952,8 @@
 
     saveProfileBtn.addEventListener("click", saveProfile);
 
+    /* ============ Вход / Регистрация ============ */
+
     async function handleSubmit() {
       const email = emailInput.value.trim();
       const password = passwordInput.value;
@@ -634,9 +963,7 @@
         return;
       }
 
-      authError.classList.add("hidden");
-      authSuccess.classList.add("hidden");
-      authInfo.classList.add("hidden");
+      clearAllMessages();
       submitBtn.disabled = true;
       submitBtn.textContent = "⏳ Загрузка...";
 
@@ -656,20 +983,26 @@
           const user = userCredential.user;
 
           try {
+            await sendEmailVerification(user);
+          } catch (mailErr) {
+            console.warn("Не удалось отправить письмо:", mailErr);
+          }
+
+          try {
             await set(ref(db, "users/" + user.uid), {
               email: email,
               status: 1,
               profileComplete: false,
+              emailVerified: false,
               createdAt: new Date().toISOString()
             });
           } catch (dbError) {
             console.warn("Ошибка сохранения временного профиля:", dbError);
           }
 
-          showMessage(authSuccess, "✅ Аккаунт создан! Заполните профиль.");
-          setTimeout(() => {
-            showProfileSetup();
-          }, 600);
+          submitBtn.disabled = false;
+          submitBtn.textContent = isLoginMode ? "Войти" : "Создать";
+          showVerifyScreen(email);
         }
       } catch (error) {
         console.error("Ошибка:", error);
@@ -681,46 +1014,194 @@
 
     submitBtn.addEventListener("click", handleSubmit);
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        const active = document.activeElement;
+    /* ============ Проверка подтверждения почты ============ */
 
-        if (active === emailInput || active === passwordInput) {
-          handleSubmit();
-        }
+    async function checkEmailVerified() {
+      const user = auth.currentUser;
+      if (!user) {
+        showMessage(verifyError, "⚠️ Сессия истекла. Вернитесь назад и войдите заново.");
+        return;
+      }
 
-        if (active === profileNameInput || active === schoolSelect || active === classSelect) {
-          saveProfile();
+      clearAllMessages();
+      continueBtn.disabled = true;
+      continueBtn.textContent = "⏳ Проверка...";
+
+      try {
+        await user.reload();
+        const freshUser = auth.currentUser;
+
+        if (freshUser?.emailVerified) {
+          continueBtn.disabled = false;
+          continueBtn.textContent = "Я подтвердил почту";
+          showVerifiedScreen(freshUser.email);
+        } else {
+          showMessage(verifyError, "❌ Почта ещё не подтверждена. Откройте письмо (проверьте «Спам») и перейдите по ссылке, затем вернитесь сюда.");
+          continueBtn.disabled = false;
+          continueBtn.textContent = "Я подтвердил почту";
         }
+      } catch (error) {
+        console.error("Ошибка проверки:", error);
+        showMessage(verifyError, "❌ Ошибка проверки. Попробуйте ещё раз.");
+        continueBtn.disabled = false;
+        continueBtn.textContent = "Я подтвердил почту";
+      }
+    }
+
+    continueBtn.addEventListener("click", checkEmailVerified);
+
+    /* ============ Кнопка «Продолжить» на экране успеха ============ */
+
+    goToProfileBtn.addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        showAuthForm();
+        return;
+      }
+      try {
+        const snap = await get(ref(db, "users/" + user.uid));
+        const profile = snap.val() || {};
+        if (profile.profileComplete || (profile.name && profile.school && profile.class)) {
+          redirectToMain();
+        } else {
+          await showProfileSetup();
+        }
+      } catch {
+        await showProfileSetup();
       }
     });
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          const userSnapshot = await get(ref(db, "users/" + user.uid));
-          const profile = userSnapshot.val() || {};
+    /* ============ Отправить письмо заново ============ */
 
-          if (profile.profileComplete || (profile.name && profile.school && profile.class)) {
-            redirectToMain();
-            return;
-          }
-
-          await showProfileSetup();
-        } catch (e) {
-          await showProfileSetup();
-        }
-      } else {
-        authFormBlock.classList.remove("hidden");
-        profileSetupBlock.classList.add("hidden");
-        loadSavedEmail();
-        updateFormMode();
+    async function resendVerification() {
+      const user = auth.currentUser;
+      if (!user) {
+        showMessage(verifyError, "⚠️ Сессия истекла. Вернитесь назад и войдите заново.");
+        return;
       }
+
+      clearAllMessages();
+      resendBtn.disabled = true;
+      resendBtn.textContent = "⏳ Отправка...";
+
+      try {
+        await sendEmailVerification(user);
+        showMessage(verifySuccess, "✅ Письмо отправлено повторно. Проверьте почту и папку «Спам».");
+      } catch (error) {
+        console.error("Ошибка отправки:", error);
+        showMessage(verifyError, "❌ Не удалось отправить письмо. Попробуйте позже.");
+      } finally {
+        resendBtn.disabled = false;
+        resendBtn.textContent = "Отправить письмо заново";
+      }
+    }
+
+    resendBtn.addEventListener("click", resendVerification);
+
+    /* ============ Назад к регистрации ============ */
+
+    async function goBackToForm() {
+      try {
+        await signOut(auth);
+      } catch (e) {
+        console.warn(e);
+      }
+      showAuthForm();
+    }
+
+    backBtn.addEventListener("click", goBackToForm);
+
+    /* ============ Сброс пароля ============ */
+
+    forgotPasswordBtn.addEventListener("click", () => {
+      showResetScreen();
+    });
+
+    backFromResetBtn.addEventListener("click", () => {
+      showAuthForm();
+    });
+
+    async function handleResetPassword() {
+      const email = resetEmailInput.value.trim();
+
+      if (!email) {
+        showMessage(resetError, "⚠️ Введите email");
+        return;
+      }
+
+      clearAllMessages();
+      resetPasswordBtn.disabled = true;
+      resetPasswordBtn.textContent = "⏳ Отправка...";
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+        showMessage(resetSuccess, "✅ Письмо для сброса пароля отправлено! Проверьте почту и папку «Спам».");
+      } catch (error) {
+        console.error("Ошибка сброса:", error);
+        // Не раскрываем, существует ли email — просто показываем нейтральное сообщение
+        if (error.code === "auth/user-not-found") {
+          showMessage(resetSuccess, "✅ Если такой email зарегистрирован — на него отправлено письмо для сброса пароля.");
+        } else if (error.code === "auth/invalid-email") {
+          showMessage(resetError, "⚠️ Некорректный формат email.");
+        } else {
+          showMessage(resetError, "❌ " + getErrorMessage(error));
+        }
+      } finally {
+        resetPasswordBtn.disabled = false;
+        resetPasswordBtn.textContent = "Отправить ссылку";
+      }
+    }
+
+    resetPasswordBtn.addEventListener("click", handleResetPassword);
+
+    /* ============ Enter ============ */
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      const active = document.activeElement;
+
+      if (!authFormBlock.classList.contains("hidden")) {
+        if (active === emailInput || active === passwordInput) handleSubmit();
+      } else if (!profileSetupBlock.classList.contains("hidden")) {
+        if (active === profileNameInput || active === schoolSelect || active === classSelect) saveProfile();
+      } else if (!resetBlock.classList.contains("hidden")) {
+        if (active === resetEmailInput) handleResetPassword();
+      }
+    });
+
+    /* ============ Стартовая проверка ============ */
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        showAuthForm();
+        return;
+      }
+
+      const isEmailVerified = user.emailVerified;
+
+      let profile = {};
+      try {
+        const snap = await get(ref(db, "users/" + user.uid));
+        profile = snap.val() || {};
+      } catch (e) {}
+
+      if (!isEmailVerified) {
+        if (!verifyBlock.classList.contains("hidden")) return;
+        showVerifyScreen(user.email || "—");
+        return;
+      }
+
+      if (!profile.profileComplete && !(profile.name && profile.school && profile.class)) {
+        if (!verifiedBlock.classList.contains("hidden")) return;
+        await showProfileSetup();
+        return;
+      }
+
+      redirectToMain();
     });
 
     updateFormMode();
     loadSavedEmail();
-    console.log("✅ Страница авторизации готова");
   </script>
 </body>
 </html>

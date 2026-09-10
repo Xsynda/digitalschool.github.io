@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <link rel="icon" type="image/png" href="logo.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Аккаунт · Электронная школа</title>
@@ -16,6 +17,7 @@
       color: #0a1e3c;
     }
 
+    /* ===== Навигация ===== */
     .navbar {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -23,7 +25,7 @@
       background: #ffffff;
       border-bottom: 1px solid #eef3fa;
       box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06);
-      padding: 12px 24px;
+      padding: 10px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -35,26 +37,42 @@
       display: flex;
       align-items: center;
       gap: 16px;
+      flex-wrap: wrap;
+      min-width: 0;
     }
 
     .logo-area {
       display: flex;
       align-items: center;
       gap: 10px;
+      text-decoration: none;
+      flex-shrink: 0;
     }
 
-    .logo-icon {
+    .logo-img {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      object-fit: cover;
+      display: block;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.18);
+      background: #ffffff;
+    }
+
+    .logo-fallback {
+      display: none;
       background: #2a7de1;
       color: white;
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
-      display: flex;
       align-items: center;
       justify-content: center;
       font-size: 20px;
       font-weight: 600;
       box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20);
+      flex-shrink: 0;
     }
 
     .logo-text {
@@ -62,11 +80,10 @@
       font-weight: 700;
       letter-spacing: -0.3px;
       color: #0a1e3c;
+      white-space: nowrap;
     }
 
-    .logo-text span {
-      color: #2a7de1;
-    }
+    .logo-text span { color: #2a7de1; }
 
     .nav-links {
       display: flex;
@@ -88,6 +105,7 @@
       gap: 6px;
       background: transparent;
       border: 1.5px solid transparent;
+      white-space: nowrap;
     }
 
     .nav-link:hover {
@@ -110,6 +128,7 @@
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
+      flex-shrink: 0;
     }
 
     .user-badge {
@@ -127,6 +146,10 @@
       text-decoration: none;
       border: none;
       font-family: 'Inter', sans-serif;
+      max-width: 220px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .user-badge:hover {
@@ -137,8 +160,16 @@
     .user-badge .material-symbols-outlined {
       color: #2a7de1;
       font-size: 20px;
+      flex-shrink: 0;
     }
 
+    .user-badge .user-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ===== Контейнер ===== */
     .container {
       max-width: 720px;
       margin: 0 auto;
@@ -236,6 +267,44 @@
       color: #556a8c;
       cursor: not-allowed;
       opacity: 0.9;
+    }
+
+    /* Обёртка для поля с глазиком */
+    .input-with-icon {
+      position: relative;
+      width: 100%;
+    }
+
+    .input-with-icon input {
+      padding-right: 48px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6a7f9e;
+      transition: 0.15s;
+      padding: 0;
+    }
+
+    .toggle-password:hover {
+      background: #eef3fa;
+      color: #2a7de1;
+    }
+
+    .toggle-password .material-symbols-outlined {
+      font-size: 22px;
     }
 
     .btn-action {
@@ -338,56 +407,87 @@
       text-align: center;
     }
 
-    @media (max-width: 700px) {
-      .navbar {
-        padding: 10px 16px;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-      }
-      .navbar-left {
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-      .nav-links {
-        justify-content: flex-start;
-      }
-      .navbar-right {
-        justify-content: flex-start;
-      }
-      body {
-        padding-top: 130px;
-      }
-      .container {
-        padding: 20px 16px 28px;
-        border-radius: 32px;
-      }
-      .page-title {
-        font-size: 22px;
-      }
-      .settings-card {
-        padding: 18px 16px;
-      }
+    /* ===== Адаптив: планшет ===== */
+    @media (max-width: 860px) {
+      .navbar { padding: 10px 18px; }
+      .logo-text { font-size: 20px; }
+      .nav-link { padding: 7px 14px; font-size: 13px; }
+      .user-badge { max-width: 160px; padding: 6px 12px 6px 10px; font-size: 13px; }
     }
 
-    @media (max-width: 480px) {
-      .logo-text {
-        font-size: 18px;
+    /* ===== Адаптив: мобильный ===== */
+    @media (max-width: 700px) {
+      body { padding-top: 74px; }
+
+      .navbar {
+        padding: 8px 14px;
+        flex-wrap: nowrap;
+        gap: 8px;
       }
+
+      .navbar-left {
+        flex-wrap: nowrap;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .logo-area { gap: 8px; flex-shrink: 0; }
+      .logo-img, .logo-fallback { width: 36px; height: 36px; border-radius: 10px; font-size: 18px; }
+      .logo-text { display: none; }
+
+      .nav-links {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        gap: 4px;
+        flex: 1;
+        min-width: 0;
+      }
+      .nav-links::-webkit-scrollbar { display: none; }
+
       .nav-link {
-        padding: 6px 14px;
+        padding: 7px 14px;
         font-size: 13px;
+        flex-shrink: 0;
       }
+      .nav-link .material-symbols-outlined { font-size: 16px; }
+
+      .navbar-right { flex-shrink: 0; }
+
+      .user-badge {
+        padding: 6px 12px 6px 10px;
+        font-size: 13px;
+        max-width: 130px;
+      }
+      .user-badge .material-symbols-outlined { font-size: 18px; }
+
+      .container { margin: 12px 10px 20px; padding: 20px 16px 28px; border-radius: 32px; }
+      .page-title { font-size: 22px; }
+      .page-title .material-symbols-outlined { font-size: 27px; }
+      .page-sub { font-size: 14px; }
+      .settings-card { padding: 18px 16px; border-radius: 20px; }
+    }
+
+    @media (max-width: 420px) {
+      .user-badge .user-name { display: none; }
+      .user-badge { padding: 6px 8px; max-width: none; }
+      .user-badge .material-symbols-outlined { margin: 0; }
+
+      .nav-link { padding: 6px 12px; font-size: 12px; }
+      .nav-link .material-symbols-outlined { font-size: 15px; }
     }
   </style>
 </head>
 <body>
   <header class="navbar">
     <div class="navbar-left">
-      <div class="logo-area">
-        <div class="logo-icon">Ш</div>
+      <a href="index.html" class="logo-area">
+        <img src="logo.png" alt="Электронная школа" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <div class="logo-fallback">Ш</div>
         <div class="logo-text">Электро<span>школа</span></div>
-      </div>
+      </a>
       <nav class="nav-links">
         <a href="index.html" class="nav-link">
           <span class="material-symbols-outlined">home</span>
@@ -489,7 +589,7 @@
       userArea.innerHTML = `
         <a href="account.html" class="user-badge">
           <span class="material-symbols-outlined">person</span>
-          ${escapeHtml(name)}
+          <span class="user-name">${escapeHtml(name)}</span>
         </a>
       `;
     }
@@ -611,6 +711,33 @@
       window.location.href = "auth.html";
     }
 
+    /* ============ Глазик для полей пароля ============ */
+
+    const passwordVisibility = new Map();
+
+    function setupPasswordToggle(inputId, buttonId, iconId) {
+      const input = document.getElementById(inputId);
+      const btn = document.getElementById(buttonId);
+      const icon = document.getElementById(iconId);
+      if (!input || !btn || !icon) return;
+
+      let visible = false;
+      passwordVisibility.set(inputId, false);
+
+      btn.addEventListener("click", () => {
+        visible = !visible;
+        passwordVisibility.set(inputId, visible);
+        input.type = visible ? "text" : "password";
+        icon.textContent = visible ? "visibility_off" : "visibility";
+        btn.setAttribute("aria-label", visible ? "Скрыть пароль" : "Показать пароль");
+
+        // Возвращаем фокус и курсор в конец
+        input.focus();
+        const len = input.value.length;
+        try { input.setSelectionRange(len, len); } catch (e) {}
+      });
+    }
+
     function renderProfile(user, profileData = {}, schools = []) {
       const status = statusInfo(profileData?.status ?? 1);
       const { schoolName, className } = resolveSchoolAndClass(profileData, schools);
@@ -673,17 +800,32 @@
 
           <div class="field-group">
             <label>Текущий пароль</label>
-            <input type="password" id="currentPasswordInput" placeholder="Введите текущий пароль" />
+            <div class="input-with-icon">
+              <input type="password" id="currentPasswordInput" placeholder="Введите текущий пароль" autocomplete="current-password" />
+              <button type="button" class="toggle-password" id="toggleCurrentPasswordBtn" aria-label="Показать пароль">
+                <span class="material-symbols-outlined" id="toggleCurrentPasswordIcon">visibility</span>
+              </button>
+            </div>
           </div>
 
           <div class="field-group">
             <label>Новый пароль</label>
-            <input type="password" id="newPasswordInput" placeholder="Минимум 6 символов" />
+            <div class="input-with-icon">
+              <input type="password" id="newPasswordInput" placeholder="Минимум 6 символов" autocomplete="new-password" />
+              <button type="button" class="toggle-password" id="toggleNewPasswordBtn" aria-label="Показать пароль">
+                <span class="material-symbols-outlined" id="toggleNewPasswordIcon">visibility</span>
+              </button>
+            </div>
           </div>
 
           <div class="field-group">
             <label>Подтверждение пароля</label>
-            <input type="password" id="confirmPasswordInput" placeholder="Повторите новый пароль" />
+            <div class="input-with-icon">
+              <input type="password" id="confirmPasswordInput" placeholder="Повторите новый пароль" autocomplete="new-password" />
+              <button type="button" class="toggle-password" id="toggleConfirmPasswordBtn" aria-label="Показать пароль">
+                <span class="material-symbols-outlined" id="toggleConfirmPasswordIcon">visibility</span>
+              </button>
+            </div>
           </div>
 
           <div id="passwordError" class="hidden error-msg"></div>
@@ -705,7 +847,12 @@
 
           <div class="field-group">
             <label>Пароль для удаления аккаунта</label>
-            <input type="password" id="deleteAccountPasswordInput" placeholder="Введите пароль для удаления" />
+            <div class="input-with-icon">
+              <input type="password" id="deleteAccountPasswordInput" placeholder="Введите пароль для удаления" autocomplete="off" />
+              <button type="button" class="toggle-password" id="toggleDeletePasswordBtn" aria-label="Показать пароль">
+                <span class="material-symbols-outlined" id="toggleDeletePasswordIcon">visibility</span>
+              </button>
+            </div>
           </div>
 
           <div id="deleteAccountError" class="hidden error-msg"></div>
@@ -718,6 +865,13 @@
         </div>
       `;
 
+      // === Глазики для паролей ===
+      setupPasswordToggle("currentPasswordInput", "toggleCurrentPasswordBtn", "toggleCurrentPasswordIcon");
+      setupPasswordToggle("newPasswordInput", "toggleNewPasswordBtn", "toggleNewPasswordIcon");
+      setupPasswordToggle("confirmPasswordInput", "toggleConfirmPasswordBtn", "toggleConfirmPasswordIcon");
+      setupPasswordToggle("deleteAccountPasswordInput", "toggleDeletePasswordBtn", "toggleDeletePasswordIcon");
+
+      // === Сохранение имени ===
       document.getElementById("updateNameBtn").addEventListener("click", async () => {
         const input = document.getElementById("newNameInput");
         const newName = input ? input.value : "";
@@ -735,6 +889,7 @@
         }
       });
 
+      // === Смена пароля ===
       document.getElementById("updatePasswordBtn").addEventListener("click", async () => {
         const currentPassword = document.getElementById("currentPasswordInput")?.value || "";
         const newPassword = document.getElementById("newPasswordInput")?.value || "";
@@ -746,18 +901,29 @@
           await changePassword(currentPassword, newPassword, confirmPassword);
           showMessage("passwordSuccess", "Пароль успешно изменён.", "success");
 
-          document.getElementById("currentPasswordInput").value = "";
-          document.getElementById("newPasswordInput").value = "";
-          document.getElementById("confirmPasswordInput").value = "";
+          // Сбрасываем поля и глазики
+          ["currentPasswordInput", "newPasswordInput", "confirmPasswordInput"].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+              el.value = "";
+              el.type = "password";
+            }
+          });
+          ["toggleCurrentPasswordIcon", "toggleNewPasswordIcon", "toggleConfirmPasswordIcon"].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = "visibility";
+          });
         } catch (error) {
           showMessage("passwordError", error?.message || "Не удалось изменить пароль.", "error");
         }
       });
 
+      // === Выход ===
       document.getElementById("logoutBtn").addEventListener("click", async () => {
         await logoutUser();
       });
 
+      // === Удаление аккаунта ===
       document.getElementById("deleteAccountBtn").addEventListener("click", async () => {
         const password = document.getElementById("deleteAccountPasswordInput")?.value || "";
 

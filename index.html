@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <link rel="icon" type="image/png" href="logo.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Главная · Электронная школа</title>
@@ -27,6 +28,7 @@
       user-select: none;
     }
 
+    /* ===== Навигация ===== */
     .navbar {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -34,7 +36,7 @@
       background: #ffffff;
       border-bottom: 1px solid #eef3fa;
       box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06);
-      padding: 12px 24px;
+      padding: 10px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -46,24 +48,32 @@
       display: flex;
       align-items: center;
       gap: 16px;
+      flex-wrap: wrap;
+      min-width: 0;
     }
 
     .logo-area {
       display: flex;
       align-items: center;
       gap: 10px;
+      text-decoration: none;
+      flex-shrink: 0;
     }
 
-    .logo-icon {
-      width: 40px; height: 40px; border-radius: 12px;
-      background: #2a7de1; color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; font-weight: 700;
-      box-shadow: 0 4px 12px rgba(42,125,225,.2);
+    .logo-img {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      object-fit: cover;
+      display: block;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.18);
+      background: #ffffff;
     }
 
     .logo-text {
       font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: #0a1e3c;
+      white-space: nowrap;
     }
 
     .logo-text span { color: #2a7de1; }
@@ -78,6 +88,7 @@
       font-size: 14px; color: #1f2b48; text-decoration: none;
       background: transparent; border: 1.5px solid transparent;
       transition: .15s ease;
+      white-space: nowrap;
     }
 
     .nav-link:hover {
@@ -105,6 +116,7 @@
 
     .navbar-right {
       display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      flex-shrink: 0;
     }
 
     .user-badge {
@@ -115,6 +127,10 @@
       cursor: pointer;
       border: none;
       font-family: "Inter", sans-serif;
+      max-width: 220px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .user-badge:hover {
@@ -122,7 +138,13 @@
     }
 
     .user-badge .material-symbols-outlined {
-      color: #2a7de1; font-size: 20px;
+      color: #2a7de1; font-size: 20px; flex-shrink: 0;
+    }
+
+    .user-badge .user-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .btn {
@@ -141,6 +163,7 @@
       background: #1a5fb0; transform: scale(.97);
     }
 
+    /* ===== Контейнер ===== */
     .container {
       max-width: 900px; margin: 0 auto;
       background: #fff; border-radius: 48px;
@@ -250,6 +273,7 @@
       text-align: center; padding: 40px; color: #6a7f9e;
     }
 
+    /* ===== Модальные окна ===== */
     .modal-overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(0,0,0,.4); backdrop-filter: blur(4px);
@@ -341,31 +365,91 @@
       display: none !important;
     }
 
-    @media (max-width:700px) {
-      .navbar { padding: 10px 16px; flex-direction: column; align-items: stretch; gap: 8px; }
-      .navbar-left { flex-wrap: wrap; justify-content: space-between; }
-      .nav-links { justify-content: flex-start; }
-      .navbar-right { justify-content: flex-start; }
-      body { padding-top: 130px; }
-      .container { padding: 20px 16px 28px; border-radius: 32px; }
+    /* ===== Адаптив: планшет ===== */
+    @media (max-width: 860px) {
+      .navbar { padding: 10px 18px; }
+      .logo-text { font-size: 20px; }
+      .nav-link { padding: 7px 14px; font-size: 13px; }
+      .user-badge { max-width: 160px; padding: 6px 12px 6px 10px; font-size: 13px; }
     }
 
-    @media (max-width:480px) {
+    /* ===== Адаптив: мобильный ===== */
+    @media (max-width: 700px) {
+      body { padding-top: 74px; }
+
+      .navbar {
+        padding: 8px 14px;
+        flex-wrap: nowrap;
+        gap: 8px;
+      }
+
+      .navbar-left {
+        flex-wrap: nowrap;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .logo-area { gap: 8px; flex-shrink: 0; }
+      .logo-img { width: 36px; height: 36px; border-radius: 10px; }
+      .logo-text { display: none; }
+
+      .nav-links {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        gap: 4px;
+        flex: 1;
+        min-width: 0;
+      }
+      .nav-links::-webkit-scrollbar { display: none; }
+
+      .nav-link {
+        padding: 7px 14px;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      .nav-link .material-symbols-outlined { font-size: 16px; }
+
+      .navbar-right { flex-shrink: 0; }
+
+      .user-badge {
+        padding: 6px 12px 6px 10px;
+        font-size: 13px;
+        max-width: 130px;
+      }
+      .user-badge .material-symbols-outlined { font-size: 18px; }
+
+      .container { margin: 12px 10px 20px; padding: 20px 16px 28px; border-radius: 32px; }
+      .section-title { font-size: 20px; }
+      .section-title .material-symbols-outlined { font-size: 24px; }
+    }
+
+    @media (max-width: 480px) {
       .container { padding: 20px 16px 28px; border-radius: 32px; }
-      .navbar-left { flex-direction: column; align-items: flex-start; gap: 6px; }
       .modal-box { padding: 24px 20px; max-height: 85vh; }
       .news-item { padding: 16px 18px; }
       .news-title { font-size: 16px; }
+    }
+
+    @media (max-width: 420px) {
+      .user-badge .user-name { display: none; }
+      .user-badge { padding: 6px 8px; max-width: none; }
+      .user-badge .material-symbols-outlined { margin: 0; }
+
+      .nav-link { padding: 6px 12px; font-size: 12px; }
+      .nav-link .material-symbols-outlined { font-size: 15px; }
     }
   </style>
 </head>
 <body>
   <header class="navbar" id="navbar">
     <div class="navbar-left">
-      <div class="logo-area">
-        <div class="logo-icon">Ш</div>
+      <a href="index.html" class="logo-area">
+        <img src="logo.png" alt="Электронная школа" class="logo-img" />
         <div class="logo-text">Электро<span>школа</span></div>
-      </div>
+      </a>
 
       <nav class="nav-links" id="navLinks">
         <a href="diary.html" class="nav-link">
@@ -480,34 +564,23 @@
         .replace(/'/g, "&#039;");
     }
 
-    // Экранирует для HTML, но сохраняет теги <br> и <a>
     function sanitizeHtml(value) {
       if (value === null || value === undefined) return "";
       let result = String(value);
-      
-      // Сначала заменяем переносы строк на <br>
       result = result.replace(/\n/g, "<br>");
-      
-      // Экранируем HTML, но сохраняем <br> и <a> теги
-      // Сначала защищаем <br> и <a> от экранирования
       result = result.replace(/<br>/g, "___BR___");
       result = result.replace(/<br \/>/g, "___BR___");
       result = result.replace(/<a /g, "___A_OPEN___");
       result = result.replace(/<\/a>/g, "___A_CLOSE___");
-      
-      // Экранируем всё остальное
       result = result
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
-      
-      // Восстанавливаем <br> и <a>
       result = result.replace(/___BR___/g, "<br>");
       result = result.replace(/___A_OPEN___/g, "<a ");
       result = result.replace(/___A_CLOSE___/g, "</a>");
-      
       return result;
     }
 
@@ -540,7 +613,7 @@
       userArea.innerHTML = `
         <a href="account.html" class="user-badge">
           <span class="material-symbols-outlined">person</span>
-          ${escapeHtml(profileName)}
+          <span class="user-name">${escapeHtml(profileName)}</span>
         </a>
       `;
     }
@@ -557,7 +630,7 @@
     function openNewsModal(title, date, text) {
       modalTitle.textContent = title;
       modalDate.textContent = date;
-      modalText.innerHTML = text; // Используем innerHTML для поддержки тегов
+      modalText.innerHTML = text;
       modal.classList.add("open");
     }
 
@@ -732,7 +805,6 @@
           const dateFull = formatDateTime(item.date);
           const dateShort = formatDateShort(item.date);
 
-          // Используем sanitizeHtml вместо escapeHtml для сохранения тегов
           const titleSafe = escapeHtml(title);
           const descSafe = sanitizeHtml(desc);
           const fullTextSafe = sanitizeHtml(fullText);

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <link rel="icon" type="image/png" href="logo.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Дневник · Электронная школа</title>
@@ -10,133 +11,386 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Inter', sans-serif; background: #f8faff; min-height: 100vh; padding-top: 80px; }
 
-    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #ffffff; border-bottom: 1px solid #eef3fa; box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-    .navbar-left { display: flex; align-items: center; gap: 16px; }
-    .logo-area { display: flex; align-items: center; gap: 10px; }
-    .logo-icon { background: #2a7de1; color: white; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); }
-    .logo-text { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; color: #0a1e3c; }
-    .logo-text span { color: #2a7de1; }
-    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .nav-link { padding: 8px 18px; border-radius: 40px; font-weight: 500; font-size: 14px; color: #1f2b48; text-decoration: none; transition: 0.15s; display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid transparent; }
-    .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
-    .nav-link.active { background: #e5effb; border-color: #2a7de1; color: #2a7de1; }
-    .nav-link .material-symbols-outlined { font-size: 18px; }
-    .navbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .user-badge { display: flex; align-items: center; gap: 8px; background: #f0f6ff; padding: 6px 16px 6px 12px; border-radius: 40px; font-size: 14px; font-weight: 500; color: #0a1e3c; cursor: pointer; transition: 0.15s; text-decoration: none; border: none; font-family: 'Inter', sans-serif; }
-    .user-badge:hover { background: #e5effb; transform: scale(0.97); }
-    .user-badge .material-symbols-outlined { color: #2a7de1; font-size: 20px; }
-    .btn { border: none; padding: 6px 18px; border-radius: 40px; font-weight: 500; font-size: 13px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif; text-decoration: none; }
-    .btn-primary { background: #2a7de1; color: white; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); }
-    .btn-primary:hover { background: #1a5fb0; transform: scale(0.97); }
-
-    .container { max-width: 1000px; margin: 0 auto; background: #ffffff; border-radius: 48px; box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08); padding: 32px 40px 44px; border: 1px solid #f0f5fe; }
-    .page-title { font-size: 26px; font-weight: 600; color: #0a1e3c; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-    .page-title .material-symbols-outlined { color: #2a7de1; font-size: 32px; }
-    .page-sub { color: #5f7696; font-size: 16px; margin-bottom: 28px; }
-
-    .schedule-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    .section-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .section-header {
+    /* ===== Навигация ===== */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: #ffffff;
+      border-bottom: 1px solid #eef3fa;
+      box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06);
+      padding: 10px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
       gap: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #5f7696;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 0 4px;
     }
 
-    .toggle-row {
+    .navbar-left {
       display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
       gap: 10px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .logo-img {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      object-fit: cover;
+      display: block;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.18);
+      background: #ffffff;
+    }
+
+    .logo-text {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: #0a1e3c;
+      white-space: nowrap;
+    }
+    .logo-text span { color: #2a7de1; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
-    .toggle-block {
+    .nav-link {
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 14px;
+      color: #1f2b48;
+      text-decoration: none;
+      transition: 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1.5px solid transparent;
+      white-space: nowrap;
+    }
+    .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
+    .nav-link.active { background: #e5effb; border-color: #2a7de1; color: #2a7de1; }
+    .nav-link .material-symbols-outlined { font-size: 18px; }
+
+    .navbar-right {
       display: flex;
-      justify-content: flex-end;
-      margin: 0 0 4px;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
     }
 
-    .toggle-btn {
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f0f6ff;
+      padding: 6px 16px 6px 12px;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #0a1e3c;
+      cursor: pointer;
+      transition: 0.15s;
+      text-decoration: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      max-width: 220px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .user-badge:hover { background: #e5effb; transform: scale(0.97); }
+    .user-badge .material-symbols-outlined { color: #2a7de1; font-size: 20px; flex-shrink: 0; }
+    .user-badge .user-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ===== Контейнер ===== */
+    .container { max-width: 1000px; margin: 0 auto; background: #ffffff; border-radius: 48px; box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08); padding: 32px 40px 44px; border: 1px solid #f0f5fe; }
+    .page-title { font-size: 26px; font-weight: 600; color: #0a1e3c; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .page-title .material-symbols-outlined { color: #2a7de1; font-size: 32px; }
+    .page-sub { color: #5f7696; font-size: 16px; margin-bottom: 24px; }
+
+    /* ===== Панель управления неделями ===== */
+    .week-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      background: #f7fbff;
+      border: 1px solid #eef3fa;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .week-nav-arrow {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1.5px solid #dce4ef;
       background: #fff;
-      border: 1px solid #dce4ef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.15s ease;
       color: #1f2b48;
-      padding: 10px 16px;
-      border-radius: 999px;
+      flex-shrink: 0;
+    }
+    .week-nav-arrow:hover { background: #e5effb; border-color: #2a7de1; color: #2a7de1; }
+    .week-nav-arrow:disabled { opacity: 0.4; cursor: not-allowed; background: #f5f8fc; }
+    .week-nav-arrow .material-symbols-outlined { font-size: 22px; }
+
+    .week-nav-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      min-width: 0;
+      text-align: center;
+    }
+
+    .week-nav-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #0a1e3c;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .week-nav-badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 40px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .week-nav-badge.current { background: #e5effb; color: #2a7de1; }
+    .week-nav-badge.past { background: #eef3fa; color: #6a7f9e; }
+    .week-nav-badge.future { background: #e8f5ed; color: #1a8a4a; }
+
+    .week-nav-today-btn {
+      border: 1.5px solid #dce4ef;
+      background: #fff;
+      color: #1f2b48;
+      padding: 8px 16px;
+      border-radius: 40px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .week-nav-today-btn:hover { background: #e5effb; border-color: #2a7de1; color: #2a7de1; }
+
+    /* ===== Сетка дней недели =====
+       ПК: 2 колонки × 3 ряда, порядок из JS:
+       Пн | Чт
+       Вт | Пт
+       Ср | Сб
+    */
+    .week-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
     }
 
-    .toggle-btn:hover {
-      background: #f0f6ff;
+    .week-day-card {
+      background: #f9fcff;
+      border: 1px solid #eef3fa;
+      border-radius: 24px;
+      overflow: hidden;
+      transition: 0.15s ease;
+    }
+    .week-day-card.today {
       border-color: #2a7de1;
-      color: #2a7de1;
+      box-shadow: 0 6px 20px rgba(42,125,225,0.15);
+    }
+    .week-day-card.tomorrow {
+      border-color: #f59e0b;
+      box-shadow: 0 6px 20px rgba(245,158,11,0.15);
+    }
+    .week-day-card.empty {
+      opacity: 0.75;
+      border-style: dashed;
     }
 
-    .day-card { background: #f9fcff; border-radius: 24px; border: 1px solid #eef3fa; overflow: hidden; }
-    .day-card.past { opacity: 0.7; }
-    .day-card.past .day-header { background: #f5f8fc; color: #6a7f9e; }
+    .week-day-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #f0f6ff;
+      border-bottom: 1px solid #eef3fa;
+    }
+    .week-day-card.today .week-day-header { background: linear-gradient(180deg, #e5effb 0%, #d5e6fb 100%); }
+    .week-day-card.tomorrow .week-day-header { background: linear-gradient(180deg, #fff3e0 0%, #ffe0b2 100%); }
 
-    .day-header { background: #f0f6ff; padding: 14px 24px; font-weight: 600; font-size: 18px; color: #0a1e3c; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #eef3fa; }
-    .day-header .past-badge { font-size: 12px; font-weight: 400; color: #6a7f9e; background: #eef3fa; padding: 2px 12px; border-radius: 40px; margin-left: 8px; }
+    .week-day-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0a1e3c;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .week-day-card.today .week-day-name { color: #1a5fb0; }
+    .week-day-card.tomorrow .week-day-name { color: #b45309; }
 
-    .day-body { overflow: hidden; }
+    .week-day-badge-today {
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+      background: #2a7de1;
+      padding: 2px 8px;
+      border-radius: 40px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+    .week-day-badge-tomorrow {
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+      background: #f59e0b;
+      padding: 2px 8px;
+      border-radius: 40px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
 
-    .lessons-grid { display: grid; grid-template-columns: 44px 1.2fr 1.8fr; gap: 0; }
-    .lesson-cell { padding: 14px 16px; border-bottom: 1px solid #eef3fa; border-right: 1px solid #eef3fa; display: flex; align-items: center; font-size: 14px; color: #1f2b48; cursor: pointer; transition: 0.1s; }
-    .lesson-cell:last-child { border-right: none; }
-    .lesson-cell:hover { background: #f0f6ff; }
-    .lesson-number { font-weight: 600; color: #6a7f9e; justify-content: center; background: #f5f8fc; border-right: 1px solid #eef3fa; }
-    .lesson-name { font-weight: 500; background: #ffffff; flex-wrap: wrap; gap: 6px; }
-    .lesson-time { font-size: 13px; color: #6a7f9e; font-weight: 400; margin-left: 6px; }
-    .lesson-homework { background: #ffffff; flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 16px; }
-    .homework-preview { font-size: 13px; color: #3d5270; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word; line-height: 1.4; max-height: 2.8em; width: 100%; }
-    .homework-preview a { color: #2a7de1; text-decoration: underline; }
-    .homework-preview a:hover { text-decoration: none; }
-    .homework-preview img { max-width: 100%; max-height: 80px; border-radius: 8px; margin-top: 4px; object-fit: cover; }
-    .homework-empty { color: #a0b3cc; font-style: italic; font-size: 13px; }
+    .week-day-body {
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 120px;
+    }
+
+    .lesson-mini {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 8px;
+      align-items: start;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid #eef3fa;
+      cursor: pointer;
+      transition: 0.12s ease;
+    }
+    .lesson-mini:hover { background: #f0f6ff; border-color: #c7d9f0; }
+
+    .lesson-mini-number {
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      background: #e5effb;
+      color: #2a7de1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .week-day-card.tomorrow .lesson-mini-number { background: #fef3c7; color: #b45309; }
+
+    .lesson-mini-info { min-width: 0; }
+
+    .lesson-mini-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0a1e3c;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+
+    .lesson-mini-meta {
+      font-size: 11px;
+      color: #6a7f9e;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .lesson-mini-homework {
+      margin-top: 5px;
+      font-size: 12px;
+      color: #3d5270;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-word;
+      max-height: 2.8em;
+    }
+    .lesson-mini-homework a { color: #2a7de1; text-decoration: underline; pointer-events: none; }
+
+    .lesson-mini-homework-empty {
+      margin-top: 5px;
+      font-size: 12px;
+      color: #a0b3cc;
+      font-style: italic;
+    }
+
+    .week-day-empty {
+      text-align: center;
+      padding: 24px 8px;
+      font-size: 13px;
+      color: #a0b3cc;
+      font-style: italic;
+    }
+
     .empty-state { text-align: center; padding: 48px 20px; color: #6a7f9e; }
     .empty-state .material-symbols-outlined { font-size: 48px; color: #d0dae9; margin-bottom: 12px; }
     .empty-state h3 { color: #0a1e3c; font-weight: 500; margin-bottom: 4px; }
+
     .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid #eef3fa; font-size: 13px; color: #889bb3; text-align: center; }
     .loading { text-align: center; padding: 40px; color: #6a7f9e; }
 
-    .show-past-btn { display: block; width: 100%; padding: 12px; margin-top: 12px; border: 2px dashed #d0dae9; border-radius: 20px; background: transparent; color: #5f7696; font-weight: 500; font-size: 14px; cursor: pointer; transition: 0.2s; font-family: 'Inter', sans-serif; }
-    .show-past-btn:hover { background: #f0f6ff; border-color: #2a7de1; color: #2a7de1; }
-    .show-past-btn .material-symbols-outlined { font-size: 18px; vertical-align: middle; }
-
-    .past-section { display: none; }
-    .past-section.visible { display: block; }
-
-    .load-more-btn { display: none; width: 100%; padding: 12px; margin-top: 12px; border: 2px dashed #d0dae9; border-radius: 20px; background: transparent; color: #5f7696; font-weight: 500; font-size: 14px; cursor: pointer; transition: 0.2s; font-family: 'Inter', sans-serif; }
-    .load-more-btn:hover { background: #f0f6ff; border-color: #2a7de1; color: #2a7de1; }
-    .load-more-btn .material-symbols-outlined { font-size: 18px; vertical-align: middle; }
-    .load-more-btn.visible { display: block; }
-
-    .future-days-wrapper { display: flex; flex-direction: column; gap: 24px; }
-    .future-days-wrapper .day-card { display: none; }
-    .future-days-wrapper .day-card.visible { display: block; }
-
-    /* Модальное окно */
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.35); backdrop-filter: blur(4px); align-items: center; justify-content: center; z-index: 2000; }
+    /* ===== Модальное окно урока ===== */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.35); backdrop-filter: blur(4px); align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
     .modal-overlay.active { display: flex; }
-    .modal-card { background: #ffffff; max-width: 480px; width: 90%; padding: 32px 28px; border-radius: 32px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); animation: modalFade 0.2s ease; max-height: 90vh; overflow-y: auto; }
+    .modal-card { background: #ffffff; max-width: 480px; width: 100%; padding: 32px 28px; border-radius: 32px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); animation: modalFade 0.2s ease; max-height: 90vh; overflow-y: auto; }
     @keyframes modalFade { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
     .modal-card .modal-title { font-size: 22px; font-weight: 600; color: #0a1e3c; margin-bottom: 4px; }
     .modal-card .modal-sub { font-size: 14px; color: #6a7f9e; margin-bottom: 16px; }
@@ -144,28 +398,101 @@
     .modal-card .modal-row:last-child { border-bottom: none; }
     .modal-card .modal-row .label { color: #6a7f9e; font-weight: 500; }
     .modal-card .modal-row .value { color: #0a1e3c; font-weight: 500; text-align: right; }
-    .modal-card .modal-homework { margin-top: 12px; padding: 12px 16px; background: #f9fcff; border-radius: 16px; font-size: 14px; color: #0a1e3c; line-height: 1.6; border: 1px solid #eef3fa; word-break: break-word; white-space: pre-wrap; }
+    .modal-card .modal-homework { margin-top: 12px; padding: 12px 16px; background: #f9fcff; border-radius: 16px; font-size: 14px; color: #0a1e3c; line-height: 1.6; border: 1px solid #eef3fa; word-break: break-word; }
     .modal-card .modal-homework a { color: #2a7de1; text-decoration: underline; }
     .modal-card .modal-homework a:hover { text-decoration: none; }
     .modal-card .modal-homework img { max-width: 100%; height: auto; border-radius: 12px; margin: 6px 0; }
     .modal-card .modal-close { margin-top: 20px; width: 100%; padding: 12px; border: none; border-radius: 40px; background: #eef3fa; color: #1f2b48; font-weight: 500; font-size: 15px; cursor: pointer; font-family: 'Inter', sans-serif; transition: 0.15s; }
     .modal-card .modal-close:hover { background: #dce4ef; }
 
-    @media (max-width: 700px) {
-      .navbar { padding: 10px 16px; flex-direction: column; align-items: stretch; gap: 8px; }
-      .navbar-left { flex-wrap: wrap; justify-content: space-between; }
-      .nav-links { justify-content: flex-start; }
-      .navbar-right { justify-content: flex-start; }
-      body { padding-top: 130px; }
-      .container { padding: 20px 16px 28px; border-radius: 32px; }
-      .lessons-grid { grid-template-columns: 32px 1fr 1.4fr; font-size: 13px; }
-      .lesson-cell { padding: 10px 12px; }
-      .day-header { font-size: 16px; padding: 12px 16px; }
+    /* ===== Адаптив: планшет ===== */
+    @media (max-width: 860px) {
+      .navbar { padding: 10px 18px; }
+      .logo-text { font-size: 20px; }
+      .nav-link { padding: 7px 14px; font-size: 13px; }
+      .user-badge { max-width: 160px; padding: 6px 12px 6px 10px; font-size: 13px; }
     }
-    @media (max-width: 480px) {
-      .lessons-grid { grid-template-columns: 28px 1fr 1.6fr; font-size: 12px; }
-      .lesson-cell { padding: 8px 10px; }
-      .lesson-time { font-size: 11px; }
+
+    /* ===== Адаптив: мобильный ===== */
+    @media (max-width: 700px) {
+      body { padding-top: 74px; }
+
+      .navbar {
+        padding: 8px 14px;
+        flex-wrap: nowrap;
+        gap: 8px;
+      }
+
+      .navbar-left {
+        flex-wrap: nowrap;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .logo-area { gap: 8px; flex-shrink: 0; }
+      .logo-img { width: 36px; height: 36px; border-radius: 10px; }
+      .logo-text { display: none; }
+
+      .nav-links {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        gap: 4px;
+        flex: 1;
+        min-width: 0;
+      }
+      .nav-links::-webkit-scrollbar { display: none; }
+
+      .nav-link {
+        padding: 7px 14px;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      .nav-link .material-symbols-outlined { font-size: 16px; }
+
+      .navbar-right { flex-shrink: 0; }
+
+      .user-badge {
+        padding: 6px 12px 6px 10px;
+        font-size: 13px;
+        max-width: 130px;
+      }
+      .user-badge .material-symbols-outlined { font-size: 18px; }
+
+      .container { margin: 12px 10px 20px; padding: 22px 16px 30px; border-radius: 32px; }
+      .page-title { font-size: 22px; }
+      .page-title .material-symbols-outlined { font-size: 27px; }
+
+      /* На телефоне — 1 колонка, порядок Пн→Сб через order */
+      .week-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .week-day-card[data-day-index="0"] { order: 0; } /* Пн */
+      .week-day-card[data-day-index="1"] { order: 1; } /* Вт */
+      .week-day-card[data-day-index="2"] { order: 2; } /* Ср */
+      .week-day-card[data-day-index="3"] { order: 3; } /* Чт */
+      .week-day-card[data-day-index="4"] { order: 4; } /* Пт */
+      .week-day-card[data-day-index="5"] { order: 5; } /* Сб */
+
+      .week-nav { padding: 10px 12px; gap: 8px; }
+      .week-nav-arrow { width: 36px; height: 36px; }
+      .week-nav-title { font-size: 15px; }
+      .week-nav-today-btn { padding: 7px 12px; font-size: 12px; }
+    }
+
+    @media (max-width: 420px) {
+      .user-badge .user-name { display: none; }
+      .user-badge { padding: 6px 8px; max-width: none; }
+      .user-badge .material-symbols-outlined { margin: 0; }
+
+      .nav-link { padding: 6px 12px; font-size: 12px; }
+      .nav-link .material-symbols-outlined { font-size: 15px; }
+
+      .week-nav-title { font-size: 14px; }
+      .week-nav-today-btn span:not(.material-symbols-outlined) { display: none; }
     }
   </style>
 </head>
@@ -173,7 +500,10 @@
 
 <header class="navbar" id="navbar">
   <div class="navbar-left">
-    <div class="logo-area"><div class="logo-icon">Ш</div><div class="logo-text">Электро<span>школа</span></div></div>
+    <a href="index.html" class="logo-area">
+      <img src="logo.png" alt="Электронная школа" class="logo-img" />
+      <div class="logo-text">Электро<span>школа</span></div>
+    </a>
     <nav class="nav-links" id="navLinks">
       <a href="index.html" class="nav-link"><span class="material-symbols-outlined">home</span> Главная</a>
       <a href="diary.html" class="nav-link active"><span class="material-symbols-outlined">calendar_month</span> Дневник</a>
@@ -184,29 +514,16 @@
 
 <div class="container">
   <div class="page-title"><span class="material-symbols-outlined">calendar_month</span> Дневник</div>
-  <div class="page-sub">Расписание уроков и домашние задания</div>
+  <div class="page-sub">Расписание уроков и домашние задания по неделям</div>
+
   <div id="scheduleContainer">
     <div class="loading">⏳ Загрузка расписания...</div>
-    <div class="schedule-grid">
-      <div class="day-card">
-        <div class="day-header">
-          <span class="material-symbols-outlined">event_note</span>
-          <span class="day-header-text">День</span>
-        </div>
-        <div class="day-body">
-          <div class="lessons-grid">
-            <div class="lesson-cell lesson-number" style="font-weight:600;background:#f5f8fc;">№</div>
-            <div class="lesson-cell lesson-name" style="font-weight:600;background:#f5f8fc;">Урок</div>
-            <div class="lesson-cell lesson-homework" style="font-weight:600;background:#f5f8fc;border-right:none;">Домашнее задание</div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
+
   <div class="footer">© 2026 · Электронная школа</div>
 </div>
 
-<!-- Модальное окно -->
+<!-- Модальное окно урока -->
 <div class="modal-overlay" id="lessonModal">
   <div class="modal-card">
     <div class="modal-title" id="modalTitle">Название урока</div>
@@ -218,7 +535,6 @@
   </div>
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
@@ -243,6 +559,9 @@
   const scheduleContainer = document.getElementById("scheduleContainer");
   const userArea = document.getElementById("userArea");
 
+  let currentWeekStart = null;
+  let fullSchedule = [];
+
   function escapeHtml(value) {
     if (value === null || value === undefined) return "";
     return String(value)
@@ -253,79 +572,78 @@
       .replace(/'/g, "&#039;");
   }
 
-  function redirectToAuth() {
-    window.location.href = AUTH_URL;
-  }
-
   function parseDateString(value) {
     if (!value) return null;
     const clean = String(value).trim();
-
     if (/^\d{2}\.\d{2}\.\d{4}$/.test(clean)) {
       const [d, m, y] = clean.split(".");
       return new Date(Number(y), Number(m) - 1, Number(d));
     }
-
     if (/^\d{4}-\d{2}-\d{2}$/.test(clean)) {
       const [y, m, d] = clean.split("-");
       return new Date(Number(y), Number(m) - 1, Number(d));
     }
-
     return null;
   }
 
-  function sortScheduleDays(scheduleArray) {
-    return [...scheduleArray]
-      .sort((a, b) => {
-        const da = a?.date ? parseDateString(a.date) : null;
-        const db = b?.date ? parseDateString(b.date) : null;
-
-        if (!da && !db) return 0;
-        if (!da) return 1;
-        if (!db) return -1;
-        return da - db;
-      })
-      .map((day) => {
-        const lessons = Array.isArray(day?.lessons)
-          ? [...day.lessons].sort((x, y) => {
-              const aNum = Number(x?.number ?? x?.lessonNumber ?? x?.num ?? 0);
-              const bNum = Number(y?.number ?? y?.lessonNumber ?? y?.num ?? 0);
-              return aNum - bNum;
-            })
-          : [];
-
-        return { ...day, lessons };
-      });
+  function dateToScheduleString(d) {
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yyyy = d.getFullYear();
+    return `${dd}.${mm}.${yyyy}`;
   }
 
-  function formatDayHeader(dateValue) {
-    const date = parseDateString(dateValue);
-    if (!date) return "День";
+  function getMondayOf(date) {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    const day = d.getDay();
+    const diff = (day === 0 ? -6 : 1 - day);
+    d.setDate(d.getDate() + diff);
+    return d;
+  }
 
+  function isSameDay(a, b) {
+    return a.getFullYear() === b.getFullYear()
+      && a.getMonth() === b.getMonth()
+      && a.getDate() === b.getDate();
+  }
+
+  function formatWeekTitle(monday) {
+    const sunday = new Date(monday);
+    sunday.setDate(sunday.getDate() + 5);
+    const months = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+    const sm = months[monday.getMonth()];
+    const em = months[sunday.getMonth()];
+    if (monday.getFullYear() !== sunday.getFullYear()) {
+      return `${monday.getDate()} ${sm} ${monday.getFullYear()} — ${sunday.getDate()} ${em} ${sunday.getFullYear()}`;
+    }
+    if (monday.getMonth() !== sunday.getMonth()) {
+      return `${monday.getDate()} ${sm} — ${sunday.getDate()} ${em} ${monday.getFullYear()}`;
+    }
+    return `${monday.getDate()}–${sunday.getDate()} ${sm} ${monday.getFullYear()}`;
+  }
+
+  function formatDayWithDate(date) {
     const days = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
     const months = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
-
     return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]}`;
   }
 
-  function isPastDate(dateValue) {
-    const date = parseDateString(dateValue);
-    if (!date) return false;
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    return date < today;
-  }
-
-  function processHomeworkText(text) {
-    if (!text) return '<span class="homework-empty">нет задания</span>';
-
-    let html = escapeHtml(text)
+  function processHomeworkFull(text) {
+    if (!text) return '<span style="color:#a0b3cc;font-style:italic;">нет задания</span>';
+    return escapeHtml(text)
       .replace(/\n/g, "<br>")
       .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+  }
 
-    return html;
+  function processHomeworkPreview(text) {
+    if (!text) return '<div class="lesson-mini-homework-empty">нет задания</div>';
+    const plain = String(text)
+      .replace(/<[^>]+>/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!plain) return '<div class="lesson-mini-homework-empty">нет задания</div>';
+    return `<div class="lesson-mini-homework">${escapeHtml(plain)}</div>`;
   }
 
   function renderHeader(user) {
@@ -333,7 +651,7 @@
     userArea.innerHTML = `
       <a href="${ACCOUNT_URL}" class="user-badge">
         <span class="material-symbols-outlined">account_circle</span>
-        ${escapeHtml(displayName)}
+        <span class="user-name">${escapeHtml(displayName)}</span>
       </a>
     `;
   }
@@ -341,7 +659,6 @@
   function openLessonModal(lesson) {
     const modal = document.getElementById("lessonModal");
     if (!modal) return;
-
     const title = document.getElementById("modalTitle");
     const time = document.getElementById("modalTime");
     const cab = document.getElementById("modalCab");
@@ -350,7 +667,7 @@
     title.textContent = lesson?.name || "Урок";
     time.textContent = lesson?.time ? `⏰ ${lesson.time}` : "⏰ Время не указано";
     cab.textContent = lesson?.cab ?? "—";
-    homework.innerHTML = lesson?.homework ? processHomeworkText(lesson.homework) : "Нет задания";
+    homework.innerHTML = lesson?.homework ? processHomeworkFull(lesson.homework) : "Нет задания";
 
     modal.classList.add("active");
   }
@@ -359,202 +676,202 @@
     document.getElementById("lessonModal")?.classList.remove("active");
   });
 
-  function renderSchedule(scheduleArray) {
-    if (!Array.isArray(scheduleArray) || !scheduleArray.length) {
-      scheduleContainer.innerHTML = `
-        <div class="empty-state">
-          <span class="material-symbols-outlined">event_busy</span>
-          <h3>Расписание пока пустое</h3>
-          <div>Для этого класса ещё не создано ни одного дня.</div>
-        </div>
-      `;
-      return;
-    }
+  document.getElementById("lessonModal")?.addEventListener("click", (e) => {
+    if (e.target.id === "lessonModal") e.target.classList.remove("active");
+  });
 
-    const sorted = sortScheduleDays(scheduleArray);
+  /* ============ Отрисовка недели ============ */
+
+  function renderWeekView() {
+    if (!currentWeekStart) return;
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const pastDays = sorted.filter((day) => {
-      const d = parseDateString(day?.date);
-      return d && d < today;
-    });
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
-    const futureDays = sorted.filter((day) => {
-      const d = parseDateString(day?.date);
-      return d && d >= today;
-    });
+    // Порядок для раскладки на ПК: "Пн|Чт / Вт|Пт / Ср|Сб"
+    // Но каждый элемент также получает data-day-index — реальный индекс дня недели (0=Пн..5=Сб).
+    // На мобильном через CSS order мы переставим их в правильный порядок Пн→Сб.
+    const orderedOffsets = [
+      { offset: 0, dayIndex: 0 }, // Пн
+      { offset: 3, dayIndex: 3 }, // Чт
+      { offset: 1, dayIndex: 1 }, // Вт
+      { offset: 4, dayIndex: 4 }, // Пт
+      { offset: 2, dayIndex: 2 }, // Ср
+      { offset: 5, dayIndex: 5 }  // Сб
+    ];
 
-    let futureShown = Math.min(5, futureDays.length);
-    let showPast = false;
+    const weekDays = [];
+    for (const { offset, dayIndex } of orderedOffsets) {
+      const d = new Date(currentWeekStart);
+      d.setDate(d.getDate() + offset);
+      const dateStr = dateToScheduleString(d);
+      const dayData = fullSchedule.find((item) => item.date === dateStr) || null;
+      weekDays.push({ date: d, dateStr, dayData, dayIndex });
+    }
 
-    const renderDayMarkup = (day) => {
-      const lessons = Array.isArray(day?.lessons) ? day.lessons : [];
-      const dayHeader = formatDayHeader(day?.date || "01.01.2000");
-      const past = isPastDate(day?.date);
+    const currentWeekMonday = getMondayOf(today);
+    const isCurrentWeek = isSameDay(currentWeekMonday, currentWeekStart);
+    const isPastWeek = currentWeekStart < currentWeekMonday;
 
-      let html = `
-        <div class="day-card ${past ? "past" : ""}">
-          <div class="day-header">
-            <span class="material-symbols-outlined">${past ? "history" : "event_note"}</span>
-            ${escapeHtml(dayHeader)}
-            ${past ? '<span class="past-badge">прошёл</span>' : ""}
+    let badgeHtml = "";
+    if (isCurrentWeek) badgeHtml = `<span class="week-nav-badge current">текущая</span>`;
+    else if (isPastWeek) badgeHtml = `<span class="week-nav-badge past">прошедшая</span>`;
+    else badgeHtml = `<span class="week-nav-badge future">предстоящая</span>`;
+
+    const daysHtml = weekDays.map(({ date, dayData, dayIndex }) => {
+      const isToday = isSameDay(date, today);
+      const isTomorrow = isSameDay(date, tomorrow);
+      const hasLessons = dayData && Array.isArray(dayData.lessons) && dayData.lessons.length > 0;
+
+      let cardClass = "week-day-card";
+      if (isToday) cardClass += " today";
+      else if (isTomorrow) cardClass += " tomorrow";
+      if (!hasLessons) cardClass += " empty";
+
+      const lessonsHtml = hasLessons
+        ? dayData.lessons.map((lesson, idx) => {
+            const name = lesson?.name || `Урок ${idx + 1}`;
+            const time = lesson?.time || "";
+            const cab = lesson?.cab != null && lesson?.cab !== "" ? `каб. ${lesson.cab}` : "";
+            const meta = [time, cab].filter(Boolean).join(" · ");
+            const homeworkPreview = processHomeworkPreview(lesson?.homework || "");
+
+            return `
+              <div class="lesson-mini"
+                   data-name="${escapeHtml(name)}"
+                   data-time="${escapeHtml(lesson?.time || "")}"
+                   data-cab="${escapeHtml(lesson?.cab ?? "")}"
+                   data-homework="${escapeHtml(lesson?.homework || "")}">
+                <div class="lesson-mini-number">${idx + 1}</div>
+                <div class="lesson-mini-info">
+                  <div class="lesson-mini-name">${escapeHtml(name)}</div>
+                  ${meta ? `<div class="lesson-mini-meta">${escapeHtml(meta)}</div>` : ""}
+                  ${homeworkPreview}
+                </div>
+              </div>
+            `;
+          }).join("")
+        : `<div class="week-day-empty">нет уроков</div>`;
+
+      let badgeDay = "";
+      if (isToday) badgeDay = '<span class="week-day-badge-today">сегодня</span>';
+      else if (isTomorrow) badgeDay = '<span class="week-day-badge-tomorrow">завтра</span>';
+
+      return `
+        <div class="${cardClass}" data-day-index="${dayIndex}">
+          <div class="week-day-header">
+            <div class="week-day-name">${escapeHtml(formatDayWithDate(date))}</div>
+            ${badgeDay}
           </div>
-          <div class="day-body">
-            <div class="lessons-grid">
-              <div class="lesson-cell lesson-number" style="font-weight:600;background:#f5f8fc;">№</div>
-              <div class="lesson-cell lesson-name" style="font-weight:600;background:#f5f8fc;">Урок</div>
-              <div class="lesson-cell lesson-homework" style="font-weight:600;background:#f5f8fc;border-right:none;">Домашнее задание</div>
-      `;
-
-      if (!lessons.length) {
-        html += `
-            <div class="lesson-cell lesson-number">—</div>
-            <div class="lesson-cell lesson-name">Нет уроков</div>
-            <div class="lesson-cell lesson-homework" style="border-right:none;">—</div>
-        `;
-      } else {
-        lessons.forEach((lesson, lessonIndex) => {
-          const name = lesson?.name || `Урок ${lessonIndex + 1}`;
-          const time = lesson?.time ? `<span class="lesson-time">${escapeHtml(lesson.time)}</span>` : "";
-          const homework = lesson?.homework ? processHomeworkText(lesson.homework) : '<span class="homework-empty">нет задания</span>';
-
-          html += `
-            <div class="lesson-cell lesson-number">${lessonIndex + 1}</div>
-            <div class="lesson-cell lesson-name"
-                 data-name="${escapeHtml(name)}"
-                 data-time="${escapeHtml(lesson?.time || "")}"
-                 data-cab="${escapeHtml(lesson?.cab ?? "")}"
-                 data-homework="${escapeHtml(lesson?.homework || "")}">
-              ${escapeHtml(name)}${time}
-            </div>
-            <div class="lesson-cell lesson-homework"
-                 style="border-right:none;"
-                 data-name="${escapeHtml(name)}"
-                 data-time="${escapeHtml(lesson?.time || "")}"
-                 data-cab="${escapeHtml(lesson?.cab ?? "")}"
-                 data-homework="${escapeHtml(lesson?.homework || "")}">
-              <div class="homework-preview">${homework}</div>
-            </div>
-          `;
-        });
-      }
-
-      html += `
-            </div>
+          <div class="week-day-body">
+            ${lessonsHtml}
           </div>
         </div>
       `;
+    }).join("");
 
-      return html;
-    };
+    scheduleContainer.innerHTML = `
+      <div class="week-nav">
+        <button class="week-nav-arrow" id="prevWeekBtn" title="Предыдущая неделя">
+          <span class="material-symbols-outlined">chevron_left</span>
+        </button>
 
-    const renderView = () => {
-      const visiblePast = showPast ? pastDays.slice(0, 5) : [];
-      const visibleFuture = futureDays.slice(0, futureShown);
+        <div class="week-nav-center">
+          <div class="week-nav-title">${escapeHtml(formatWeekTitle(currentWeekStart))}</div>
+          ${badgeHtml}
+        </div>
 
-      let html = `<div class="schedule-grid">`;
-
-      if (pastDays.length > 0) {
-        html += `
-          <div class="toggle-block">
-            <button class="toggle-btn" data-toggle="past">
-              ${showPast ? "Скрыть прошедшие" : "Показать прошедшие"}
+        <div style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
+          ${!isCurrentWeek ? `
+            <button class="week-nav-today-btn" id="todayWeekBtn" title="Текущая неделя">
+              <span class="material-symbols-outlined" style="font-size:16px;">today</span>
+              <span>Сегодня</span>
             </button>
-          </div>
-        `;
-      }
+          ` : ""}
+          <button class="week-nav-arrow" id="nextWeekBtn" title="Следующая неделя">
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+      </div>
 
-      if (showPast && visiblePast.length) {
-        html += visiblePast.map(renderDayMarkup).join("");
-      }
+      <div class="week-grid">
+        ${daysHtml}
+      </div>
+    `;
 
-      if (visibleFuture.length) {
-        html += visibleFuture.map(renderDayMarkup).join("");
-      }
+    document.getElementById("prevWeekBtn")?.addEventListener("click", () => {
+      const prev = new Date(currentWeekStart);
+      prev.setDate(prev.getDate() - 7);
+      currentWeekStart = prev;
+      renderWeekView();
+    });
 
-      const remainingFuture = Math.max(0, futureDays.length - futureShown);
-      if (remainingFuture > 0) {
-        html += `
-          <div class="toggle-block">
-            <button class="toggle-btn" data-toggle="future-more">
-              Показать ещё ${Math.min(5, remainingFuture)} будущих
-            </button>
-          </div>
-        `;
-      }
+    document.getElementById("nextWeekBtn")?.addEventListener("click", () => {
+      const next = new Date(currentWeekStart);
+      next.setDate(next.getDate() + 7);
+      currentWeekStart = next;
+      renderWeekView();
+    });
 
-      html += `</div>`;
+    document.getElementById("todayWeekBtn")?.addEventListener("click", () => {
+      currentWeekStart = getMondayOf(new Date());
+      renderWeekView();
+    });
 
-      scheduleContainer.innerHTML = html;
-
-      scheduleContainer.querySelectorAll("[data-toggle]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          if (btn.dataset.toggle === "past") {
-            showPast = !showPast;
-            renderView();
-          }
-
-          if (btn.dataset.toggle === "future-more") {
-            futureShown = Math.min(futureShown + 5, futureDays.length);
-            renderView();
-          }
+    scheduleContainer.querySelectorAll(".lesson-mini").forEach((el) => {
+      el.addEventListener("click", () => {
+        openLessonModal({
+          name: el.dataset.name || "Урок",
+          time: el.dataset.time || "",
+          cab: el.dataset.cab || "",
+          homework: el.dataset.homework || ""
         });
       });
-
-      scheduleContainer.querySelectorAll(".lesson-name, .lesson-homework").forEach((el) => {
-        el.addEventListener("click", () => {
-          const lesson = {
-            name: el.dataset.name || "Урок",
-            time: el.dataset.time || "",
-            cab: el.dataset.cab || "",
-            homework: el.dataset.homework || ""
-          };
-
-          if (lesson.name || lesson.time || lesson.cab || lesson.homework) {
-            openLessonModal(lesson);
-          }
-        });
-      });
-    };
-
-    renderView();
+    });
   }
+
+  function renderEmptyState(message, icon = "event_busy") {
+    scheduleContainer.innerHTML = `
+      <div class="empty-state">
+        <span class="material-symbols-outlined">${icon}</span>
+        <h3>${escapeHtml(message)}</h3>
+      </div>
+    `;
+  }
+
+  /* ============ Резолверы ============ */
 
   function resolveSchoolIndexFromProfile(profile = {}, schools = []) {
     const raw = profile.schoolIndex ?? profile.school ?? profile.schoolId ?? profile.allowedSchoolIndex ?? 0;
-
     if (raw === null || raw === undefined || raw === "") return 0;
     if (Number.isInteger(Number(raw))) {
       const idx = Number(raw);
       return idx >= 0 && idx < schools.length ? idx : 0;
     }
-
     const value = String(raw).trim();
     const found = schools.findIndex((school) => {
       const candidates = [school?.id, school?.schoolId, school?.name, school?.title];
       return candidates.some((item) => String(item ?? "").trim() === value);
     });
-
     return found >= 0 ? found : 0;
   }
 
   function resolveClassIndexFromProfile(profile = {}, school = null) {
     const classes = Array.isArray(school?.classes) ? school.classes : [];
     const raw = profile.classIndex ?? profile.class ?? profile.classId ?? profile.allowedClassIndex ?? 0;
-
     if (raw === null || raw === undefined || raw === "") return 0;
     if (Number.isInteger(Number(raw))) {
       const idx = Number(raw);
       return idx >= 0 && idx < classes.length ? idx : 0;
     }
-
     const value = String(raw).trim();
     const found = classes.findIndex((cls) => {
       const candidates = [cls?.id, cls?.classId, cls?.name, cls?.title];
       return candidates.some((item) => String(item ?? "").trim() === value);
     });
-
     return found >= 0 ? found : 0;
   }
 
@@ -570,13 +887,7 @@
       const school = Array.isArray(schools) ? schools[schoolIndex] : null;
 
       if (!school || !Array.isArray(school.classes) || !school.classes.length) {
-        scheduleContainer.innerHTML = `
-          <div class="empty-state">
-            <span class="material-symbols-outlined">school</span>
-            <h3>Расписание не назначено</h3>
-            <div>У этого аккаунта не указаны школа или класс.</div>
-          </div>
-        `;
+        renderEmptyState("Расписание не назначено", "school");
         return;
       }
 
@@ -584,33 +895,22 @@
       const classData = school.classes[classIndex];
 
       if (!classData) {
-        scheduleContainer.innerHTML = `
-          <div class="empty-state">
-            <span class="material-symbols-outlined">warning</span>
-            <h3>Класс не найден</h3>
-            <div>Проверьте настройки профиля аккаунта.</div>
-          </div>
-        `;
+        renderEmptyState("Класс не найден", "warning");
         return;
       }
 
-      const schedule = Array.isArray(classData.schedule) ? classData.schedule : [];
-      renderSchedule(schedule);
+      fullSchedule = Array.isArray(classData.schedule) ? classData.schedule : [];
+      currentWeekStart = getMondayOf(new Date());
+      renderWeekView();
     } catch (error) {
       console.error("Ошибка загрузки расписания:", error);
-      scheduleContainer.innerHTML = `
-        <div class="empty-state">
-          <span class="material-symbols-outlined">error</span>
-          <h3>Ошибка подключения к базе</h3>
-          <div>Проверьте права доступа и данные аккаунта.</div>
-        </div>
-      `;
+      renderEmptyState("Ошибка подключения к базе", "error");
     }
   }
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      redirectToAuth();
+      window.location.href = AUTH_URL;
       return;
     }
 
@@ -625,14 +925,7 @@
       console.error("Auth error:", error);
       user.displayName = user.email || "Пользователь";
       renderHeader(user);
-
-      scheduleContainer.innerHTML = `
-        <div class="empty-state">
-          <span class="material-symbols-outlined">error</span>
-          <h3>Ошибка подключения к базе</h3>
-          <div>Проверьте Firebase-правила и доступ к данным.</div>
-        </div>
-      `;
+      renderEmptyState("Ошибка подключения к базе", "error");
     }
   });
 </script>
