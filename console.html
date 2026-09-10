@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <link rel="icon" type="image/png" href="logo.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Консоль · Электронная школа</title>
+  <link rel="icon" type="image/png" href="logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
 
@@ -546,7 +546,6 @@
       line-height: 1.5;
     }
 
-    /* Универсальная обёртка для поля с кнопкой справа */
     .input-with-button {
       position: relative;
       display: flex;
@@ -586,7 +585,6 @@
       font-size: 16px;
     }
 
-    /* ===== Адаптив: планшет ===== */
     @media (max-width: 900px) {
       .week-days { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
@@ -598,7 +596,6 @@
       .user-badge { max-width: 160px; padding: 6px 12px 6px 10px; font-size: 13px; }
     }
 
-    /* ===== Адаптив: мобильный ===== */
     @media (max-width: 760px) {
       body { padding-top: 74px; }
 
@@ -980,7 +977,7 @@
     let isLocalAdmin = false;
     let restrictedSchoolIndex = null;
     let restrictedClassIndex = null;
-    let editingNewsKey = null;
+    let editingNewsIndex = null;
 
     let showPastWeeks = false;
     let pastWeeksShown = 2;
@@ -1035,7 +1032,6 @@
       });
     });
 
-    // Кнопки «Сейчас» для Unix timestamp
     document.getElementById("addNowBtn").addEventListener("click", () => {
       document.getElementById("addDate").value = nowUnix();
     });
@@ -2515,6 +2511,9 @@
       selectedHomeworkField.focus();
     });
 
+    /* ============ НОВОСТИ ============ */
+
+    // Добавление новости (ключ = индекс в массиве)
     document.getElementById("addNewsBtn").addEventListener("click", async () => {
       if (isLocalAdmin) return;
       const title = document.getElementById("addTitle").value.trim();
@@ -2525,10 +2524,14 @@
       }
       try {
         const snap = await get(ref(db, "news"));
-        const data = snap.exists() ? snap.val() : {};
-        const nextKey = Date.now().toString();
-        const payload = { ...data, [nextKey]: { title, desc, date: rawDate } };
-        await set(ref(db, "news"), payload);
+        const raw = snap.exists() ? snap.val() : [];
+        const arr = Array.isArray(raw) ? [...raw] : Object.values(raw || {});
+
+        // Добавляем новую новость в конец массива
+        arr.push({ title, desc, date: rawDate });
+
+        await set(ref(db, "news"), arr);
+
         document.getElementById("addTitle").value = "";
         document.getElementById("addDesc").value = "";
         document.getElementById("addDate").value = "";
@@ -2539,48 +2542,49 @@
       }
     });
 
+    // Список новостей (индекс + дата)
     async function renderNewsList() {
       if (isLocalAdmin) return;
       const list = document.getElementById("editNewsList");
       try {
         const snap = await get(ref(db, "news"));
-        const data = snap.exists() ? snap.val() : {};
-        const keys = Object.keys(data);
+        const raw = snap.exists() ? snap.val() : [];
+        const news = Array.isArray(raw) ? raw : Object.values(raw || {});
 
-        if (!keys.length) {
+        if (!news.length) {
           list.innerHTML = `<div class="empty-state">Новостей пока нет.</div>`;
           return;
         }
 
-        list.innerHTML = keys.map((key, index) => {
-          const item = data[key];
+        list.innerHTML = news.map((item, index) => {
           const dateStr = new Date(Number(item.date || 0) * 1000).toLocaleString("ru-RU");
           return `
             <div class="news-item">
               <div class="news-item-head">
                 <div>
                   <div class="news-item-title">${escapeHtml(item.title || "Без названия")}</div>
-                  <div class="news-item-meta">${escapeHtml(dateStr)}</div>
+                  <div class="news-item-meta">${escapeHtml(dateStr)} · Индекс: ${index}</div>
                 </div>
                 <div class="news-actions">
-                  <button class="btn-console btn-console-warning edit-news-btn" data-key="${key}">✏️</button>
-                  <button class="btn-console btn-console-danger delete-news-btn" data-key="${key}">🗑️</button>
+                  <button class="btn-console btn-console-warning edit-news-btn" data-index="${index}">✏️</button>
+                  <button class="btn-console btn-console-danger delete-news-btn" data-index="${index}">🗑️</button>
                 </div>
               </div>
             </div>
           `;
         }).join("");
 
+        // Удаление
         list.querySelectorAll(".delete-news-btn").forEach((btn) => {
           btn.addEventListener("click", async () => {
-            const key = btn.dataset.key;
+            const index = Number(btn.dataset.index);
             if (!confirm("Удалить эту новость?")) return;
             try {
               const snap = await get(ref(db, "news"));
-              const data = snap.exists() ? snap.val() : {};
-              const newData = { ...data };
-              delete newData[key];
-              await set(ref(db, "news"), newData);
+              const raw = snap.exists() ? snap.val() : [];
+              const arr = Array.isArray(raw) ? [...raw] : Object.values(raw || {});
+              arr.splice(index, 1);
+              await set(ref(db, "news"), arr);
               renderNewsList();
             } catch (error) {
               console.error("Delete news error:", error);
@@ -2589,18 +2593,22 @@
           });
         });
 
+        // Редактирование
         list.querySelectorAll(".edit-news-btn").forEach((btn) => {
           btn.addEventListener("click", async () => {
-            const key = btn.dataset.key;
-            editingNewsKey = key;
+            const index = Number(btn.dataset.index);
+            editingNewsIndex = index;
             try {
               const snap = await get(ref(db, "news"));
-              const data = snap.exists() ? snap.val() : {};
-              const item = data[key];
+              const raw = snap.exists() ? snap.val() : [];
+              const arr = Array.isArray(raw) ? raw : Object.values(raw || {});
+              const item = arr[index];
               if (!item) { alert("Новость не найдена"); return; }
+
               document.getElementById("editNewsTitle").value = item.title || "";
               document.getElementById("editNewsText").value = item.desc || "";
               document.getElementById("editNewsDate").value = item.date || "";
+
               const msg = document.getElementById("editNewsMessage");
               msg.textContent = "";
               msg.className = "console-message";
@@ -2617,6 +2625,7 @@
       }
     }
 
+    // Сохранение отредактированной новости по индексу
     document.getElementById("confirmEditNewsBtn").addEventListener("click", async () => {
       if (isLocalAdmin) return;
       const title = document.getElementById("editNewsTitle").value.trim();
@@ -2627,12 +2636,24 @@
       if (!title || !desc) { showMessage(msg, "⚠️ Заполните заголовок и текст", "error"); return; }
       if (!date) { showMessage(msg, "⚠️ Укажите корректную дату (Unix timestamp)", "error"); return; }
 
+      if (editingNewsIndex === null || editingNewsIndex === undefined) {
+        showMessage(msg, "⚠️ Новость не выбрана", "error");
+        return;
+      }
+
       try {
         const snap = await get(ref(db, "news"));
-        const data = snap.exists() ? snap.val() : {};
-        if (!data[editingNewsKey]) { showMessage(msg, "⚠️ Новость не найдена", "error"); return; }
-        data[editingNewsKey] = { title, desc, date };
-        await set(ref(db, "news"), data);
+        const raw = snap.exists() ? snap.val() : [];
+        const arr = Array.isArray(raw) ? [...raw] : Object.values(raw || {});
+
+        if (!arr[editingNewsIndex]) {
+          showMessage(msg, "⚠️ Новость не найдена", "error");
+          return;
+        }
+
+        arr[editingNewsIndex] = { title, desc, date };
+        await set(ref(db, "news"), arr);
+
         closeAllModals();
         renderNewsList();
         showMessage(document.getElementById("addMessage"), "✅ Новость обновлена", "success");
