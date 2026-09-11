@@ -17,7 +17,85 @@
       color: #0a1e3c;
     }
 
-    /* ===== Навигация ===== */
+    /* ===== Loadscreen ===== */
+    #loadscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: #f8faff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+
+    #loadscreen.hidden-loader {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-logo-wrap {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: loader-pulse 1.6s ease-in-out infinite;
+    }
+
+    .loader-logo-img {
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      object-fit: cover;
+      background: #ffffff;
+      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+      display: block;
+    }
+
+    .loader-logo-fallback {
+      display: none;
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      background: #2a7de1;
+      color: #fff;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      font-weight: 700;
+      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+    }
+
+    @keyframes loader-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    .loader-text {
+      font-size: 15px;
+      color: #5f7696;
+      font-weight: 500;
+      letter-spacing: .2px;
+    }
+
+    .loader-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #dbe7f7;
+      border-top-color: #2a7de1;
+      border-radius: 50%;
+      animation: loader-spin .8s linear infinite;
+    }
+
+    @keyframes loader-spin {
+      to { transform: rotate(360deg); }
+    }
+
     .navbar {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -33,381 +111,103 @@
       gap: 12px;
     }
 
-    .navbar-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      min-width: 0;
-    }
-
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      flex-shrink: 0;
-    }
-
-    .logo-img {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      object-fit: cover;
-      display: block;
-      flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.18);
-      background: #ffffff;
-    }
-
-    .logo-fallback {
-      display: none;
-      background: #2a7de1;
-      color: white;
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20);
-      flex-shrink: 0;
-    }
-
-    .logo-text {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      color: #0a1e3c;
-      white-space: nowrap;
-    }
-
+    .navbar-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; min-width: 0; }
+    .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .logo-img { width: 42px; height: 42px; border-radius: 12px; object-fit: cover; display: block; flex-shrink: 0; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.18); background: #ffffff; }
+    .logo-fallback { display: none; background: #2a7de1; color: white; width: 42px; height: 42px; border-radius: 12px; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); flex-shrink: 0; }
+    .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: #0a1e3c; white-space: nowrap; }
     .logo-text span { color: #2a7de1; }
 
-    .nav-links {
+    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .nav-link { padding: 8px 18px; border-radius: 40px; font-weight: 500; font-size: 14px; color: #1f2b48; text-decoration: none; transition: 0.15s; display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid transparent; white-space: nowrap; }
+    .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
+    .nav-link.active { background: #e5effb; border-color: #2a7de1; color: #2a7de1; }
+    .nav-link .material-symbols-outlined { font-size: 18px; }
+
+    .navbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex-shrink: 0; }
+    .user-badge { display: flex; align-items: center; gap: 8px; background: #f0f6ff; padding: 6px 16px 6px 12px; border-radius: 40px; font-size: 14px; font-weight: 500; color: #0a1e3c; cursor: pointer; transition: 0.15s; text-decoration: none; border: none; font-family: 'Inter', sans-serif; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-badge:hover { background: #e5effb; transform: scale(0.97); }
+    .user-badge .material-symbols-outlined { color: #2a7de1; font-size: 20px; flex-shrink: 0; }
+    .user-badge .user-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .container { max-width: 720px; margin: 0 auto; background: #ffffff; border-radius: 48px; box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08); padding: 32px 40px 44px; border: 1px solid #f0f5fe; }
+
+    .page-title { font-size: 26px; font-weight: 600; color: #0a1e3c; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .page-title .material-symbols-outlined { color: #2a7de1; font-size: 32px; }
+    .page-sub { color: #5f7696; font-size: 16px; margin-bottom: 28px; }
+
+    .settings-card { background: #f9fcff; border: 1px solid #eef3fa; border-radius: 24px; padding: 24px 22px; margin-bottom: 20px; }
+    .settings-card:last-child { margin-bottom: 0; }
+
+    .card-title { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 600; margin-bottom: 16px; color: #0a1e3c; }
+    .card-title .material-symbols-outlined { color: #2a7de1; font-size: 22px; }
+
+    .field-group { margin-bottom: 16px; }
+    .field-group:last-child { margin-bottom: 0; }
+    .field-group label { display: block; font-size: 13px; font-weight: 600; color: #1f2b48; margin-bottom: 6px; }
+    .field-group input { width: 100%; background: #ffffff; border: 1.5px solid #dce4ef; border-radius: 18px; padding: 12px 16px; font-size: 15px; font-family: 'Inter', sans-serif; color: #0a1e3c; transition: 0.15s ease; }
+    .field-group input:focus { outline: none; border-color: #2a7de1; box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10); }
+    .field-group input:disabled { background: #f5f8fc; color: #556a8c; cursor: not-allowed; opacity: 0.9; }
+
+    /* Список чипов (классы/предметы) */
+    .chip-list {
       display: flex;
-      align-items: center;
-      gap: 8px;
       flex-wrap: wrap;
+      gap: 8px;
+      padding: 4px 0 2px;
     }
 
-    .nav-link {
-      padding: 8px 18px;
-      border-radius: 40px;
-      font-weight: 500;
-      font-size: 14px;
-      color: #1f2b48;
-      text-decoration: none;
-      transition: 0.15s;
+    .chip {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: transparent;
-      border: 1.5px solid transparent;
-      white-space: nowrap;
-    }
-
-    .nav-link:hover {
-      background: #f0f4fe;
-      border-color: #d0dae9;
-    }
-
-    .nav-link.active {
-      background: #e5effb;
-      border-color: #2a7de1;
-      color: #2a7de1;
-    }
-
-    .nav-link .material-symbols-outlined {
-      font-size: 18px;
-    }
-
-    .navbar-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      flex-shrink: 0;
-    }
-
-    .user-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #f0f6ff;
-      padding: 6px 16px 6px 12px;
-      border-radius: 40px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #0a1e3c;
-      cursor: pointer;
-      transition: 0.15s;
-      text-decoration: none;
-      border: none;
-      font-family: 'Inter', sans-serif;
-      max-width: 220px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .user-badge:hover {
-      background: #e5effb;
-      transform: scale(0.97);
-    }
-
-    .user-badge .material-symbols-outlined {
-      color: #2a7de1;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-
-    .user-badge .user-name {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    /* ===== Контейнер ===== */
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-      background: #ffffff;
-      border-radius: 48px;
-      box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08);
-      padding: 32px 40px 44px;
-      border: 1px solid #f0f5fe;
-    }
-
-    .page-title {
-      font-size: 26px;
-      font-weight: 600;
-      color: #0a1e3c;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .page-title .material-symbols-outlined {
-      color: #2a7de1;
-      font-size: 32px;
-    }
-
-    .page-sub {
-      color: #5f7696;
-      font-size: 16px;
-      margin-bottom: 28px;
-    }
-
-    .settings-card {
-      background: #f9fcff;
-      border: 1px solid #eef3fa;
-      border-radius: 24px;
-      padding: 24px 22px;
-      margin-bottom: 20px;
-    }
-
-    .settings-card:last-child {
-      margin-bottom: 0;
-    }
-
-    .card-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 17px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      color: #0a1e3c;
-    }
-
-    .card-title .material-symbols-outlined {
-      color: #2a7de1;
-      font-size: 22px;
-    }
-
-    .field-group {
-      margin-bottom: 16px;
-    }
-
-    .field-group:last-child {
-      margin-bottom: 0;
-    }
-
-    .field-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: #1f2b48;
-      margin-bottom: 6px;
-    }
-
-    .field-group input {
-      width: 100%;
+      padding: 8px 14px;
       background: #ffffff;
       border: 1.5px solid #dce4ef;
-      border-radius: 18px;
-      padding: 12px 16px;
-      font-size: 15px;
-      font-family: 'Inter', sans-serif;
-      color: #0a1e3c;
-      transition: 0.15s ease;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1f2b48;
+      line-height: 1;
     }
 
-    .field-group input:focus {
-      outline: none;
-      border-color: #2a7de1;
-      box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10);
-    }
-
-    .field-group input:disabled {
-      background: #f5f8fc;
-      color: #556a8c;
-      cursor: not-allowed;
-      opacity: 0.9;
-    }
-
-    /* Обёртка для поля с глазиком */
-    .input-with-icon {
-      position: relative;
-      width: 100%;
-    }
-
-    .input-with-icon input {
-      padding-right: 48px;
-    }
-
-    .toggle-password {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 36px;
-      height: 36px;
-      border: none;
-      background: transparent;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #6a7f9e;
-      transition: 0.15s;
-      padding: 0;
-    }
-
-    .toggle-password:hover {
-      background: #eef3fa;
+    .chip .material-symbols-outlined {
+      font-size: 16px;
       color: #2a7de1;
     }
 
-    .toggle-password .material-symbols-outlined {
-      font-size: 22px;
-    }
-
-    .btn-action {
-      border: none;
-      border-radius: 40px;
-      padding: 10px 20px;
-      font-size: 14px;
-      font-weight: 500;
-      font-family: 'Inter', sans-serif;
-      cursor: pointer;
-      transition: 0.18s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-action:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn-primary {
-      background: #2a7de1;
-      color: white;
-      box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20);
-    }
-
-    .btn-primary:hover {
-      background: #1a5fb0;
-    }
-
-    .btn-success {
-      background: #1d8f52;
-      color: white;
-      box-shadow: 0 4px 12px rgba(29, 143, 82, 0.18);
-    }
-
-    .btn-success:hover {
-      background: #167445;
-    }
-
-    .btn-danger {
-      background: #d95454;
-      color: white;
-      box-shadow: 0 4px 12px rgba(217, 84, 84, 0.18);
-    }
-
-    .btn-danger:hover {
-      background: #b74343;
-    }
-
-    .btn-ghost {
-      background: #eef5ff;
-      color: #1f2b48;
-      border: 1px solid #dfeaf9;
-    }
-
-    .btn-ghost:hover {
-      background: #e3eeff;
-    }
-
-    .btn-full {
-      width: 100%;
-    }
-
-    .error-msg {
-      display: block;
-      font-size: 13px;
-      color: #b63a3a;
-      background: #fff2f2;
-      border: 1px solid #ffd4d4;
-      border-radius: 12px;
-      padding: 10px 14px;
-      margin-top: 10px;
-      line-height: 1.5;
-    }
-
-    .success-msg {
-      display: block;
-      font-size: 13px;
-      color: #146a3d;
-      background: #ecf9f1;
-      border: 1px solid #cdeedb;
-      border-radius: 12px;
-      padding: 10px 14px;
-      margin-top: 10px;
-      line-height: 1.5;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .footer {
-      margin-top: 32px;
-      padding-top: 20px;
-      border-top: 1px solid #eef3fa;
-      font-size: 13px;
+    .chip.empty {
+      background: #f5f8fc;
+      border-style: dashed;
       color: #889bb3;
-      text-align: center;
+      font-style: italic;
     }
 
-    /* ===== Адаптив: планшет ===== */
+    /* Поле с глазиком */
+    .input-with-icon { position: relative; width: 100%; }
+    .input-with-icon input { padding-right: 48px; }
+    .toggle-password { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border: none; background: transparent; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #6a7f9e; transition: 0.15s; padding: 0; }
+    .toggle-password:hover { background: #eef3fa; color: #2a7de1; }
+    .toggle-password .material-symbols-outlined { font-size: 22px; }
+
+    .btn-action { border: none; border-radius: 40px; padding: 10px 20px; font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif; cursor: pointer; transition: 0.18s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-action:hover { transform: translateY(-1px); }
+    .btn-primary { background: #2a7de1; color: white; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); }
+    .btn-primary:hover { background: #1a5fb0; }
+    .btn-success { background: #1d8f52; color: white; box-shadow: 0 4px 12px rgba(29, 143, 82, 0.18); }
+    .btn-success:hover { background: #167445; }
+    .btn-danger { background: #d95454; color: white; box-shadow: 0 4px 12px rgba(217, 84, 84, 0.18); }
+    .btn-danger:hover { background: #b74343; }
+    .btn-ghost { background: #eef5ff; color: #1f2b48; border: 1px solid #dfeaf9; }
+    .btn-ghost:hover { background: #e3eeff; }
+    .btn-full { width: 100%; }
+
+    .error-msg { display: block; font-size: 13px; color: #b63a3a; background: #fff2f2; border: 1px solid #ffd4d4; border-radius: 12px; padding: 10px 14px; margin-top: 10px; line-height: 1.5; }
+    .success-msg { display: block; font-size: 13px; color: #146a3d; background: #ecf9f1; border: 1px solid #cdeedb; border-radius: 12px; padding: 10px 14px; margin-top: 10px; line-height: 1.5; }
+    .hidden { display: none !important; }
+
+    .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid #eef3fa; font-size: 13px; color: #889bb3; text-align: center; }
+
     @media (max-width: 860px) {
       .navbar { padding: 10px 18px; }
       .logo-text { font-size: 20px; }
@@ -415,54 +215,20 @@
       .user-badge { max-width: 160px; padding: 6px 12px 6px 10px; font-size: 13px; }
     }
 
-    /* ===== Адаптив: мобильный ===== */
     @media (max-width: 700px) {
       body { padding-top: 74px; }
-
-      .navbar {
-        padding: 8px 14px;
-        flex-wrap: nowrap;
-        gap: 8px;
-      }
-
-      .navbar-left {
-        flex-wrap: nowrap;
-        gap: 8px;
-        flex: 1;
-        min-width: 0;
-      }
-
+      .navbar { padding: 8px 14px; flex-wrap: nowrap; gap: 8px; }
+      .navbar-left { flex-wrap: nowrap; gap: 8px; flex: 1; min-width: 0; }
       .logo-area { gap: 8px; flex-shrink: 0; }
       .logo-img, .logo-fallback { width: 36px; height: 36px; border-radius: 10px; font-size: 18px; }
       .logo-text { display: none; }
-
-      .nav-links {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        gap: 4px;
-        flex: 1;
-        min-width: 0;
-      }
+      .nav-links { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; gap: 4px; flex: 1; min-width: 0; }
       .nav-links::-webkit-scrollbar { display: none; }
-
-      .nav-link {
-        padding: 7px 14px;
-        font-size: 13px;
-        flex-shrink: 0;
-      }
+      .nav-link { padding: 7px 14px; font-size: 13px; flex-shrink: 0; }
       .nav-link .material-symbols-outlined { font-size: 16px; }
-
       .navbar-right { flex-shrink: 0; }
-
-      .user-badge {
-        padding: 6px 12px 6px 10px;
-        font-size: 13px;
-        max-width: 130px;
-      }
+      .user-badge { padding: 6px 12px 6px 10px; font-size: 13px; max-width: 130px; }
       .user-badge .material-symbols-outlined { font-size: 18px; }
-
       .container { margin: 12px 10px 20px; padding: 20px 16px 28px; border-radius: 32px; }
       .page-title { font-size: 22px; }
       .page-title .material-symbols-outlined { font-size: 27px; }
@@ -474,13 +240,27 @@
       .user-badge .user-name { display: none; }
       .user-badge { padding: 6px 8px; max-width: none; }
       .user-badge .material-symbols-outlined { margin: 0; }
-
       .nav-link { padding: 6px 12px; font-size: 12px; }
       .nav-link .material-symbols-outlined { font-size: 15px; }
     }
   </style>
 </head>
 <body>
+  <!-- ===== Loadscreen ===== -->
+  <div id="loadscreen">
+    <div class="loader-logo-wrap">
+      <img
+        src="logo.png"
+        alt="Электронная школа"
+        class="loader-logo-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+      <div class="loader-logo-fallback">Ш</div>
+    </div>
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Загрузка данных...</div>
+  </div>
+
   <header class="navbar">
     <div class="navbar-left">
       <a href="index.html" class="logo-area">
@@ -493,9 +273,13 @@
           <span class="material-symbols-outlined">home</span>
           Главная
         </a>
-        <a href="diary.html" class="nav-link">
+        <a href="diary.html" class="nav-link" id="diaryLink">
           <span class="material-symbols-outlined">calendar_month</span>
           Дневник
+        </a>
+        <a href="journal.html" class="nav-link hidden" id="journalLink">
+          <span class="material-symbols-outlined">menu_book</span>
+          Журнал
         </a>
       </nav>
     </div>
@@ -509,14 +293,7 @@
     </div>
     <div class="page-sub">Управление данными профиля</div>
 
-    <div id="profileContainer">
-      <div class="settings-card">
-        <div class="card-title">
-          <span class="material-symbols-outlined">sync</span>
-          Загрузка...
-        </div>
-      </div>
-    </div>
+    <div id="profileContainer"></div>
 
     <div class="footer">© 2026 · Электронная школа</div>
   </main>
@@ -555,8 +332,36 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
+    const loadscreen = document.getElementById("loadscreen");
     const profileContainer = document.getElementById("profileContainer");
     const userArea = document.getElementById("userArea");
+    const diaryLink = document.getElementById("diaryLink");
+    const journalLink = document.getElementById("journalLink");
+
+    function hideLoadscreen() {
+      if (!loadscreen) return;
+      loadscreen.classList.add("hidden-loader");
+      setTimeout(() => {
+        if (loadscreen && loadscreen.parentNode) {
+          loadscreen.parentNode.removeChild(loadscreen);
+        }
+      }, 400);
+    }
+
+    // Учитель (status 4): показываем "Журнал", скрываем "Дневник".
+    // Все остальные: показываем "Дневник", скрываем "Журнал".
+    function updateTeacherLinks(profileData) {
+      const status = Number(profileData?.status ?? 1);
+      const isTeacher = status === 4;
+
+      if (isTeacher) {
+        if (journalLink) journalLink.classList.remove("hidden");
+        if (diaryLink) diaryLink.classList.add("hidden");
+      } else {
+        if (journalLink) journalLink.classList.add("hidden");
+        if (diaryLink) diaryLink.classList.remove("hidden");
+      }
+    }
 
     function escapeHtml(value) {
       if (value === null || value === undefined) return "";
@@ -598,9 +403,22 @@
       const map = {
         1: { title: "Ученик" },
         2: { title: "Администратор" },
-        3: { title: "Администратор класса" }
+        3: { title: "Администратор класса" },
+        4: { title: "Учитель" }
       };
       return map[Number(status)] || { title: "Неизвестно" };
+    }
+
+    // Приводим schools к массиву (RTDB может хранить как объект)
+    function normalizeSchools(raw) {
+      if (!raw) return [];
+      if (Array.isArray(raw)) return raw.filter(Boolean);
+
+      if (typeof raw === "object") {
+        return Object.values(raw).filter(Boolean);
+      }
+
+      return [];
     }
 
     function getSchoolByName(name, schools = []) {
@@ -615,12 +433,17 @@
 
     function getClassByName(schoolName, className, schools = []) {
       const school = getSchoolByName(schoolName, schools);
-      if (!school || !Array.isArray(school.classes)) return null;
+      if (!school) return null;
+
+      const classesRaw = school.classes;
+      const classes = Array.isArray(classesRaw)
+        ? classesRaw
+        : (classesRaw && typeof classesRaw === "object" ? Object.values(classesRaw) : []);
 
       const target = String(className || "").trim();
       if (!target) return null;
 
-      return school.classes.find((item) => {
+      return classes.find((item) => {
         const name = String(item?.name || item?.title || item?.className || "").trim();
         return name === target;
       }) || null;
@@ -642,6 +465,40 @@
         : classNameInput || "—";
 
       return { schoolName, className };
+    }
+
+    function extractNamesArray(raw) {
+      if (!raw) return [];
+
+      const arr = Array.isArray(raw)
+        ? raw
+        : (typeof raw === "object" ? Object.values(raw) : []);
+
+      return arr
+        .map((item) => {
+          if (typeof item === "string") return item.trim();
+          if (item && typeof item === "object") {
+            return String(item.name || item.title || item.subject || item.className || item.value || "").trim();
+          }
+          return "";
+        })
+        .filter(Boolean);
+    }
+
+    function renderChipList(names, emptyText) {
+      if (!names.length) {
+        return `<div class="chip-list"><span class="chip empty">${escapeHtml(emptyText)}</span></div>`;
+      }
+      return `
+        <div class="chip-list">
+          ${names.map((name) => `
+            <span class="chip">
+              <span class="material-symbols-outlined">check_circle</span>
+              ${escapeHtml(name)}
+            </span>
+          `).join("")}
+        </div>
+      `;
     }
 
     async function reauthenticateUser(currentPassword) {
@@ -666,9 +523,7 @@
       await updateProfile(user, { displayName: trimmed });
 
       const profileRef = ref(db, `users/${user.uid}`);
-      await update(profileRef, {
-        name: trimmed
-      });
+      await update(profileRef, { name: trimmed });
     }
 
     async function changePassword(currentPassword, newPassword, confirmPassword) {
@@ -725,7 +580,6 @@
         icon.textContent = visible ? "visibility_off" : "visibility";
         btn.setAttribute("aria-label", visible ? "Скрыть пароль" : "Показать пароль");
 
-        // Возвращаем фокус и курсор в конец
         input.focus();
         const len = input.value.length;
         try { input.setSelectionRange(len, len); } catch (e) {}
@@ -734,7 +588,35 @@
 
     function renderProfile(user, profileData = {}, schools = []) {
       const status = statusInfo(profileData?.status ?? 1);
+      const statusNum = Number(profileData?.status ?? 1);
       const { schoolName, className } = resolveSchoolAndClass(profileData, schools);
+
+      const isTeacher = statusNum === 4;
+      const teacherClasses = extractNamesArray(profileData.classes);
+      const teacherSubjects = extractNamesArray(profileData.subjects);
+
+      const classFieldHtml = isTeacher
+        ? ""
+        : `
+          <div class="field-group">
+            <label>Класс</label>
+            <input type="text" value="${escapeHtml(className)}" disabled />
+          </div>
+        `;
+
+      const teacherBlockHtml = isTeacher
+        ? `
+          <div class="field-group">
+            <label>Классы, которыми управляет</label>
+            ${renderChipList(teacherClasses, "Классы не назначены")}
+          </div>
+
+          <div class="field-group">
+            <label>Предметы, которые ведёт</label>
+            ${renderChipList(teacherSubjects, "Предметы не назначены")}
+          </div>
+        `
+        : "";
 
       profileContainer.innerHTML = `
         <div class="settings-card">
@@ -763,10 +645,8 @@
             <input type="text" value="${escapeHtml(schoolName)}" disabled />
           </div>
 
-          <div class="field-group">
-            <label>Класс</label>
-            <input type="text" value="${escapeHtml(className)}" disabled />
-          </div>
+          ${classFieldHtml}
+          ${teacherBlockHtml}
         </div>
 
         <div class="settings-card">
@@ -859,13 +739,11 @@
         </div>
       `;
 
-      // === Глазики для паролей ===
       setupPasswordToggle("currentPasswordInput", "toggleCurrentPasswordBtn", "toggleCurrentPasswordIcon");
       setupPasswordToggle("newPasswordInput", "toggleNewPasswordBtn", "toggleNewPasswordIcon");
       setupPasswordToggle("confirmPasswordInput", "toggleConfirmPasswordBtn", "toggleConfirmPasswordIcon");
       setupPasswordToggle("deleteAccountPasswordInput", "toggleDeletePasswordBtn", "toggleDeletePasswordIcon");
 
-      // === Сохранение имени ===
       document.getElementById("updateNameBtn").addEventListener("click", async () => {
         const input = document.getElementById("newNameInput");
         const newName = input ? input.value : "";
@@ -883,7 +761,6 @@
         }
       });
 
-      // === Смена пароля ===
       document.getElementById("updatePasswordBtn").addEventListener("click", async () => {
         const currentPassword = document.getElementById("currentPasswordInput")?.value || "";
         const newPassword = document.getElementById("newPasswordInput")?.value || "";
@@ -895,7 +772,6 @@
           await changePassword(currentPassword, newPassword, confirmPassword);
           showMessage("passwordSuccess", "Пароль успешно изменён.", "success");
 
-          // Сбрасываем поля и глазики
           ["currentPasswordInput", "newPasswordInput", "confirmPasswordInput"].forEach(id => {
             const el = document.getElementById(id);
             if (el) {
@@ -912,12 +788,10 @@
         }
       });
 
-      // === Выход ===
       document.getElementById("logoutBtn").addEventListener("click", async () => {
         await logoutUser();
       });
 
-      // === Удаление аккаунта ===
       document.getElementById("deleteAccountBtn").addEventListener("click", async () => {
         const password = document.getElementById("deleteAccountPasswordInput")?.value || "";
 
@@ -935,40 +809,46 @@
       });
     }
 
+    // Отдельные безопасные загрузчики
+    async function loadProfileData(uid) {
+      try {
+        const snap = await get(ref(db, `users/${uid}`));
+        return snap.exists() ? snap.val() : {};
+      } catch (e) {
+        console.warn("Не удалось загрузить профиль:", e);
+        return {};
+      }
+    }
+
+    async function loadSchools() {
+      try {
+        const snap = await get(ref(db, "schools"));
+        return normalizeSchools(snap.exists() ? snap.val() : null);
+      } catch (e) {
+        console.warn("Не удалось загрузить школы:", e);
+        return [];
+      }
+    }
+
     async function refreshAccountPage(user) {
       if (!user) return;
 
-      try {
-        const profileSnapshot = await get(ref(db, `users/${user.uid}`));
-        const schoolsSnapshot = await get(ref(db, "schools"));
+      const [profileData, schools] = await Promise.all([
+        loadProfileData(user.uid),
+        loadSchools()
+      ]);
 
-        const profileData = profileSnapshot.exists() ? profileSnapshot.val() : {};
-        const schools = schoolsSnapshot.exists() ? schoolsSnapshot.val() : [];
+      user.displayName =
+        profileData?.name ||
+        user.displayName ||
+        user.email ||
+        "Пользователь";
 
-        user.displayName =
-          profileData?.name ||
-          user.displayName ||
-          user.email ||
-          "Пользователь";
+      // Обновляем "Дневник"/"Журнал" по статусу
+      updateTeacherLinks(profileData);
 
-        renderUserBadge(user);
-        renderProfile(user, profileData, schools);
-      } catch (error) {
-        console.error("Ошибка загрузки данных:", error);
-
-        user.displayName = user.displayName || user.email || "Пользователь";
-        renderUserBadge(user);
-
-        profileContainer.innerHTML = `
-          <div class="settings-card">
-            <div class="card-title">
-              <span class="material-symbols-outlined">error</span>
-              Ошибка загрузки данных
-            </div>
-            <div class="error-msg" style="display:block;">Не удалось подключиться к базе данных.</div>
-          </div>
-        `;
-      }
+      renderUserBadge(user);
+      renderProfile(user, profileData, schools);
     }
 
     onAuthStateChanged(auth, async (user) => {
@@ -977,7 +857,26 @@
         return;
       }
 
-      await refreshAccountPage(user);
+      try {
+        await refreshAccountPage(user);
+      } catch (error) {
+        console.error("Критическая ошибка:", error);
+
+        renderUserBadge(user);
+        profileContainer.innerHTML = `
+          <div class="settings-card">
+            <div class="card-title">
+              <span class="material-symbols-outlined">error</span>
+              Ошибка загрузки данных
+            </div>
+            <div class="error-msg" style="display:block;">
+              ${escapeHtml(error?.message || "Не удалось подключиться к базе данных.")}
+            </div>
+          </div>
+        `;
+      } finally {
+        hideLoadscreen();
+      }
     });
   </script>
 </body>

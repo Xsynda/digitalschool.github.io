@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Журнал · Электронная школа</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #2a7de1;
+      --blue-dark: #1a5fb0;
+      --blue-soft: #e5effb;
+      --text: #0a1e3c;
+      --text-soft: #5f7696;
+      --border: #eef3fa;
+      --input-border: #dce4ef;
+      --page: #f8faff;
+      --card: #ffffff;
+      --soft-card: #f9fcff;
+      --green: #1a8a4a;
+      --green-soft: #e8f5ed;
+      --red: #c74a4a;
+      --red-soft: #fff0f0;
+      --teal: #0891b2;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: var(--page);
+      color: var(--text);
+      min-height: 100vh;
+      padding-top: 80px;
+    }
+
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+
+    /* ===== Loadscreen ===== */
+    #loadscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: #f8faff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+
+    #loadscreen.hidden-loader {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-logo-wrap {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: loader-pulse 1.6s ease-in-out infinite;
+    }
+
+    .loader-logo-img {
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      object-fit: cover;
+      background: #ffffff;
+      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+      display: block;
+    }
+
+    .loader-logo-fallback {
+      display: none;
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      background: #2a7de1;
+      color: #fff;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      font-weight: 700;
+      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+    }
+
+    @keyframes loader-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    .loader-text {
+      font-size: 15px;
+      color: #5f7696;
+      font-weight: 500;
+      letter-spacing: .2px;
+    }
+
+    .loader-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #dbe7f7;
+      border-top-color: #2a7de1;
+      border-radius: 50%;
+      animation: loader-spin .8s linear infinite;
+    }
+
+    @keyframes loader-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,20,40,.06);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .navbar-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; min-width: 0; }
+    .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .logo-img { width: 42px; height: 42px; border-radius: 12px; object-fit: cover; background: #fff; box-shadow: 0 4px 12px rgba(42,125,225,.18); }
+    .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: var(--text); white-space: nowrap; }
+    .logo-text span { color: var(--blue); }
+
+    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .nav-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border-radius: 40px; font-weight: 500;
+      font-size: 14px; color: #1f2b48; text-decoration: none;
+      background: transparent; border: 1.5px solid transparent;
+      transition: .15s; white-space: nowrap;
+    }
+    .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
+    .nav-link.active { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+    .nav-link .material-symbols-outlined { font-size: 18px; }
+
+    .navbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex-shrink: 0; }
+    .user-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #f0f6ff; padding: 6px 16px 6px 12px; border-radius: 40px;
+      font-size: 14px; font-weight: 500; color: var(--text); text-decoration: none;
+      transition: .15s;
+    }
+    .user-badge:hover { background: #e5effb; }
+    .user-badge .material-symbols-outlined { color: var(--blue); font-size: 20px; }
+    .user-badge .user-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
+
+    .container {
+      max-width: 1100px; margin: 24px auto;
+      background: var(--card); border-radius: 48px;
+      box-shadow: 0 24px 60px rgba(0,20,40,.08);
+      padding: 32px 40px 44px; border: 1px solid #f0f5fe;
+    }
+    .page-title { font-size: 26px; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .page-title .material-symbols-outlined { color: var(--teal); font-size: 32px; }
+    .page-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 26px; }
+
+    .console-card { background: var(--soft-card); border-radius: 24px; padding: 20px 24px; border: 1px solid var(--border); margin-bottom: 20px; }
+    .card-label { font-size: 15px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+
+    .field-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .form-label { font-size: 12px; color: var(--text-soft); margin: 0 0 5px 4px; display: block; }
+
+    .input {
+      width: 100%; border: 1.5px solid var(--input-border);
+      background: #fff; color: var(--text);
+      border-radius: 15px; padding: 11px 14px;
+      font-size: 14px; outline: none; transition: .15s;
+      font-family: "Inter", sans-serif;
+    }
+    .input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(42,125,225,.10); }
+
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+
+    .btn-console {
+      border: 0; min-height: 38px; padding: 8px 16px; border-radius: 40px;
+      font-weight: 500; font-size: 13px; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      transition: .2s; font-family: "Inter", sans-serif;
+    }
+    .btn-console:hover { transform: scale(.98); }
+    .btn-console:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    .btn-console-teal { background: var(--teal); color: #fff; }
+    .btn-console-teal:hover { background: #0e7490; }
+    .btn-console-green { background: var(--green); color: #fff; }
+    .btn-console-green:hover { background: #146e3a; }
+    .btn-console-outline { background: #fff; color: #1f2b48; border: 1.5px solid #d0dae9; }
+    .btn-console-outline:hover { background: #f0f4fe; }
+
+    .console-message {
+      display: none; font-size: 13px; padding: 9px 14px;
+      border-radius: 40px; margin-top: 10px; line-height: 1.4;
+    }
+    .console-message.show { display: block; }
+    .console-message.success { background: var(--green-soft); color: var(--green); }
+    .console-message.error { background: var(--red-soft); color: var(--red); }
+
+    .homework-textarea {
+      width: 100%;
+      min-height: 90px;
+      resize: vertical;
+      font-family: "Inter", sans-serif;
+    }
+
+    .students-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+    .student-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 20px; padding: 14px 16px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      transition: .15s;
+    }
+    .student-card:hover { border-color: #c7d9f0; }
+    .student-card-info { min-width: 0; flex: 1; }
+    .student-card-name { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
+    .student-card-email { font-size: 11px; color: var(--text-soft); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* ===== Бейдж статуса ===== */
+    .user-status {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px 8px;
+      border-radius: 40px;
+      flex-shrink: 0;
+    }
+    .user-status.status-admin {
+      background: #fff3e0;
+      color: #b45309;
+      border: 1px solid #ff9800;
+    }
+    .user-status.status-classadmin {
+      background: #e0f7fa;
+      color: #0e7490;
+      border: 1px solid #0891b2;
+    }
+
+    .grade-buttons { display: flex; gap: 4px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+    .grade-btn {
+      width: 32px; height: 32px; border-radius: 10px;
+      border: 1.5px solid var(--input-border);
+      background: #fff; color: #1f2b48;
+      font-weight: 700; font-size: 13px;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: .15s; padding: 0;
+    }
+    .grade-btn:hover { transform: scale(1.05); }
+    .grade-btn.active.grade-5 { background: #1a8a4a; border-color: #1a8a4a; color: #fff; }
+    .grade-btn.active.grade-4 { background: #2a7de1; border-color: #2a7de1; color: #fff; }
+    .grade-btn.active.grade-3 { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+    .grade-btn.active.grade-2 { background: #c74a4a; border-color: #c74a4a; color: #fff; }
+    .grade-btn.active.grade-1 { background: #8a3030; border-color: #8a3030; color: #fff; }
+    .grade-btn.grade-remove { background: #fff; border-color: #d0dae9; color: #c74a4a; }
+    .grade-btn.grade-remove:hover { background: var(--red-soft); border-color: #c74a4a; }
+
+    .empty-state { text-align: center; padding: 30px 20px; color: var(--text-soft); }
+    .empty-state .material-symbols-outlined { font-size: 42px; color: #d0dae9; margin-bottom: 10px; }
+    .empty-state h3 { color: var(--text); font-weight: 500; margin-bottom: 4px; font-size: 16px; }
+    .empty-state div { font-size: 13px; }
+
+    .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 13px; color: #889bb3; text-align: center; }
+
+    @media (max-width: 860px) {
+      .navbar { padding: 10px 18px; }
+      .logo-text { font-size: 20px; }
+      .nav-link { padding: 7px 14px; font-size: 13px; }
+      .field-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 760px) {
+      body { padding-top: 74px; }
+      .navbar { padding: 8px 14px; flex-wrap: nowrap; gap: 8px; }
+      .navbar-left { flex-wrap: nowrap; gap: 8px; flex: 1; min-width: 0; }
+      .logo-img { width: 36px; height: 36px; border-radius: 10px; }
+      .logo-text { display: none; }
+      .nav-links { flex-wrap: nowrap; overflow-x: auto; gap: 4px; flex: 1; min-width: 0; }
+      .nav-link { padding: 7px 14px; font-size: 13px; flex-shrink: 0; }
+      .container { margin: 12px 10px 20px; padding: 22px 14px 30px; border-radius: 32px; }
+      .page-title { font-size: 22px; }
+      .field-grid { grid-template-columns: 1fr; }
+      .students-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 420px) {
+      .user-badge .user-name { display: none; }
+      .nav-link { padding: 6px 12px; font-size: 12px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ===== Loadscreen ===== -->
+  <div id="loadscreen">
+    <div class="loader-logo-wrap">
+      <img
+        src="logo.png"
+        alt="Электронная школа"
+        class="loader-logo-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+      <div class="loader-logo-fallback">Ш</div>
+    </div>
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Загрузка данных...</div>
+  </div>
+
+  <header class="navbar">
+    <div class="navbar-left">
+      <a href="index.html" class="logo-area">
+        <img src="logo.png" alt="Электронная школа" class="logo-img" onerror="this.style.display='none';" />
+        <div class="logo-text">Электро<span>школа</span></div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link"><span class="material-symbols-outlined">home</span> Главная</a>
+        <a href="journal.html" class="nav-link active"><span class="material-symbols-outlined">menu_book</span> Журнал</a>
+      </nav>
+    </div>
+    <div class="navbar-right" id="userArea"></div>
+  </header>
+
+  <main class="container">
+    <div class="page-title">
+      <span class="material-symbols-outlined">menu_book</span>
+      Журнал учителя
+    </div>
+    <div class="page-sub">Выставление оценок и задание домашнего задания</div>
+
+    <div class="console-card">
+      <div class="card-label">🎯 Выбор класса, предмета и даты</div>
+
+      <div class="field-grid">
+        <div>
+          <label class="form-label">Класс</label>
+          <select id="classSelect" class="input"></select>
+        </div>
+        <div>
+          <label class="form-label">Предмет</label>
+          <select id="subjectSelect" class="input"></select>
+        </div>
+        <div>
+          <label class="form-label">Дата урока</label>
+          <input type="date" id="dateInput" class="input" />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-console btn-console-teal" id="loadBtn">
+          <span class="material-symbols-outlined" style="font-size:16px;">refresh</span>
+          Загрузить учеников
+        </button>
+      </div>
+
+      <div id="mainMessage" class="console-message"></div>
+    </div>
+
+    <div class="console-card" id="homeworkCard" style="display:none;">
+      <div class="card-label">📚 Домашнее задание на урок</div>
+
+      <textarea id="homeworkInput" class="input homework-textarea" placeholder="Введите текст домашнего задания для всего класса..."></textarea>
+
+      <div class="actions">
+        <button class="btn-console btn-console-green" id="saveHomeworkBtn">
+          <span class="material-symbols-outlined" style="font-size:16px;">save</span>
+          Сохранить ДЗ
+        </button>
+        <button class="btn-console btn-console-outline" id="clearHomeworkBtn">
+          <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+          Очистить поле
+        </button>
+      </div>
+
+      <div id="homeworkMessage" class="console-message"></div>
+    </div>
+
+    <div class="console-card">
+      <div class="card-label">👥 Ученики</div>
+      <div id="studentsContainer">
+        <div class="empty-state">
+          <span class="material-symbols-outlined">group</span>
+          <h3>Выберите класс, предмет и дату</h3>
+          <div>Затем нажмите «Загрузить учеников»</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">© 2026 · Электронная школа</div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+
+  <script>
+    console.log("[journal] скрипт начал выполняться");
+
+    window.addEventListener("error", (e) => {
+      console.error("[journal] window.onerror:", e.message, "| файл:", e.filename, "| строка:", e.lineno);
+    });
+    window.addEventListener("unhandledrejection", (e) => {
+      console.error("[journal] unhandledrejection:", e.reason);
+    });
+
+    (function () {
+      try {
+        if (!window.firebase) {
+          console.error("[journal] Firebase SDK не загрузился");
+          return;
+        }
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
+          authDomain: "digitalschool-f2c90.firebaseapp.com",
+          projectId: "digitalschool-f2c90",
+          storageBucket: "digitalschool-f2c90.firebasestorage.app",
+          messagingSenderId: "797143730107",
+          appId: "1:797143730107:web:b19437db896170d88b269e"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        const classSelect = document.getElementById("classSelect");
+        const subjectSelect = document.getElementById("subjectSelect");
+        const dateInput = document.getElementById("dateInput");
+        const loadBtn = document.getElementById("loadBtn");
+        const mainMessage = document.getElementById("mainMessage");
+        const studentsContainer = document.getElementById("studentsContainer");
+        const userArea = document.getElementById("userArea");
+        const loadscreen = document.getElementById("loadscreen");
+
+        const homeworkCard = document.getElementById("homeworkCard");
+        const homeworkInput = document.getElementById("homeworkInput");
+        const saveHomeworkBtn = document.getElementById("saveHomeworkBtn");
+        const clearHomeworkBtn = document.getElementById("clearHomeworkBtn");
+        const homeworkMessage = document.getElementById("homeworkMessage");
+
+        let currentUser = null;
+        let currentProfile = {};
+        let schoolsCache = [];
+
+        let teacherSubjects = [];
+        let teacherClasses = [];
+        let teacherSchoolName = "";
+
+        let loadedClassInfo = null;
+        let loadedSubject = "";
+        let loadedDateStr = "";
+        let loadedDayIndex = -1;
+        let loadedLessonIndex = -1;
+        let loadedSchedule = [];
+        let loadedStudents = [];
+
+        function hideLoadscreen() {
+          if (!loadscreen) return;
+          loadscreen.classList.add("hidden-loader");
+          setTimeout(() => {
+            if (loadscreen && loadscreen.parentNode) {
+              loadscreen.parentNode.removeChild(loadscreen);
+            }
+          }, 400);
+        }
+
+        function escapeHtml(v) {
+          if (v === null || v === undefined) return "";
+          return String(v)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+        }
+
+        function showMessage(node, text, type) {
+          if (!node) return;
+          node.textContent = text;
+          node.className = "console-message show " + (type || "success");
+        }
+
+        function hideMessage(node) {
+          if (!node) return;
+          node.classList.remove("show");
+          node.textContent = "";
+        }
+
+        function dateInputToScheduleDate(v) {
+          if (!v) return "";
+          const m = v.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+          if (!m) return "";
+          return m[3] + "." + m[2] + "." + m[1];
+        }
+
+        function gradeClass(g) {
+          g = Number(g);
+          if (g === 5) return "grade-5";
+          if (g === 4) return "grade-4";
+          if (g === 3) return "grade-3";
+          if (g === 2) return "grade-2";
+          if (g === 1) return "grade-1";
+          return "grade-none";
+        }
+
+        // Отображение оценки: единица -> точка
+        function gradeLabel(g) {
+          return Number(g) === 1 ? "•" : String(g);
+        }
+
+        // Бейдж статуса (для отображения роли в списке)
+        function statusBadge(status) {
+          const s = Number(status);
+          if (s === 2) return '<span class="user-status status-admin">Админ</span>';
+          if (s === 3) return '<span class="user-status status-classadmin">Админ класса</span>';
+          return "";
+        }
+
+        function normalizeName(s) {
+          if (s === null || s === undefined) return "";
+          return String(s).trim().toLowerCase();
+        }
+
+        function declOfNum(n, forms) {
+          n = Math.abs(n) % 100;
+          const n1 = n % 10;
+          if (n > 10 && n < 20) return forms[2];
+          if (n1 > 1 && n1 < 5) return forms[1];
+          if (n1 === 1) return forms[0];
+          return forms[2];
+        }
+
+        function renderHeader(user) {
+          const name = currentProfile.name || (user && user.displayName) || (user && user.email) || "Пользователь";
+          userArea.innerHTML =
+            '<a href="account.html" class="user-badge">' +
+              '<span class="material-symbols-outlined">person</span>' +
+              '<span class="user-name">' + escapeHtml(name) + '</span>' +
+            '</a>';
+        }
+
+        function fillClassSelect() {
+          classSelect.innerHTML = "";
+          if (!teacherClasses.length) {
+            const opt = document.createElement("option");
+            opt.value = "";
+            opt.textContent = "Классы не указаны";
+            classSelect.appendChild(opt);
+            classSelect.disabled = true;
+            return;
+          }
+          classSelect.disabled = false;
+          teacherClasses.forEach(function (name, i) {
+            const opt = document.createElement("option");
+            opt.value = String(i);
+            opt.textContent = name;
+            classSelect.appendChild(opt);
+          });
+        }
+
+        function fillSubjectSelect() {
+          subjectSelect.innerHTML = "";
+          if (!teacherSubjects.length) {
+            const opt = document.createElement("option");
+            opt.value = "";
+            opt.textContent = "Предметы не указаны";
+            subjectSelect.appendChild(opt);
+            subjectSelect.disabled = true;
+            return;
+          }
+          subjectSelect.disabled = false;
+          teacherSubjects.forEach(function (name, i) {
+            const opt = document.createElement("option");
+            opt.value = String(i);
+            opt.textContent = name;
+            subjectSelect.appendChild(opt);
+          });
+        }
+
+        function loadTeacherData() {
+          teacherSubjects = [];
+          if (Array.isArray(currentProfile.subjects)) {
+            currentProfile.subjects.forEach(function (s) {
+              if (typeof s === "string") teacherSubjects.push(s.trim());
+              else if (s && typeof s === "object") {
+                const v = s.name || s.title || s.subject || s.value || "";
+                if (v) teacherSubjects.push(String(v).trim());
+              }
+            });
+          }
+          teacherSubjects = teacherSubjects.filter(Boolean);
+
+          teacherClasses = [];
+          if (Array.isArray(currentProfile.classes)) {
+            currentProfile.classes.forEach(function (c) {
+              if (typeof c === "string") teacherClasses.push(c.trim());
+              else if (c && typeof c === "object") {
+                const v = c.name || c.title || c.className || c.value || "";
+                if (v) teacherClasses.push(String(v).trim());
+              }
+            });
+          }
+          teacherClasses = teacherClasses.filter(Boolean);
+
+          teacherSchoolName = String(currentProfile.school || "").trim();
+
+          fillClassSelect();
+          fillSubjectSelect();
+        }
+
+        function loadSchoolsOnce() {
+          return db.ref("schools").once("value").then(function (snap) {
+            const data = snap.val() || [];
+            schoolsCache = Array.isArray(data) ? data : [];
+          }).catch(function (e) {
+            console.error("[journal] ошибка загрузки schools:", e);
+            schoolsCache = [];
+          });
+        }
+
+        // Показываем всех, кроме статуса 4
+        function loadStudentsForClass(className) {
+          return db.ref("users").once("value").then(function (snap) {
+            const raw = snap.val() || {};
+            const targetClass = normalizeName(className);
+            const students = [];
+
+            Object.keys(raw).forEach(function (uid) {
+              const u = raw[uid];
+              if (!u || typeof u !== "object") return;
+
+              // Исключаем только учителей (status === 4)
+              if (Number(u.status) === 4) return;
+
+              if (normalizeName(u.class) === targetClass) {
+                students.push(Object.assign({ uid: uid }, u));
+              }
+            });
+
+            students.sort(function (a, b) {
+              const an = String(a.name || a.email || "").toLowerCase();
+              const bn = String(b.name || b.email || "").toLowerCase();
+              return an.localeCompare(bn);
+            });
+
+            return students;
+          }).catch(function (e) {
+            console.error("[journal] ОШИБКА чтения users:", e);
+            return [];
+          });
+        }
+
+        function findClassInSchool(school, className) {
+          if (!school || !Array.isArray(school.classes)) return -1;
+          const target = normalizeName(className);
+          for (let i = 0; i < school.classes.length; i++) {
+            const n = school.classes[i] && (school.classes[i].name || school.classes[i].title || school.classes[i].className || "");
+            if (normalizeName(n) === target) return i;
+          }
+          return -1;
+        }
+
+        function findLessonInSchedule(schedule, dateStr, subjectName) {
+          let dayIndex = -1;
+          for (let i = 0; i < schedule.length; i++) {
+            if (String(schedule[i].date || "").trim() === dateStr) {
+              dayIndex = i;
+              break;
+            }
+          }
+          if (dayIndex === -1) return { dayIndex: -1, lessonIndex: -1 };
+
+          const lessons = Array.isArray(schedule[dayIndex].lessons) ? schedule[dayIndex].lessons : [];
+          const target = normalizeName(subjectName);
+          let lessonIndex = -1;
+          for (let j = 0; j < lessons.length; j++) {
+            if (normalizeName(lessons[j].name) === target) {
+              lessonIndex = j;
+              break;
+            }
+          }
+          return { dayIndex: dayIndex, lessonIndex: lessonIndex };
+        }
+
+        function updateHomeworkBlock() {
+          if (loadedDayIndex === -1 || loadedLessonIndex === -1 || !loadedClassInfo) {
+            homeworkCard.style.display = "none";
+            return;
+          }
+
+          const day = loadedSchedule[loadedDayIndex];
+          const lesson = (day.lessons || [])[loadedLessonIndex] || {};
+          const hw = lesson.homework || "";
+
+          homeworkCard.style.display = "block";
+          homeworkInput.value = hw;
+          hideMessage(homeworkMessage);
+        }
+
+        function saveHomework() {
+          if (loadedDayIndex === -1 || loadedLessonIndex === -1 || !loadedClassInfo) return;
+
+          const schoolIndex = loadedClassInfo.schoolIndex;
+          const classIndex = loadedClassInfo.classIndex;
+
+          const text = String(homeworkInput.value || "");
+
+          const newSchedule = JSON.parse(JSON.stringify(loadedSchedule || []));
+          const day = newSchedule[loadedDayIndex];
+          if (!day || !Array.isArray(day.lessons)) return;
+
+          const lesson = day.lessons[loadedLessonIndex];
+          if (!lesson) return;
+
+          lesson.homework = text;
+
+          saveHomeworkBtn.disabled = true;
+          saveHomeworkBtn.innerHTML =
+            '<span class="material-symbols-outlined" style="font-size:16px;">hourglass_top</span> Сохранение...';
+
+          db.ref("schools/" + schoolIndex + "/classes/" + classIndex + "/schedule")
+            .set(newSchedule)
+            .then(function () {
+              loadedSchedule = newSchedule;
+              showMessage(homeworkMessage, "✅ Домашнее задание сохранено", "success");
+              setTimeout(function () {
+                if (homeworkMessage.classList.contains("success")) hideMessage(homeworkMessage);
+              }, 1800);
+            })
+            .catch(function (e) {
+              console.error("[journal] ошибка сохранения ДЗ:", e);
+              showMessage(homeworkMessage, "❌ Ошибка сохранения: " + (e && e.message), "error");
+            })
+            .then(function () {
+              saveHomeworkBtn.disabled = false;
+              saveHomeworkBtn.innerHTML =
+                '<span class="material-symbols-outlined" style="font-size:16px;">save</span> Сохранить ДЗ';
+            });
+        }
+
+        saveHomeworkBtn.addEventListener("click", saveHomework);
+
+        clearHomeworkBtn.addEventListener("click", function () {
+          homeworkInput.value = "";
+          hideMessage(homeworkMessage);
+        });
+
+        function renderStudents() {
+          if (!loadedClassInfo) {
+            studentsContainer.innerHTML =
+              '<div class="empty-state">' +
+                '<span class="material-symbols-outlined">group</span>' +
+                '<h3>Выберите класс, предмет и дату</h3>' +
+                '<div>Затем нажмите «Загрузить учеников»</div>' +
+              '</div>';
+            return;
+          }
+
+          if (!loadedStudents.length) {
+            studentsContainer.innerHTML =
+              '<div class="empty-state">' +
+                '<span class="material-symbols-outlined">person_off</span>' +
+                '<h3>В этом классе нет пользователей</h3>' +
+                '<div>Нужны пользователи (кроме учителей), у которых class = «' + escapeHtml(loadedClassInfo.className) + '»</div>' +
+              '</div>';
+            return;
+          }
+
+          if (loadedDayIndex === -1) {
+            studentsContainer.innerHTML =
+              '<div class="empty-state">' +
+                '<span class="material-symbols-outlined">event_busy</span>' +
+                '<h3>На эту дату нет дня в расписании</h3>' +
+                '<div>Сначала добавьте день ' + escapeHtml(loadedDateStr) + ' в расписании класса</div>' +
+              '</div>';
+            return;
+          }
+
+          if (loadedLessonIndex === -1) {
+            studentsContainer.innerHTML =
+              '<div class="empty-state">' +
+                '<span class="material-symbols-outlined">book_2</span>' +
+                '<h3>В этот день нет урока «' + escapeHtml(loadedSubject) + '»</h3>' +
+                '<div>Проверьте название предмета в расписании</div>' +
+              '</div>';
+            return;
+          }
+
+          const day = loadedSchedule[loadedDayIndex];
+          const lesson = (day.lessons || [])[loadedLessonIndex] || {};
+          const grades = (lesson.grades && typeof lesson.grades === "object") ? lesson.grades : {};
+
+          const studentsHtml = loadedStudents.map(function (student) {
+            const uid = student.uid;
+            const name = student.name || student.email || "Без имени";
+            const email = student.email || "";
+            const grade = grades[uid] !== undefined ? grades[uid] : null;
+            const badge = statusBadge(student.status);
+
+            let buttonsHtml = "";
+            [5, 4, 3, 2, 1].forEach(function (g) {
+              const isActive = Number(grade) === g ? "active" : "";
+              buttonsHtml +=
+                '<button class="grade-btn grade-' + g + ' ' + isActive + '"' +
+                ' data-uid="' + escapeHtml(uid) + '"' +
+                ' data-grade="' + g + '"' +
+                ' title="Оценка ' + gradeLabel(g) + '">' + gradeLabel(g) + '</button>';
+            });
+
+            let removeHtml = "";
+            if (grade !== null) {
+              removeHtml =
+                '<button class="grade-btn grade-remove"' +
+                ' data-uid="' + escapeHtml(uid) + '"' +
+                ' data-grade=""' +
+                ' title="Убрать оценку">✕</button>';
+            }
+
+            return (
+              '<div class="student-card" data-uid="' + escapeHtml(uid) + '">' +
+                '<div class="student-card-info">' +
+                  '<div class="student-card-name">' +
+                    escapeHtml(name) +
+                    badge +
+                  '</div>' +
+                  (email ? '<div class="student-card-email">' + escapeHtml(email) + '</div>' : '') +
+                '</div>' +
+                '<div class="grade-buttons">' + buttonsHtml + removeHtml + '</div>' +
+              '</div>'
+            );
+          }).join("");
+
+          studentsContainer.innerHTML =
+            '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;">' +
+              '<div style="font-size:13px;color:#5f7696;">' +
+                'Класс: <b>' + escapeHtml(loadedClassInfo.className) + '</b> · ' +
+                'Предмет: <b>' + escapeHtml(loadedSubject) + '</b> · ' +
+                'Дата: <b>' + escapeHtml(loadedDateStr) + '</b>' +
+              '</div>' +
+              '<div style="font-size:13px;color:#5f7696;">Пользователей: <b>' + loadedStudents.length + '</b></div>' +
+            '</div>' +
+            '<div class="students-grid">' + studentsHtml + '</div>';
+
+          studentsContainer.querySelectorAll(".grade-btn").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              const uid = btn.getAttribute("data-uid");
+              const gr = btn.getAttribute("data-grade");
+              const grade = gr === "" ? null : Number(gr);
+              saveGrade(uid, grade);
+            });
+          });
+        }
+
+        function saveGrade(uid, grade) {
+          if (loadedDayIndex === -1 || loadedLessonIndex === -1 || !loadedClassInfo) return;
+
+          const schoolIndex = loadedClassInfo.schoolIndex;
+          const classIndex = loadedClassInfo.classIndex;
+
+          const newSchedule = JSON.parse(JSON.stringify(loadedSchedule || []));
+          const day = newSchedule[loadedDayIndex];
+          if (!day || !Array.isArray(day.lessons)) return;
+
+          const lesson = day.lessons[loadedLessonIndex];
+          if (!lesson) return;
+
+          if (!lesson.grades || typeof lesson.grades !== "object") {
+            lesson.grades = {};
+          }
+
+          if (grade === null) {
+            delete lesson.grades[uid];
+          } else {
+            lesson.grades[uid] = grade;
+          }
+
+          db.ref("schools/" + schoolIndex + "/classes/" + classIndex + "/schedule")
+            .set(newSchedule)
+            .then(function () {
+              loadedSchedule = newSchedule;
+              renderStudents();
+              showMessage(mainMessage, "✅ Оценка сохранена", "success");
+              setTimeout(function () {
+                if (mainMessage.classList.contains("success")) mainMessage.classList.remove("show");
+              }, 1500);
+            })
+            .catch(function (e) {
+              console.error("[journal] ошибка сохранения оценки:", e);
+              showMessage(mainMessage, "❌ Ошибка сохранения: " + (e && e.message), "error");
+            });
+        }
+
+        function handleLoad() {
+          const classIndexValue = Number(classSelect.value);
+          const subjectIndexValue = Number(subjectSelect.value);
+          const dateValue = dateInput.value;
+
+          if (!Number.isInteger(classIndexValue) || classIndexValue < 0) {
+            showMessage(mainMessage, "⚠️ Выберите класс", "error");
+            return;
+          }
+          if (!Number.isInteger(subjectIndexValue) || subjectIndexValue < 0) {
+            showMessage(mainMessage, "⚠️ Выберите предмет", "error");
+            return;
+          }
+          if (!dateValue) {
+            showMessage(mainMessage, "⚠️ Выберите дату", "error");
+            return;
+          }
+
+          const className = teacherClasses[classIndexValue];
+          const subjectName = teacherSubjects[subjectIndexValue];
+          const dateStr = dateInputToScheduleDate(dateValue);
+
+          const schoolIndex = schoolsCache.findIndex(function (s) {
+            const n = s && (s.name || s.title || s.schoolName || "");
+            return normalizeName(n) === normalizeName(teacherSchoolName);
+          });
+
+          if (schoolIndex === -1) {
+            showMessage(mainMessage, "⚠️ Ваша школа не найдена", "error");
+            return;
+          }
+
+          const school = schoolsCache[schoolIndex];
+          const classIdx = findClassInSchool(school, className);
+
+          if (classIdx === -1) {
+            showMessage(mainMessage, "⚠️ Класс «" + className + "» не найден в школе", "error");
+            return;
+          }
+
+          const classObj = school.classes[classIdx];
+          const schedule = Array.isArray(classObj.schedule) ? classObj.schedule : [];
+
+          loadedClassInfo = {
+            schoolIndex: schoolIndex,
+            classIndex: classIdx,
+            className: className,
+            schoolName: teacherSchoolName
+          };
+          loadedSubject = subjectName;
+          loadedDateStr = dateStr;
+          loadedSchedule = schedule;
+
+          const found = findLessonInSchedule(schedule, dateStr, subjectName);
+          loadedDayIndex = found.dayIndex;
+          loadedLessonIndex = found.lessonIndex;
+
+          loadStudentsForClass(className).then(function (students) {
+            loadedStudents = students;
+            renderStudents();
+            updateHomeworkBlock();
+
+            showMessage(
+              mainMessage,
+              "✅ Загружено: " + students.length + " " + declOfNum(students.length, ["человек", "человека", "человек"]),
+              "success"
+            );
+          });
+        }
+
+        loadBtn.addEventListener("click", handleLoad);
+
+        classSelect.addEventListener("change", function () {
+          if (classSelect.value !== "" && subjectSelect.value !== "" && dateInput.value) handleLoad();
+        });
+        subjectSelect.addEventListener("change", function () {
+          if (classSelect.value !== "" && subjectSelect.value !== "" && dateInput.value) handleLoad();
+        });
+        dateInput.addEventListener("change", function () {
+          if (classSelect.value !== "" && subjectSelect.value !== "" && dateInput.value) handleLoad();
+        });
+
+        (function initDate() {
+          const now = new Date();
+          const y = now.getFullYear();
+          const m = String(now.getMonth() + 1).padStart(2, "0");
+          const d = String(now.getDate()).padStart(2, "0");
+          dateInput.value = y + "-" + m + "-" + d;
+        })();
+
+        auth.onAuthStateChanged(function (user) {
+          if (!user) {
+            window.location.href = "auth.html";
+            return;
+          }
+
+          currentUser = user;
+
+          db.ref("users/" + user.uid).once("value").then(function (snap) {
+            const profile = snap.exists() ? snap.val() : {};
+            currentProfile = profile;
+
+            if (Number(profile.status) !== 4) {
+              alert("Доступ только для учителя.");
+              window.location.href = "index.html";
+              return;
+            }
+
+            if (profile.name) user.displayName = profile.name;
+            renderHeader(user);
+
+            return loadSchoolsOnce();
+          }).then(function () {
+            loadTeacherData();
+          }).catch(function (e) {
+            console.error("[journal] ошибка инициализации:", e);
+          }).finally(function () {
+            hideLoadscreen();
+          });
+        });
+
+      } catch (e) {
+        console.error("[journal] КРИТИЧЕСКАЯ ОШИБКА:", e);
+        hideLoadscreen();
+      }
+    })();
+  </script>
+</body>
+</html>

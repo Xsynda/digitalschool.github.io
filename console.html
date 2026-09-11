@@ -42,6 +42,85 @@
     button, input, textarea, select { font: inherit; }
     button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
 
+    /* ===== Loadscreen ===== */
+    #loadscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: #f8faff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+
+    #loadscreen.hidden-loader {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-logo-wrap {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: loader-pulse 1.6s ease-in-out infinite;
+    }
+
+    .loader-logo-img {
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      object-fit: cover;
+      background: #ffffff;
+      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+      display: block;
+    }
+
+    .loader-logo-fallback {
+      display: none;
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      background: #2a7de1;
+      color: #fff;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      font-weight: 700;
+      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+    }
+
+    @keyframes loader-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    .loader-text {
+      font-size: 15px;
+      color: #5f7696;
+      font-weight: 500;
+      letter-spacing: .2px;
+    }
+
+    .loader-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #dbe7f7;
+      border-top-color: #2a7de1;
+      border-radius: 50%;
+      animation: loader-spin .8s linear infinite;
+    }
+
+    @keyframes loader-spin {
+      to { transform: rotate(360deg); }
+    }
+
     .navbar {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -781,6 +860,21 @@
 </head>
 
 <body>
+  <!-- ===== Loadscreen ===== -->
+  <div id="loadscreen">
+    <div class="loader-logo-wrap">
+      <img
+        src="logo.png"
+        alt="Электронная школа"
+        class="loader-logo-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+      <div class="loader-logo-fallback">Ш</div>
+    </div>
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Загрузка данных...</div>
+  </div>
+
   <header class="navbar">
     <div class="navbar-left">
       <a href="index.html" class="logo-area">
@@ -792,8 +886,11 @@
         <a href="index.html" class="nav-link">
           <span class="material-symbols-outlined">home</span> Главная
         </a>
-        <a href="diary.html" class="nav-link">
+        <a href="diary.html" class="nav-link" id="diaryLink">
           <span class="material-symbols-outlined">calendar_month</span> Дневник
+        </a>
+        <a href="journal.html" class="nav-link hidden" id="journalLink">
+          <span class="material-symbols-outlined">menu_book</span> Журнал
         </a>
         <a href="console.html" class="nav-link admin-link active">
           <span class="material-symbols-outlined">dashboard</span> Консоль
@@ -1124,6 +1221,34 @@
 
     const AUTH_URL = "auth.html";
     const userArea = document.getElementById("userArea");
+    const loadscreen = document.getElementById("loadscreen");
+    const diaryLink = document.getElementById("diaryLink");
+    const journalLink = document.getElementById("journalLink");
+
+    function hideLoadscreen() {
+      if (!loadscreen) return;
+      loadscreen.classList.add("hidden-loader");
+      setTimeout(() => {
+        if (loadscreen && loadscreen.parentNode) {
+          loadscreen.parentNode.removeChild(loadscreen);
+        }
+      }, 400);
+    }
+
+    // Учитель (status 4): показываем "Журнал", скрываем "Дневник".
+    // Все остальные: показываем "Дневник", скрываем "Журнал".
+    function updateTeacherLinks() {
+      const status = Number(currentUserProfile?.status ?? 0);
+      const isTeacher = status === 4;
+
+      if (isTeacher) {
+        if (journalLink) journalLink.classList.remove("hidden");
+        if (diaryLink) diaryLink.classList.add("hidden");
+      } else {
+        if (journalLink) journalLink.classList.add("hidden");
+        if (diaryLink) diaryLink.classList.remove("hidden");
+      }
+    }
 
     let selectedSchoolIndex = 0;
     let selectedClassIndex = 0;
@@ -1375,6 +1500,9 @@
         if (deleteSchoolBtn) deleteSchoolBtn.style.display = "";
         if (deleteClassBtn) deleteClassBtn.style.display = "";
       }
+
+      // Обновляем видимость "Дневник"/"Журнал" по статусу
+      updateTeacherLinks();
     }
 
     async function renderHeader(user) {
@@ -3121,29 +3249,35 @@
     /* ============ Авторизация ============ */
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) { window.location.href = AUTH_URL; return; }
+      try {
+        if (!user) { window.location.href = AUTH_URL; return; }
 
-      const profile = await getUserProfile(user);
-      applyAccessRights(profile);
+        const profile = await getUserProfile(user);
+        applyAccessRights(profile);
 
-      await renderHeader(user);
+        await renderHeader(user);
 
-      const status = Number(profile.status ?? 0);
-      const isFullAdmin = status === 2;
-      const isLocalAdminUser = status === 3;
+        const status = Number(profile.status ?? 0);
+        const isFullAdmin = status === 2;
+        const isLocalAdminUser = status === 3;
 
-      if (!isFullAdmin && !isLocalAdminUser) {
-        alert("Доступ только для администратора.");
-        window.location.href = "index.html";
-        return;
-      }
+        if (!isFullAdmin && !isLocalAdminUser) {
+          alert("Доступ только для администратора.");
+          window.location.href = "index.html";
+          return;
+        }
 
-      await loadSchools();
+        await loadSchools();
 
-      if (status === 2) {
-        await renderNewsList();
-        await loadUsers();
-        renderUsersList();
+        if (status === 2) {
+          await renderNewsList();
+          await loadUsers();
+          renderUsersList();
+        }
+      } catch (error) {
+        console.error("Ошибка инициализации консоли:", error);
+      } finally {
+        hideLoadscreen();
       }
     });
   </script>

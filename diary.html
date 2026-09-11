@@ -11,6 +11,85 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Inter', sans-serif; background: #f8faff; min-height: 100vh; padding-top: 80px; }
 
+    /* ===== Loadscreen ===== */
+    #loadscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: #f8faff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+
+    #loadscreen.hidden-loader {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-logo-wrap {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: loader-pulse 1.6s ease-in-out infinite;
+    }
+
+    .loader-logo-img {
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      object-fit: cover;
+      background: #ffffff;
+      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+      display: block;
+    }
+
+    .loader-logo-fallback {
+      display: none;
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      background: #2a7de1;
+      color: #fff;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      font-weight: 700;
+      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+    }
+
+    @keyframes loader-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    .loader-text {
+      font-size: 15px;
+      color: #5f7696;
+      font-weight: 500;
+      letter-spacing: .2px;
+    }
+
+    .loader-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #dbe7f7;
+      border-top-color: #2a7de1;
+      border-radius: 50%;
+      animation: loader-spin .8s linear infinite;
+    }
+
+    @keyframes loader-spin {
+      to { transform: rotate(360deg); }
+    }
+
     /* ===== Навигация ===== */
     .navbar {
       position: fixed;
@@ -212,12 +291,7 @@
     }
     .week-nav-today-btn:hover { background: #e5effb; border-color: #2a7de1; color: #2a7de1; }
 
-    /* ===== Сетка дней недели =====
-       ПК: 2 колонки × 3 ряда, порядок из JS:
-       Пн | Чт
-       Вт | Пт
-       Ср | Сб
-    */
+    /* ===== Сетка дней недели ===== */
     .week-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -311,6 +385,7 @@
       border: 1px solid #eef3fa;
       cursor: pointer;
       transition: 0.12s ease;
+      position: relative;
     }
     .lesson-mini:hover { background: #f0f6ff; border-color: #c7d9f0; }
 
@@ -329,7 +404,7 @@
     }
     .week-day-card.tomorrow .lesson-mini-number { background: #fef3c7; color: #b45309; }
 
-    .lesson-mini-info { min-width: 0; }
+    .lesson-mini-info { min-width: 0; padding-right: 42px; }
 
     .lesson-mini-name {
       font-size: 13px;
@@ -372,6 +447,34 @@
       font-style: italic;
     }
 
+    /* ===== Оценка в углу ===== */
+    .lesson-grade {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 7px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      background: #1a8a4a;
+      box-shadow: 0 2px 6px rgba(26, 138, 74, 0.25);
+      line-height: 1;
+      user-select: none;
+    }
+
+    /* Цвета оценок */
+    .lesson-grade.grade-5 { background: #1a8a4a; box-shadow: 0 2px 6px rgba(26, 138, 74, 0.25); }
+    .lesson-grade.grade-4 { background: #2a7de1; box-shadow: 0 2px 6px rgba(42, 125, 225, 0.25); }
+    .lesson-grade.grade-3 { background: #f59e0b; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25); }
+    .lesson-grade.grade-2 { background: #c74a4a; box-shadow: 0 2px 6px rgba(199, 74, 74, 0.25); }
+    .lesson-grade.grade-1 { background: #8a3030; box-shadow: 0 2px 6px rgba(138, 48, 48, 0.25); }
+
     .week-day-empty {
       text-align: center;
       padding: 24px 8px;
@@ -404,6 +507,26 @@
     .modal-card .modal-homework img { max-width: 100%; height: auto; border-radius: 12px; margin: 6px 0; }
     .modal-card .modal-close { margin-top: 20px; width: 100%; padding: 12px; border: none; border-radius: 40px; background: #eef3fa; color: #1f2b48; font-weight: 500; font-size: 15px; cursor: pointer; font-family: 'Inter', sans-serif; transition: 0.15s; }
     .modal-card .modal-close:hover { background: #dce4ef; }
+
+    /* Оценка в модалке */
+    .modal-grade {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      background: #1a8a4a;
+    }
+    .modal-grade.grade-5 { background: #1a8a4a; }
+    .modal-grade.grade-4 { background: #2a7de1; }
+    .modal-grade.grade-3 { background: #f59e0b; }
+    .modal-grade.grade-2 { background: #c74a4a; }
+    .modal-grade.grade-1 { background: #8a3030; }
 
     /* ===== Адаптив: планшет ===== */
     @media (max-width: 860px) {
@@ -498,6 +621,21 @@
 </head>
 <body>
 
+<!-- ===== Loadscreen ===== -->
+<div id="loadscreen">
+  <div class="loader-logo-wrap">
+    <img
+      src="logo.png"
+      alt="Электронная школа"
+      class="loader-logo-img"
+      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+    />
+    <div class="loader-logo-fallback">Ш</div>
+  </div>
+  <div class="loader-spinner"></div>
+  <div class="loader-text">Загрузка данных...</div>
+</div>
+
 <header class="navbar" id="navbar">
   <div class="navbar-left">
     <a href="index.html" class="logo-area">
@@ -529,6 +667,10 @@
     <div class="modal-title" id="modalTitle">Название урока</div>
     <div class="modal-sub" id="modalTime">⏰ Время</div>
     <div class="modal-row"><span class="label">🪑 Кабинет</span><span class="value" id="modalCab">—</span></div>
+    <div class="modal-row" id="modalGradeRow" style="display:none;">
+      <span class="label">🎓 Оценка</span>
+      <span class="value" id="modalGrade">—</span>
+    </div>
     <div class="modal-row" style="border-bottom: none;"><span class="label">📚 Домашнее задание</span></div>
     <div class="modal-homework" id="modalHomework">Нет задания</div>
     <button class="modal-close" id="modalCloseBtn">Закрыть</button>
@@ -558,9 +700,21 @@
   const ACCOUNT_URL = "account.html";
   const scheduleContainer = document.getElementById("scheduleContainer");
   const userArea = document.getElementById("userArea");
+  const loadscreen = document.getElementById("loadscreen");
 
   let currentWeekStart = null;
   let fullSchedule = [];
+  let currentUserUid = null;
+
+  function hideLoadscreen() {
+    if (!loadscreen) return;
+    loadscreen.classList.add("hidden-loader");
+    setTimeout(() => {
+      if (loadscreen && loadscreen.parentNode) {
+        loadscreen.parentNode.removeChild(loadscreen);
+      }
+    }, 400);
+  }
 
   function escapeHtml(value) {
     if (value === null || value === undefined) return "";
@@ -646,6 +800,43 @@
     return `<div class="lesson-mini-homework">${escapeHtml(plain)}</div>`;
   }
 
+  /* ============ Оценки ============ */
+
+  // Отображение оценки: 1 -> точка
+  function gradeLabel(grade) {
+    return Number(grade) === 1 ? "•" : String(grade);
+  }
+
+  function getMyGrade(lesson) {
+    if (!lesson || !currentUserUid) return null;
+    const grades = lesson.grades;
+    if (!grades || typeof grades !== "object") return null;
+
+    const raw = grades[currentUserUid];
+    if (raw === null || raw === undefined || raw === "") return null;
+
+    const num = Number(raw);
+    if (!Number.isFinite(num)) return null;
+
+    return num;
+  }
+
+  function gradeClass(grade) {
+    const g = Number(grade);
+    if (g === 5) return "grade-5";
+    if (g === 4) return "grade-4";
+    if (g === 3) return "grade-3";
+    if (g === 2) return "grade-2";
+    if (g === 1) return "grade-1";
+    return "";
+  }
+
+  function renderGradeBadge(lesson) {
+    const grade = getMyGrade(lesson);
+    if (grade === null) return "";
+    return `<div class="lesson-grade ${gradeClass(grade)}" title="Ваша оценка">${gradeLabel(grade)}</div>`;
+  }
+
   function renderHeader(user) {
     const displayName = user?.displayName || user?.email || "Пользователь";
     userArea.innerHTML = `
@@ -663,11 +854,22 @@
     const time = document.getElementById("modalTime");
     const cab = document.getElementById("modalCab");
     const homework = document.getElementById("modalHomework");
+    const gradeRow = document.getElementById("modalGradeRow");
+    const gradeEl = document.getElementById("modalGrade");
 
     title.textContent = lesson?.name || "Урок";
     time.textContent = lesson?.time ? `⏰ ${lesson.time}` : "⏰ Время не указано";
     cab.textContent = lesson?.cab ?? "—";
     homework.innerHTML = lesson?.homework ? processHomeworkFull(lesson.homework) : "Нет задания";
+
+    const grade = lesson?.grade ?? null;
+    if (grade !== null) {
+      gradeRow.style.display = "flex";
+      gradeEl.innerHTML = `<span class="modal-grade ${gradeClass(grade)}">${gradeLabel(grade)}</span>`;
+    } else {
+      gradeRow.style.display = "none";
+      gradeEl.textContent = "—";
+    }
 
     modal.classList.add("active");
   }
@@ -691,9 +893,6 @@
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    // Порядок для раскладки на ПК: "Пн|Чт / Вт|Пт / Ср|Сб"
-    // Но каждый элемент также получает data-day-index — реальный индекс дня недели (0=Пн..5=Сб).
-    // На мобильном через CSS order мы переставим их в правильный порядок Пн→Сб.
     const orderedOffsets = [
       { offset: 0, dayIndex: 0 }, // Пн
       { offset: 3, dayIndex: 3 }, // Чт
@@ -738,19 +937,23 @@
             const cab = lesson?.cab != null && lesson?.cab !== "" ? `каб. ${lesson.cab}` : "";
             const meta = [time, cab].filter(Boolean).join(" · ");
             const homeworkPreview = processHomeworkPreview(lesson?.homework || "");
+            const gradeBadge = renderGradeBadge(lesson);
+            const grade = getMyGrade(lesson);
 
             return `
               <div class="lesson-mini"
                    data-name="${escapeHtml(name)}"
                    data-time="${escapeHtml(lesson?.time || "")}"
                    data-cab="${escapeHtml(lesson?.cab ?? "")}"
-                   data-homework="${escapeHtml(lesson?.homework || "")}">
+                   data-homework="${escapeHtml(lesson?.homework || "")}"
+                   data-grade="${grade === null ? "" : escapeHtml(grade)}">
                 <div class="lesson-mini-number">${idx + 1}</div>
                 <div class="lesson-mini-info">
                   <div class="lesson-mini-name">${escapeHtml(name)}</div>
                   ${meta ? `<div class="lesson-mini-meta">${escapeHtml(meta)}</div>` : ""}
                   ${homeworkPreview}
                 </div>
+                ${gradeBadge}
               </div>
             `;
           }).join("")
@@ -823,11 +1026,15 @@
 
     scheduleContainer.querySelectorAll(".lesson-mini").forEach((el) => {
       el.addEventListener("click", () => {
+        const gradeRaw = el.dataset.grade;
+        const grade = gradeRaw === "" ? null : Number(gradeRaw);
+
         openLessonModal({
           name: el.dataset.name || "Урок",
           time: el.dataset.time || "",
           cab: el.dataset.cab || "",
-          homework: el.dataset.homework || ""
+          homework: el.dataset.homework || "",
+          grade: Number.isFinite(grade) ? grade : null
         });
       });
     });
@@ -914,11 +1121,13 @@
       return;
     }
 
+    currentUserUid = user.uid;
+
     try {
       const profileSnap = await get(ref(db, `users/${user.uid}`));
       const profile = profileSnap.exists() ? profileSnap.val() : {};
 
-      user.displayName = profile.fullName || profile.name || profile.displayName || user.email || "Пользователь";
+      user.displayName = profile.name || user.displayName || user.email || "Пользователь";
       renderHeader(user);
       await loadScheduleForAccount(user);
     } catch (error) {
@@ -926,6 +1135,8 @@
       user.displayName = user.email || "Пользователь";
       renderHeader(user);
       renderEmptyState("Ошибка подключения к базе", "error");
+    } finally {
+      hideLoadscreen();
     }
   });
 </script>

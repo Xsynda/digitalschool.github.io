@@ -28,6 +28,85 @@
       user-select: none;
     }
 
+    /* ===== Loadscreen ===== */
+    #loadscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: #f8faff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+
+    #loadscreen.hidden-loader {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-logo-wrap {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: loader-pulse 1.6s ease-in-out infinite;
+    }
+
+    .loader-logo-img {
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      object-fit: cover;
+      background: #ffffff;
+      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+      display: block;
+    }
+
+    .loader-logo-fallback {
+      display: none;
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      background: #2a7de1;
+      color: #fff;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      font-weight: 700;
+      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+    }
+
+    @keyframes loader-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    .loader-text {
+      font-size: 15px;
+      color: #5f7696;
+      font-weight: 500;
+      letter-spacing: .2px;
+    }
+
+    .loader-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #dbe7f7;
+      border-top-color: #2a7de1;
+      border-radius: 50%;
+      animation: loader-spin .8s linear infinite;
+    }
+
+    @keyframes loader-spin {
+      to { transform: rotate(360deg); }
+    }
+
     /* ===== Навигация ===== */
     .navbar {
       position: fixed;
@@ -302,10 +381,6 @@
       font-size: 13px; color: #889bb3; text-align: center;
     }
 
-    .loading {
-      text-align: center; padding: 40px; color: #6a7f9e;
-    }
-
     /* ===== Модальные окна ===== */
     .modal-overlay {
       display: none; position: fixed; inset: 0;
@@ -477,6 +552,21 @@
   </style>
 </head>
 <body>
+  <!-- ===== Loadscreen ===== -->
+  <div id="loadscreen">
+    <div class="loader-logo-wrap">
+      <img
+        src="logo.png"
+        alt="Электронная школа"
+        class="loader-logo-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+      <div class="loader-logo-fallback">Ш</div>
+    </div>
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Загрузка данных...</div>
+  </div>
+
   <header class="navbar" id="navbar">
     <div class="navbar-left">
       <a href="index.html" class="logo-area">
@@ -485,8 +575,11 @@
       </a>
 
       <nav class="nav-links" id="navLinks">
-        <a href="diary.html" class="nav-link">
+        <a href="diary.html" class="nav-link" id="diaryLink">
           <span class="material-symbols-outlined">calendar_month</span> Дневник
+        </a>
+        <a href="journal.html" class="nav-link hidden" id="journalLink">
+          <span class="material-symbols-outlined">menu_book</span> Журнал
         </a>
         <a href="console.html" class="nav-link admin-link hidden" id="consoleLink">
           <span class="material-symbols-outlined">dashboard</span> Консоль
@@ -569,6 +662,7 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
+    const loadscreen = document.getElementById("loadscreen");
     const userArea = document.getElementById("userArea");
     const profileModal = document.getElementById("profileModal");
     const profileForm = document.getElementById("profileForm");
@@ -577,6 +671,8 @@
     const profileClassSelect = document.getElementById("profileClass");
     const newsContainer = document.getElementById("newsContainer");
     const consoleLink = document.getElementById("consoleLink");
+    const journalLink = document.getElementById("journalLink");
+    const diaryLink = document.getElementById("diaryLink");
     const modal = document.getElementById("modal");
     const modalTitle = document.getElementById("modalTitle");
     const modalDate = document.getElementById("modalDate");
@@ -588,9 +684,19 @@
     let schoolsData = [];
 
     // Пагинация новостей
-    let allNews = [];          // отсортированный массив новостей
-    let newsShown = 5;         // сколько показываем сейчас
+    let allNews = [];
+    let newsShown = 5;
     const NEWS_STEP = 5;
+
+    function hideLoadscreen() {
+      if (!loadscreen) return;
+      loadscreen.classList.add("hidden-loader");
+      setTimeout(() => {
+        if (loadscreen && loadscreen.parentNode) {
+          loadscreen.parentNode.removeChild(loadscreen);
+        }
+      }, 400);
+    }
 
     function escapeHtml(value) {
       if (value === null || value === undefined) return "";
@@ -662,6 +768,21 @@
         consoleLink.classList.remove("hidden");
       } else {
         consoleLink.classList.add("hidden");
+      }
+    }
+
+    // Учитель (status 4): показываем "Журнал", скрываем "Дневник".
+    // Все остальные: показываем "Дневник", скрываем "Журнал".
+    function updateTeacherLinks() {
+      const status = Number(currentProfile?.status ?? 1);
+      const isTeacher = status === 4;
+
+      if (isTeacher) {
+        journalLink.classList.remove("hidden");
+        diaryLink.classList.add("hidden");
+      } else {
+        journalLink.classList.add("hidden");
+        diaryLink.classList.remove("hidden");
       }
     }
 
@@ -886,7 +1007,6 @@
 
       html += '</div>';
 
-      // Кнопка "Показать ещё" — если ещё есть что показать
       if (newsShown < allNews.length) {
         const remaining = allNews.length - newsShown;
         const toShow = Math.min(NEWS_STEP, remaining);
@@ -902,7 +1022,6 @@
 
       newsContainer.innerHTML = html;
 
-      // Обработчики открытия новости
       newsContainer.querySelectorAll(".news-item").forEach((el) => {
         el.addEventListener("click", function() {
           const title = this.dataset.title || "Новость";
@@ -912,7 +1031,6 @@
         });
       });
 
-      // Кнопка "Показать ещё"
       const moreBtn = document.getElementById("showMoreNewsBtn");
       if (moreBtn) {
         moreBtn.addEventListener("click", () => {
@@ -928,7 +1046,6 @@
         const raw = snapshot.exists() ? snapshot.val() : [];
         const news = Array.isArray(raw) ? raw : Object.values(raw || {});
 
-        // Сортировка: сначала новые
         allNews = news
           .slice()
           .sort((a, b) => Number(b.date || 0) - Number(a.date || 0));
@@ -968,6 +1085,7 @@
 
         renderHeader(currentUser);
         updateConsoleLink();
+        updateTeacherLinks();
         closeProfileSetupModal();
         alert("Профиль сохранён");
       } catch (error) {
@@ -998,15 +1116,20 @@
 
       renderHeader(user);
       updateConsoleLink();
+      updateTeacherLinks();
 
-      await loadSchools();
-      await loadNews();
+      await Promise.all([
+        loadSchools(),
+        loadNews()
+      ]);
 
       if (!currentProfile.name || !currentProfile.school || !currentProfile.class) {
         openProfileSetupModal(currentProfile);
       } else {
         closeProfileSetupModal();
       }
+
+      hideLoadscreen();
     });
   </script>
 </body>
