@@ -666,14 +666,8 @@
       await updateProfile(user, { displayName: trimmed });
 
       const profileRef = ref(db, `users/${user.uid}`);
-      const snapshot = await get(profileRef);
-      const profile = snapshot.exists() ? snapshot.val() : {};
-
       await update(profileRef, {
-        ...profile,
-        name: trimmed,
-        fullName: trimmed,
-        displayName: trimmed
+        name: trimmed
       });
     }
 
@@ -756,7 +750,7 @@
 
           <div class="field-group">
             <label>Имя</label>
-            <input type="text" value="${escapeHtml(profileData?.name || profileData?.fullName || user.displayName || "—")}" disabled />
+            <input type="text" value="${escapeHtml(profileData?.name || user.displayName || "—")}" disabled />
           </div>
 
           <div class="field-group">
@@ -783,7 +777,7 @@
 
           <div class="field-group">
             <label>Новое имя</label>
-            <input type="text" id="newNameInput" value="${escapeHtml(profileData?.name || profileData?.fullName || user.displayName || "")}" placeholder="Введите новое имя" />
+            <input type="text" id="newNameInput" value="${escapeHtml(profileData?.name || user.displayName || "")}" placeholder="Введите новое имя" />
           </div>
 
           <div id="nameError" class="hidden error-msg"></div>
@@ -953,7 +947,6 @@
 
         user.displayName =
           profileData?.name ||
-          profileData?.fullName ||
           user.displayName ||
           user.email ||
           "Пользователь";

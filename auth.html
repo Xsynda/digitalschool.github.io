@@ -91,7 +91,6 @@
       margin-bottom: 6px;
     }
 
-    /* Поле пароля с глазиком */
     .input-with-icon {
       position: relative;
       width: 100%;
@@ -238,7 +237,6 @@
     }
     .btn-outline:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* Ссылка "Забыли пароль?" */
     .forgot-row {
       text-align: right;
       margin-top: -8px;
@@ -306,7 +304,6 @@
       cursor: pointer;
     }
 
-    /* ===== Экран «Подтвердите почту» ===== */
     .verify-icon {
       width: 72px;
       height: 72px;
@@ -374,7 +371,6 @@
       gap: 10px;
     }
 
-    /* ===== Экран «Почта подтверждена» ===== */
     .success-icon {
       width: 80px;
       height: 80px;
@@ -389,7 +385,6 @@
 
     .success-icon .material-symbols-outlined { font-size: 46px; }
 
-    /* ===== Иконка сброса пароля ===== */
     .reset-icon {
       width: 72px;
       height: 72px;
@@ -614,14 +609,12 @@
 
     const REDIRECT_URL = "index.html";
 
-    // === Блоки экранов ===
     const authFormBlock = document.getElementById("authFormBlock");
     const verifyBlock = document.getElementById("verifyBlock");
     const verifiedBlock = document.getElementById("verifiedBlock");
     const profileSetupBlock = document.getElementById("profileSetupBlock");
     const resetBlock = document.getElementById("resetBlock");
 
-    // === Элементы формы ===
     const formTitle = document.getElementById("formTitle");
     const formSub = document.getElementById("formSub");
     const emailInput = document.getElementById("emailInput");
@@ -638,7 +631,6 @@
     const togglePasswordBtn = document.getElementById("togglePasswordBtn");
     const togglePasswordIcon = document.getElementById("togglePasswordIcon");
 
-    // === Экран подтверждения ===
     const verifyEmailText = document.getElementById("verifyEmailText");
     const verifyError = document.getElementById("verifyError");
     const verifySuccess = document.getElementById("verifySuccess");
@@ -647,11 +639,9 @@
     const resendBtn = document.getElementById("resendBtn");
     const backBtn = document.getElementById("backBtn");
 
-    // === Экран «почта подтверждена» ===
     const verifiedEmailText = document.getElementById("verifiedEmailText");
     const goToProfileBtn = document.getElementById("goToProfileBtn");
 
-    // === Профиль ===
     const profileNameInput = document.getElementById("profileNameInput");
     const schoolSelect = document.getElementById("schoolSelect");
     const classSelect = document.getElementById("classSelect");
@@ -659,7 +649,6 @@
     const profileError = document.getElementById("profileError");
     const profileInfo = document.getElementById("profileInfo");
 
-    // === Сброс пароля ===
     const resetEmailInput = document.getElementById("resetEmailInput");
     const resetPasswordBtn = document.getElementById("resetPasswordBtn");
     const backFromResetBtn = document.getElementById("backFromResetBtn");
@@ -671,8 +660,6 @@
     let schoolOptions = [];
     let classOptions = [];
     let schoolsRawData = [];
-
-    /* ============ Утилиты ============ */
 
     function redirectToMain() {
       window.location.href = REDIRECT_URL;
@@ -749,8 +736,6 @@
       } catch (e) {}
     }
 
-    /* ============ Показ/скрытие пароля ============ */
-
     let passwordVisible = false;
 
     togglePasswordBtn.addEventListener("click", () => {
@@ -759,12 +744,9 @@
       togglePasswordIcon.textContent = passwordVisible ? "visibility_off" : "visibility";
       togglePasswordBtn.setAttribute("aria-label", passwordVisible ? "Скрыть пароль" : "Показать пароль");
       passwordInput.focus();
-      // Курсор в конец
       const len = passwordInput.value.length;
       try { passwordInput.setSelectionRange(len, len); } catch (e) {}
     });
-
-    /* ============ Школы/классы ============ */
 
     function normalizeOptions(raw) {
       if (!raw) return [];
@@ -853,8 +835,6 @@
       }
     }
 
-    /* ============ Переключение экранов ============ */
-
     function showAuthForm() {
       authFormBlock.classList.remove("hidden");
       verifyBlock.classList.add("hidden");
@@ -933,9 +913,7 @@
           email: user.email,
           name: name,
           school: selectedSchool.name,
-          schoolId: schoolId,
           class: selectedClass.name,
-          classId: classId,
           status: 1,
           profileComplete: true,
           emailVerified: true,
@@ -1014,8 +992,6 @@
 
     submitBtn.addEventListener("click", handleSubmit);
 
-    /* ============ Проверка подтверждения почты ============ */
-
     async function checkEmailVerified() {
       const user = auth.currentUser;
       if (!user) {
@@ -1050,8 +1026,6 @@
 
     continueBtn.addEventListener("click", checkEmailVerified);
 
-    /* ============ Кнопка «Продолжить» на экране успеха ============ */
-
     goToProfileBtn.addEventListener("click", async () => {
       const user = auth.currentUser;
       if (!user) {
@@ -1070,8 +1044,6 @@
         await showProfileSetup();
       }
     });
-
-    /* ============ Отправить письмо заново ============ */
 
     async function resendVerification() {
       const user = auth.currentUser;
@@ -1098,8 +1070,6 @@
 
     resendBtn.addEventListener("click", resendVerification);
 
-    /* ============ Назад к регистрации ============ */
-
     async function goBackToForm() {
       try {
         await signOut(auth);
@@ -1110,8 +1080,6 @@
     }
 
     backBtn.addEventListener("click", goBackToForm);
-
-    /* ============ Сброс пароля ============ */
 
     forgotPasswordBtn.addEventListener("click", () => {
       showResetScreen();
@@ -1138,7 +1106,6 @@
         showMessage(resetSuccess, "✅ Письмо для сброса пароля отправлено! Проверьте почту и папку «Спам».");
       } catch (error) {
         console.error("Ошибка сброса:", error);
-        // Не раскрываем, существует ли email — просто показываем нейтральное сообщение
         if (error.code === "auth/user-not-found") {
           showMessage(resetSuccess, "✅ Если такой email зарегистрирован — на него отправлено письмо для сброса пароля.");
         } else if (error.code === "auth/invalid-email") {
@@ -1154,8 +1121,6 @@
 
     resetPasswordBtn.addEventListener("click", handleResetPassword);
 
-    /* ============ Enter ============ */
-
     document.addEventListener("keydown", (e) => {
       if (e.key !== "Enter") return;
       const active = document.activeElement;
@@ -1168,8 +1133,6 @@
         if (active === resetEmailInput) handleResetPassword();
       }
     });
-
-    /* ============ Стартовая проверка ============ */
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {

@@ -585,6 +585,93 @@
       font-size: 16px;
     }
 
+    /* ===== Пользователи ===== */
+    .users-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-end;
+      margin-bottom: 14px;
+    }
+
+    .users-toolbar .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 160px;
+      flex: 1;
+    }
+
+    .users-toolbar .field label {
+      font-size: 12px;
+      color: var(--text-soft);
+      font-weight: 500;
+      margin-left: 4px;
+    }
+
+    .users-list { display: grid; gap: 10px; }
+
+    .user-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px 16px;
+      transition: .15s;
+    }
+
+    .user-card:hover { border-color: #c7d9f0; }
+
+    .user-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .user-card-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .user-card-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .user-card-meta {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .user-card-meta .chip {
+      background: #eef3fa;
+      padding: 2px 10px;
+      border-radius: 40px;
+      font-size: 11px;
+      color: #3d5270;
+    }
+
+    .user-card-meta .chip.status-student { background: var(--blue-soft); color: var(--blue); }
+    .user-card-meta .chip.status-admin { background: #ffe0b2; color: #b45309; }
+    .user-card-meta .chip.status-classadmin { background: #f0e0ff; color: #7c3aed; }
+
+    .user-card-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    .user-card-email {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 3px;
+      word-break: break-all;
+    }
+
     @media (max-width: 900px) {
       .week-days { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
@@ -671,6 +758,8 @@
       .modal-actions { flex-direction: column-reverse; }
       .modal-actions .btn-console { width: 100%; }
       .btn-console { min-height: 40px; }
+
+      .users-toolbar .field { min-width: 0; flex: 1 1 100%; }
     }
 
     @media (max-width: 480px) {
@@ -724,6 +813,7 @@
     <div class="tab-bar">
       <button class="tab-btn active" data-tab="news">📰 Новости</button>
       <button class="tab-btn" data-tab="schedule">📅 Расписание</button>
+      <button class="tab-btn hidden" data-tab="users" id="usersTabBtn">👥 Пользователи</button>
     </div>
 
     <section class="tab-content active" id="tab-news">
@@ -796,6 +886,39 @@
 
         <div id="weekList" class="week-list"></div>
         <div id="dayMessage" class="console-message"></div>
+      </div>
+    </section>
+
+    <section class="tab-content" id="tab-users">
+      <div class="console-card">
+        <div class="card-label">🔍 Поиск и сортировка</div>
+
+        <div class="users-toolbar">
+          <div class="field">
+            <label>Сортировать по</label>
+            <select id="usersSortSelect" class="input">
+              <option value="name">Имени (А→Я)</option>
+              <option value="name-desc">Имени (Я→А)</option>
+              <option value="school">Школе (А→Я)</option>
+              <option value="school-desc">Школе (Я→А)</option>
+              <option value="class">Классу (по возрастанию)</option>
+              <option value="class-desc">Классу (по убыванию)</option>
+            </select>
+          </div>
+
+          <div class="field" style="flex: 2;">
+            <label>Поиск</label>
+            <input type="text" id="usersSearchInput" class="input" placeholder="Имя, email, школа или класс..." />
+          </div>
+        </div>
+
+        <div id="usersMessage" class="console-message"></div>
+        <div id="usersCountInfo" style="font-size:13px;color:#6a7f9e;margin-top:6px;"></div>
+      </div>
+
+      <div class="console-card">
+        <div class="card-label">👥 Пользователи</div>
+        <div id="usersList" class="users-list"></div>
       </div>
     </section>
 
@@ -946,10 +1069,44 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="editUserModal">
+    <div class="modal">
+      <h2>✏️ Редактировать пользователя</h2>
+      <div class="modal-sub" id="editUserSub">Измените данные пользователя.</div>
+
+      <div class="field-group" style="margin-bottom:12px;">
+        <label class="form-label">Email</label>
+        <input class="input" id="editUserEmail" type="text" disabled />
+      </div>
+
+      <div class="field-group" style="margin-bottom:12px;">
+        <label class="form-label">Имя</label>
+        <input class="input" id="editUserName" type="text" placeholder="Иван Иванов" />
+      </div>
+
+      <div class="field-group" style="margin-bottom:12px;">
+        <label class="form-label">Школа</label>
+        <select class="input" id="editUserSchool"></select>
+      </div>
+
+      <div class="field-group" style="margin-bottom:12px;">
+        <label class="form-label">Класс</label>
+        <select class="input" id="editUserClass"></select>
+      </div>
+
+      <div id="editUserMessage" class="console-message"></div>
+
+      <div class="modal-actions">
+        <button class="btn-console btn-console-outline close-modal">Отмена</button>
+        <button class="btn-console btn-console-primary" id="saveUserBtn">💾 Сохранить</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
@@ -978,6 +1135,9 @@
     let restrictedSchoolIndex = null;
     let restrictedClassIndex = null;
     let editingNewsIndex = null;
+
+    let usersCache = [];
+    let editingUserUid = null;
 
     let showPastWeeks = false;
     let pastWeeksShown = 2;
@@ -1153,7 +1313,7 @@
       try {
         const snap = await get(ref(db, `users/${user.uid}`));
         const data = snap.exists() ? snap.val() : {};
-        return data.fullName || data.name || data.displayName || user.displayName || user.email || "Пользователь";
+        return data.name || user.displayName || user.email || "Пользователь";
       } catch {
         return user.displayName || user.email || "Пользователь";
       }
@@ -1186,11 +1346,20 @@
       const newsTabBtn = document.querySelector('.tab-btn[data-tab="news"]');
       const newsTab = document.getElementById("tab-news");
       const scheduleTabBtn = document.querySelector('.tab-btn[data-tab="schedule"]');
+      const usersTabBtn = document.getElementById("usersTabBtn");
       const openSchoolClassModalBtn = document.getElementById("openSchoolClassModalBtn");
       const deleteSchoolBtn = document.getElementById("deleteSchoolBtn");
       const deleteClassBtn = document.getElementById("deleteClassBtn");
 
-      if (isLocalAdmin) {
+      const isFullAdmin = status === 2;
+      const isLocalAdminUser = status === 3;
+
+      if (usersTabBtn) {
+        if (isFullAdmin) usersTabBtn.classList.remove("hidden");
+        else usersTabBtn.classList.add("hidden");
+      }
+
+      if (isLocalAdminUser) {
         if (newsTabBtn) newsTabBtn.style.display = "none";
         if (newsTab) newsTab.classList.remove("active");
         if (scheduleTabBtn) {
@@ -1742,8 +1911,6 @@
 
           const [y, m, d] = weekKey.split("-").map(Number);
           const weekStart = new Date(y, m - 1, d);
-          const weekEnd = new Date(weekStart);
-          weekEnd.setDate(weekEnd.getDate() + 5);
 
           const info = document.getElementById("deleteWeekInfo");
           const daysCount = (function () {
@@ -2513,7 +2680,6 @@
 
     /* ============ НОВОСТИ ============ */
 
-    // Добавление новости (ключ = индекс в массиве)
     document.getElementById("addNewsBtn").addEventListener("click", async () => {
       if (isLocalAdmin) return;
       const title = document.getElementById("addTitle").value.trim();
@@ -2527,7 +2693,6 @@
         const raw = snap.exists() ? snap.val() : [];
         const arr = Array.isArray(raw) ? [...raw] : Object.values(raw || {});
 
-        // Добавляем новую новость в конец массива
         arr.push({ title, desc, date: rawDate });
 
         await set(ref(db, "news"), arr);
@@ -2542,7 +2707,6 @@
       }
     });
 
-    // Список новостей (индекс + дата)
     async function renderNewsList() {
       if (isLocalAdmin) return;
       const list = document.getElementById("editNewsList");
@@ -2574,7 +2738,6 @@
           `;
         }).join("");
 
-        // Удаление
         list.querySelectorAll(".delete-news-btn").forEach((btn) => {
           btn.addEventListener("click", async () => {
             const index = Number(btn.dataset.index);
@@ -2593,7 +2756,6 @@
           });
         });
 
-        // Редактирование
         list.querySelectorAll(".edit-news-btn").forEach((btn) => {
           btn.addEventListener("click", async () => {
             const index = Number(btn.dataset.index);
@@ -2625,7 +2787,6 @@
       }
     }
 
-    // Сохранение отредактированной новости по индексу
     document.getElementById("confirmEditNewsBtn").addEventListener("click", async () => {
       if (isLocalAdmin) return;
       const title = document.getElementById("editNewsTitle").value.trim();
@@ -2662,8 +2823,273 @@
       }
     });
 
+    /* ============ ПОЛЬЗОВАТЕЛИ ============ */
+
+    function getStatusInfo(status) {
+      const s = Number(status);
+      if (s === 2) return { label: "Администратор", cls: "status-admin" };
+      if (s === 3) return { label: "Администратор класса", cls: "status-classadmin" };
+      return { label: "Ученик", cls: "status-student" };
+    }
+
+    async function loadUsers() {
+      try {
+        const snap = await get(ref(db, "users"));
+        const raw = snap.exists() ? snap.val() : {};
+        const arr = Object.entries(raw).map(([uid, data]) => ({
+          uid,
+          ...(data || {})
+        }));
+        usersCache = arr;
+      } catch (e) {
+        console.error("loadUsers error:", e);
+        usersCache = [];
+      }
+    }
+
+    function compareClassNames(a, b) {
+      const parse = (s) => {
+        const m = String(s || "").match(/^(\d+)\s*(.*)$/);
+        if (!m) return { num: Number.POSITIVE_INFINITY, letter: String(s || "").toLowerCase() };
+        return { num: Number(m[1]), letter: String(m[2] || "").toLowerCase() };
+      };
+      const pa = parse(a);
+      const pb = parse(b);
+      if (pa.num !== pb.num) return pa.num - pb.num;
+      return pa.letter.localeCompare(pb.letter);
+    }
+
+    function sortUsers(users, mode) {
+      const copy = [...users];
+      const getStr = (v) => String(v || "").toLowerCase();
+
+      switch (mode) {
+        case "name":
+          copy.sort((a, b) => getStr(a.name || a.email).localeCompare(getStr(b.name || b.email)));
+          break;
+        case "name-desc":
+          copy.sort((a, b) => getStr(b.name || b.email).localeCompare(getStr(a.name || a.email)));
+          break;
+        case "school":
+          copy.sort((a, b) => getStr(a.school).localeCompare(getStr(b.school)));
+          break;
+        case "school-desc":
+          copy.sort((a, b) => getStr(b.school).localeCompare(getStr(a.school)));
+          break;
+        case "class":
+          copy.sort((a, b) => compareClassNames(a.class, b.class));
+          break;
+        case "class-desc":
+          copy.sort((a, b) => compareClassNames(b.class, a.class));
+          break;
+        default:
+          break;
+      }
+      return copy;
+    }
+
+    function filterUsers(users, query) {
+      const q = String(query || "").trim().toLowerCase();
+      if (!q) return users;
+      return users.filter((u) => {
+        const hay = [
+          u.name,
+          u.email,
+          u.school,
+          u.class
+        ].map((v) => String(v || "").toLowerCase()).join(" ");
+        return hay.includes(q);
+      });
+    }
+
+    function renderUsersList() {
+      const list = document.getElementById("usersList");
+      const sortMode = document.getElementById("usersSortSelect").value;
+      const query = document.getElementById("usersSearchInput").value;
+
+      const filtered = filterUsers(usersCache, query);
+      const sorted = sortUsers(filtered, sortMode);
+
+      document.getElementById("usersCountInfo").textContent =
+        `Найдено: ${sorted.length} из ${usersCache.length}`;
+
+      if (!sorted.length) {
+        list.innerHTML = `<div class="empty-state">Пользователи не найдены.</div>`;
+        return;
+      }
+
+      list.innerHTML = sorted.map((user) => {
+        const status = getStatusInfo(user.status);
+        const name = user.name || user.email || "Без имени";
+        const email = user.email || "—";
+        const school = user.school || "—";
+        const cls = user.class || "—";
+
+        return `
+          <div class="user-card" data-uid="${escapeHtml(user.uid)}">
+            <div class="user-card-head">
+              <div class="user-card-info">
+                <div class="user-card-name">${escapeHtml(name)}</div>
+                <div class="user-card-email">${escapeHtml(email)}</div>
+                <div class="user-card-meta">
+                  <span class="chip ${status.cls}">${status.label}</span>
+                  <span class="chip">🏫 ${escapeHtml(school)}</span>
+                  <span class="chip">📚 ${escapeHtml(cls)}</span>
+                </div>
+              </div>
+              <div class="user-card-actions">
+                <button class="btn-console btn-console-warning edit-user-btn" data-uid="${escapeHtml(user.uid)}">✏️ Изменить</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      list.querySelectorAll(".edit-user-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const uid = btn.dataset.uid;
+          openEditUser(uid);
+        });
+      });
+    }
+
+    function fillUserSchoolSelect(selectedSchoolName) {
+      const sel = document.getElementById("editUserSchool");
+      sel.innerHTML = "";
+
+      const emptyOpt = document.createElement("option");
+      emptyOpt.value = "";
+      emptyOpt.textContent = "— Не указано —";
+      sel.appendChild(emptyOpt);
+
+      schoolsCache.forEach((school, index) => {
+        const name = String(school?.name || school?.title || school?.schoolName || "").trim();
+        if (!name) return;
+        const opt = document.createElement("option");
+        opt.value = String(index);
+        opt.textContent = name;
+        if (selectedSchoolName && name === selectedSchoolName) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
+    function fillUserClassSelect(schoolIndex, selectedClassName) {
+      const sel = document.getElementById("editUserClass");
+      sel.innerHTML = "";
+
+      const emptyOpt = document.createElement("option");
+      emptyOpt.value = "";
+      emptyOpt.textContent = "— Не указано —";
+      sel.appendChild(emptyOpt);
+
+      const school = schoolsCache[Number(schoolIndex)];
+      const classes = school && Array.isArray(school.classes) ? school.classes : [];
+
+      classes.forEach((cls, index) => {
+        const name = String(cls?.name || cls?.title || cls?.className || "").trim();
+        if (!name) return;
+        const opt = document.createElement("option");
+        opt.value = String(index);
+        opt.textContent = name;
+        if (selectedClassName && name === selectedClassName) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
+    function openEditUser(uid) {
+      const user = usersCache.find((u) => u.uid === uid);
+      if (!user) return;
+
+      editingUserUid = uid;
+
+      document.getElementById("editUserSub").textContent =
+        `Пользователь: ${user.name || user.email || uid}`;
+      document.getElementById("editUserEmail").value = user.email || "";
+      document.getElementById("editUserName").value = user.name || "";
+
+      const schoolName = String(user.school || "").trim();
+      const schoolIndex = schoolsCache.findIndex((s) => {
+        const n = String(s?.name || s?.title || s?.schoolName || "").trim();
+        return n === schoolName;
+      });
+
+      fillUserSchoolSelect(schoolName);
+
+      const className = String(user.class || "").trim();
+      fillUserClassSelect(schoolIndex >= 0 ? schoolIndex : "", className);
+
+      const msg = document.getElementById("editUserMessage");
+      msg.textContent = "";
+      msg.className = "console-message";
+
+      openModal("editUserModal");
+    }
+
+    document.getElementById("editUserSchool").addEventListener("change", (e) => {
+      const schoolIndex = e.target.value;
+      fillUserClassSelect(schoolIndex, "");
+    });
+
+    document.getElementById("saveUserBtn").addEventListener("click", async () => {
+      if (!editingUserUid) return;
+
+      const msg = document.getElementById("editUserMessage");
+      const name = document.getElementById("editUserName").value.trim();
+      const schoolIndexValue = document.getElementById("editUserSchool").value;
+      const classIndexValue = document.getElementById("editUserClass").value;
+
+      if (!name) {
+        showMessage(msg, "⚠️ Введите имя", "error");
+        return;
+      }
+
+      let schoolName = "";
+      let className = "";
+
+      if (schoolIndexValue !== "") {
+        const school = schoolsCache[Number(schoolIndexValue)];
+        schoolName = String(school?.name || school?.title || school?.schoolName || "").trim();
+
+        if (classIndexValue !== "") {
+          const classes = Array.isArray(school?.classes) ? school.classes : [];
+          const cls = classes[Number(classIndexValue)];
+          className = String(cls?.name || cls?.title || cls?.className || "").trim();
+        }
+      }
+
+      try {
+        await update(ref(db, `users/${editingUserUid}`), {
+          name,
+          school: schoolName,
+          class: className,
+          updatedAt: new Date().toISOString()
+        });
+
+        const idx = usersCache.findIndex((u) => u.uid === editingUserUid);
+        if (idx !== -1) {
+          usersCache[idx] = {
+            ...usersCache[idx],
+            name,
+            school: schoolName,
+            class: className
+          };
+        }
+
+        closeAllModals();
+        renderUsersList();
+      } catch (error) {
+        console.error("save user error:", error);
+        showMessage(msg, "❌ Ошибка: " + error.message, "error");
+      }
+    });
+
+    document.getElementById("usersSortSelect").addEventListener("change", renderUsersList);
+    document.getElementById("usersSearchInput").addEventListener("input", renderUsersList);
+
+    /* ============ Резолверы ============ */
+
     function resolveSchoolIndexFromProfile(profile, schools = []) {
-      const raw = profile?.schoolIndex ?? profile?.allowedSchoolIndex ?? profile?.school ?? profile?.schoolId ?? 0;
+      const raw = profile?.schoolIndex ?? profile?.allowedSchoolIndex ?? profile?.schoolId ?? profile?.school ?? 0;
       if (raw === null || raw === undefined || raw === "") return 0;
       if (Number.isInteger(Number(raw))) {
         const idx = Number(raw);
@@ -2678,7 +3104,7 @@
     }
 
     function resolveClassIndexFromProfile(profile, school, classes = []) {
-      const raw = profile?.classIndex ?? profile?.allowedClassIndex ?? profile?.class ?? profile?.classId ?? 0;
+      const raw = profile?.classIndex ?? profile?.allowedClassIndex ?? profile?.classId ?? profile?.class ?? 0;
       if (raw === null || raw === undefined || raw === "") return 0;
       if (Number.isInteger(Number(raw))) {
         const idx = Number(raw);
@@ -2691,6 +3117,8 @@
       });
       return found >= 0 ? found : 0;
     }
+
+    /* ============ Авторизация ============ */
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) { window.location.href = AUTH_URL; return; }
@@ -2714,6 +3142,8 @@
 
       if (status === 2) {
         await renderNewsList();
+        await loadUsers();
+        renderUsersList();
       }
     });
   </script>

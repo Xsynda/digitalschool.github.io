@@ -252,6 +252,39 @@
       text-decoration: none;
     }
 
+    /* ===== Кнопка "Показать ещё" ===== */
+    .show-more-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .show-more-btn {
+      border: 2px dashed #d0dae9;
+      background: transparent;
+      color: #5f7696;
+      padding: 12px 26px;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: "Inter", sans-serif;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .show-more-btn:hover {
+      background: #f0f6ff;
+      border-color: #2a7de1;
+      color: #2a7de1;
+    }
+
+    .show-more-btn .material-symbols-outlined {
+      font-size: 18px;
+    }
+
     .empty-state {
       text-align: center; padding: 48px 20px; color: #6a7f9e;
     }
@@ -520,7 +553,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
@@ -553,6 +586,11 @@
     let currentUser = null;
     let currentProfile = {};
     let schoolsData = [];
+
+    // Пагинация новостей
+    let allNews = [];          // отсортированный массив новостей
+    let newsShown = 5;         // сколько показываем сейчас
+    const NEWS_STEP = 5;
 
     function escapeHtml(value) {
       if (value === null || value === undefined) return "";
@@ -655,54 +693,60 @@
       }
 
       profileSchoolSelect.innerHTML = '<option value="" disabled selected>Выберите школу</option>';
-      schoolsData.forEach((school) => {
+      schoolsData.forEach((school, index) => {
         const schoolName = String(school?.name || school?.title || school?.schoolName || "").trim();
         if (!schoolName) return;
 
         const option = document.createElement("option");
-        option.value = schoolName;
+        option.value = String(index);
         option.textContent = schoolName;
+        option.dataset.schoolName = schoolName;
         profileSchoolSelect.appendChild(option);
       });
     }
 
-    function getSchoolByName(name) {
+    function getSchoolIndexByName(name) {
       const target = String(name || "").trim();
-      if (!target) return null;
+      if (!target) return -1;
 
-      return schoolsData.find((school) => {
+      return schoolsData.findIndex((school) => {
         const schoolName = String(school?.name || school?.title || school?.schoolName || "").trim();
         return schoolName === target;
-      }) || null;
+      });
     }
 
-    function getClassByName(schoolName, className) {
-      const school = getSchoolByName(schoolName);
-      if (!school || !Array.isArray(school.classes)) return null;
+    function getSchoolByIndex(index) {
+      const idx = Number(index);
+      if (!Number.isInteger(idx) || idx < 0 || idx >= schoolsData.length) return null;
+      return schoolsData[idx];
+    }
 
+    function getClassIndexByName(school, className) {
+      if (!school || !Array.isArray(school.classes)) return -1;
       const target = String(className || "").trim();
-      if (!target) return null;
+      if (!target) return -1;
 
-      return school.classes.find((item) => {
+      return school.classes.findIndex((item) => {
         const name = String(item?.name || item?.title || item?.className || "").trim();
         return name === target;
-      }) || null;
+      });
     }
 
     function updateClassOptionsForSelectedSchool() {
-      const selectedSchoolName = String(profileSchoolSelect.value || "").trim();
-      const school = getSchoolByName(selectedSchoolName);
+      const schoolIndex = Number(profileSchoolSelect.value);
+      const school = getSchoolByIndex(schoolIndex);
       const classList = Array.isArray(school?.classes) ? school.classes : [];
 
       profileClassSelect.innerHTML = '<option value="" disabled selected>Выберите класс</option>';
 
-      classList.forEach((item) => {
+      classList.forEach((item, index) => {
         const className = String(item?.name || item?.title || item?.className || "").trim();
         if (!className) return;
 
         const option = document.createElement("option");
-        option.value = className;
+        option.value = String(index);
         option.textContent = className;
+        option.dataset.className = className;
         profileClassSelect.appendChild(option);
       });
     }
@@ -711,34 +755,31 @@
       const data = profile || {};
       profileNameInput.value = data.name || currentUser?.displayName || "";
 
-      const savedSchool = String(data.school || "").trim();
-      const savedClass = String(data.class || "").trim();
+      const savedSchoolName = String(data.school || "").trim();
+      const savedClassName = String(data.class || "").trim();
 
       profileSchoolSelect.innerHTML = '<option value="" disabled selected>Выберите школу</option>';
-      schoolsData.forEach((school) => {
+      schoolsData.forEach((school, index) => {
         const schoolName = String(school?.name || school?.title || school?.schoolName || "").trim();
         if (!schoolName) return;
 
         const option = document.createElement("option");
-        option.value = schoolName;
+        option.value = String(index);
         option.textContent = schoolName;
+        option.dataset.schoolName = schoolName;
 
-        if (savedSchool && schoolName === savedSchool) option.selected = true;
+        if (savedSchoolName && schoolName === savedSchoolName) option.selected = true;
         profileSchoolSelect.appendChild(option);
       });
 
       updateClassOptionsForSelectedSchool();
 
-      if (savedClass) {
-        const school = getSchoolByName(profileSchoolSelect.value || savedSchool);
-        const list = Array.isArray(school?.classes) ? school.classes : [];
-        const match = list.find((item) => {
-          const name = String(item?.name || item?.title || item?.className || "").trim();
-          return name === savedClass;
-        });
+      if (savedClassName) {
+        const school = getSchoolByIndex(profileSchoolSelect.value);
+        const matchIndex = getClassIndexByName(school, savedClassName);
 
-        if (match) {
-          profileClassSelect.value = String(match.name || match.title || match.className || savedClass);
+        if (matchIndex >= 0) {
+          profileClassSelect.value = String(matchIndex);
         }
       }
 
@@ -756,88 +797,144 @@
     async function saveProfileData(user, data) {
       if (!user) throw new Error("Пользователь не найден");
 
-      const selectedSchool = String(profileSchoolSelect.value || "").trim();
-      const selectedClass = String(profileClassSelect.value || "").trim();
+      const schoolIndex = Number(profileSchoolSelect.value);
+      const classIndex = Number(profileClassSelect.value);
 
-      if (!selectedSchool) throw new Error("Выберите школу");
-      if (!selectedClass) throw new Error("Выберите класс");
+      if (!Number.isInteger(schoolIndex) || schoolIndex < 0) {
+        throw new Error("Выберите школу");
+      }
+      if (!Number.isInteger(classIndex) || classIndex < 0) {
+        throw new Error("Выберите класс");
+      }
 
-      const payload = {
+      const school = getSchoolByIndex(schoolIndex);
+      const schoolName = String(school?.name || school?.title || school?.schoolName || "").trim();
+
+      const classList = Array.isArray(school?.classes) ? school.classes : [];
+      const classObj = classList[classIndex];
+      const className = String(classObj?.name || classObj?.title || classObj?.className || "").trim();
+
+      if (!schoolName) throw new Error("Некорректная школа");
+      if (!className) throw new Error("Некорректный класс");
+
+      const updates = {
         email: user.email,
         name: String(data.name || "").trim(),
-        school: selectedSchool,
-        class: selectedClass,
-        status: Number(data.status ?? currentProfile.status ?? 1),
-        createdAt: data.createdAt || new Date().toISOString(),
+        school: schoolName,
+        class: className,
+        profileComplete: true,
+        emailVerified: user.emailVerified || true,
         updatedAt: new Date().toISOString()
       };
 
-      await set(ref(db, "users/" + user.uid), payload);
-      currentProfile = payload;
-      return payload;
+      if (!currentProfile?.createdAt) {
+        updates.createdAt = new Date().toISOString();
+      }
+
+      await update(ref(db, "users/" + user.uid), updates);
+
+      currentProfile = { ...currentProfile, ...updates };
+      return currentProfile;
+    }
+
+    /* ============ НОВОСТИ с пагинацией ============ */
+
+    function renderNewsSlice() {
+      if (!newsContainer) return;
+
+      if (!allNews.length) {
+        newsContainer.innerHTML = `
+          <div class="empty-state">
+            <span class="material-symbols-outlined">article</span>
+            <h3>Новостей пока нет</h3>
+          </div>
+        `;
+        return;
+      }
+
+      const visibleNews = allNews.slice(0, newsShown);
+
+      let html = '<div class="news-list">';
+
+      visibleNews.forEach((item) => {
+        const title = item.title || "Без заголовка";
+        const fullText = item.text || item.desc || "";
+        const desc = item.desc || fullText;
+        const dateFull = formatDateTime(item.date);
+        const dateShort = formatDateShort(item.date);
+
+        const titleSafe = escapeHtml(title);
+        const descSafe = sanitizeHtml(desc);
+        const fullTextSafe = sanitizeHtml(fullText);
+        const dateFullSafe = escapeHtml(dateFull);
+        const dateShortSafe = escapeHtml(dateShort);
+
+        html += `
+          <div class="news-item" 
+               data-title="${titleSafe}" 
+               data-date="${dateFullSafe}" 
+               data-text="${fullTextSafe.replace(/"/g, '&quot;')}">
+            <div class="news-header">
+              <div class="news-title">${titleSafe}</div>
+              <div class="news-date">${dateShortSafe}</div>
+            </div>
+            <div class="news-desc">${descSafe}</div>
+            <div class="news-desc-full">${fullTextSafe}</div>
+          </div>
+        `;
+      });
+
+      html += '</div>';
+
+      // Кнопка "Показать ещё" — если ещё есть что показать
+      if (newsShown < allNews.length) {
+        const remaining = allNews.length - newsShown;
+        const toShow = Math.min(NEWS_STEP, remaining);
+        html += `
+          <div class="show-more-wrap">
+            <button class="show-more-btn" id="showMoreNewsBtn">
+              <span class="material-symbols-outlined">expand_more</span>
+              Показать ещё ${toShow} (осталось ${remaining})
+            </button>
+          </div>
+        `;
+      }
+
+      newsContainer.innerHTML = html;
+
+      // Обработчики открытия новости
+      newsContainer.querySelectorAll(".news-item").forEach((el) => {
+        el.addEventListener("click", function() {
+          const title = this.dataset.title || "Новость";
+          const date = this.dataset.date || "";
+          const text = this.dataset.text || "Нет содержимого";
+          openNewsModal(title, date, text);
+        });
+      });
+
+      // Кнопка "Показать ещё"
+      const moreBtn = document.getElementById("showMoreNewsBtn");
+      if (moreBtn) {
+        moreBtn.addEventListener("click", () => {
+          newsShown += NEWS_STEP;
+          renderNewsSlice();
+        });
+      }
     }
 
     async function loadNews() {
       try {
         const snapshot = await get(ref(db, "news"));
-        const news = snapshot.exists() ? snapshot.val() : [];
+        const raw = snapshot.exists() ? snapshot.val() : [];
+        const news = Array.isArray(raw) ? raw : Object.values(raw || {});
 
-        if (!Array.isArray(news) || !news.length) {
-          newsContainer.innerHTML = `
-            <div class="empty-state">
-              <span class="material-symbols-outlined">article</span>
-              <h3>Новостей пока нет</h3>
-            </div>
-          `;
-          return;
-        }
-
-        const sortedNews = news
+        // Сортировка: сначала новые
+        allNews = news
           .slice()
           .sort((a, b) => Number(b.date || 0) - Number(a.date || 0));
 
-        let html = '<div class="news-list">';
-
-        sortedNews.forEach((item) => {
-          const title = item.title || "Без заголовка";
-          const fullText = item.text || item.desc || "";
-          const desc = item.desc || fullText;
-          const dateFull = formatDateTime(item.date);
-          const dateShort = formatDateShort(item.date);
-
-          const titleSafe = escapeHtml(title);
-          const descSafe = sanitizeHtml(desc);
-          const fullTextSafe = sanitizeHtml(fullText);
-          const dateFullSafe = escapeHtml(dateFull);
-          const dateShortSafe = escapeHtml(dateShort);
-
-          html += `
-            <div class="news-item" 
-                 data-title="${titleSafe}" 
-                 data-date="${dateFullSafe}" 
-                 data-text="${fullTextSafe.replace(/"/g, '&quot;')}">
-              <div class="news-header">
-                <div class="news-title">${titleSafe}</div>
-                <div class="news-date">${dateShortSafe}</div>
-              </div>
-              <div class="news-desc">${descSafe}</div>
-              <div class="news-desc-full">${fullTextSafe}</div>
-            </div>
-          `;
-        });
-
-        html += '</div>';
-        newsContainer.innerHTML = html;
-
-        document.querySelectorAll(".news-item").forEach((item) => {
-          item.addEventListener("click", function() {
-            const title = this.dataset.title || "Новость";
-            const date = this.dataset.date || "";
-            const text = this.dataset.text || "Нет содержимого";
-            openNewsModal(title, date, text);
-          });
-        });
-
+        newsShown = NEWS_STEP;
+        renderNewsSlice();
       } catch (error) {
         console.error("news load error:", error);
         newsContainer.innerHTML = `
@@ -848,6 +945,8 @@
         `;
       }
     }
+
+    /* ============ ПРОФИЛЬ ============ */
 
     profileSchoolSelect.addEventListener("change", updateClassOptionsForSelectedSchool);
 
