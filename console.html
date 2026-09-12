@@ -121,6 +121,7 @@
       to { transform: rotate(360deg); }
     }
 
+    /* ===== Навбар ===== */
     .navbar {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -142,6 +143,7 @@
       gap: 16px;
       flex-wrap: wrap;
       min-width: 0;
+      flex: 1 1 auto;
     }
 
     .logo-area {
@@ -181,7 +183,14 @@
     .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: var(--text); white-space: nowrap; }
     .logo-text span { color: var(--blue); }
 
-    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-width: 0;
+      flex: 1 1 0;
+    }
 
     .nav-link {
       display: inline-flex; align-items: center; gap: 6px;
@@ -190,6 +199,7 @@
       background: transparent; border: 1.5px solid transparent;
       transition: .15s ease;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
@@ -211,7 +221,13 @@
       color: #e65100;
     }
 
-    .navbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex-shrink: 0; }
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
 
     .user-badge {
       display: inline-flex; align-items: center; gap: 8px;
@@ -769,13 +785,15 @@
         padding: 8px 14px;
         flex-wrap: nowrap;
         gap: 8px;
+        overflow: hidden;
       }
 
       .navbar-left {
         flex-wrap: nowrap;
         gap: 8px;
-        flex: 1;
+        flex: 1 1 auto;
         min-width: 0;
+        overflow: hidden;
       }
 
       .logo-area { gap: 8px; flex-shrink: 0; }
@@ -783,13 +801,18 @@
       .logo-text { display: none; }
 
       .nav-links {
+        display: flex;
+        align-items: center;
         flex-wrap: nowrap;
         overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         -ms-overflow-style: none;
-        gap: 4px;
-        flex: 1;
+        gap: 6px;
+        flex: 1 1 0;
         min-width: 0;
+        padding-bottom: 2px;
       }
       .nav-links::-webkit-scrollbar { display: none; }
 
@@ -891,6 +914,9 @@
         </a>
         <a href="journal.html" class="nav-link hidden" id="journalLink">
           <span class="material-symbols-outlined">menu_book</span> Журнал
+        </a>
+        <a href="reports.html" class="nav-link">
+          <span class="material-symbols-outlined">bar_chart</span> Отчёты
         </a>
         <a href="console.html" class="nav-link admin-link active">
           <span class="material-symbols-outlined">dashboard</span> Консоль
@@ -1235,8 +1261,6 @@
       }, 400);
     }
 
-    // Учитель (status 4): показываем "Журнал", скрываем "Дневник".
-    // Все остальные: показываем "Дневник", скрываем "Журнал".
     function updateTeacherLinks() {
       const status = Number(currentUserProfile?.status ?? 0);
       const isTeacher = status === 4;
@@ -1501,7 +1525,6 @@
         if (deleteClassBtn) deleteClassBtn.style.display = "";
       }
 
-      // Обновляем видимость "Дневник"/"Журнал" по статусу
       updateTeacherLinks();
     }
 

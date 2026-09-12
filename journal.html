@@ -53,85 +53,44 @@
       gap: 18px;
       transition: opacity .35s ease, visibility .35s ease;
     }
-
-    #loadscreen.hidden-loader {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
+    #loadscreen.hidden-loader { opacity: 0; visibility: hidden; pointer-events: none; }
 
     .loader-logo-wrap {
-      position: relative;
-      width: 88px;
-      height: 88px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: relative; width: 88px; height: 88px;
+      display: flex; align-items: center; justify-content: center;
       animation: loader-pulse 1.6s ease-in-out infinite;
     }
-
     .loader-logo-img {
-      width: 88px;
-      height: 88px;
-      border-radius: 22px;
-      object-fit: cover;
-      background: #ffffff;
-      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
-      display: block;
+      width: 88px; height: 88px; border-radius: 22px; object-fit: cover;
+      background: #fff; box-shadow: 0 12px 32px rgba(42,125,225,.35); display: block;
     }
-
     .loader-logo-fallback {
-      display: none;
-      width: 88px;
-      height: 88px;
-      border-radius: 22px;
-      background: #2a7de1;
-      color: #fff;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      font-weight: 700;
-      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+      display: none; width: 88px; height: 88px; border-radius: 22px;
+      background: #2a7de1; color: #fff;
+      align-items: center; justify-content: center;
+      font-size: 40px; font-weight: 700;
+      box-shadow: 0 12px 32px rgba(42,125,225,.35);
     }
-
     @keyframes loader-pulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.06); }
     }
-
-    .loader-text {
-      font-size: 15px;
-      color: #5f7696;
-      font-weight: 500;
-      letter-spacing: .2px;
-    }
-
+    .loader-text { font-size: 15px; color: #5f7696; font-weight: 500; letter-spacing: .2px; }
     .loader-spinner {
-      width: 32px;
-      height: 32px;
-      border: 3px solid #dbe7f7;
-      border-top-color: #2a7de1;
+      width: 32px; height: 32px;
+      border: 3px solid #dbe7f7; border-top-color: #2a7de1;
       border-radius: 50%;
       animation: loader-spin .8s linear infinite;
     }
-
-    @keyframes loader-spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes loader-spin { to { transform: rotate(360deg); } }
 
     .navbar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 1000;
-      background: #fff;
-      border-bottom: 1px solid var(--border);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: #fff; border-bottom: 1px solid var(--border);
       box-shadow: 0 4px 20px rgba(0,20,40,.06);
       padding: 10px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
     }
     .navbar-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; min-width: 0; }
     .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
@@ -157,19 +116,13 @@
       display: inline-flex; align-items: center; gap: 8px;
       background: #f0f6ff; padding: 6px 16px 6px 12px; border-radius: 40px;
       font-size: 14px; font-weight: 500; color: var(--text); text-decoration: none;
-      transition: .15s;
-      max-width: 220px;
-      min-width: 0;
-      overflow: hidden;
+      transition: .15s; max-width: 220px; min-width: 0; overflow: hidden;
     }
     .user-badge:hover { background: #e5effb; }
     .user-badge .material-symbols-outlined { color: var(--blue); font-size: 20px; flex-shrink: 0; }
     .user-badge .user-name {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      min-width: 0;
-      flex: 1 1 auto;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      min-width: 0; flex: 1 1 auto;
     }
 
     .container {
@@ -213,6 +166,8 @@
     .btn-console-green:hover { background: #146e3a; }
     .btn-console-outline { background: #fff; color: #1f2b48; border: 1.5px solid #d0dae9; }
     .btn-console-outline:hover { background: #f0f4fe; }
+    .btn-console-danger { background: var(--red); color: #fff; }
+    .btn-console-danger:hover { background: #a63636; }
 
     .console-message {
       display: none; font-size: 13px; padding: 9px 14px;
@@ -223,9 +178,7 @@
     .console-message.error { background: var(--red-soft); color: var(--red); }
 
     .homework-textarea {
-      width: 100%;
-      min-height: 90px;
-      resize: vertical;
+      width: 100%; min-height: 90px; resize: vertical;
       font-family: "Inter", sans-serif;
     }
 
@@ -234,80 +187,77 @@
     .student-card {
       background: #fff; border: 1px solid var(--border);
       border-radius: 20px; padding: 14px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      display: flex; flex-direction: column; gap: 10px;
       transition: .15s;
     }
     .student-card:hover { border-color: #c7d9f0; }
+
     .student-card-info { min-width: 0; }
     .student-card-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-size: 14px; font-weight: 600; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      display: flex; align-items: center; gap: 6px;
     }
     .student-card-email {
-      font-size: 11px;
-      color: var(--text-soft);
-      margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 11px; color: var(--text-soft); margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    /* ===== Бейдж статуса ===== */
     .user-status {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 2px 8px;
-      border-radius: 40px;
-      flex-shrink: 0;
+      display: inline-block; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      padding: 2px 8px; border-radius: 40px; flex-shrink: 0;
     }
-    .user-status.status-admin {
-      background: #fff3e0;
-      color: #b45309;
-      border: 1px solid #ff9800;
-    }
-    .user-status.status-classadmin {
-      background: #e0f7fa;
-      color: #0e7490;
-      border: 1px solid #0891b2;
+    .user-status.status-admin { background: #fff3e0; color: #b45309; border: 1px solid #ff9800; }
+    .user-status.status-classadmin { background: #e0f7fa; color: #0e7490; border: 1px solid #0891b2; }
+
+    /* ===== Текущие оценки + кнопка ===== */
+    .student-grade-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; flex-wrap: wrap;
+      padding-top: 8px; border-top: 1px dashed #eef3fa;
     }
 
-    /* ===== Кнопки оценок ===== */
-    .grade-buttons {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      padding-top: 4px;
-      border-top: 1px dashed #eef3fa;
+    .student-grade-display {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      min-height: 32px; flex: 1; min-width: 0;
     }
-    .grade-btn {
-      width: 36px; height: 36px; border-radius: 10px;
+
+    .grade-chip {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 32px; height: 32px; padding: 0 10px;
+      border-radius: 10px;
+      font-size: 14px; font-weight: 700; color: #fff;
+      line-height: 1;
+    }
+    .grade-chip.grade-5 { background: #1a8a4a; }
+    .grade-chip.grade-4 { background: #2a7de1; }
+    .grade-chip.grade-3 { background: #f59e0b; }
+    .grade-chip.grade-2 { background: #c74a4a; }
+    .grade-chip.grade-1 { background: #8a3030; }
+
+    .grade-weight-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 4px 10px; border-radius: 40px;
+      font-size: 11px; font-weight: 600;
+      background: #eef3fa; color: #3d5270;
+      height: 32px;
+    }
+
+    .grade-empty {
+      font-size: 12px; color: #a0b3cc; font-style: italic;
+    }
+
+    .grade-set-btn {
       border: 1.5px solid var(--input-border);
       background: #fff; color: #1f2b48;
-      font-weight: 700; font-size: 14px;
-      display: inline-flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: .15s; padding: 0;
+      padding: 7px 14px; border-radius: 40px;
+      font-size: 13px; font-weight: 500;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: .15s; flex-shrink: 0;
     }
-    .grade-btn:hover { transform: scale(1.05); }
-    .grade-btn.active.grade-5 { background: #1a8a4a; border-color: #1a8a4a; color: #fff; }
-    .grade-btn.active.grade-4 { background: #2a7de1; border-color: #2a7de1; color: #fff; }
-    .grade-btn.active.grade-3 { background: #f59e0b; border-color: #f59e0b; color: #fff; }
-    .grade-btn.active.grade-2 { background: #c74a4a; border-color: #c74a4a; color: #fff; }
-    .grade-btn.active.grade-1 { background: #8a3030; border-color: #8a3030; color: #fff; }
-    .grade-btn.grade-remove { background: #fff; border-color: #d0dae9; color: #c74a4a; }
-    .grade-btn.grade-remove:hover { background: var(--red-soft); border-color: #c74a4a; }
+    .grade-set-btn:hover { background: #e5effb; border-color: var(--blue); color: var(--blue); }
+    .grade-set-btn .material-symbols-outlined { font-size: 16px; }
 
     .empty-state { text-align: center; padding: 30px 20px; color: var(--text-soft); }
     .empty-state .material-symbols-outlined { font-size: 42px; color: #d0dae9; margin-bottom: 10px; }
@@ -316,6 +266,98 @@
 
     .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 13px; color: #889bb3; text-align: center; }
 
+    /* ===== Модальное окно оценки ===== */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 5000;
+      background: rgba(0,20,40,.42); backdrop-filter: blur(5px);
+      align-items: center; justify-content: center; padding: 18px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      width: 100%; max-width: 540px; max-height: 92vh;
+      overflow-y: auto; background: #fff; border-radius: 30px;
+      box-shadow: 0 30px 70px rgba(0,20,40,.22);
+      padding: 26px 24px;
+      animation: modalPop .18s ease;
+    }
+    @keyframes modalPop {
+      from { opacity: 0; transform: translateY(10px) scale(.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal h2 { font-size: 20px; margin-bottom: 4px; }
+    .modal-sub { color: var(--text-soft); font-size: 13px; line-height: 1.5; margin-bottom: 18px; }
+
+    .grade-section { margin-bottom: 20px; }
+
+    .grade-section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
+    }
+
+    .grade-section-title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 600; color: #1f2b48;
+    }
+
+    .grade-picker {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+
+    .grade-pick-btn {
+      min-width: 46px; height: 46px; padding: 0 12px;
+      border-radius: 12px;
+      border: 1.5px solid var(--input-border);
+      background: #fff; color: #1f2b48;
+      font-weight: 700; font-size: 16px;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: .12s;
+    }
+    .grade-pick-btn:hover { transform: translateY(-1px); border-color: var(--blue); }
+
+    .grade-pick-btn.selected.grade-5 { background: #1a8a4a; border-color: #1a8a4a; color: #fff; }
+    .grade-pick-btn.selected.grade-4 { background: #2a7de1; border-color: #2a7de1; color: #fff; }
+    .grade-pick-btn.selected.grade-3 { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+    .grade-pick-btn.selected.grade-2 { background: #c74a4a; border-color: #c74a4a; color: #fff; }
+    .grade-pick-btn.selected.grade-1 { background: #8a3030; border-color: #8a3030; color: #fff; }
+
+    .grade-pick-btn.selected.grade-0 {
+      background: #eef3fa; border-color: #889bb3; color: #5f7696;
+      box-shadow: 0 0 0 3px rgba(136,155,179,.15);
+    }
+
+    .weight-row {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .weight-row label {
+      font-size: 13px; color: var(--text-soft);
+    }
+    .weight-input {
+      width: 110px;
+      border: 1.5px solid var(--input-border);
+      background: #fff; color: var(--text);
+      border-radius: 12px; padding: 10px 12px;
+      font-size: 14px; outline: none; transition: .15s;
+      font-family: "Inter", sans-serif; text-align: center;
+    }
+    .weight-input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(42,125,225,.10); }
+
+    .weight-hint { font-size: 12px; color: var(--text-soft); }
+
+    .divider { height: 1px; background: #edf2fa; margin: 18px 0; }
+
+    .modal-actions {
+      display: flex; gap: 8px; justify-content: flex-end;
+      margin-top: 10px; flex-wrap: wrap;
+    }
+
+    .modal-remove-btn {
+      margin-right: auto;
+    }
+
+    /* ===== Адаптив ===== */
     @media (max-width: 860px) {
       .navbar { padding: 10px 18px; }
       .logo-text { font-size: 20px; }
@@ -336,13 +378,15 @@
       .students-grid { grid-template-columns: 1fr; }
 
       .user-badge {
-        padding: 6px 12px 6px 10px;
-        font-size: 13px;
-        max-width: 140px;
-        flex-shrink: 1;
-        min-width: 0;
+        padding: 6px 12px 6px 10px; font-size: 13px;
+        max-width: 140px; flex-shrink: 1; min-width: 0;
       }
       .user-badge .material-symbols-outlined { font-size: 18px; }
+
+      .modal { border-radius: 24px; padding: 22px 16px; }
+      .modal-actions { flex-direction: column-reverse; }
+      .modal-actions .btn-console { width: 100%; }
+      .modal-remove-btn { margin-right: 0; }
     }
     @media (max-width: 420px) {
       .user-badge .user-name { display: none; }
@@ -350,6 +394,7 @@
       .user-badge .material-symbols-outlined { margin: 0; }
 
       .nav-link { padding: 6px 12px; font-size: 12px; }
+      .grade-pick-btn { min-width: 42px; height: 42px; font-size: 15px; }
     }
   </style>
 </head>
@@ -379,6 +424,7 @@
       <nav class="nav-links">
         <a href="index.html" class="nav-link"><span class="material-symbols-outlined">home</span> Главная</a>
         <a href="journal.html" class="nav-link active"><span class="material-symbols-outlined">menu_book</span> Журнал</a>
+        <a href="reports.html" class="nav-link"><span class="material-symbols-outlined">bar_chart</span> Отчёты</a>
       </nav>
     </div>
     <div class="navbar-right" id="userArea"></div>
@@ -452,6 +498,82 @@
     <div class="footer">© 2026 · Электронная школа</div>
   </main>
 
+  <!-- ===== Модальное окно оценок ===== -->
+  <div class="modal-overlay" id="gradeModal">
+    <div class="modal">
+      <h2 id="gradeModalTitle">Оценка ученика</h2>
+      <div class="modal-sub" id="gradeModalSub">Ученик: —</div>
+
+      <!-- Первая оценка -->
+      <div class="grade-section">
+        <div class="grade-section-head">
+          <div class="grade-section-title">
+            <span class="material-symbols-outlined" style="color:#2a7de1;">looks_one</span>
+            Первая оценка
+          </div>
+        </div>
+        <div class="grade-picker" id="fgradePicker">
+          <button type="button" class="grade-pick-btn grade-1" data-value="1" title="Оценка 1">•</button>
+          <button type="button" class="grade-pick-btn grade-2" data-value="2" title="Оценка 2">2</button>
+          <button type="button" class="grade-pick-btn grade-3" data-value="3" title="Оценка 3">3</button>
+          <button type="button" class="grade-pick-btn grade-4" data-value="4" title="Оценка 4">4</button>
+          <button type="button" class="grade-pick-btn grade-5" data-value="5" title="Оценка 5">5</button>
+        </div>
+      </div>
+
+      <!-- Вторая оценка -->
+      <div class="grade-section">
+        <div class="grade-section-head">
+          <div class="grade-section-title">
+            <span class="material-symbols-outlined" style="color:#0891b2;">looks_two</span>
+            Вторая оценка
+          </div>
+          <div class="weight-hint">0 — нет второй оценки</div>
+        </div>
+        <div class="grade-picker" id="sgradePicker">
+          <button type="button" class="grade-pick-btn grade-0" data-value="0" title="Нет второй оценки">0</button>
+          <button type="button" class="grade-pick-btn grade-1" data-value="1" title="Оценка 1">•</button>
+          <button type="button" class="grade-pick-btn grade-2" data-value="2" title="Оценка 2">2</button>
+          <button type="button" class="grade-pick-btn grade-3" data-value="3" title="Оценка 3">3</button>
+          <button type="button" class="grade-pick-btn grade-4" data-value="4" title="Оценка 4">4</button>
+          <button type="button" class="grade-pick-btn grade-5" data-value="5" title="Оценка 5">5</button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Вес -->
+      <div class="grade-section" style="margin-bottom: 0;">
+        <div class="grade-section-head">
+          <div class="grade-section-title">
+            <span class="material-symbols-outlined" style="color:#f59e0b;">scale</span>
+            Вес оценки
+          </div>
+          <div class="weight-hint">Общий на обе оценки</div>
+        </div>
+        <div class="weight-row">
+          <label for="weightInput">Вес:</label>
+          <input
+            type="number"
+            id="weightInput"
+            class="weight-input"
+            min="1"
+            step="1"
+            value="1"
+            inputmode="numeric"
+          />
+          <span class="weight-hint">по умолчанию 1</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-console btn-console-danger modal-remove-btn" id="removeGradeBtn">🗑️ Убрать оценку</button>
+        <button type="button" class="btn-console btn-console-outline" id="cancelGradeBtn">Отмена</button>
+        <button type="button" class="btn-console btn-console-teal" id="saveGradeBtn">💾 Сохранить</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
@@ -501,6 +623,17 @@
         const clearHomeworkBtn = document.getElementById("clearHomeworkBtn");
         const homeworkMessage = document.getElementById("homeworkMessage");
 
+        // Модалка оценок
+        const gradeModal = document.getElementById("gradeModal");
+        const gradeModalTitle = document.getElementById("gradeModalTitle");
+        const gradeModalSub = document.getElementById("gradeModalSub");
+        const fgradePicker = document.getElementById("fgradePicker");
+        const sgradePicker = document.getElementById("sgradePicker");
+        const weightInput = document.getElementById("weightInput");
+        const cancelGradeBtn = document.getElementById("cancelGradeBtn");
+        const saveGradeBtn = document.getElementById("saveGradeBtn");
+        const removeGradeBtn = document.getElementById("removeGradeBtn");
+
         let currentUser = null;
         let currentProfile = {};
         let schoolsCache = [];
@@ -516,6 +649,12 @@
         let loadedLessonIndex = -1;
         let loadedSchedule = [];
         let loadedStudents = [];
+
+        // Что редактируем в модалке
+        let editingUid = null;
+        let editingFgrade = null;  // 1..5
+        let editingSgrade = 0;     // 0..5
+        let editingWeight = 1;
 
         function hideLoadscreen() {
           if (!loadscreen) return;
@@ -563,15 +702,43 @@
           if (g === 3) return "grade-3";
           if (g === 2) return "grade-2";
           if (g === 1) return "grade-1";
-          return "grade-none";
+          return "grade-0";
         }
 
-        // Отображение оценки: единица -> точка
+        // Отображение оценки: 1 -> точка
         function gradeLabel(g) {
           return Number(g) === 1 ? "•" : String(g);
         }
 
-        // Бейдж статуса (для отображения роли в списке)
+        // Приведение старой/новой записи к единому формату
+        // Старый формат: grades[uid] = 5
+        // Новый формат:  grades[uid] = { fgrade, sgrade, weight }
+        function normalizeGradeRecord(raw) {
+          if (raw === null || raw === undefined || raw === "") return null;
+          if (typeof raw === "number" || (typeof raw === "string" && /^\d+$/.test(raw))) {
+            const n = Number(raw);
+            if (!Number.isFinite(n) || n < 1 || n > 5) return null;
+            return { fgrade: n, sgrade: 0, weight: 1 };
+          }
+          if (typeof raw === "object") {
+            const f = Number(raw.fgrade);
+            const s = Number(raw.sgrade);
+            const w = Number(raw.weight);
+            const fgrade = Number.isFinite(f) && f >= 1 && f <= 5 ? f : null;
+            if (fgrade === null) return null;
+            return {
+              fgrade,
+              sgrade: Number.isFinite(s) && s >= 0 && s <= 5 ? s : 0,
+              weight: Number.isFinite(w) && w >= 1 ? w : 1
+            };
+          }
+          return null;
+        }
+
+        function hasGradeRecord(raw) {
+          return normalizeGradeRecord(raw) !== null;
+        }
+
         function statusBadge(status) {
           const s = Number(status);
           if (s === 2) return '<span class="user-status status-admin">Админ</span>';
@@ -681,7 +848,6 @@
           });
         }
 
-        // Показываем всех, кроме статуса 4
         function loadStudentsForClass(className) {
           return db.ref("users").once("value").then(function (snap) {
             const raw = snap.val() || {};
@@ -691,8 +857,6 @@
             Object.keys(raw).forEach(function (uid) {
               const u = raw[uid];
               if (!u || typeof u !== "object") return;
-
-              // Исключаем только учителей (status === 4)
               if (Number(u.status) === 4) return;
 
               if (normalizeName(u.class) === targetClass) {
@@ -808,6 +972,155 @@
           hideMessage(homeworkMessage);
         });
 
+        /* ===== Модалка оценок ===== */
+
+        function setSelected(pickerEl, value) {
+          pickerEl.querySelectorAll(".grade-pick-btn").forEach(function (btn) {
+            const v = btn.getAttribute("data-value");
+            const match = String(v) === String(value);
+            btn.classList.toggle("selected", match);
+          });
+        }
+
+        function openGradeModal(student) {
+          const uid = student.uid;
+          const name = student.name || student.email || "Ученик";
+
+          if (loadedDayIndex === -1 || loadedLessonIndex === -1 || !loadedClassInfo) {
+            showMessage(mainMessage, "⚠️ Сначала загрузите урок", "error");
+            return;
+          }
+
+          const day = loadedSchedule[loadedDayIndex];
+          const lesson = (day.lessons || [])[loadedLessonIndex] || {};
+          const grades = (lesson.grades && typeof lesson.grades === "object") ? lesson.grades : {};
+          const normalized = normalizeGradeRecord(grades[uid]);
+
+          editingUid = uid;
+
+          if (normalized) {
+            editingFgrade = normalized.fgrade;
+            editingSgrade = normalized.sgrade;
+            editingWeight = normalized.weight;
+            removeGradeBtn.style.display = "";
+          } else {
+            editingFgrade = null;
+            editingSgrade = 0;
+            editingWeight = 1;
+            removeGradeBtn.style.display = "none";
+          }
+
+          gradeModalTitle.textContent = "Оценка ученика";
+          gradeModalSub.textContent = "Ученик: " + name;
+
+          setSelected(fgradePicker, editingFgrade);
+          setSelected(sgradePicker, editingSgrade);
+          weightInput.value = String(editingWeight || 1);
+
+          gradeModal.classList.add("open");
+        }
+
+        function closeGradeModal() {
+          gradeModal.classList.remove("open");
+          editingUid = null;
+          editingFgrade = null;
+          editingSgrade = 0;
+          editingWeight = 1;
+        }
+
+        fgradePicker.addEventListener("click", function (e) {
+          const btn = e.target.closest(".grade-pick-btn");
+          if (!btn) return;
+          const v = Number(btn.getAttribute("data-value"));
+          if (!Number.isFinite(v) || v < 1 || v > 5) return;
+          editingFgrade = v;
+          setSelected(fgradePicker, v);
+        });
+
+        sgradePicker.addEventListener("click", function (e) {
+          const btn = e.target.closest(".grade-pick-btn");
+          if (!btn) return;
+          const v = Number(btn.getAttribute("data-value"));
+          if (!Number.isFinite(v) || v < 0 || v > 5) return;
+          editingSgrade = v;
+          setSelected(sgradePicker, v);
+        });
+
+        weightInput.addEventListener("input", function () {
+          let v = Number(weightInput.value);
+          if (!Number.isFinite(v)) v = 1;
+          v = Math.max(1, Math.round(v));
+          editingWeight = v;
+        });
+
+        cancelGradeBtn.addEventListener("click", closeGradeModal);
+
+        gradeModal.addEventListener("click", function (e) {
+          if (e.target === gradeModal) closeGradeModal();
+        });
+
+        removeGradeBtn.addEventListener("click", function () {
+          if (editingUid === null) return;
+          saveGrade(editingUid, null);
+        });
+
+        saveGradeBtn.addEventListener("click", function () {
+          if (editingUid === null) return;
+          if (editingFgrade === null) {
+            // Нельзя сохранить без первой оценки
+            return;
+          }
+          saveGrade(editingUid, {
+            fgrade: editingFgrade,
+            sgrade: editingSgrade,
+            weight: editingWeight || 1
+          });
+        });
+
+        function saveGrade(uid, gradeRecord) {
+          if (loadedDayIndex === -1 || loadedLessonIndex === -1 || !loadedClassInfo) return;
+
+          const schoolIndex = loadedClassInfo.schoolIndex;
+          const classIndex = loadedClassInfo.classIndex;
+
+          const newSchedule = JSON.parse(JSON.stringify(loadedSchedule || []));
+          const day = newSchedule[loadedDayIndex];
+          if (!day || !Array.isArray(day.lessons)) return;
+
+          const lesson = day.lessons[loadedLessonIndex];
+          if (!lesson) return;
+
+          if (!lesson.grades || typeof lesson.grades !== "object") {
+            lesson.grades = {};
+          }
+
+          if (gradeRecord === null) {
+            delete lesson.grades[uid];
+          } else {
+            lesson.grades[uid] = {
+              fgrade: Number(gradeRecord.fgrade),
+              sgrade: Number(gradeRecord.sgrade || 0),
+              weight: Number(gradeRecord.weight || 1)
+            };
+          }
+
+          db.ref("schools/" + schoolIndex + "/classes/" + classIndex + "/schedule")
+            .set(newSchedule)
+            .then(function () {
+              loadedSchedule = newSchedule;
+              closeGradeModal();
+              renderStudents();
+              showMessage(mainMessage, "✅ Оценка сохранена", "success");
+              setTimeout(function () {
+                if (mainMessage.classList.contains("success")) mainMessage.classList.remove("show");
+              }, 1500);
+            })
+            .catch(function (e) {
+              console.error("[journal] ошибка сохранения оценки:", e);
+              showMessage(mainMessage, "❌ Ошибка сохранения: " + (e && e.message), "error");
+            });
+        }
+
         function renderStudents() {
           if (!loadedClassInfo) {
             studentsContainer.innerHTML =
@@ -857,26 +1170,23 @@
             const uid = student.uid;
             const name = student.name || student.email || "Без имени";
             const email = student.email || "";
-            const grade = grades[uid] !== undefined ? grades[uid] : null;
             const badge = statusBadge(student.status);
 
-            let buttonsHtml = "";
-            [5, 4, 3, 2, 1].forEach(function (g) {
-              const isActive = Number(grade) === g ? "active" : "";
-              buttonsHtml +=
-                '<button class="grade-btn grade-' + g + ' ' + isActive + '"' +
-                ' data-uid="' + escapeHtml(uid) + '"' +
-                ' data-grade="' + g + '"' +
-                ' title="Оценка ' + gradeLabel(g) + '">' + gradeLabel(g) + '</button>';
-            });
+            const normalized = normalizeGradeRecord(grades[uid]);
 
-            let removeHtml = "";
-            if (grade !== null) {
-              removeHtml =
-                '<button class="grade-btn grade-remove"' +
-                ' data-uid="' + escapeHtml(uid) + '"' +
-                ' data-grade=""' +
-                ' title="Убрать оценку">✕</button>';
+            let displayHtml = "";
+            if (normalized) {
+              const f = normalized.fgrade;
+              const s = normalized.sgrade;
+              const w = normalized.weight;
+
+              displayHtml += '<span class="grade-chip ' + gradeClass(f) + '">' + gradeLabel(f) + '</span>';
+              if (s && s >= 1) {
+                displayHtml += '<span class="grade-chip ' + gradeClass(s) + '">' + gradeLabel(s) + '</span>';
+              }
+              displayHtml += '<span class="grade-weight-badge">вес: ' + escapeHtml(w) + '</span>';
+            } else {
+              displayHtml = '<span class="grade-empty">Оценок нет</span>';
             }
 
             return (
@@ -888,7 +1198,13 @@
                   '</div>' +
                   (email ? '<div class="student-card-email">' + escapeHtml(email) + '</div>' : '') +
                 '</div>' +
-                '<div class="grade-buttons">' + buttonsHtml + removeHtml + '</div>' +
+                '<div class="student-grade-row">' +
+                  '<div class="student-grade-display">' + displayHtml + '</div>' +
+                  '<button class="grade-set-btn" data-uid="' + escapeHtml(uid) + '" type="button">' +
+                    '<span class="material-symbols-outlined">' + (normalized ? 'edit' : 'add') + '</span>' +
+                    (normalized ? 'Изменить' : 'Поставить оценку') +
+                  '</button>' +
+                '</div>' +
               '</div>'
             );
           }).join("");
@@ -904,53 +1220,14 @@
             '</div>' +
             '<div class="students-grid">' + studentsHtml + '</div>';
 
-          studentsContainer.querySelectorAll(".grade-btn").forEach(function (btn) {
+          studentsContainer.querySelectorAll(".grade-set-btn").forEach(function (btn) {
             btn.addEventListener("click", function () {
               const uid = btn.getAttribute("data-uid");
-              const gr = btn.getAttribute("data-grade");
-              const grade = gr === "" ? null : Number(gr);
-              saveGrade(uid, grade);
+              const student = loadedStudents.find(function (s) { return s.uid === uid; });
+              if (!student) return;
+              openGradeModal(student);
             });
           });
-        }
-
-        function saveGrade(uid, grade) {
-          if (loadedDayIndex === -1 || loadedLessonIndex === -1 || !loadedClassInfo) return;
-
-          const schoolIndex = loadedClassInfo.schoolIndex;
-          const classIndex = loadedClassInfo.classIndex;
-
-          const newSchedule = JSON.parse(JSON.stringify(loadedSchedule || []));
-          const day = newSchedule[loadedDayIndex];
-          if (!day || !Array.isArray(day.lessons)) return;
-
-          const lesson = day.lessons[loadedLessonIndex];
-          if (!lesson) return;
-
-          if (!lesson.grades || typeof lesson.grades !== "object") {
-            lesson.grades = {};
-          }
-
-          if (grade === null) {
-            delete lesson.grades[uid];
-          } else {
-            lesson.grades[uid] = grade;
-          }
-
-          db.ref("schools/" + schoolIndex + "/classes/" + classIndex + "/schedule")
-            .set(newSchedule)
-            .then(function () {
-              loadedSchedule = newSchedule;
-              renderStudents();
-              showMessage(mainMessage, "✅ Оценка сохранена", "success");
-              setTimeout(function () {
-                if (mainMessage.classList.contains("success")) mainMessage.classList.remove("show");
-              }, 1500);
-            })
-            .catch(function (e) {
-              console.error("[journal] ошибка сохранения оценки:", e);
-              showMessage(mainMessage, "❌ Ошибка сохранения: " + (e && e.message), "error");
-            });
         }
 
         function handleLoad() {

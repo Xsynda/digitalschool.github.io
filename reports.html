@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Отчёты · Электронная школа</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #2a7de1;
+      --blue-dark: #1a5fb0;
+      --blue-soft: #e5effb;
+      --text: #0a1e3c;
+      --text-soft: #5f7696;
+      --border: #eef3fa;
+      --input-border: #dce4ef;
+      --page: #f8faff;
+      --card: #ffffff;
+      --soft-card: #f9fcff;
+      --green: #1a8a4a;
+      --green-soft: #e8f5ed;
+      --red: #c74a4a;
+      --red-soft: #fff0f0;
+      --purple: #8b5cf6;
+      --orange: #f59e0b;
+      --teal: #0891b2;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: var(--page);
+      color: var(--text);
+      min-height: 100vh;
+      padding-top: 80px;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    /* ===== Loadscreen ===== */
+    #loadscreen {
+      position: fixed; inset: 0; z-index: 10000;
+      background: #f8faff;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 18px;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+    #loadscreen.hidden-loader { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .loader-logo-wrap {
+      position: relative; width: 88px; height: 88px;
+      display: flex; align-items: center; justify-content: center;
+      animation: loader-pulse 1.6s ease-in-out infinite;
+    }
+    .loader-logo-img {
+      width: 88px; height: 88px; border-radius: 22px; object-fit: cover;
+      background: #ffffff; box-shadow: 0 12px 32px rgba(42,125,225,.35); display: block;
+    }
+    .loader-logo-fallback {
+      display: none; width: 88px; height: 88px; border-radius: 22px;
+      background: #2a7de1; color: #fff;
+      align-items: center; justify-content: center;
+      font-size: 40px; font-weight: 700;
+      box-shadow: 0 12px 32px rgba(42,125,225,.35);
+    }
+    @keyframes loader-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+    .loader-text { font-size: 15px; color: #5f7696; font-weight: 500; letter-spacing: .2px; }
+    .loader-spinner {
+      width: 32px; height: 32px;
+      border: 3px solid #dbe7f7; border-top-color: #2a7de1;
+      border-radius: 50%;
+      animation: loader-spin .8s linear infinite;
+    }
+    @keyframes loader-spin { to { transform: rotate(360deg); } }
+
+    /* ===== Навигация ===== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: #fff; border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,20,40,.06);
+      padding: 10px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .navbar-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; min-width: 0; }
+    .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .logo-img { width: 42px; height: 42px; border-radius: 12px; object-fit: cover; display: block; background: #fff; box-shadow: 0 4px 12px rgba(42,125,225,.18); }
+    .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: var(--text); white-space: nowrap; }
+    .logo-text span { color: var(--blue); }
+
+    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .nav-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border-radius: 40px; font-weight: 500;
+      font-size: 14px; color: #1f2b48; text-decoration: none;
+      background: transparent; border: 1.5px solid transparent;
+      transition: .15s; white-space: nowrap;
+    }
+    .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
+    .nav-link.active { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+    .nav-link .material-symbols-outlined { font-size: 18px; }
+
+    .navbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex-shrink: 0; }
+
+    .user-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #f0f6ff; padding: 6px 16px 6px 12px; border-radius: 40px;
+      font-size: 14px; font-weight: 500; color: var(--text); text-decoration: none;
+      transition: .15s; max-width: 220px; min-width: 0; overflow: hidden;
+    }
+    .user-badge:hover { background: #e5effb; }
+    .user-badge .material-symbols-outlined { color: var(--blue); font-size: 20px; flex-shrink: 0; }
+    .user-badge .user-name {
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      min-width: 0; flex: 1 1 auto;
+    }
+
+    /* ===== Контейнер ===== */
+    .container {
+      max-width: 1100px; margin: 24px auto;
+      background: var(--card); border-radius: 48px;
+      box-shadow: 0 24px 60px rgba(0,20,40,.08);
+      padding: 32px 40px 44px; border: 1px solid #f0f5fe;
+    }
+    .page-title { font-size: 26px; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .page-title .material-symbols-outlined { color: var(--purple); font-size: 32px; }
+    .page-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 24px; }
+
+    /* ===== Панель управления ===== */
+    .control-card {
+      background: var(--soft-card); border-radius: 24px;
+      padding: 18px 22px; border: 1px solid var(--border); margin-bottom: 20px;
+    }
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .control-grid .field {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .control-grid label {
+      font-size: 12px; color: var(--text-soft); font-weight: 500; margin-left: 4px;
+    }
+
+    .select {
+      border: 1.5px solid var(--input-border);
+      background: #fff; color: var(--text);
+      border-radius: 15px; padding: 10px 14px;
+      font-size: 14px; outline: none; transition: .15s;
+      font-family: "Inter", sans-serif;
+      cursor: pointer;
+      width: 100%;
+    }
+    .select:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(42,125,225,.10); }
+    .select:disabled { background: #f5f8fc; color: #889bb3; cursor: not-allowed; }
+
+    .tabs {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;
+    }
+
+    .tab-btn {
+      border: 1.5px solid var(--input-border);
+      background: #fff; color: #1f2b48;
+      padding: 10px 18px; border-radius: 40px;
+      font-size: 14px; font-weight: 500;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: .15s;
+    }
+    .tab-btn:hover { background: #e5effb; border-color: var(--blue); color: var(--blue); }
+    .tab-btn.active {
+      background: var(--blue); border-color: var(--blue); color: #fff;
+      box-shadow: 0 4px 12px rgba(42,125,225,.25);
+    }
+    .tab-btn.active:hover { background: var(--blue-dark); border-color: var(--blue-dark); color: #fff; }
+    .tab-btn .material-symbols-outlined { font-size: 18px; }
+
+    /* ===== Таблица ===== */
+    .table-wrap {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 20px; overflow: hidden;
+    }
+
+    table.report {
+      width: 100%; border-collapse: collapse;
+      font-size: 14px;
+    }
+    table.report thead th {
+      text-align: left;
+      padding: 14px 16px;
+      background: #f7fbff;
+      color: var(--text-soft);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border);
+    }
+    table.report tbody td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    table.report tbody tr:last-child td { border-bottom: none; }
+    table.report tbody tr:hover { background: #f9fcff; }
+
+    .subject-name {
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 260px;
+    }
+
+    .grades-cell {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .grade-mini {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 26px; height: 26px; padding: 0 8px;
+      border-radius: 8px;
+      font-size: 12px; font-weight: 700;
+      color: #fff; line-height: 1;
+    }
+    .grade-mini.grade-5 { background: #1a8a4a; }
+    .grade-mini.grade-4 { background: #2a7de1; }
+    .grade-mini.grade-3 { background: #f59e0b; }
+    .grade-mini.grade-2 { background: #c74a4a; }
+    .grade-mini.grade-1 { background: #8a3030; }
+
+    .avg-cell {
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .final-cell {
+      white-space: nowrap;
+    }
+
+    .final-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 32px; height: 32px; padding: 0 10px;
+      border-radius: 10px;
+      font-size: 14px; font-weight: 700;
+      color: #fff;
+    }
+    .final-badge.grade-5 { background: #1a8a4a; }
+    .final-badge.grade-4 { background: #2a7de1; }
+    .final-badge.grade-3 { background: #f59e0b; }
+    .final-badge.grade-2 { background: #c74a4a; }
+    .final-badge.grade-1 { background: #8a3030; }
+
+    .no-data {
+      color: #a0b3cc; font-style: italic; font-size: 13px;
+    }
+
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-soft); }
+    .empty-state .material-symbols-outlined { font-size: 48px; color: #d0dae9; margin-bottom: 12px; }
+    .empty-state h3 { color: var(--text); font-weight: 500; margin-bottom: 4px; }
+    .empty-state div { font-size: 13px; }
+
+    .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 13px; color: #889bb3; text-align: center; }
+
+    .hidden { display: none !important; }
+
+    /* ===== Адаптив ===== */
+    @media (max-width: 860px) {
+      .navbar { padding: 10px 18px; }
+      .logo-text { font-size: 20px; }
+      .nav-link { padding: 7px 14px; font-size: 13px; }
+    }
+    @media (max-width: 760px) {
+      body { padding-top: 74px; }
+      .navbar { padding: 8px 14px; flex-wrap: nowrap; gap: 8px; }
+      .navbar-left { flex-wrap: nowrap; gap: 8px; flex: 1; min-width: 0; }
+      .logo-img { width: 36px; height: 36px; border-radius: 10px; }
+      .logo-text { display: none; }
+      .nav-links { flex-wrap: nowrap; overflow-x: auto; gap: 4px; flex: 1; min-width: 0; }
+      .nav-link { padding: 7px 14px; font-size: 13px; flex-shrink: 0; }
+      .container { margin: 12px 10px 20px; padding: 22px 16px 30px; border-radius: 32px; }
+      .page-title { font-size: 22px; }
+
+      .user-badge {
+        padding: 6px 12px 6px 10px; font-size: 13px;
+        max-width: 140px; flex-shrink: 1; min-width: 0;
+      }
+      .user-badge .material-symbols-outlined { font-size: 18px; }
+
+      .tab-btn { padding: 9px 14px; font-size: 13px; flex: 1; justify-content: center; }
+
+      table.report { font-size: 13px; }
+      table.report thead th,
+      table.report tbody td { padding: 10px 10px; }
+
+      .subject-name { max-width: 130px; }
+    }
+    @media (max-width: 420px) {
+      .user-badge .user-name { display: none; }
+      .user-badge { padding: 6px 10px; max-width: none; }
+      .user-badge .material-symbols-outlined { margin: 0; }
+
+      .nav-link { padding: 6px 12px; font-size: 12px; }
+
+      .subject-name { max-width: 100px; }
+      .grade-mini { min-width: 24px; height: 24px; padding: 0 6px; font-size: 11px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ===== Loadscreen ===== -->
+  <div id="loadscreen">
+    <div class="loader-logo-wrap">
+      <img
+        src="logo.png"
+        alt="Электронная школа"
+        class="loader-logo-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+      <div class="loader-logo-fallback">Ш</div>
+    </div>
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Загрузка данных...</div>
+  </div>
+
+  <header class="navbar">
+    <div class="navbar-left">
+      <a href="index.html" class="logo-area">
+        <img src="logo.png" alt="Электронная школа" class="logo-img" onerror="this.style.display='none';" />
+        <div class="logo-text">Электро<span>школа</span></div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link"><span class="material-symbols-outlined">home</span> Главная</a>
+        <a href="diary.html" class="nav-link" id="diaryLink"><span class="material-symbols-outlined">calendar_month</span> Дневник</a>
+        <a href="journal.html" class="nav-link hidden" id="journalLink"><span class="material-symbols-outlined">menu_book</span> Журнал</a>
+        <a href="reports.html" class="nav-link active"><span class="material-symbols-outlined">bar_chart</span> Отчёты</a>
+      </nav>
+    </div>
+    <div class="navbar-right" id="userArea"></div>
+  </header>
+
+  <main class="container">
+    <div class="page-title">
+      <span class="material-symbols-outlined">bar_chart</span>
+      Отчёты об успеваемости
+    </div>
+    <div class="page-sub" id="pageSub">Средние баллы и предполагаемые итоговые оценки</div>
+
+    <!-- Панель управления -->
+    <div class="control-card">
+      <div class="control-grid">
+        <div class="field">
+          <label for="termSelect">Период</label>
+          <select id="termSelect" class="select">
+            <option value="term1">I четверть</option>
+            <option value="term2">II четверть</option>
+            <option value="term3">III четверть</option>
+            <option value="term4">IV четверть</option>
+            <option value="year">Год</option>
+          </select>
+        </div>
+
+        <div class="field hidden" id="teacherClassField">
+          <label for="teacherClassSelect">Класс</label>
+          <select id="teacherClassSelect" class="select"></select>
+        </div>
+        <div class="field hidden" id="teacherStudentField">
+          <label for="teacherStudentSelect">Ученик</label>
+          <select id="teacherStudentSelect" class="select"></select>
+        </div>
+      </div>
+
+      <div id="currentInfo" style="font-size:13px;color:#5f7696;margin-top:12px;"></div>
+    </div>
+
+    <!-- Табы -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="avg">
+        <span class="material-symbols-outlined">functions</span>
+        Средний балл
+      </button>
+      <button class="tab-btn" data-tab="subject">
+        <span class="material-symbols-outlined">menu_book</span>
+        По предмету
+      </button>
+    </div>
+
+    <!-- Вкладка 1: Средний балл -->
+    <section id="tab-avg" class="tab-content">
+      <div class="table-wrap">
+        <table class="report">
+          <thead>
+            <tr>
+              <th style="width:40%;">Предмет</th>
+              <th style="width:35%;">Оценки</th>
+              <th style="width:15%;">Средний</th>
+              <th style="width:10%;">Итог*</th>
+            </tr>
+          </thead>
+          <tbody id="avgTableBody"></tbody>
+        </table>
+      </div>
+      <div style="font-size:12px;color:#889bb3;margin-top:10px;">
+        * Предполагаемая итоговая оценка по среднему баллу (3.50 → 3, 3.51 → 4).
+      </div>
+    </section>
+
+    <!-- Вкладка 2: По предмету -->
+    <section id="tab-subject" class="tab-content" style="display:none;">
+      <div class="control-card" style="margin-bottom:14px;">
+        <div class="control-grid">
+          <div class="field">
+            <label for="subjectSelect">Предмет</label>
+            <select id="subjectSelect" class="select"></select>
+          </div>
+        </div>
+        <div id="subjectSummary" style="margin-top:14px;font-size:14px;color:#3d5270;"></div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="report">
+          <thead>
+            <tr>
+              <th style="width:20%;">Дата</th>
+              <th style="width:20%;">Оценки</th>
+              <th style="width:15%;">Вес</th>
+            </tr>
+          </thead>
+          <tbody id="subjectTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="footer">© 2026 · Электронная школа</div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
+      authDomain: "digitalschool-f2c90.firebaseapp.com",
+      projectId: "digitalschool-f2c90",
+      storageBucket: "digitalschool-f2c90.appspot.com",
+      messagingSenderId: "797143730107",
+      appId: "1:797143730107:web:b19437db896170d88b269e",
+      measurementId: "G-FT9ENP491P"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const AUTH_URL = "auth.html";
+    const ACCOUNT_URL = "account.html";
+
+    const userArea = document.getElementById("userArea");
+    const loadscreen = document.getElementById("loadscreen");
+    const termSelect = document.getElementById("termSelect");
+    const subjectSelect = document.getElementById("subjectSelect");
+    const avgTableBody = document.getElementById("avgTableBody");
+    const subjectTableBody = document.getElementById("subjectTableBody");
+    const subjectSummary = document.getElementById("subjectSummary");
+    const currentInfo = document.getElementById("currentInfo");
+    const pageSub = document.getElementById("pageSub");
+    const diaryLink = document.getElementById("diaryLink");
+    const journalLink = document.getElementById("journalLink");
+    const teacherClassField = document.getElementById("teacherClassField");
+    const teacherStudentField = document.getElementById("teacherStudentField");
+    const teacherClassSelect = document.getElementById("teacherClassSelect");
+    const teacherStudentSelect = document.getElementById("teacherStudentSelect");
+
+    let currentUserUid = null;
+    let currentProfile = {};
+    let isTeacher = false;
+
+    // Целевой ученик (для учителя — выбранный, для остальных — он сам)
+    let targetUid = null;
+
+    let schedule = [];
+    let currentTab = "avg";
+
+    let teacherClasses = [];
+    let teacherSubjects = [];
+    let teacherSchoolName = "";
+    let schoolsArr = [];
+    let currentSchoolIndex = -1;
+    let currentClassIndex = -1;
+    let allUsers = {};
+
+    /* ===== Утилиты ===== */
+
+    function toArray(v) {
+      if (!v) return [];
+      if (Array.isArray(v)) return v.filter(Boolean);
+      if (typeof v === "object") return Object.values(v).filter(Boolean);
+      return [];
+    }
+
+    function getTermBounds(termKey) {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = now.getMonth();
+      const startYear = m >= 8 ? y : y - 1;
+      const endYear = startYear + 1;
+
+      const map = {
+        term1: { name: "I четверть",   start: `01.09.${startYear}`, end: `26.10.${startYear}` },
+        term2: { name: "II четверть",  start: `05.11.${startYear}`, end: `28.12.${startYear}` },
+        term3: { name: "III четверть", start: `12.01.${endYear}`,   end: `22.03.${endYear}` },
+        term4: { name: "IV четверть",  start: `01.04.${endYear}`,   end: `25.05.${endYear}` },
+        year:  { name: "Год",          start: `01.09.${startYear}`, end: `25.05.${endYear}` }
+      };
+      return map[termKey];
+    }
+
+    function hideLoadscreen() {
+      if (!loadscreen) return;
+      loadscreen.classList.add("hidden-loader");
+      setTimeout(() => {
+        if (loadscreen && loadscreen.parentNode) {
+          loadscreen.parentNode.removeChild(loadscreen);
+        }
+      }, 400);
+    }
+
+    function escapeHtml(value) {
+      if (value === null || value === undefined) return "";
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function parseDate(value) {
+      if (!value) return null;
+      const clean = String(value).trim();
+      if (/^\d{2}\.\d{2}\.\d{4}$/.test(clean)) {
+        const [d, m, y] = clean.split(".");
+        return new Date(Number(y), Number(m) - 1, Number(d));
+      }
+      if (/^\d{4}-\d{2}-\d{2}$/.test(clean)) {
+        const [y, m, d] = clean.split("-");
+        return new Date(Number(y), Number(m) - 1, Number(d));
+      }
+      return null;
+    }
+
+    function gradeLabel(g) {
+      return Number(g) === 1 ? "•" : String(g);
+    }
+
+    function gradeClass(g) {
+      const n = Number(g);
+      if (n === 5) return "grade-5";
+      if (n === 4) return "grade-4";
+      if (n === 3) return "grade-3";
+      if (n === 2) return "grade-2";
+      if (n === 1) return "grade-1";
+      return "";
+    }
+
+    function normalizeGradeRecord(raw) {
+      if (raw === null || raw === undefined || raw === "") return null;
+      if (typeof raw === "number" || (typeof raw === "string" && /^\d+$/.test(raw))) {
+        const n = Number(raw);
+        if (!Number.isFinite(n) || n < 1 || n > 5) return null;
+        return { fgrade: n, sgrade: 0, weight: 1 };
+      }
+      if (typeof raw === "object") {
+        const f = Number(raw.fgrade);
+        const s = Number(raw.sgrade);
+        const w = Number(raw.weight);
+        const fgrade = Number.isFinite(f) && f >= 1 && f <= 5 ? f : null;
+        if (fgrade === null) return null;
+        return {
+          fgrade,
+          sgrade: Number.isFinite(s) && s >= 0 && s <= 5 ? s : 0,
+          weight: Number.isFinite(w) && w >= 1 ? w : 1
+        };
+      }
+      return null;
+    }
+
+    function getAllSubjectsFromSchedule(scheduleArr) {
+      const set = new Set();
+      (scheduleArr || []).forEach(day => {
+        (day.lessons || []).forEach(lesson => {
+          const n = String(lesson?.name || "").trim();
+          if (n) set.add(n);
+        });
+      });
+      return [...set].sort((a, b) => a.localeCompare(b));
+    }
+
+    function getVisibleSubjects() {
+      const all = getAllSubjectsFromSchedule(schedule);
+      if (!isTeacher) return all;
+      if (!teacherSubjects.length) return [];
+      const set = new Set(teacherSubjects.map(s => s.toLowerCase()));
+      return all.filter(s => set.has(s.toLowerCase()));
+    }
+
+    function collectGradesBySubject(uid, termKey) {
+      const bounds = getTermBounds(termKey);
+      if (!bounds) return {};
+      const from = parseDate(bounds.start);
+      const to = parseDate(bounds.end);
+      const out = {};
+
+      (schedule || []).forEach(day => {
+        const d = parseDate(day.date);
+        if (!d) return;
+        if (from && d < from) return;
+        if (to && d > to) return;
+
+        (day.lessons || []).forEach(lesson => {
+          const subject = String(lesson?.name || "").trim();
+          if (!subject) return;
+          const rawGrade = lesson.grades?.[uid];
+          if (rawGrade === undefined || rawGrade === null) return;
+
+          const rec = normalizeGradeRecord(rawGrade);
+          if (!rec) return;
+
+          if (!out[subject]) out[subject] = [];
+          out[subject].push({
+            date: day.date,
+            fgrade: rec.fgrade,
+            sgrade: rec.sgrade,
+            weight: rec.weight
+          });
+        });
+      });
+
+      return out;
+    }
+
+    function calcAverage(records) {
+      if (!records || !records.length) return null;
+      let sum = 0, cnt = 0;
+      records.forEach(r => {
+        const w = Number(r.weight) || 1;
+        if (Number.isFinite(r.fgrade) && r.fgrade >= 1 && r.fgrade <= 5) { sum += r.fgrade * w; cnt += w; }
+        if (Number.isFinite(r.sgrade) && r.sgrade >= 1 && r.sgrade <= 5) { sum += r.sgrade * w; cnt += w; }
+      });
+      if (cnt === 0) return null;
+      return sum / cnt;
+    }
+
+    // 3.50 -> 3, 3.51 -> 4
+    function suggestFinal(avg) {
+      if (avg === null || avg === undefined) return null;
+      const rounded = Math.floor(avg + 0.5 - 1e-9);
+      if (rounded < 2) return 2;
+      if (rounded > 5) return 5;
+      return rounded;
+    }
+
+    function renderGradeChips(records) {
+      if (!records || !records.length) return '<span class="no-data">—</span>';
+      return `<div class="grades-cell">${records.map(r => {
+        let html = `<span class="grade-mini ${gradeClass(r.fgrade)}">${gradeLabel(r.fgrade)}</span>`;
+        if (r.sgrade && r.sgrade >= 1) {
+          html += `<span class="grade-mini ${gradeClass(r.sgrade)}">${gradeLabel(r.sgrade)}</span>`;
+        }
+        return html;
+      }).join("")}</div>`;
+    }
+
+    function fmtAvg(avg) {
+      if (avg === null) return '<span class="no-data">—</span>';
+      return avg.toFixed(2);
+    }
+
+    /* ===== Вкладки ===== */
+
+    function renderAvgTab() {
+      const termKey = termSelect.value;
+      const bySubject = collectGradesBySubject(targetUid, termKey);
+      const subjects = getVisibleSubjects();
+
+      if (!subjects.length) {
+        avgTableBody.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="material-symbols-outlined">event_busy</span><h3>Нет доступных предметов</h3></div></td></tr>`;
+        return;
+      }
+
+      let rows = "";
+      subjects.forEach(subject => {
+        const records = bySubject[subject] || [];
+        const avg = calcAverage(records);
+        const final = suggestFinal(avg);
+
+        rows += `
+          <tr>
+            <td><div class="subject-name">${escapeHtml(subject)}</div></td>
+            <td>${renderGradeChips(records)}</td>
+            <td class="avg-cell">${fmtAvg(avg)}</td>
+            <td class="final-cell">${final !== null ? `<span class="final-badge ${gradeClass(final)}">${gradeLabel(final)}</span>` : `<span class="no-data">—</span>`}</td>
+          </tr>
+        `;
+      });
+
+      avgTableBody.innerHTML = rows;
+    }
+
+    function fillSubjectSelect() {
+      const subjects = getVisibleSubjects();
+      const prev = subjectSelect.value;
+      subjectSelect.innerHTML = "";
+      if (!subjects.length) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Предметы не найдены";
+        subjectSelect.appendChild(opt);
+        subjectSelect.disabled = true;
+        return;
+      }
+      subjectSelect.disabled = false;
+      subjects.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s;
+        opt.textContent = s;
+        subjectSelect.appendChild(opt);
+      });
+      if (prev && subjects.includes(prev)) subjectSelect.value = prev;
+    }
+
+    function renderSubjectTab() {
+      const termKey = termSelect.value;
+      const subject = subjectSelect.value;
+      if (!subject) {
+        subjectSummary.innerHTML = "";
+        subjectTableBody.innerHTML = `<tr><td colspan="3"><div class="empty-state"><span class="material-symbols-outlined">menu_book</span><h3>Выберите предмет</h3></div></td></tr>`;
+        return;
+      }
+
+      const bySubject = collectGradesBySubject(targetUid, termKey);
+      const records = (bySubject[subject] || []).slice().sort((a, b) => {
+        const da = parseDate(a.date);
+        const db = parseDate(b.date);
+        if (!da && !db) return 0;
+        if (!da) return 1;
+        if (!db) return -1;
+        return da - db;
+      });
+
+      const avg = calcAverage(records);
+      const final = suggestFinal(avg);
+
+      subjectSummary.innerHTML = `
+        <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
+          <div><b>${escapeHtml(subject)}</b></div>
+          <div>Средний балл: <b>${avg === null ? "—" : avg.toFixed(2)}</b></div>
+          <div>Предполагаемая итоговая:
+            ${final !== null ? `<span class="final-badge ${gradeClass(final)}">${gradeLabel(final)}</span>` : `<span class="no-data">—</span>`}
+          </div>
+          <div style="color:#889bb3;font-size:12px;">Оценок за период: <b>${records.length}</b></div>
+        </div>
+      `;
+
+      if (!records.length) {
+        subjectTableBody.innerHTML = `<tr><td colspan="3"><div class="empty-state"><span class="material-symbols-outlined">event_busy</span><h3>Оценок за период нет</h3></div></td></tr>`;
+        return;
+      }
+
+      subjectTableBody.innerHTML = records.map(r => {
+        let grades = `<span class="grade-mini ${gradeClass(r.fgrade)}">${gradeLabel(r.fgrade)}</span>`;
+        if (r.sgrade && r.sgrade >= 1) {
+          grades += ` <span class="grade-mini ${gradeClass(r.sgrade)}">${gradeLabel(r.sgrade)}</span>`;
+        }
+        return `
+          <tr>
+            <td>${escapeHtml(r.date)}</td>
+            <td><div class="grades-cell">${grades}</div></td>
+            <td>${escapeHtml(r.weight)}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    /* ===== Управление вкладками ===== */
+
+    function setTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll(".tab-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.tab === tab);
+      });
+      document.querySelectorAll(".tab-content").forEach(el => {
+        el.style.display = el.id === "tab-" + tab ? "" : "none";
+      });
+
+      if (tab === "avg") renderAvgTab();
+      if (tab === "subject") { fillSubjectSelect(); renderSubjectTab(); }
+    }
+
+    function rerenderAll() {
+      if (currentTab === "avg") renderAvgTab();
+      if (currentTab === "subject") { fillSubjectSelect(); renderSubjectTab(); }
+    }
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => setTab(btn.dataset.tab));
+    });
+
+    termSelect.addEventListener("change", () => {
+      updateCurrentInfo();
+      rerenderAll();
+    });
+
+    subjectSelect.addEventListener("change", () => {
+      if (currentTab === "subject") renderSubjectTab();
+    });
+
+    function updateCurrentInfo() {
+      const bounds = getTermBounds(termSelect.value);
+      const parts = [];
+      if (bounds) parts.push(`${bounds.name}: ${bounds.start} — ${bounds.end}`);
+
+      if (isTeacher) {
+        const classText = teacherClassSelect.value
+          ? teacherClassSelect.options[teacherClassSelect.selectedIndex]?.textContent || ""
+          : "";
+        const studentText = teacherStudentSelect.value
+          ? teacherStudentSelect.options[teacherStudentSelect.selectedIndex]?.textContent || ""
+          : "";
+        if (classText) parts.push(`Класс: ${classText}`);
+        if (studentText) parts.push(`Ученик: ${studentText}`);
+      }
+
+      currentInfo.textContent = parts.join(" · ");
+    }
+
+    function renderHeader(user) {
+      const name = user?.displayName || user?.email || "Пользователь";
+      userArea.innerHTML = `
+        <a href="${ACCOUNT_URL}" class="user-badge">
+          <span class="material-symbols-outlined">account_circle</span>
+          <span class="user-name">${escapeHtml(name)}</span>
+        </a>
+      `;
+    }
+
+    function updateNavLinks() {
+      const status = Number(currentProfile?.status ?? 1);
+      const teacher = status === 4;
+      if (teacher) {
+        if (diaryLink) diaryLink.classList.add("hidden");
+        if (journalLink) journalLink.classList.remove("hidden");
+      } else {
+        if (diaryLink) diaryLink.classList.remove("hidden");
+        if (journalLink) journalLink.classList.add("hidden");
+      }
+    }
+
+    /* ===== Резолверы ===== */
+
+    function resolveSchoolIndexFromProfile(profile = {}, schools = []) {
+      const raw = profile.schoolIndex ?? profile.school ?? profile.schoolId ?? profile.allowedSchoolIndex ?? 0;
+      if (raw === null || raw === undefined || raw === "") return 0;
+      if (Number.isInteger(Number(raw))) {
+        const idx = Number(raw);
+        return idx >= 0 && idx < schools.length ? idx : 0;
+      }
+      const value = String(raw).trim();
+      const found = schools.findIndex(school => {
+        const candidates = [school?.id, school?.schoolId, school?.name, school?.title];
+        return candidates.some(item => String(item ?? "").trim() === value);
+      });
+      return found >= 0 ? found : 0;
+    }
+
+    function resolveClassIndexFromProfile(profile = {}, school = null) {
+      const classes = Array.isArray(school?.classes) ? school.classes : toArray(school?.classes);
+      const raw = profile.classIndex ?? profile.class ?? profile.classId ?? profile.allowedClassIndex ?? 0;
+      if (raw === null || raw === undefined || raw === "") return 0;
+      if (Number.isInteger(Number(raw))) {
+        const idx = Number(raw);
+        return idx >= 0 && idx < classes.length ? idx : 0;
+      }
+      const value = String(raw).trim();
+      const found = classes.findIndex(cls => {
+        const candidates = [cls?.id, cls?.classId, cls?.name, cls?.title];
+        return candidates.some(item => String(item ?? "").trim() === value);
+      });
+      return found >= 0 ? found : 0;
+    }
+
+    function findSchoolIndexByName(name) {
+      const target = String(name || "").trim().toLowerCase();
+      if (!target) return -1;
+      return schoolsArr.findIndex(s => {
+        const n = String(s?.name || s?.title || s?.schoolName || "").trim().toLowerCase();
+        return n === target;
+      });
+    }
+
+    function findClassIndexByName(school, className) {
+      const classes = toArray(school?.classes);
+      const target = String(className || "").trim().toLowerCase();
+      if (!target) return -1;
+      return classes.findIndex(c => {
+        const n = String(c?.name || c?.title || c?.className || "").trim().toLowerCase();
+        return n === target;
+      });
+    }
+
+    function setScheduleFromClass(schoolIndex, classIndex) {
+      const school = schoolsArr[schoolIndex];
+      const classes = toArray(school?.classes);
+      const classData = classes[classIndex];
+      if (!classData) {
+        schedule = [];
+        return false;
+      }
+      schedule = toArray(classData.schedule).map(day => ({
+        ...day,
+        lessons: toArray(day?.lessons)
+      }));
+      currentSchoolIndex = schoolIndex;
+      currentClassIndex = classIndex;
+      return true;
+    }
+
+    /* ===== Учительский режим ===== */
+
+    async function initTeacherMode(profile) {
+      teacherClasses = [];
+      if (Array.isArray(profile.classes)) {
+        profile.classes.forEach(c => {
+          if (typeof c === "string") teacherClasses.push(c.trim());
+          else if (c && typeof c === "object") {
+            const v = c.name || c.title || c.className || c.value || "";
+            if (v) teacherClasses.push(String(v).trim());
+          }
+        });
+      }
+      teacherClasses = teacherClasses.filter(Boolean);
+
+      teacherSubjects = [];
+      if (Array.isArray(profile.subjects)) {
+        profile.subjects.forEach(s => {
+          if (typeof s === "string") teacherSubjects.push(s.trim());
+          else if (s && typeof s === "object") {
+            const v = s.name || s.title || s.subject || s.value || "";
+            if (v) teacherSubjects.push(String(v).trim());
+          }
+        });
+      }
+      teacherSubjects = teacherSubjects.filter(Boolean);
+
+      teacherSchoolName = String(profile.school || "").trim();
+
+      teacherClassSelect.innerHTML = "";
+      if (!teacherClasses.length) {
+        const o = document.createElement("option");
+        o.value = "";
+        o.textContent = "Классы не указаны";
+        teacherClassSelect.appendChild(o);
+        teacherClassSelect.disabled = true;
+        teacherStudentSelect.disabled = true;
+        return;
+      }
+
+      teacherClasses.forEach((c, i) => {
+        const o = document.createElement("option");
+        o.value = String(i);
+        o.textContent = c;
+        teacherClassSelect.appendChild(o);
+      });
+
+      teacherClassSelect.disabled = false;
+      teacherClassSelect.value = "0";
+
+      await fillTeacherStudents();
+
+      teacherClassSelect.addEventListener("change", async () => {
+        await fillTeacherStudents();
+        updateCurrentInfo();
+        rerenderAll();
+      });
+
+      teacherStudentSelect.addEventListener("change", () => {
+        targetUid = teacherStudentSelect.value || null;
+        updateCurrentInfo();
+        rerenderAll();
+      });
+    }
+
+    async function fillTeacherStudents() {
+      const classIdx = Number(teacherClassSelect.value);
+      const className = teacherClasses[classIdx] || "";
+
+      teacherStudentSelect.innerHTML = "";
+
+      const schoolIdx = findSchoolIndexByName(teacherSchoolName);
+      if (schoolIdx === -1) {
+        const o = document.createElement("option");
+        o.value = "";
+        o.textContent = "Школа не найдена";
+        teacherStudentSelect.appendChild(o);
+        teacherStudentSelect.disabled = true;
+        schedule = [];
+        targetUid = null;
+        return;
+      }
+
+      const school = schoolsArr[schoolIdx];
+      const classIdxInSchool = findClassIndexByName(school, className);
+      if (classIdxInSchool === -1) {
+        const o = document.createElement("option");
+        o.value = "";
+        o.textContent = "Класс не найден в школе";
+        teacherStudentSelect.appendChild(o);
+        teacherStudentSelect.disabled = true;
+        schedule = [];
+        targetUid = null;
+        return;
+      }
+
+      setScheduleFromClass(schoolIdx, classIdxInSchool);
+
+      const students = Object.entries(allUsers)
+        .map(([uid, data]) => ({ uid, ...(data || {}) }))
+        .filter(u => Number(u.status) !== 4)
+        .filter(u => String(u.class || "").trim().toLowerCase() === className.toLowerCase())
+        .sort((a, b) =>
+          String(a.name || a.email || "").toLowerCase().localeCompare(String(b.name || b.email || "").toLowerCase())
+        );
+
+      if (!students.length) {
+        const o = document.createElement("option");
+        o.value = "";
+        o.textContent = "В классе нет учеников";
+        teacherStudentSelect.appendChild(o);
+        teacherStudentSelect.disabled = true;
+        targetUid = null;
+        return;
+      }
+
+      teacherStudentSelect.disabled = false;
+      students.forEach(st => {
+        const o = document.createElement("option");
+        o.value = st.uid;
+        o.textContent = st.name || st.email || st.uid;
+        teacherStudentSelect.appendChild(o);
+      });
+
+      teacherStudentSelect.value = students[0].uid;
+      targetUid = students[0].uid;
+    }
+
+    /* ===== Загрузка данных ===== */
+
+    async function loadData(user) {
+      const profileSnap = await get(ref(db, `users/${user.uid}`));
+      currentProfile = profileSnap.exists() ? profileSnap.val() : {};
+
+      const schoolsSnap = await get(ref(db, "schools"));
+      const schoolsRaw = schoolsSnap.exists() ? schoolsSnap.val() : [];
+      schoolsArr = toArray(schoolsRaw);
+
+      const status = Number(currentProfile.status ?? 1);
+      isTeacher = status === 4;
+
+      if (isTeacher) {
+        const usersSnap = await get(ref(db, "users"));
+        allUsers = usersSnap.exists() ? usersSnap.val() : {};
+
+        teacherClassField.classList.remove("hidden");
+        teacherStudentField.classList.remove("hidden");
+        pageSub.textContent = "Отчёты по вашим классам и предметам";
+
+        await initTeacherMode(currentProfile);
+      } else {
+        teacherClassField.classList.add("hidden");
+        teacherStudentField.classList.add("hidden");
+        pageSub.textContent = "Ваши средние баллы и предполагаемые итоговые";
+
+        targetUid = user.uid;
+
+        const schoolIndex = resolveSchoolIndexFromProfile(currentProfile, schoolsArr);
+        const school = schoolsArr[schoolIndex];
+        const classIndex = resolveClassIndexFromProfile(currentProfile, school);
+        setScheduleFromClass(schoolIndex, classIndex);
+      }
+    }
+
+    /* ===== Инициализация ===== */
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = AUTH_URL;
+        return;
+      }
+
+      currentUserUid = user.uid;
+
+      try {
+        const profileSnap = await get(ref(db, `users/${user.uid}`));
+        const profile = profileSnap.exists() ? profileSnap.val() : {};
+        currentProfile = profile;
+
+        user.displayName = profile.name || user.displayName || user.email || "Пользователь";
+        renderHeader(user);
+        updateNavLinks();
+
+        await loadData(user);
+
+        updateCurrentInfo();
+        setTab("avg");
+      } catch (error) {
+        console.error("Ошибка загрузки:", error);
+        renderHeader(user);
+        avgTableBody.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="material-symbols-outlined">error</span><h3>Ошибка загрузки данных</h3><div>${escapeHtml(error.message || "")}</div></div></td></tr>`;
+      } finally {
+        hideLoadscreen();
+      }
+    });
+  </script>
+</body>
+</html>

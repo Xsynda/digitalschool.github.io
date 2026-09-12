@@ -404,7 +404,7 @@
     }
     .week-day-card.tomorrow .lesson-mini-number { background: #fef3c7; color: #b45309; }
 
-    .lesson-mini-info { min-width: 0; padding-right: 42px; }
+    .lesson-mini-info { min-width: 0; padding-right: 56px; }
 
     .lesson-mini-name {
       font-size: 13px;
@@ -447,11 +447,18 @@
       font-style: italic;
     }
 
-    /* ===== Оценка в углу ===== */
-    .lesson-grade {
+    /* ===== Оценка в углу (одна или две) ===== */
+    .lesson-grades-wrap {
       position: absolute;
       top: 8px;
       right: 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+
+    .lesson-grade {
       min-width: 24px;
       height: 24px;
       padding: 0 7px;
@@ -468,12 +475,19 @@
       user-select: none;
     }
 
-    /* Цвета оценок */
     .lesson-grade.grade-5 { background: #1a8a4a; box-shadow: 0 2px 6px rgba(26, 138, 74, 0.25); }
     .lesson-grade.grade-4 { background: #2a7de1; box-shadow: 0 2px 6px rgba(42, 125, 225, 0.25); }
     .lesson-grade.grade-3 { background: #f59e0b; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25); }
     .lesson-grade.grade-2 { background: #c74a4a; box-shadow: 0 2px 6px rgba(199, 74, 74, 0.25); }
     .lesson-grade.grade-1 { background: #8a3030; box-shadow: 0 2px 6px rgba(138, 48, 48, 0.25); }
+
+    .lesson-grade-sep {
+      font-size: 12px;
+      font-weight: 700;
+      color: #6a7f9e;
+      padding: 0 2px;
+      user-select: none;
+    }
 
     .week-day-empty {
       text-align: center;
@@ -527,6 +541,35 @@
     .modal-grade.grade-3 { background: #f59e0b; }
     .modal-grade.grade-2 { background: #c74a4a; }
     .modal-grade.grade-1 { background: #8a3030; }
+
+    .modal-grade-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .modal-grade-sep {
+      font-size: 15px;
+      font-weight: 700;
+      color: #6a7f9e;
+      user-select: none;
+    }
+
+    .modal-weight-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 10px;
+      border-radius: 40px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #eef3fa;
+      color: #3d5270;
+      height: 26px;
+      margin-left: 6px;
+    }
 
     /* ===== Адаптив: планшет ===== */
     @media (max-width: 860px) {
@@ -645,6 +688,7 @@
     <nav class="nav-links" id="navLinks">
       <a href="index.html" class="nav-link"><span class="material-symbols-outlined">home</span> Главная</a>
       <a href="diary.html" class="nav-link active"><span class="material-symbols-outlined">calendar_month</span> Дневник</a>
+      <a href="reports.html" class="nav-link"><span class="material-symbols-outlined">bar_chart</span> Отчёты</a>
     </nav>
   </div>
   <div class="navbar-right" id="userArea"></div>
@@ -802,23 +846,8 @@
 
   /* ============ Оценки ============ */
 
-  // Отображение оценки: 1 -> точка
   function gradeLabel(grade) {
     return Number(grade) === 1 ? "•" : String(grade);
-  }
-
-  function getMyGrade(lesson) {
-    if (!lesson || !currentUserUid) return null;
-    const grades = lesson.grades;
-    if (!grades || typeof grades !== "object") return null;
-
-    const raw = grades[currentUserUid];
-    if (raw === null || raw === undefined || raw === "") return null;
-
-    const num = Number(raw);
-    if (!Number.isFinite(num)) return null;
-
-    return num;
   }
 
   function gradeClass(grade) {
@@ -831,10 +860,50 @@
     return "";
   }
 
-  function renderGradeBadge(lesson) {
-    const grade = getMyGrade(lesson);
-    if (grade === null) return "";
-    return `<div class="lesson-grade ${gradeClass(grade)}" title="Ваша оценка">${gradeLabel(grade)}</div>`;
+  function normalizeGradeRecord(raw) {
+    if (raw === null || raw === undefined || raw === "") return null;
+    if (typeof raw === "number" || (typeof raw === "string" && /^\d+$/.test(raw))) {
+      const n = Number(raw);
+      if (!Number.isFinite(n) || n < 1 || n > 5) return null;
+      return { fgrade: n, sgrade: 0, weight: 1 };
+    }
+    if (typeof raw === "object") {
+      const f = Number(raw.fgrade);
+      const s = Number(raw.sgrade);
+      const w = Number(raw.weight);
+      const fgrade = Number.isFinite(f) && f >= 1 && f <= 5 ? f : null;
+      if (fgrade === null) return null;
+      return {
+        fgrade,
+        sgrade: Number.isFinite(s) && s >= 0 && s <= 5 ? s : 0,
+        weight: Number.isFinite(w) && w >= 1 ? w : 1
+      };
+    }
+    return null;
+  }
+
+  function getMyGradeRecord(lesson) {
+    if (!lesson || !currentUserUid) return null;
+    const grades = lesson.grades;
+    if (!grades || typeof grades !== "object") return null;
+    return normalizeGradeRecord(grades[currentUserUid]);
+  }
+
+  function renderGradeBadges(lesson) {
+    const rec = getMyGradeRecord(lesson);
+    if (!rec) return "";
+
+    const f = rec.fgrade;
+    const s = rec.sgrade;
+
+    let inner = `<div class="lesson-grade ${gradeClass(f)}" title="Оценка">${gradeLabel(f)}</div>`;
+
+    if (s && s >= 1) {
+      inner += `<span class="lesson-grade-sep">/</span>`;
+      inner += `<div class="lesson-grade ${gradeClass(s)}" title="Вторая оценка">${gradeLabel(s)}</div>`;
+    }
+
+    return `<div class="lesson-grades-wrap">${inner}</div>`;
   }
 
   function renderHeader(user) {
@@ -862,10 +931,16 @@
     cab.textContent = lesson?.cab ?? "—";
     homework.innerHTML = lesson?.homework ? processHomeworkFull(lesson.homework) : "Нет задания";
 
-    const grade = lesson?.grade ?? null;
-    if (grade !== null) {
+    const rec = lesson?.gradeRecord ?? null;
+    if (rec) {
       gradeRow.style.display = "flex";
-      gradeEl.innerHTML = `<span class="modal-grade ${gradeClass(grade)}">${gradeLabel(grade)}</span>`;
+      let inner = `<span class="modal-grade ${gradeClass(rec.fgrade)}">${gradeLabel(rec.fgrade)}</span>`;
+      if (rec.sgrade && rec.sgrade >= 1) {
+        inner += `<span class="modal-grade-sep">/</span>`;
+        inner += `<span class="modal-grade ${gradeClass(rec.sgrade)}">${gradeLabel(rec.sgrade)}</span>`;
+      }
+      inner += `<span class="modal-weight-badge">вес: ${escapeHtml(rec.weight)}</span>`;
+      gradeEl.innerHTML = `<span class="modal-grade-wrap">${inner}</span>`;
     } else {
       gradeRow.style.display = "none";
       gradeEl.textContent = "—";
@@ -937,8 +1012,8 @@
             const cab = lesson?.cab != null && lesson?.cab !== "" ? `каб. ${lesson.cab}` : "";
             const meta = [time, cab].filter(Boolean).join(" · ");
             const homeworkPreview = processHomeworkPreview(lesson?.homework || "");
-            const gradeBadge = renderGradeBadge(lesson);
-            const grade = getMyGrade(lesson);
+            const gradeBadges = renderGradeBadges(lesson);
+            const rec = getMyGradeRecord(lesson);
 
             return `
               <div class="lesson-mini"
@@ -946,14 +1021,16 @@
                    data-time="${escapeHtml(lesson?.time || "")}"
                    data-cab="${escapeHtml(lesson?.cab ?? "")}"
                    data-homework="${escapeHtml(lesson?.homework || "")}"
-                   data-grade="${grade === null ? "" : escapeHtml(grade)}">
+                   data-fgrade="${rec ? escapeHtml(rec.fgrade) : ""}"
+                   data-sgrade="${rec ? escapeHtml(rec.sgrade) : ""}"
+                   data-weight="${rec ? escapeHtml(rec.weight) : ""}">
                 <div class="lesson-mini-number">${idx + 1}</div>
                 <div class="lesson-mini-info">
                   <div class="lesson-mini-name">${escapeHtml(name)}</div>
                   ${meta ? `<div class="lesson-mini-meta">${escapeHtml(meta)}</div>` : ""}
                   ${homeworkPreview}
                 </div>
-                ${gradeBadge}
+                ${gradeBadges}
               </div>
             `;
           }).join("")
@@ -1026,15 +1103,25 @@
 
     scheduleContainer.querySelectorAll(".lesson-mini").forEach((el) => {
       el.addEventListener("click", () => {
-        const gradeRaw = el.dataset.grade;
-        const grade = gradeRaw === "" ? null : Number(gradeRaw);
+        const fgradeRaw = el.dataset.fgrade;
+        const sgradeRaw = el.dataset.sgrade;
+        const weightRaw = el.dataset.weight;
+
+        let gradeRecord = null;
+        if (fgradeRaw !== "") {
+          gradeRecord = {
+            fgrade: Number(fgradeRaw),
+            sgrade: sgradeRaw === "" ? 0 : Number(sgradeRaw),
+            weight: weightRaw === "" ? 1 : Number(weightRaw)
+          };
+        }
 
         openLessonModal({
           name: el.dataset.name || "Урок",
           time: el.dataset.time || "",
           cab: el.dataset.cab || "",
           homework: el.dataset.homework || "",
-          grade: Number.isFinite(grade) ? grade : null
+          gradeRecord
         });
       });
     });
