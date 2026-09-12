@@ -924,6 +924,21 @@
           hideMessage(homeworkMessage);
         }
 
+        // ✅ Синхронизация кэша schoolsCache после записи в Firebase
+        function syncCacheSchedule(schoolIndex, classIndex, newSchedule) {
+          try {
+            if (
+              schoolsCache[schoolIndex] &&
+              Array.isArray(schoolsCache[schoolIndex].classes) &&
+              schoolsCache[schoolIndex].classes[classIndex]
+            ) {
+              schoolsCache[schoolIndex].classes[classIndex].schedule = newSchedule;
+            }
+          } catch (e) {
+            console.warn("[journal] не удалось синхронизировать кэш:", e);
+          }
+        }
+
         function saveHomework() {
           if (loadedDayIndex === -1 || loadedLessonIndex === -1 || !loadedClassInfo) return;
 
@@ -949,6 +964,9 @@
             .set(newSchedule)
             .then(function () {
               loadedSchedule = newSchedule;
+              // ✅ обновляем кэш, чтобы при следующей загрузке не вернулось старое
+              syncCacheSchedule(schoolIndex, classIndex, newSchedule);
+
               showMessage(homeworkMessage, "✅ Домашнее задание сохранено", "success");
               setTimeout(function () {
                 if (homeworkMessage.classList.contains("success")) hideMessage(homeworkMessage);
@@ -1108,6 +1126,9 @@
             .set(newSchedule)
             .then(function () {
               loadedSchedule = newSchedule;
+              // ✅ обновляем кэш — вот из-за отсутствия этого оценка «возвращалась»
+              syncCacheSchedule(schoolIndex, classIndex, newSchedule);
+
               closeGradeModal();
               renderStudents();
               showMessage(mainMessage, "✅ Оценка сохранена", "success");
