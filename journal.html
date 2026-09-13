@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Электронная школа" />
-  <meta property="og:title" content="Электронная школа" />
-  <meta property="og:description" content="Дневник, оценки, домашние задания в одном месте" />
-  <meta property="og:url" content="https://xsynda.github.io/digitalschool.github.io" />
+  <meta property="og:title" content="Журнал · Электронная школа" />
+  <meta property="og:description" content="Выставление оценок и задание домашнего задания" />
+  <meta property="og:url" content="https://xsynda.github.io/digitalschool.github.io/journal.html" />
   <meta property="og:image" content="https://xsynda.github.io/digitalschool.github.io/logo.png" />
   <title>Журнал · Электронная школа</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
@@ -144,7 +144,7 @@
     .console-card { background: var(--soft-card); border-radius: 24px; padding: 20px 24px; border: 1px solid var(--border); margin-bottom: 20px; }
     .card-label { font-size: 15px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
 
-    .field-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
     .form-label { font-size: 12px; color: var(--text-soft); margin: 0 0 5px 4px; display: block; }
 
     .input {
@@ -252,6 +252,13 @@
 
     .grade-empty {
       font-size: 12px; color: #a0b3cc; font-style: italic;
+    }
+
+    .grade-lesson-label {
+      font-size: 10px;
+      color: #889bb3;
+      font-weight: 700;
+      margin-right: 2px;
     }
 
     .grade-set-btn {
@@ -459,6 +466,10 @@
           <label class="form-label">Дата урока</label>
           <input type="date" id="dateInput" class="input" />
         </div>
+        <div id="lessonPickWrap" style="display:none;">
+          <label class="form-label">Урок в этот день</label>
+          <select id="lessonPickSelect" class="input"></select>
+        </div>
       </div>
 
       <div class="actions">
@@ -623,6 +634,9 @@
         const userArea = document.getElementById("userArea");
         const loadscreen = document.getElementById("loadscreen");
 
+        const lessonPickWrap = document.getElementById("lessonPickWrap");
+        const lessonPickSelect = document.getElementById("lessonPickSelect");
+
         const homeworkCard = document.getElementById("homeworkCard");
         const homeworkInput = document.getElementById("homeworkInput");
         const saveHomeworkBtn = document.getElementById("saveHomeworkBtn");
@@ -652,7 +666,8 @@
         let loadedSubject = "";
         let loadedDateStr = "";
         let loadedDayIndex = -1;
-        let loadedLessonIndex = -1;
+        let loadedLessonIndices = [];   // все индексы уроков с этим предметом в этот день
+        let loadedLessonPickIndex = -1; // -1 = «все совпадения», иначе индекс конкретного урока
         let loadedSchedule = [];
         let loadedStudents = [];
 
@@ -717,8 +732,6 @@
         }
 
         // Приведение старой/новой записи к единому формату
-        // Старый формат: grades[uid] = 5
-        // Новый формат:  grades[uid] = { fgrade, sgrade, weight }
         function normalizeGradeRecord(raw) {
           if (raw === null || raw === undefined || raw === "") return null;
           if (typeof raw === "number" || (typeof raw === "string" && /^\d+$/.test(raw))) {
@@ -739,10 +752,6 @@
             };
           }
           return null;
-        }
-
-        function hasGradeRecord(raw) {
-          return normalizeGradeRecord(raw) !== null;
         }
 
         function statusBadge(status) {
@@ -893,7 +902,8 @@
           return -1;
         }
 
-        function findLessonInSchedule(schedule, dateStr, subjectName) {
+        // Возвращает { dayIndex, lessonIndices: [] }
+        function findLessonIndicesInSchedule(schedule, dateStr, subjectName) {
           let dayIndex = -1;
           for (let i = 0; i < schedule.length; i++) {
             if (String(schedule[i].date || "").trim() === dateStr) {
@@ -901,28 +911,76 @@
               break;
             }
           }
-          if (dayIndex === -1) return { dayIndex: -1, lessonIndex: -1 };
+          if (dayIndex === -1) return { dayIndex: -1, lessonIndices: [] };
 
           const lessons = Array.isArray(schedule[dayIndex].lessons) ? schedule[dayIndex].lessons : [];
           const target = normalizeName(subjectName);
-          let lessonIndex = -1;
+          const indices = [];
           for (let j = 0; j < lessons.length; j++) {
-            if (normalizeName(lessons[j].name) === target) {
-              lessonIndex = j;
-              break;
-            }
+            if (normalizeName(lessons[j].name) === target) indices.push(j);
           }
-          return { dayIndex: dayIndex, lessonIndex: lessonIndex };
+          return { dayIndex: dayIndex, lessonIndices: indices };
         }
 
+        function fillLessonPickSelect() {
+          if (!loadedClassInfo || loadedDayIndex === -1 || !loadedLessonIndices.length) {
+            lessonPickWrap.style.display = "none";
+            lessonPickSelect.innerHTML = "";
+            loadedLessonPickIndex = -1;
+            return;
+          }
+
+          if (loadedLessonIndices.length === 1) {
+            lessonPickWrap.style.display = "none";
+            loadedLessonPickIndex = loadedLessonIndices[0];
+            return;
+          }
+
+          lessonPickWrap.style.display = "";
+          lessonPickSelect.innerHTML = "";
+
+          const allOpt = document.createElement("option");
+          allOpt.value = "-1";
+          allOpt.textContent = "Все совпадения (" + loadedLessonIndices.length + ")";
+          lessonPickSelect.appendChild(allOpt);
+
+          const day = loadedSchedule[loadedDayIndex];
+          const lessons = Array.isArray(day.lessons) ? day.lessons : [];
+
+          loadedLessonIndices.forEach(function (idx, i) {
+            const l = lessons[idx] || {};
+            const time = String(l.time || "").trim();
+            const cab = l.cab != null && l.cab !== "" ? "каб. " + l.cab : "";
+            const meta = [time, cab].filter(Boolean).join(", ") || "без времени";
+            const opt = document.createElement("option");
+            opt.value = String(idx);
+            opt.textContent = "Урок " + (i + 1) + " (" + meta + ")";
+            lessonPickSelect.appendChild(opt);
+          });
+
+          loadedLessonPickIndex = -1;
+          lessonPickSelect.value = "-1";
+        }
+
+        lessonPickSelect.addEventListener("change", function () {
+          const v = Number(lessonPickSelect.value);
+          loadedLessonPickIndex = Number.isFinite(v) ? v : -1;
+          renderStudents();
+          updateHomeworkBlock();
+        });
+
         function updateHomeworkBlock() {
-          if (loadedDayIndex === -1 || loadedLessonIndex === -1 || !loadedClassInfo) {
+          if (loadedDayIndex === -1 || !loadedClassInfo || !loadedLessonIndices.length) {
             homeworkCard.style.display = "none";
             return;
           }
 
+          const useIdx = loadedLessonPickIndex !== -1
+            ? loadedLessonPickIndex
+            : loadedLessonIndices[0];
+
           const day = loadedSchedule[loadedDayIndex];
-          const lesson = (day.lessons || [])[loadedLessonIndex] || {};
+          const lesson = (day.lessons || [])[useIdx] || {};
           const hw = lesson.homework || "";
 
           homeworkCard.style.display = "block";
@@ -930,7 +988,6 @@
           hideMessage(homeworkMessage);
         }
 
-        // ✅ Синхронизация кэша schoolsCache после записи в Firebase
         function syncCacheSchedule(schoolIndex, classIndex, newSchedule) {
           try {
             if (
@@ -945,8 +1002,13 @@
           }
         }
 
+        // ✅ Пишем ТОЛЬКО изменённый урок — не трогаем чужие оценки/ДЗ
         function saveHomework() {
-          if (loadedDayIndex === -1 || loadedLessonIndex === -1 || !loadedClassInfo) return;
+          if (loadedDayIndex === -1 || !loadedClassInfo || !loadedLessonIndices.length) return;
+
+          const useIdx = loadedLessonPickIndex !== -1
+            ? loadedLessonPickIndex
+            : loadedLessonIndices[0];
 
           const schoolIndex = loadedClassInfo.schoolIndex;
           const classIndex = loadedClassInfo.classIndex;
@@ -957,7 +1019,7 @@
           const day = newSchedule[loadedDayIndex];
           if (!day || !Array.isArray(day.lessons)) return;
 
-          const lesson = day.lessons[loadedLessonIndex];
+          const lesson = day.lessons[useIdx];
           if (!lesson) return;
 
           lesson.homework = text;
@@ -966,13 +1028,12 @@
           saveHomeworkBtn.innerHTML =
             '<span class="material-symbols-outlined" style="font-size:16px;">hourglass_top</span> Сохранение...';
 
-          db.ref("schools/" + schoolIndex + "/classes/" + classIndex + "/schedule")
-            .set(newSchedule)
+          db.ref("schools/" + schoolIndex + "/classes/" + classIndex +
+            "/schedule/" + loadedDayIndex + "/lessons/" + useIdx + "/homework")
+            .set(text || null)
             .then(function () {
               loadedSchedule = newSchedule;
-              // ✅ обновляем кэш, чтобы при следующей загрузке не вернулось старое
               syncCacheSchedule(schoolIndex, classIndex, newSchedule);
-
               showMessage(homeworkMessage, "✅ Домашнее задание сохранено", "success");
               setTimeout(function () {
                 if (homeworkMessage.classList.contains("success")) hideMessage(homeworkMessage);
@@ -1010,32 +1071,39 @@
           const uid = student.uid;
           const name = student.name || student.email || "Ученик";
 
-          if (loadedDayIndex === -1 || loadedLessonIndex === -1 || !loadedClassInfo) {
+          if (loadedDayIndex === -1 || !loadedClassInfo || !loadedLessonIndices.length) {
             showMessage(mainMessage, "⚠️ Сначала загрузите урок", "error");
             return;
           }
 
-          const day = loadedSchedule[loadedDayIndex];
-          const lesson = (day.lessons || [])[loadedLessonIndex] || {};
-          const grades = (lesson.grades && typeof lesson.grades === "object") ? lesson.grades : {};
-          const normalized = normalizeGradeRecord(grades[uid]);
-
           editingUid = uid;
 
-          if (normalized) {
-            editingFgrade = normalized.fgrade;
-            editingSgrade = normalized.sgrade;
-            editingWeight = normalized.weight;
-            removeGradeBtn.style.display = "";
+          gradeModalTitle.textContent = "Оценка ученика";
+          gradeModalSub.textContent = "Ученик: " + name;
+
+          if (loadedLessonPickIndex !== -1) {
+            const day = loadedSchedule[loadedDayIndex];
+            const lesson = (day.lessons || [])[loadedLessonPickIndex] || {};
+            const grades = (lesson.grades && typeof lesson.grades === "object") ? lesson.grades : {};
+            const normalized = normalizeGradeRecord(grades[uid]);
+
+            if (normalized) {
+              editingFgrade = normalized.fgrade;
+              editingSgrade = normalized.sgrade;
+              editingWeight = normalized.weight;
+              removeGradeBtn.style.display = "";
+            } else {
+              editingFgrade = null;
+              editingSgrade = 0;
+              editingWeight = 1;
+              removeGradeBtn.style.display = "none";
+            }
           } else {
             editingFgrade = null;
             editingSgrade = 0;
             editingWeight = 1;
             removeGradeBtn.style.display = "none";
           }
-
-          gradeModalTitle.textContent = "Оценка ученика";
-          gradeModalSub.textContent = "Ученик: " + name;
 
           setSelected(fgradePicker, editingFgrade);
           setSelected(sgradePicker, editingSgrade);
@@ -1085,24 +1153,50 @@
 
         removeGradeBtn.addEventListener("click", function () {
           if (editingUid === null) return;
-          saveGrade(editingUid, null);
+
+          const indices = loadedLessonPickIndex !== -1
+            ? [loadedLessonPickIndex]
+            : loadedLessonIndices;
+
+          if (!indices.length) return;
+          saveGradeToIndices(editingUid, indices, null);
         });
 
         saveGradeBtn.addEventListener("click", function () {
           if (editingUid === null) return;
-          if (editingFgrade === null) {
-            // Нельзя сохранить без первой оценки
-            return;
-          }
-          saveGrade(editingUid, {
+          if (editingFgrade === null) return;
+
+          const payload = {
             fgrade: editingFgrade,
             sgrade: editingSgrade,
             weight: editingWeight || 1
-          });
+          };
+
+          if (loadedLessonPickIndex !== -1) {
+            saveGradeToIndices(editingUid, [loadedLessonPickIndex], payload);
+            return;
+          }
+
+          const indices = loadedLessonIndices;
+          if (indices.length <= 1) {
+            saveGradeToIndices(editingUid, indices, payload);
+            return;
+          }
+
+          const ok = confirm(
+            "В этот день " + indices.length + " урока по предмету «" + loadedSubject + "».\n\n" +
+            "ОК — поставить оценку во ВСЕ " + indices.length + ".\n" +
+            "Отмена — выбрать конкретный урок в списке сверху."
+          );
+
+          if (ok) {
+            saveGradeToIndices(editingUid, indices, payload);
+          }
         });
 
-        function saveGrade(uid, gradeRecord) {
-          if (loadedDayIndex === -1 || loadedLessonIndex === -1 || !loadedClassInfo) return;
+        // ✅ Пишем ТОЛЬКО изменённый узел grades и только для выбранных уроков
+        function saveGradeToIndices(uid, indices, gradeRecord) {
+          if (loadedDayIndex === -1 || !loadedClassInfo || !indices.length) return;
 
           const schoolIndex = loadedClassInfo.schoolIndex;
           const classIndex = loadedClassInfo.classIndex;
@@ -1111,28 +1205,42 @@
           const day = newSchedule[loadedDayIndex];
           if (!day || !Array.isArray(day.lessons)) return;
 
-          const lesson = day.lessons[loadedLessonIndex];
-          if (!lesson) return;
+          const updates = {};
 
-          if (!lesson.grades || typeof lesson.grades !== "object") {
-            lesson.grades = {};
-          }
+          indices.forEach(function (idx) {
+            const lesson = day.lessons[idx];
+            if (!lesson) return;
 
-          if (gradeRecord === null) {
-            delete lesson.grades[uid];
-          } else {
-            lesson.grades[uid] = {
-              fgrade: Number(gradeRecord.fgrade),
-              sgrade: Number(gradeRecord.sgrade || 0),
-              weight: Number(gradeRecord.weight || 1)
-            };
-          }
+            let newGrades;
+            if (lesson.grades && typeof lesson.grades === "object") {
+              newGrades = { ...lesson.grades };
+            } else {
+              newGrades = {};
+            }
 
-          db.ref("schools/" + schoolIndex + "/classes/" + classIndex + "/schedule")
-            .set(newSchedule)
+            if (gradeRecord === null) {
+              delete newGrades[uid];
+            } else {
+              newGrades[uid] = {
+                fgrade: Number(gradeRecord.fgrade),
+                sgrade: Number(gradeRecord.sgrade || 0),
+                weight: Number(gradeRecord.weight || 1)
+              };
+            }
+
+            lesson.grades = newGrades;
+
+            const path = "schools/" + schoolIndex + "/classes/" + classIndex +
+              "/schedule/" + loadedDayIndex + "/lessons/" + idx + "/grades";
+
+            // null вместо пустого объекта — чтобы не оставлять «мусор»
+            updates[path] = Object.keys(newGrades).length ? newGrades : null;
+          });
+
+          db.ref()
+            .update(updates)
             .then(function () {
               loadedSchedule = newSchedule;
-              // ✅ обновляем кэш — вот из-за отсутствия этого оценка «возвращалась»
               syncCacheSchedule(schoolIndex, classIndex, newSchedule);
 
               closeGradeModal();
@@ -1179,7 +1287,7 @@
             return;
           }
 
-          if (loadedLessonIndex === -1) {
+          if (!loadedLessonIndices.length) {
             studentsContainer.innerHTML =
               '<div class="empty-state">' +
                 '<span class="material-symbols-outlined">book_2</span>' +
@@ -1190,8 +1298,11 @@
           }
 
           const day = loadedSchedule[loadedDayIndex];
-          const lesson = (day.lessons || [])[loadedLessonIndex] || {};
-          const grades = (lesson.grades && typeof lesson.grades === "object") ? lesson.grades : {};
+          const lessons = Array.isArray(day.lessons) ? day.lessons : [];
+
+          const displayIndices = loadedLessonPickIndex !== -1
+            ? [loadedLessonPickIndex]
+            : loadedLessonIndices;
 
           const studentsHtml = loadedStudents.map(function (student) {
             const uid = student.uid;
@@ -1199,20 +1310,43 @@
             const email = student.email || "";
             const badge = statusBadge(student.status);
 
-            const normalized = normalizeGradeRecord(grades[uid]);
-
             let displayHtml = "";
-            if (normalized) {
-              const f = normalized.fgrade;
-              const s = normalized.sgrade;
-              const w = normalized.weight;
+            let hasAny = false;
 
-              displayHtml += '<span class="grade-chip ' + gradeClass(f) + '">' + gradeLabel(f) + '</span>';
-              if (s && s >= 1) {
-                displayHtml += '<span class="grade-chip ' + gradeClass(s) + '">' + gradeLabel(s) + '</span>';
+            displayIndices.forEach(function (idx, i) {
+              const lesson = lessons[idx] || {};
+              const grades = (lesson.grades && typeof lesson.grades === "object") ? lesson.grades : {};
+              const normalized = normalizeGradeRecord(grades[uid]);
+
+              if (normalized) hasAny = true;
+
+              const lessonLabel = displayIndices.length > 1 ? ("У" + (i + 1)) : "";
+
+              if (normalized) {
+                const f = normalized.fgrade;
+                const s = normalized.sgrade;
+                const w = normalized.weight;
+
+                let block = "";
+                if (lessonLabel) {
+                  block += '<span class="grade-lesson-label">' + lessonLabel + '</span>';
+                }
+                block += '<span class="grade-chip ' + gradeClass(f) + '">' + gradeLabel(f) + '</span>';
+                if (s && s >= 1) {
+                  block += '<span class="grade-chip ' + gradeClass(s) + '">' + gradeLabel(s) + '</span>';
+                }
+                block += '<span class="grade-weight-badge">вес: ' + escapeHtml(w) + '</span>';
+
+                displayHtml += '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:8px;">' + block + '</span>';
+              } else if (displayIndices.length > 1) {
+                let block = "";
+                block += '<span class="grade-lesson-label">' + lessonLabel + '</span>';
+                block += '<span class="grade-empty">—</span>';
+                displayHtml += '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:8px;">' + block + '</span>';
               }
-              displayHtml += '<span class="grade-weight-badge">вес: ' + escapeHtml(w) + '</span>';
-            } else {
+            });
+
+            if (!displayHtml) {
               displayHtml = '<span class="grade-empty">Оценок нет</span>';
             }
 
@@ -1228,20 +1362,25 @@
                 '<div class="student-grade-row">' +
                   '<div class="student-grade-display">' + displayHtml + '</div>' +
                   '<button class="grade-set-btn" data-uid="' + escapeHtml(uid) + '" type="button">' +
-                    '<span class="material-symbols-outlined">' + (normalized ? 'edit' : 'add') + '</span>' +
-                    (normalized ? 'Изменить' : 'Поставить оценку') +
+                    '<span class="material-symbols-outlined">' + (hasAny ? 'edit' : 'add') + '</span>' +
+                    (hasAny ? 'Изменить' : 'Поставить оценку') +
                   '</button>' +
                 '</div>' +
               '</div>'
             );
           }).join("");
 
+          const pickInfo = loadedLessonPickIndex !== -1
+            ? "Урок выбран"
+            : ("Все совпадения: " + loadedLessonIndices.length);
+
           studentsContainer.innerHTML =
             '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;">' +
               '<div style="font-size:13px;color:#5f7696;">' +
                 'Класс: <b>' + escapeHtml(loadedClassInfo.className) + '</b> · ' +
                 'Предмет: <b>' + escapeHtml(loadedSubject) + '</b> · ' +
-                'Дата: <b>' + escapeHtml(loadedDateStr) + '</b>' +
+                'Дата: <b>' + escapeHtml(loadedDateStr) + '</b> · ' +
+                '<b>' + escapeHtml(pickInfo) + '</b>' +
               '</div>' +
               '<div style="font-size:13px;color:#5f7696;">Пользователей: <b>' + loadedStudents.length + '</b></div>' +
             '</div>' +
@@ -1310,20 +1449,23 @@
           loadedDateStr = dateStr;
           loadedSchedule = schedule;
 
-          const found = findLessonInSchedule(schedule, dateStr, subjectName);
+          const found = findLessonIndicesInSchedule(schedule, dateStr, subjectName);
           loadedDayIndex = found.dayIndex;
-          loadedLessonIndex = found.lessonIndex;
+          loadedLessonIndices = found.lessonIndices;
+          loadedLessonPickIndex = loadedLessonIndices.length === 1 ? loadedLessonIndices[0] : -1;
+
+          fillLessonPickSelect();
 
           loadStudentsForClass(className).then(function (students) {
             loadedStudents = students;
             renderStudents();
             updateHomeworkBlock();
 
-            showMessage(
-              mainMessage,
-              "✅ Загружено: " + students.length + " " + declOfNum(students.length, ["человек", "человека", "человек"]),
-              "success"
-            );
+            let msg = "✅ Загружено: " + students.length + " " + declOfNum(students.length, ["человек", "человека", "человек"]);
+            if (loadedLessonIndices.length > 1) {
+              msg += " · уроков с этим предметом: " + loadedLessonIndices.length;
+            }
+            showMessage(mainMessage, msg, "success");
           });
         }
 

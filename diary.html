@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Электронная школа" />
-  <meta property="og:title" content="Электронная школа" />
-  <meta property="og:description" content="Дневник, оценки, домашние задания в одном месте" />
-  <meta property="og:url" content="https://xsynda.github.io/digitalschool.github.io" />
+  <meta property="og:title" content="Дневник · Электронная школа" />
+  <meta property="og:description" content="Расписание уроков и домашние задания по неделям" />
+  <meta property="og:url" content="https://xsynda.github.io/digitalschool.github.io/diary.html" />
   <meta property="og:image" content="https://xsynda.github.io/digitalschool.github.io/logo.png" />
   <title>Дневник · Электронная школа</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
@@ -797,11 +797,21 @@
     return `${dd}.${mm}.${yyyy}`;
   }
 
+  // Получаем понедельник "рабочей" недели.
+  // Если сегодня воскресенье — показываем следующую неделю (завтрашний понедельник).
   function getMondayOf(date) {
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
     const day = d.getDay();
-    const diff = (day === 0 ? -6 : 1 - day);
+
+    if (day === 0) {
+      // Воскресенье — берём следующий понедельник
+      d.setDate(d.getDate() + 1);
+      return d;
+    }
+
+    // Пн..Сб — обычное поведение
+    const diff = 1 - day;
     d.setDate(d.getDate() + diff);
     return d;
   }
