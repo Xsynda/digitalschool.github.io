@@ -382,11 +382,7 @@
         <div class="field">
           <label for="termSelect">Период</label>
           <select id="termSelect" class="select">
-            <option value="term1">I четверть</option>
-            <option value="term2">II четверть</option>
-            <option value="term3">III четверть</option>
-            <option value="term4">IV четверть</option>
-            <option value="year">Год</option>
+            <option value="">Загрузка...</option>
           </select>
         </div>
 
@@ -506,7 +502,6 @@
     let currentProfile = {};
     let isTeacher = false;
 
-    // Целевой ученик (для учителя — выбранный, для остальных — он сам)
     let targetUid = null;
 
     let schedule = [];
@@ -520,6 +515,12 @@
     let currentClassIndex = -1;
     let allUsers = {};
 
+    // ✅ Термины из /terms
+    let termsCache = {};
+
+    // Порядок, в котором показываем периоды в селекте
+    const TERM_ORDER = ["term1", "term2", "term3", "term4", "year"];
+
     /* ===== Утилиты ===== */
 
     function toArray(v) {
@@ -529,21 +530,52 @@
       return [];
     }
 
+    // ✅ Периоды берём из termsCache (загружен из /terms).
     function getTermBounds(termKey) {
-      const now = new Date();
-      const y = now.getFullYear();
-      const m = now.getMonth();
-      const startYear = m >= 8 ? y : y - 1;
-      const endYear = startYear + 1;
-
-      const map = {
-        term1: { name: "I четверть",   start: `01.09.${startYear}`, end: `26.10.${startYear}` },
-        term2: { name: "II четверть",  start: `05.11.${startYear}`, end: `28.12.${startYear}` },
-        term3: { name: "III четверть", start: `12.01.${endYear}`,   end: `22.03.${endYear}` },
-        term4: { name: "IV четверть",  start: `01.04.${endYear}`,   end: `25.05.${endYear}` },
-        year:  { name: "Год",          start: `01.09.${startYear}`, end: `25.05.${endYear}` }
+      const t = termsCache?.[termKey];
+      if (!t) return null;
+      return {
+        name: String(t.name || termKey),
+        start: String(t.start || ""),
+        end: String(t.end || "")
       };
-      return map[termKey];
+    }
+
+    // ✅ Заполняем селект периодов из termsCache.
+    // Показываем только те ключи, что реально есть в базе, в порядке TERM_ORDER.
+    // Если в базе есть ещё какие-то ключи — они тоже попадут в конец списка.
+    function fillTermSelect() {
+      const prev = termSelect.value;
+      termSelect.innerHTML = "";
+
+      const allKeys = Object.keys(termsCache || {}).filter(k => termsCache[k] && typeof termsCache[k] === "object");
+
+      // Сначала — известные в нужном порядке, затем — все остальные
+      const orderedKeys = [
+        ...TERM_ORDER.filter(k => allKeys.includes(k)),
+        ...allKeys.filter(k => !TERM_ORDER.includes(k))
+      ];
+
+      if (!orderedKeys.length) {
+        const o = document.createElement("option");
+        o.value = "";
+        o.textContent = "Периоды не найдены";
+        termSelect.appendChild(o);
+        termSelect.disabled = true;
+        return;
+      }
+
+      termSelect.disabled = false;
+      orderedKeys.forEach(key => {
+        const t = termsCache[key] || {};
+        const o = document.createElement("option");
+        o.value = key;
+        o.textContent = String(t.name || key);
+        termSelect.appendChild(o);
+      });
+
+      if (prev && orderedKeys.includes(prev)) termSelect.value = prev;
+      else termSelect.value = orderedKeys[0];
     }
 
     function hideLoadscreen() {
@@ -682,7 +714,6 @@
       return sum / cnt;
     }
 
-    // 3.50 -> 3, 3.51 -> 4
     function suggestFinal(avg) {
       if (avg === null || avg === undefined) return null;
       const rounded = Math.floor(avg + 0.5 - 1e-9);
@@ -849,7 +880,10 @@
     function updateCurrentInfo() {
       const bounds = getTermBounds(termSelect.value);
       const parts = [];
-      if (bounds) parts.push(`${bounds.name}: ${bounds.start} — ${bounds.end}`);
+      if (bounds) {
+        const range = [bounds.start, bounds.end].filter(Boolean).join(" — ");
+        parts.push(range ? `${bounds.name}: ${range}` : bounds.name);
+      }
 
       if (isTeacher) {
         const classText = teacherClassSelect.value
@@ -885,6 +919,15 @@
         if (diaryLink) diaryLink.classList.remove("hidden");
         if (journalLink) journalLink.classList.add("hidden");
       }
+    }
+
+    /* ===== Статус подтверждения ===== */
+
+    function getAcceptStatus(profile) {
+      const v = profile?.isAccepted;
+      if (v === true) return "accepted";
+      if (typeof v === "string" && v.trim().toLowerCase() === "откл") return "rejected";
+      return "pending";
     }
 
     /* ===== Резолверы ===== */
@@ -1054,9 +1097,11 @@
 
       setScheduleFromClass(schoolIdx, classIdxInSchool);
 
+      // ✅ Учитель видит только подтверждённых учеников
       const students = Object.entries(allUsers)
         .map(([uid, data]) => ({ uid, ...(data || {}) }))
         .filter(u => Number(u.status) !== 4)
+        .filter(u => getAcceptStatus(u) === "accepted")
         .filter(u => String(u.class || "").trim().toLowerCase() === className.toLowerCase())
         .sort((a, b) =>
           String(a.name || a.email || "").toLowerCase().localeCompare(String(b.name || b.email || "").toLowerCase())
@@ -1065,7 +1110,7 @@
       if (!students.length) {
         const o = document.createElement("option");
         o.value = "";
-        o.textContent = "В классе нет учеников";
+        o.textContent = "В классе нет подтверждённых учеников";
         teacherStudentSelect.appendChild(o);
         teacherStudentSelect.disabled = true;
         targetUid = null;
@@ -1085,6 +1130,17 @@
     }
 
     /* ===== Загрузка данных ===== */
+
+    async function loadTerms() {
+      try {
+        const snap = await get(ref(db, "terms"));
+        const raw = snap.exists() ? snap.val() : {};
+        termsCache = (raw && typeof raw === "object") ? raw : {};
+      } catch (e) {
+        console.error("Ошибка загрузки terms:", e);
+        termsCache = {};
+      }
+    }
 
     async function loadData(user) {
       const profileSnap = await get(ref(db, `users/${user.uid}`));
@@ -1135,10 +1191,20 @@
         const profile = profileSnap.exists() ? profileSnap.val() : {};
         currentProfile = profile;
 
+        // ✅ Проверка подтверждения аккаунта администратором
+        const acceptStatus = getAcceptStatus(profile);
+        if (acceptStatus !== "accepted") {
+          window.location.href = AUTH_URL;
+          return;
+        }
+
         user.displayName = profile.name || user.displayName || user.email || "Пользователь";
         renderHeader(user);
         updateNavLinks();
 
+        // ✅ Сначала тянем термины, потом заполняем селект, потом всё остальное
+        await loadTerms();
+        fillTermSelect();
         await loadData(user);
 
         updateCurrentInfo();

@@ -675,6 +675,8 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
+    const AUTH_URL = "auth.html";
+
     const loadscreen = document.getElementById("loadscreen");
     const userArea = document.getElementById("userArea");
     const profileModal = document.getElementById("profileModal");
@@ -971,6 +973,15 @@
       return currentProfile;
     }
 
+    /* ============ Статус подтверждения ============ */
+
+    function getAcceptStatus(profile) {
+      const v = profile?.isAccepted;
+      if (v === true) return "accepted";
+      if (typeof v === "string" && v.trim().toLowerCase() === "откл") return "rejected";
+      return "pending";
+    }
+
     /* ============ НОВОСТИ с пагинацией ============ */
 
     function renderNewsSlice() {
@@ -1111,7 +1122,7 @@
       currentUser = user;
 
       if (!user) {
-        window.location.href = "auth.html";
+        window.location.href = AUTH_URL;
         return;
       }
 
@@ -1122,6 +1133,23 @@
         console.error("load profile error:", error);
         currentProfile = {};
       }
+
+      // ✅ Проверяем статус подтверждения администратором
+      const acceptStatus = getAcceptStatus(currentProfile);
+
+      if (acceptStatus === "pending") {
+        // Аккаунт ещё не подтверждён → отправляем на экран ожидания в auth.html
+        window.location.href = AUTH_URL;
+        return;
+      }
+
+      if (acceptStatus === "rejected") {
+        // Аккаунт отклонён → отправляем на экран отклонения в auth.html
+        window.location.href = AUTH_URL;
+        return;
+      }
+
+      // acceptStatus === "accepted" — идём дальше
 
       if (currentProfile.name) {
         user.displayName = currentProfile.name;

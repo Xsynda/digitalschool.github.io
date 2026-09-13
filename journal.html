@@ -775,6 +775,14 @@
           return forms[2];
         }
 
+        // ✅ Статус подтверждения: accepted / pending / rejected
+        function getAcceptStatus(profile) {
+          const v = profile && profile.isAccepted;
+          if (v === true) return "accepted";
+          if (typeof v === "string" && v.trim().toLowerCase() === "откл") return "rejected";
+          return "pending";
+        }
+
         function renderHeader(user) {
           const name = currentProfile.name || (user && user.displayName) || (user && user.email) || "Пользователь";
           userArea.innerHTML =
@@ -863,6 +871,7 @@
           });
         }
 
+        // ✅ Учитель видит только подтверждённых учеников (isAccepted === true)
         function loadStudentsForClass(className) {
           return db.ref("users").once("value").then(function (snap) {
             const raw = snap.val() || {};
@@ -873,6 +882,9 @@
               const u = raw[uid];
               if (!u || typeof u !== "object") return;
               if (Number(u.status) === 4) return;
+
+              // 🔒 Неподтверждённые и отклонённые — скрыты от учителя
+              if (getAcceptStatus(u) !== "accepted") return;
 
               if (normalizeName(u.class) === targetClass) {
                 students.push(Object.assign({ uid: uid }, u));
@@ -1271,8 +1283,8 @@
             studentsContainer.innerHTML =
               '<div class="empty-state">' +
                 '<span class="material-symbols-outlined">person_off</span>' +
-                '<h3>В этом классе нет пользователей</h3>' +
-                '<div>Нужны пользователи (кроме учителей), у которых class = «' + escapeHtml(loadedClassInfo.className) + '»</div>' +
+                '<h3>В этом классе нет подтверждённых учеников</h3>' +
+                '<div>Учителю видны только ученики с подтверждённым аккаунтом</div>' +
               '</div>';
             return;
           }
@@ -1382,7 +1394,7 @@
                 'Дата: <b>' + escapeHtml(loadedDateStr) + '</b> · ' +
                 '<b>' + escapeHtml(pickInfo) + '</b>' +
               '</div>' +
-              '<div style="font-size:13px;color:#5f7696;">Пользователей: <b>' + loadedStudents.length + '</b></div>' +
+              '<div style="font-size:13px;color:#5f7696;">Учеников: <b>' + loadedStudents.length + '</b></div>' +
             '</div>' +
             '<div class="students-grid">' + studentsHtml + '</div>';
 
@@ -1461,7 +1473,7 @@
             renderStudents();
             updateHomeworkBlock();
 
-            let msg = "✅ Загружено: " + students.length + " " + declOfNum(students.length, ["человек", "человека", "человек"]);
+            let msg = "✅ Загружено: " + students.length + " " + declOfNum(students.length, ["ученик", "ученика", "учеников"]);
             if (loadedLessonIndices.length > 1) {
               msg += " · уроков с этим предметом: " + loadedLessonIndices.length;
             }
@@ -1501,9 +1513,18 @@
             const profile = snap.exists() ? snap.val() : {};
             currentProfile = profile;
 
+            // ✅ Сначала проверяем роль: только учитель (status 4)
             if (Number(profile.status) !== 4) {
               alert("Доступ только для учителя.");
               window.location.href = "index.html";
+              return;
+            }
+
+            // ✅ Проверка подтверждения аккаунта администратором
+            const acceptStatus = getAcceptStatus(profile);
+            if (acceptStatus !== "accepted") {
+              // pending / rejected → на auth.html, где покажутся соответствующие экраны
+              window.location.href = "auth.html";
               return;
             }
 

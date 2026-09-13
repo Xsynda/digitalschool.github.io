@@ -688,10 +688,10 @@
 
     /* ===== Пользователи ===== */
     .users-toolbar {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
       gap: 10px;
-      align-items: flex-end;
+      align-items: end;
       margin-bottom: 14px;
     }
 
@@ -699,8 +699,7 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
-      min-width: 160px;
-      flex: 1;
+      min-width: 0;
     }
 
     .users-toolbar .field label {
@@ -716,23 +715,22 @@
       background: #fff;
       border: 1px solid var(--border);
       border-radius: 18px;
-      padding: 14px 16px;
+      padding: 12px 14px;
       transition: .15s;
     }
 
     .user-card:hover { border-color: #c7d9f0; }
 
-    .user-card-head {
+    .user-card-main {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
     }
 
     .user-card-info {
       min-width: 0;
-      flex: 1;
+      flex: 1 1 auto;
     }
 
     .user-card-name {
@@ -740,38 +738,96 @@
       font-weight: 600;
       color: var(--text);
       word-break: break-word;
+      line-height: 1.3;
+    }
+
+    .user-card-email {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 2px;
+      word-break: break-all;
     }
 
     .user-card-meta {
       font-size: 12px;
       color: var(--text-soft);
-      margin-top: 4px;
+      margin-top: 6px;
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 4px;
       align-items: center;
     }
 
     .user-card-meta .chip {
       background: #eef3fa;
-      padding: 2px 10px;
+      padding: 2px 8px;
       border-radius: 40px;
       font-size: 11px;
       color: #3d5270;
+      line-height: 1.4;
+      white-space: nowrap;
     }
 
     .user-card-meta .chip.status-student { background: var(--blue-soft); color: var(--blue); }
     .user-card-meta .chip.status-admin { background: #ffe0b2; color: #b45309; }
     .user-card-meta .chip.status-classadmin { background: #f0e0ff; color: #7c3aed; }
+    .user-card-meta .chip.status-teacher { background: #dcfce7; color: #166534; }
 
-    .user-card-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .user-card-meta .chip.accept-pending { background: #fff7e6; color: #b45309; }
+    .user-card-meta .chip.accept-rejected { background: #ffe5e5; color: #b91c1c; }
 
-    .user-card-email {
-      font-size: 12px;
-      color: var(--text-soft);
-      margin-top: 3px;
-      word-break: break-all;
+    .user-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
     }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1.5px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: .15s;
+      background: #f0f4fe;
+      color: #1f2b48;
+      flex-shrink: 0;
+      padding: 0;
+    }
+
+    .icon-btn:hover { transform: scale(.95); }
+
+    .icon-btn .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    .icon-btn.accept {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+    .icon-btn.accept:hover { background: #d6ecdf; }
+
+    .icon-btn.reject {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+    .icon-btn.reject:hover { background: #ffdada; }
+
+    .icon-btn.edit {
+      background: #fff7e6;
+      color: #b45309;
+    }
+    .icon-btn.edit:hover { background: #ffedc7; }
+
+    .icon-btn.status {
+      background: #eef0ff;
+      color: #4f46e5;
+    }
+    .icon-btn.status:hover { background: #e0e3ff; }
 
     @media (max-width: 900px) {
       .week-days { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -867,7 +923,17 @@
       .modal-actions .btn-console { width: 100%; }
       .btn-console { min-height: 40px; }
 
-      .users-toolbar .field { min-width: 0; flex: 1 1 100%; }
+      .users-toolbar { grid-template-columns: 1fr; }
+
+      .user-card-main {
+        align-items: flex-start;
+      }
+
+      .user-card-actions {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        max-width: 92px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -1035,7 +1101,7 @@
             </select>
           </div>
 
-          <div class="field" style="flex: 2;">
+          <div class="field">
             <label>Поиск</label>
             <input type="text" id="usersSearchInput" class="input" placeholder="Имя, email, школа или класс..." />
           </div>
@@ -1232,9 +1298,56 @@
     </div>
   </div>
 
+  <!-- Модалка: отклонение пользователя -->
+  <div class="modal-overlay" id="rejectUserModal">
+    <div class="modal">
+      <h2>⛔ Отклонить пользователя</h2>
+      <div class="modal-sub" id="rejectUserSub">Укажите причину отклонения.</div>
+      <label class="form-label">Причина</label>
+      <textarea class="input" id="rejectUserReason" rows="3" placeholder="Например: неверные данные ученика"></textarea>
+      <div id="rejectUserMessage" class="console-message"></div>
+      <div class="modal-actions">
+        <button class="btn-console btn-console-outline close-modal">Отмена</button>
+        <button class="btn-console btn-console-danger" id="confirmRejectUserBtn">⛔ Отклонить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка: смена статуса с паролем -->
+  <div class="modal-overlay" id="changeStatusModal">
+    <div class="modal">
+      <h2>🔐 Изменить статус аккаунта</h2>
+      <div class="modal-sub" id="changeStatusSub">Выберите новый статус и подтвердите паролем администратора.</div>
+
+      <label class="form-label">Новый статус</label>
+      <select class="input" id="changeStatusSelect">
+        <option value="0">Ученик (0)</option>
+        <option value="1">Ученик (1)</option>
+        <option value="2">Администратор (2)</option>
+        <option value="3">Администратор класса (3)</option>
+        <option value="4">Учитель (4)</option>
+      </select>
+
+      <label class="form-label" style="margin-top:12px;">Ваш пароль</label>
+      <input class="input" id="changeStatusPassword" type="password" placeholder="Пароль администратора" />
+
+      <div id="changeStatusMessage" class="console-message"></div>
+
+      <div class="modal-actions">
+        <button class="btn-console btn-console-outline close-modal">Отмена</button>
+        <button class="btn-console btn-console-primary" id="confirmChangeStatusBtn">💾 Применить</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      EmailAuthProvider,
+      reauthenticateWithCredential
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
     import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -1293,6 +1406,9 @@
 
     let usersCache = [];
     let editingUserUid = null;
+
+    let rejectingUserUid = null;
+    let changingStatusUid = null;
 
     let showPastWeeks = false;
     let pastWeeksShown = 2;
@@ -1482,6 +1598,26 @@
       } catch {
         return { status: 0 };
       }
+    }
+
+    /* ============ Статус подтверждения ============ */
+
+    function getAcceptStatus(profile) {
+      const v = profile?.isAccepted;
+      if (v === true) return "accepted";
+      if (typeof v === "string" && v.trim().toLowerCase() === "откл") return "rejected";
+      return "pending";
+    }
+
+    function getAcceptBadge(profile) {
+      const state = getAcceptStatus(profile);
+      if (state === "pending") {
+        return `<span class="chip accept-pending">🟡 Ожидает</span>`;
+      }
+      if (state === "rejected") {
+        return `<span class="chip accept-rejected">🔴 Отклонён</span>`;
+      }
+      return "";
     }
 
     function applyAccessRights(profile = {}) {
@@ -2986,6 +3122,7 @@
       const s = Number(status);
       if (s === 2) return { label: "Администратор", cls: "status-admin" };
       if (s === 3) return { label: "Администратор класса", cls: "status-classadmin" };
+      if (s === 4) return { label: "Учитель", cls: "status-teacher" };
       return { label: "Ученик", cls: "status-student" };
     }
 
@@ -3081,21 +3218,45 @@
         const email = user.email || "—";
         const school = user.school || "—";
         const cls = user.class || "—";
+        const acceptBadge = getAcceptBadge(user);
+        const state = getAcceptStatus(user);
+
+        // ✅ Подтвердить — показываем только для pending и rejected
+        const acceptBtn = (state === "pending" || state === "rejected")
+          ? `<button class="icon-btn accept accept-user-btn" data-uid="${escapeHtml(user.uid)}" title="Подтвердить">
+               <span class="material-symbols-outlined">check</span>
+             </button>`
+          : "";
+
+        // ❌ Отклонить — только для pending (нельзя отклонить уже подтверждённого или уже отклонённого)
+        const rejectBtn = (state === "pending")
+          ? `<button class="icon-btn reject reject-user-btn" data-uid="${escapeHtml(user.uid)}" title="Отклонить">
+               <span class="material-symbols-outlined">close</span>
+             </button>`
+          : "";
 
         return `
           <div class="user-card" data-uid="${escapeHtml(user.uid)}">
-            <div class="user-card-head">
+            <div class="user-card-main">
               <div class="user-card-info">
                 <div class="user-card-name">${escapeHtml(name)}</div>
                 <div class="user-card-email">${escapeHtml(email)}</div>
                 <div class="user-card-meta">
                   <span class="chip ${status.cls}">${status.label}</span>
+                  ${acceptBadge}
                   <span class="chip">🏫 ${escapeHtml(school)}</span>
                   <span class="chip">📚 ${escapeHtml(cls)}</span>
                 </div>
               </div>
               <div class="user-card-actions">
-                <button class="btn-console btn-console-warning edit-user-btn" data-uid="${escapeHtml(user.uid)}">✏️ Изменить</button>
+                ${acceptBtn}
+                ${rejectBtn}
+                <button class="icon-btn status change-status-btn" data-uid="${escapeHtml(user.uid)}" title="Изменить статус">
+                  <span class="material-symbols-outlined">lock</span>
+                </button>
+                <button class="icon-btn edit edit-user-btn" data-uid="${escapeHtml(user.uid)}" title="Редактировать">
+                  <span class="material-symbols-outlined">edit</span>
+                </button>
               </div>
             </div>
           </div>
@@ -3103,12 +3264,158 @@
       }).join("");
 
       list.querySelectorAll(".edit-user-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const uid = btn.dataset.uid;
-          openEditUser(uid);
-        });
+        btn.addEventListener("click", () => openEditUser(btn.dataset.uid));
+      });
+
+      list.querySelectorAll(".accept-user-btn").forEach((btn) => {
+        btn.addEventListener("click", () => acceptUser(btn.dataset.uid));
+      });
+
+      list.querySelectorAll(".reject-user-btn").forEach((btn) => {
+        btn.addEventListener("click", () => openRejectUser(btn.dataset.uid));
+      });
+
+      list.querySelectorAll(".change-status-btn").forEach((btn) => {
+        btn.addEventListener("click", () => openChangeStatus(btn.dataset.uid));
       });
     }
+
+    async function acceptUser(uid) {
+      if (!uid) return;
+      if (!confirm("Подтвердить этого пользователя?")) return;
+      try {
+        await update(ref(db, `users/${uid}`), {
+          isAccepted: true,
+          rejectReason: null,
+          acceptedAt: new Date().toISOString()
+        });
+        const idx = usersCache.findIndex((u) => u.uid === uid);
+        if (idx !== -1) {
+          usersCache[idx] = { ...usersCache[idx], isAccepted: true, rejectReason: null };
+        }
+        renderUsersList();
+      } catch (e) {
+        alert("Ошибка подтверждения: " + e.message);
+      }
+    }
+
+    function openRejectUser(uid) {
+      const user = usersCache.find((u) => u.uid === uid);
+      if (!user) return;
+
+      // Защита: нельзя отклонить уже подтверждённого
+      if (getAcceptStatus(user) === "accepted") {
+        alert("Нельзя отклонить уже подтверждённый аккаунт.");
+        return;
+      }
+      if (getAcceptStatus(user) === "rejected") {
+        alert("Этот аккаунт уже отклонён.");
+        return;
+      }
+
+      rejectingUserUid = uid;
+
+      document.getElementById("rejectUserSub").textContent =
+        `Пользователь: ${user.name || user.email || uid}`;
+      document.getElementById("rejectUserReason").value = "";
+
+      const msg = document.getElementById("rejectUserMessage");
+      msg.textContent = "";
+      msg.className = "console-message";
+
+      openModal("rejectUserModal");
+    }
+
+    document.getElementById("confirmRejectUserBtn").addEventListener("click", async () => {
+      if (!rejectingUserUid) return;
+      const reason = document.getElementById("rejectUserReason").value.trim();
+      const msg = document.getElementById("rejectUserMessage");
+
+      if (!reason) {
+        showMessage(msg, "⚠️ Укажите причину отклонения", "error");
+        return;
+      }
+
+      try {
+        await update(ref(db, `users/${rejectingUserUid}`), {
+          isAccepted: "откл",
+          rejectReason: reason,
+          rejectedAt: new Date().toISOString()
+        });
+        const idx = usersCache.findIndex((u) => u.uid === rejectingUserUid);
+        if (idx !== -1) {
+          usersCache[idx] = { ...usersCache[idx], isAccepted: "откл", rejectReason: reason };
+        }
+        closeAllModals();
+        renderUsersList();
+      } catch (e) {
+        showMessage(msg, "❌ Ошибка: " + e.message, "error");
+      }
+    });
+
+    function openChangeStatus(uid) {
+      const user = usersCache.find((u) => u.uid === uid);
+      if (!user) return;
+      changingStatusUid = uid;
+
+      document.getElementById("changeStatusSub").textContent =
+        `Пользователь: ${user.name || user.email || uid}`;
+
+      const sel = document.getElementById("changeStatusSelect");
+      sel.value = String(Number(user.status ?? 0));
+
+      document.getElementById("changeStatusPassword").value = "";
+
+      const msg = document.getElementById("changeStatusMessage");
+      msg.textContent = "";
+      msg.className = "console-message";
+
+      openModal("changeStatusModal");
+    }
+
+    document.getElementById("confirmChangeStatusBtn").addEventListener("click", async () => {
+      if (!changingStatusUid) return;
+
+      const msg = document.getElementById("changeStatusMessage");
+      const newStatus = Number(document.getElementById("changeStatusSelect").value);
+      const password = document.getElementById("changeStatusPassword").value;
+
+      if (!password) {
+        showMessage(msg, "⚠️ Введите пароль", "error");
+        return;
+      }
+
+      const currentUser = auth.currentUser;
+      if (!currentUser || !currentUser.email) {
+        showMessage(msg, "❌ Не удалось определить текущего администратора", "error");
+        return;
+      }
+
+      try {
+        const cred = EmailAuthProvider.credential(currentUser.email, password);
+        await reauthenticateWithCredential(currentUser, cred);
+      } catch (e) {
+        showMessage(msg, "❌ Неверный пароль", "error");
+        return;
+      }
+
+      try {
+        await update(ref(db, `users/${changingStatusUid}`), {
+          status: newStatus,
+          statusUpdatedAt: new Date().toISOString()
+        });
+
+        const idx = usersCache.findIndex((u) => u.uid === changingStatusUid);
+        if (idx !== -1) {
+          usersCache[idx] = { ...usersCache[idx], status: newStatus };
+        }
+
+        closeAllModals();
+        renderUsersList();
+      } catch (e) {
+        showMessage(msg, "❌ Ошибка: " + e.message, "error");
+      }
+    });
 
     function fillUserSchoolSelect(selectedSchoolName) {
       const sel = document.getElementById("editUserSchool");
@@ -3289,16 +3596,25 @@
         const status = Number(profile.status ?? 0);
         const isFullAdmin = status === 2;
         const isLocalAdminUser = status === 3;
+        const acceptStatus = getAcceptStatus(profile);
 
+        // Не админов не пускаем в консоль
         if (!isFullAdmin && !isLocalAdminUser) {
           alert("Доступ только для администратора.");
           window.location.href = "index.html";
           return;
         }
 
+        // Проверка подтверждения аккаунта (как в index.html):
+        // pending / rejected → на auth.html, где покажутся экраны ожидания/отклонения
+        if (!isFullAdmin && acceptStatus !== "accepted") {
+          window.location.href = AUTH_URL;
+          return;
+        }
+
         await loadSchools();
 
-        if (status === 2) {
+        if (isFullAdmin) {
           await renderNewsList();
           await loadUsers();
           renderUsersList();

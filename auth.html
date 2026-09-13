@@ -25,6 +25,85 @@
       padding: 24px;
     }
 
+    /* ===== Loadscreen ===== */
+    #loadscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: #f8faff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+
+    #loadscreen.hidden-loader {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-logo-wrap {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: loader-pulse 1.6s ease-in-out infinite;
+    }
+
+    .loader-logo-img {
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      object-fit: cover;
+      background: #ffffff;
+      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+      display: block;
+    }
+
+    .loader-logo-fallback {
+      display: none;
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      background: #2a7de1;
+      color: #fff;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      font-weight: 700;
+      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+    }
+
+    @keyframes loader-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    .loader-text {
+      font-size: 15px;
+      color: #5f7696;
+      font-weight: 500;
+      letter-spacing: .2px;
+    }
+
+    .loader-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #dbe7f7;
+      border-top-color: #2a7de1;
+      border-radius: 50%;
+      animation: loader-spin .8s linear infinite;
+    }
+
+    @keyframes loader-spin {
+      to { transform: rotate(360deg); }
+    }
+
     .auth-card {
       max-width: 460px;
       width: 100%;
@@ -405,6 +484,166 @@
 
     .reset-icon .material-symbols-outlined { font-size: 38px; }
 
+    /* ===== Экран ожидания подтверждения ===== */
+    .pending-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e5effb 0%, #d5e6fb 100%);
+      color: #2a7de1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      animation: pending-pulse 2s ease-in-out infinite;
+    }
+
+    .pending-icon .material-symbols-outlined { font-size: 44px; }
+
+    @keyframes pending-pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(42,125,225,.35); }
+      50% { transform: scale(1.04); box-shadow: 0 0 0 14px rgba(42,125,225,0); }
+    }
+
+    .pending-checklist {
+      background: #f9fcff;
+      border: 1px solid #eef3fa;
+      border-radius: 22px;
+      padding: 16px 18px;
+      margin: 18px 0 22px;
+      font-size: 14px;
+      color: #3d5270;
+      line-height: 1.55;
+    }
+
+    .pending-checklist .check-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .pending-checklist .check-item:last-child { margin-bottom: 0; }
+
+    .pending-checklist .check-bullet {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #e5effb;
+      color: #2a7de1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    .pending-checklist b.telegram-tag {
+      color: #2a7de1;
+      font-weight: 600;
+    }
+
+    .pending-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ===== Экран отклонения ===== */
+    .rejected-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffe0e0 0%, #ffd0d0 100%);
+      color: #c74a4a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .rejected-icon .material-symbols-outlined { font-size: 46px; }
+
+    .rejected-note {
+      background: #fff0f0;
+      border: 1px solid #ffd4d4;
+      border-radius: 22px;
+      padding: 16px 18px;
+      margin: 18px 0 22px;
+      font-size: 14px;
+      color: #8a3030;
+      line-height: 1.55;
+    }
+
+    .rejected-note .note-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .rejected-note .note-item:last-child { margin-bottom: 0; }
+
+    .rejected-note .note-bullet {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ffd9d9;
+      color: #c74a4a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    .rejected-note b.telegram-tag {
+      color: #c74a4a;
+      font-weight: 600;
+    }
+
+    /* ===== Блок с причиной отклонения ===== */
+    .rejected-reason {
+      background: #fff0f0;
+      border: 1.5px dashed #f0b6b6;
+      border-radius: 20px;
+      padding: 14px 16px;
+      margin: 0 0 18px;
+    }
+
+    .rejected-reason-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #c74a4a;
+      margin-bottom: 8px;
+    }
+
+    .rejected-reason-label .material-symbols-outlined { font-size: 18px; }
+
+    .rejected-reason-text {
+      font-size: 14px;
+      color: #6a2020;
+      line-height: 1.55;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .rejected-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     @media (max-width: 480px) {
       .auth-card { padding: 28px 20px 32px; border-radius: 32px; }
       .logo-text { font-size: 22px; }
@@ -413,12 +652,29 @@
       .verify-icon, .reset-icon { width: 60px; height: 60px; border-radius: 18px; }
       .verify-icon .material-symbols-outlined,
       .reset-icon .material-symbols-outlined { font-size: 30px; }
-      .success-icon { width: 68px; height: 68px; }
-      .success-icon .material-symbols-outlined { font-size: 38px; }
+      .success-icon, .pending-icon, .rejected-icon { width: 68px; height: 68px; }
+      .success-icon .material-symbols-outlined,
+      .pending-icon .material-symbols-outlined,
+      .rejected-icon .material-symbols-outlined { font-size: 38px; }
     }
   </style>
 </head>
 <body>
+
+  <!-- ===== Loadscreen ===== -->
+  <div id="loadscreen">
+    <div class="loader-logo-wrap">
+      <img
+        src="logo.png"
+        alt="Электронная школа"
+        class="loader-logo-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+      <div class="loader-logo-fallback">Ш</div>
+    </div>
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Загрузка данных...</div>
+  </div>
 
   <div class="auth-card" id="authCard">
     <div class="logo-area">
@@ -556,7 +812,85 @@
       <button class="btn btn-success" id="saveProfileBtn">Сохранить профиль</button>
     </div>
 
-    <!-- === ЭКРАН 5: Сброс пароля === -->
+    <!-- === ЭКРАН 5: Ожидание подтверждения администратором === -->
+    <div id="pendingBlock" class="hidden">
+      <div class="pending-icon">
+        <span class="material-symbols-outlined">hourglass_top</span>
+      </div>
+
+      <div class="auth-title">Ожидайте подтверждения</div>
+      <div class="auth-sub">
+        Дождитесь, пока ваш аккаунт подтвердит администратор.
+        Обычно это происходит в течение пары часов.
+      </div>
+
+      <div class="pending-checklist">
+        <div class="check-item">
+          <div class="check-bullet">1</div>
+          <div>Администратор проверит ваш аккаунт и выдаст доступ.</div>
+        </div>
+        <div class="check-item">
+          <div class="check-bullet">2</div>
+          <div>Обычно это занимает <b>до нескольких часов</b>.</div>
+        </div>
+        <div class="check-item">
+          <div class="check-bullet">3</div>
+          <div>Если подтверждение затянулось — напишите <b class="telegram-tag">@itsXsynda</b> в Telegram.</div>
+        </div>
+      </div>
+
+      <div class="pending-actions">
+        <button class="btn btn-success" id="checkAcceptedBtn">Проверить статус</button>
+        <button class="btn btn-outline" id="logoutFromPendingBtn">Выйти из аккаунта</button>
+      </div>
+
+      <div id="pendingError" class="error-msg hidden"></div>
+      <div id="pendingSuccess" class="success-msg hidden"></div>
+      <div id="pendingInfo" class="info-msg hidden"></div>
+    </div>
+
+    <!-- === ЭКРАН 5б: Отклонён === -->
+    <div id="rejectedBlock" class="hidden">
+      <div class="rejected-icon">
+        <span class="material-symbols-outlined">block</span>
+      </div>
+
+      <div class="auth-title">Аккаунт отклонён</div>
+      <div class="auth-sub">
+        Администратор отклонил ваш аккаунт. Скорее всего, при регистрации были указаны
+        некорректные данные или нарушены правила школы.
+      </div>
+
+      <!-- ✅ Причина отклонения — показывается, если в профиле есть reason -->
+      <div id="rejectedReasonBlock" class="rejected-reason hidden">
+        <div class="rejected-reason-label">
+          <span class="material-symbols-outlined">report</span>
+          Причина отказа
+        </div>
+        <div class="rejected-reason-text" id="rejectedReasonText"></div>
+      </div>
+
+      <div class="rejected-note">
+        <div class="note-item">
+          <div class="note-bullet">!</div>
+          <div>Аккаунт <b>будет удалён через 3 дня</b>.</div>
+        </div>
+        <div class="note-item">
+          <div class="note-bullet">?</div>
+          <div>Если вы считаете это ошибкой — напишите <b class="telegram-tag">@itsXsynda</b> в Telegram.</div>
+        </div>
+        <div class="note-item">
+          <div class="note-bullet">i</div>
+          <div>Повторная регистрация с тем же email может быть недоступна.</div>
+        </div>
+      </div>
+
+      <div class="rejected-actions">
+        <button class="btn btn-outline" id="logoutFromRejectedBtn">Выйти из аккаунта</button>
+      </div>
+    </div>
+
+    <!-- === ЭКРАН 6: Сброс пароля === -->
     <div id="resetBlock" class="hidden">
       <div class="reset-icon">
         <span class="material-symbols-outlined">lock_reset</span>
@@ -615,10 +949,13 @@
 
     const REDIRECT_URL = "index.html";
 
+    const loadscreen = document.getElementById("loadscreen");
     const authFormBlock = document.getElementById("authFormBlock");
     const verifyBlock = document.getElementById("verifyBlock");
     const verifiedBlock = document.getElementById("verifiedBlock");
     const profileSetupBlock = document.getElementById("profileSetupBlock");
+    const pendingBlock = document.getElementById("pendingBlock");
+    const rejectedBlock = document.getElementById("rejectedBlock");
     const resetBlock = document.getElementById("resetBlock");
 
     const formTitle = document.getElementById("formTitle");
@@ -655,6 +992,16 @@
     const profileError = document.getElementById("profileError");
     const profileInfo = document.getElementById("profileInfo");
 
+    const checkAcceptedBtn = document.getElementById("checkAcceptedBtn");
+    const logoutFromPendingBtn = document.getElementById("logoutFromPendingBtn");
+    const pendingError = document.getElementById("pendingError");
+    const pendingSuccess = document.getElementById("pendingSuccess");
+    const pendingInfo = document.getElementById("pendingInfo");
+
+    const logoutFromRejectedBtn = document.getElementById("logoutFromRejectedBtn");
+    const rejectedReasonBlock = document.getElementById("rejectedReasonBlock");
+    const rejectedReasonText = document.getElementById("rejectedReasonText");
+
     const resetEmailInput = document.getElementById("resetEmailInput");
     const resetPasswordBtn = document.getElementById("resetPasswordBtn");
     const backFromResetBtn = document.getElementById("backFromResetBtn");
@@ -666,6 +1013,18 @@
     let schoolOptions = [];
     let classOptions = [];
     let schoolsRawData = [];
+    let loadscreenHidden = false;
+
+    function hideLoadscreen() {
+      if (loadscreenHidden || !loadscreen) return;
+      loadscreenHidden = true;
+      loadscreen.classList.add("hidden-loader");
+      setTimeout(() => {
+        if (loadscreen && loadscreen.parentNode) {
+          loadscreen.parentNode.removeChild(loadscreen);
+        }
+      }, 400);
+    }
 
     function redirectToMain() {
       window.location.href = REDIRECT_URL;
@@ -676,6 +1035,7 @@
         authError, authSuccess, authInfo,
         verifyError, verifySuccess, verifyInfo,
         profileError, profileInfo,
+        pendingError, pendingSuccess, pendingInfo,
         resetError, resetSuccess, resetInfo
       ].forEach(el => el && el.classList.add("hidden"));
     }
@@ -846,6 +1206,8 @@
       verifyBlock.classList.add("hidden");
       verifiedBlock.classList.add("hidden");
       profileSetupBlock.classList.add("hidden");
+      pendingBlock.classList.add("hidden");
+      rejectedBlock.classList.add("hidden");
       resetBlock.classList.add("hidden");
       clearAllMessages();
       loadSavedEmail();
@@ -857,6 +1219,8 @@
       verifyBlock.classList.remove("hidden");
       verifiedBlock.classList.add("hidden");
       profileSetupBlock.classList.add("hidden");
+      pendingBlock.classList.add("hidden");
+      rejectedBlock.classList.add("hidden");
       resetBlock.classList.add("hidden");
       clearAllMessages();
       verifyEmailText.textContent = email || "—";
@@ -867,6 +1231,8 @@
       verifyBlock.classList.add("hidden");
       verifiedBlock.classList.remove("hidden");
       profileSetupBlock.classList.add("hidden");
+      pendingBlock.classList.add("hidden");
+      rejectedBlock.classList.add("hidden");
       resetBlock.classList.add("hidden");
       clearAllMessages();
       verifiedEmailText.textContent = email || "—";
@@ -877,10 +1243,47 @@
       verifyBlock.classList.add("hidden");
       verifiedBlock.classList.add("hidden");
       profileSetupBlock.classList.remove("hidden");
+      pendingBlock.classList.add("hidden");
+      rejectedBlock.classList.add("hidden");
       resetBlock.classList.add("hidden");
       clearAllMessages();
       await loadProfileOptions();
       profileNameInput.focus();
+    }
+
+    function showPendingScreen() {
+      authFormBlock.classList.add("hidden");
+      verifyBlock.classList.add("hidden");
+      verifiedBlock.classList.add("hidden");
+      profileSetupBlock.classList.add("hidden");
+      pendingBlock.classList.remove("hidden");
+      rejectedBlock.classList.add("hidden");
+      resetBlock.classList.add("hidden");
+      clearAllMessages();
+    }
+
+    // ✅ Экран отклонения с опциональным reason
+    function showRejectedScreen(profile) {
+      authFormBlock.classList.add("hidden");
+      verifyBlock.classList.add("hidden");
+      verifiedBlock.classList.add("hidden");
+      profileSetupBlock.classList.add("hidden");
+      pendingBlock.classList.add("hidden");
+      rejectedBlock.classList.remove("hidden");
+      resetBlock.classList.add("hidden");
+      clearAllMessages();
+
+      const reason = profile && typeof profile.reason === "string"
+        ? profile.reason.trim()
+        : "";
+
+      if (reason) {
+        rejectedReasonText.textContent = reason;
+        rejectedReasonBlock.classList.remove("hidden");
+      } else {
+        rejectedReasonText.textContent = "";
+        rejectedReasonBlock.classList.add("hidden");
+      }
     }
 
     function showResetScreen() {
@@ -888,6 +1291,8 @@
       verifyBlock.classList.add("hidden");
       verifiedBlock.classList.add("hidden");
       profileSetupBlock.classList.add("hidden");
+      pendingBlock.classList.add("hidden");
+      rejectedBlock.classList.add("hidden");
       resetBlock.classList.remove("hidden");
       clearAllMessages();
       resetEmailInput.value = emailInput.value.trim();
@@ -923,9 +1328,10 @@
           status: 1,
           profileComplete: true,
           emailVerified: true,
+          isAccepted: false,
           createdAt: new Date().toISOString()
         });
-        redirectToMain();
+        showPendingScreen();
       } catch (error) {
         console.error("Ошибка сохранения профиля:", error);
         showMessage(profileError, "❌ Не удалось сохранить профиль. Попробуйте ещё раз.");
@@ -935,6 +1341,69 @@
     }
 
     saveProfileBtn.addEventListener("click", saveProfile);
+
+    /* ============ Экран ожидания ============ */
+
+    function getAcceptStatus(profile) {
+      const v = profile?.isAccepted;
+      if (v === true) return "accepted";
+      if (typeof v === "string" && v.trim().toLowerCase() === "откл") return "rejected";
+      return "pending";
+    }
+
+    async function checkAcceptedStatus() {
+      const user = auth.currentUser;
+      if (!user) {
+        showMessage(pendingError, "⚠️ Сессия истекла. Войдите заново.");
+        return;
+      }
+
+      clearAllMessages();
+      checkAcceptedBtn.disabled = true;
+      checkAcceptedBtn.textContent = "⏳ Проверка...";
+
+      try {
+        const snap = await get(ref(db, "users/" + user.uid));
+        const profile = snap.val() || {};
+        const status = getAcceptStatus(profile);
+
+        if (status === "accepted") {
+          showMessage(pendingSuccess, "✅ Ваш аккаунт подтверждён! Переходим...");
+          setTimeout(() => redirectToMain(), 800);
+        } else if (status === "rejected") {
+          showRejectedScreen(profile);
+        } else {
+          showMessage(pendingInfo, "⏳ Аккаунт пока не подтверждён. Подождите немного и попробуйте ещё раз.");
+          checkAcceptedBtn.disabled = false;
+          checkAcceptedBtn.textContent = "Проверить статус";
+        }
+      } catch (error) {
+        console.error("Ошибка проверки статуса:", error);
+        showMessage(pendingError, "❌ Не удалось проверить статус. Попробуйте ещё раз.");
+        checkAcceptedBtn.disabled = false;
+        checkAcceptedBtn.textContent = "Проверить статус";
+      }
+    }
+
+    checkAcceptedBtn.addEventListener("click", checkAcceptedStatus);
+
+    logoutFromPendingBtn.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+      } catch (e) {
+        console.warn(e);
+      }
+      showAuthForm();
+    });
+
+    logoutFromRejectedBtn.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+      } catch (e) {
+        console.warn(e);
+      }
+      showAuthForm();
+    });
 
     /* ============ Вход / Регистрация ============ */
 
@@ -978,6 +1447,7 @@
               status: 1,
               profileComplete: false,
               emailVerified: false,
+              isAccepted: false,
               createdAt: new Date().toISOString()
             });
           } catch (dbError) {
@@ -1041,8 +1511,14 @@
       try {
         const snap = await get(ref(db, "users/" + user.uid));
         const profile = snap.val() || {};
-        if (profile.profileComplete || (profile.name && profile.school && profile.class)) {
+        const status = getAcceptStatus(profile);
+
+        if (status === "accepted") {
           redirectToMain();
+        } else if (status === "rejected") {
+          showRejectedScreen(profile);
+        } else if (profile.profileComplete || (profile.name && profile.school && profile.class)) {
+          showPendingScreen();
         } else {
           await showProfileSetup();
         }
@@ -1141,32 +1617,52 @@
     });
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        showAuthForm();
-        return;
-      }
-
-      const isEmailVerified = user.emailVerified;
-
-      let profile = {};
       try {
-        const snap = await get(ref(db, "users/" + user.uid));
-        profile = snap.val() || {};
-      } catch (e) {}
+        if (!user) {
+          showAuthForm();
+          return;
+        }
 
-      if (!isEmailVerified) {
-        if (!verifyBlock.classList.contains("hidden")) return;
-        showVerifyScreen(user.email || "—");
-        return;
+        const isEmailVerified = user.emailVerified;
+
+        let profile = {};
+        try {
+          const snap = await get(ref(db, "users/" + user.uid));
+          profile = snap.val() || {};
+        } catch (e) {}
+
+        if (!isEmailVerified) {
+          if (!verifyBlock.classList.contains("hidden")) return;
+          showVerifyScreen(user.email || "—");
+          return;
+        }
+
+        // Если профиль ещё не заполнен
+        if (!profile.profileComplete && !(profile.name && profile.school && profile.class)) {
+          if (!profileSetupBlock.classList.contains("hidden")) return;
+          await showProfileSetup();
+          return;
+        }
+
+        const status = getAcceptStatus(profile);
+
+        if (status === "accepted") {
+          redirectToMain();
+          return;
+        }
+
+        if (status === "rejected") {
+          if (!rejectedBlock.classList.contains("hidden")) return;
+          showRejectedScreen(profile);
+          return;
+        }
+
+        // pending
+        if (!pendingBlock.classList.contains("hidden")) return;
+        showPendingScreen();
+      } finally {
+        hideLoadscreen();
       }
-
-      if (!profile.profileComplete && !(profile.name && profile.school && profile.class)) {
-        if (!verifiedBlock.classList.contains("hidden")) return;
-        await showProfileSetup();
-        return;
-      }
-
-      redirectToMain();
     });
 
     updateFormMode();

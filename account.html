@@ -155,6 +155,8 @@
     .field-group input:focus { outline: none; border-color: #2a7de1; box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10); }
     .field-group input:disabled { background: #f5f8fc; color: #556a8c; cursor: not-allowed; opacity: 0.9; }
 
+    .hint { font-size: 12px; color: #889bb3; margin-top: 6px; line-height: 1.5; }
+
     /* Список чипов (классы/предметы) */
     .chip-list {
       display: flex;
@@ -342,6 +344,8 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
+    const AUTH_URL = "auth.html";
+
     const loadscreen = document.getElementById("loadscreen");
     const profileContainer = document.getElementById("profileContainer");
     const userArea = document.getElementById("userArea");
@@ -359,7 +363,6 @@
     }
 
     // Учитель (status 4): показываем "Журнал", скрываем "Дневник".
-    // Все остальные: показываем "Дневник", скрываем "Журнал".
     function updateTeacherLinks(profileData) {
       const status = Number(profileData?.status ?? 1);
       const isTeacher = status === 4;
@@ -371,6 +374,14 @@
         if (journalLink) journalLink.classList.add("hidden");
         if (diaryLink) diaryLink.classList.remove("hidden");
       }
+    }
+
+    // Статус подтверждения администратором
+    function getAcceptStatus(profile) {
+      const v = profile?.isAccepted;
+      if (v === true) return "accepted";
+      if (typeof v === "string" && v.trim().toLowerCase() === "откл") return "rejected";
+      return "pending";
     }
 
     function escapeHtml(value) {
@@ -419,7 +430,6 @@
       return map[Number(status)] || { title: "Неизвестно" };
     }
 
-    // Приводим schools к массиву (RTDB может хранить как объект)
     function normalizeSchools(raw) {
       if (!raw) return [];
       if (Array.isArray(raw)) return raw.filter(Boolean);
@@ -523,6 +533,7 @@
       await reauthenticateWithCredential(user, credential);
     }
 
+    // ✅ Обновляем имя и СБРАСЫВАЕМ подтверждение
     async function updateCurrentName(newName) {
       const user = auth.currentUser;
       if (!user) throw new Error("Пользователь не найден.");
@@ -533,7 +544,11 @@
       await updateProfile(user, { displayName: trimmed });
 
       const profileRef = ref(db, `users/${user.uid}`);
-      await update(profileRef, { name: trimmed });
+      await update(profileRef, {
+        name: trimmed,
+        isAccepted: false,
+        nameUpdatedAt: new Date().toISOString()
+      });
     }
 
     async function changePassword(currentPassword, newPassword, confirmPassword) {
@@ -551,7 +566,7 @@
 
     async function logoutUser() {
       await signOut(auth);
-      window.location.href = "auth.html";
+      window.location.href = AUTH_URL;
     }
 
     async function deleteAccount(targetPassword) {
@@ -567,7 +582,7 @@
       await remove(profileRef);
 
       await deleteUser(user);
-      window.location.href = "auth.html";
+      window.location.href = AUTH_URL;
     }
 
     /* ============ Глазик для полей пароля ============ */
@@ -668,6 +683,7 @@
           <div class="field-group">
             <label>Новое имя</label>
             <input type="text" id="newNameInput" value="${escapeHtml(profileData?.name || user.displayName || "")}" placeholder="Введите новое имя" />
+            <div class="hint">⚠️ После смены имени ваш аккаунт потребуется подтвердить заново у администратора.</div>
           </div>
 
           <div id="nameError" class="hidden error-msg"></div>
@@ -762,10 +778,12 @@
           hideMessage("nameError");
           hideMessage("nameSuccess");
           await updateCurrentName(newName);
-          showMessage("nameSuccess", "Имя успешно обновлено.", "success");
+          showMessage("nameSuccess", "Имя обновлено. Аккаунт отправлен на повторное подтверждение...", "success");
 
-          const currentUser = auth.currentUser;
-          if (currentUser) await refreshAccountPage(currentUser);
+          // Через секунду — редирект на auth.html, где сработает экран ожидания
+          setTimeout(() => {
+            window.location.href = AUTH_URL;
+          }, 1200);
         } catch (error) {
           showMessage("nameError", error?.message || "Не удалось обновить имя.", "error");
         }
@@ -854,7 +872,6 @@
         user.email ||
         "Пользователь";
 
-      // Обновляем "Дневник"/"Журнал" по статусу
       updateTeacherLinks(profileData);
 
       renderUserBadge(user);
@@ -863,11 +880,27 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        window.location.href = "auth.html";
+        window.location.href = AUTH_URL;
         return;
       }
 
       try {
+        // ✅ Загружаем профиль и проверяем статус подтверждения ДО отрисовки
+        let profileData = {};
+        try {
+          const snap = await get(ref(db, `users/${user.uid}`));
+          profileData = snap.exists() ? snap.val() || {} : {};
+        } catch (e) {
+          console.warn("Не удалось загрузить профиль для проверки:", e);
+        }
+
+        const acceptStatus = getAcceptStatus(profileData);
+
+        if (acceptStatus === "pending" || acceptStatus === "rejected") {
+          window.location.href = AUTH_URL;
+          return;
+        }
+
         await refreshAccountPage(user);
       } catch (error) {
         console.error("Критическая ошибка:", error);
