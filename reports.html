@@ -257,6 +257,40 @@
     .grade-mini.grade-2 { background: #c74a4a; }
     .grade-mini.grade-1 { background: #8a3030; }
 
+    /* Четвертные чипы для года */
+    .term-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .term-chip {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 4px 8px;
+      border-radius: 10px;
+      background: #f7fbff;
+      border: 1px solid var(--border);
+      min-width: 42px;
+    }
+    .term-chip .term-name {
+      font-size: 10px;
+      color: #889bb3;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .term-chip .term-grade {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a8a4a;
+    }
+    .term-chip .term-grade.empty {
+      color: #c7d0dc;
+    }
+
     .avg-cell {
       font-weight: 700;
       color: var(--text);
@@ -418,7 +452,7 @@
           <thead>
             <tr>
               <th style="width:40%;">Предмет</th>
-              <th style="width:35%;">Оценки</th>
+              <th style="width:35%;" id="avgGradesHeader">Оценки</th>
               <th style="width:15%;">Средний</th>
               <th style="width:10%;">Итог*</th>
             </tr>
@@ -426,7 +460,7 @@
           <tbody id="avgTableBody"></tbody>
         </table>
       </div>
-      <div style="font-size:12px;color:#889bb3;margin-top:10px;">
+      <div id="avgFootnote" style="font-size:12px;color:#889bb3;margin-top:10px;">
         * Предполагаемая итоговая оценка по среднему баллу (3.50 → 3, 3.51 → 4).
       </div>
     </section>
@@ -497,6 +531,8 @@
     const teacherStudentField = document.getElementById("teacherStudentField");
     const teacherClassSelect = document.getElementById("teacherClassSelect");
     const teacherStudentSelect = document.getElementById("teacherStudentSelect");
+    const avgGradesHeader = document.getElementById("avgGradesHeader");
+    const avgFootnote = document.getElementById("avgFootnote");
 
     let currentUserUid = null;
     let currentProfile = {};
@@ -521,6 +557,9 @@
     // Порядок, в котором показываем периоды в селекте
     const TERM_ORDER = ["term1", "term2", "term3", "term4", "year"];
 
+    // Ключи четвертей (без year). Используются для расчёта годовой.
+    const QUARTER_KEYS = ["term1", "term2", "term3", "term4"];
+
     /* ===== Утилиты ===== */
 
     function toArray(v) {
@@ -530,7 +569,6 @@
       return [];
     }
 
-    // ✅ Периоды берём из termsCache (загружен из /terms).
     function getTermBounds(termKey) {
       const t = termsCache?.[termKey];
       if (!t) return null;
@@ -541,16 +579,12 @@
       };
     }
 
-    // ✅ Заполняем селект периодов из termsCache.
-    // Показываем только те ключи, что реально есть в базе, в порядке TERM_ORDER.
-    // Если в базе есть ещё какие-то ключи — они тоже попадут в конец списка.
     function fillTermSelect() {
       const prev = termSelect.value;
       termSelect.innerHTML = "";
 
       const allKeys = Object.keys(termsCache || {}).filter(k => termsCache[k] && typeof termsCache[k] === "object");
 
-      // Сначала — известные в нужном порядке, затем — все остальные
       const orderedKeys = [
         ...TERM_ORDER.filter(k => allKeys.includes(k)),
         ...allKeys.filter(k => !TERM_ORDER.includes(k))
@@ -714,12 +748,53 @@
       return sum / cnt;
     }
 
+    // Итог за четверть: 3.50 → 3, 3.51 → 4
     function suggestFinal(avg) {
       if (avg === null || avg === undefined) return null;
       const rounded = Math.floor(avg + 0.5 - 1e-9);
       if (rounded < 2) return 2;
       if (rounded > 5) return 5;
       return rounded;
+    }
+
+    // ✅ Итог за год: округление в пользу ученика (3.50 → 4)
+    function roundFavorStudent(avg) {
+      if (avg === null || avg === undefined) return null;
+      // Math.round(3.5) = 4, Math.round(3.49) = 3
+      let r = Math.round(avg + 1e-9);
+      if (r < 2) r = 2;
+      if (r > 5) r = 5;
+      return r;
+    }
+
+    // ✅ Итог за четверть по конкретному предмету (число или null)
+    function getQuarterFinalForSubject(uid, subject, quarterKey) {
+      const bySubject = collectGradesBySubject(uid, quarterKey);
+      const records = bySubject[subject] || [];
+      const avg = calcAverage(records);
+      return suggestFinal(avg);
+    }
+
+    // ✅ Итог за год по предмету: среднее из четвертных итогов + округление в пользу ученика
+    // Возвращает { final, quarters: {term1, term2, term3, term4}, avgQuarters }
+    function getYearFinalForSubject(uid, subject) {
+      const quarters = {};
+      QUARTER_KEYS.forEach(qk => {
+        quarters[qk] = getQuarterFinalForSubject(uid, subject, qk);
+      });
+
+      const present = QUARTER_KEYS
+        .map(qk => quarters[qk])
+        .filter(v => v !== null && Number.isFinite(v));
+
+      if (!present.length) {
+        return { final: null, quarters, avgQuarters: null };
+      }
+
+      const avgQuarters = present.reduce((s, v) => s + v, 0) / present.length;
+      const final = roundFavorStudent(avgQuarters);
+
+      return { final, quarters, avgQuarters };
     }
 
     function renderGradeChips(records) {
@@ -733,6 +808,24 @@
       }).join("")}</div>`;
     }
 
+    // ✅ Отрисовка четвертных итогов в виде чипов (для годового отчёта)
+    function renderTermChips(quarters) {
+      const items = QUARTER_KEYS.map(qk => {
+        const t = termsCache[qk] || {};
+        const shortName = String(t.name || qk).replace(/\s*четверть\s*/i, "").trim() || qk;
+        const val = quarters?.[qk];
+        const hasVal = val !== null && val !== undefined && Number.isFinite(Number(val));
+        const cls = hasVal ? gradeClass(val) : "";
+        return `
+          <div class="term-chip">
+            <span class="term-name">${escapeHtml(shortName)}</span>
+            <span class="term-grade ${hasVal ? "" : "empty"}">${hasVal ? gradeLabel(val) : "—"}</span>
+          </div>
+        `;
+      }).join("");
+      return `<div class="term-chips">${items}</div>`;
+    }
+
     function fmtAvg(avg) {
       if (avg === null) return '<span class="no-data">—</span>';
       return avg.toFixed(2);
@@ -742,8 +835,17 @@
 
     function renderAvgTab() {
       const termKey = termSelect.value;
-      const bySubject = collectGradesBySubject(targetUid, termKey);
+      const isYear = termKey === "year";
       const subjects = getVisibleSubjects();
+
+      // Меняем заголовок колонки и сноску для года
+      if (isYear) {
+        avgGradesHeader.textContent = "Четвертные итоги";
+        avgFootnote.innerHTML = "* Годовая оценка = округление среднего из четвертных итогов <b>в пользу ученика</b> (3.50 → 4).";
+      } else {
+        avgGradesHeader.textContent = "Оценки";
+        avgFootnote.innerHTML = "* Предполагаемая итоговая оценка по среднему баллу (3.50 → 3, 3.51 → 4).";
+      }
 
       if (!subjects.length) {
         avgTableBody.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="material-symbols-outlined">event_busy</span><h3>Нет доступных предметов</h3></div></td></tr>`;
@@ -751,20 +853,38 @@
       }
 
       let rows = "";
-      subjects.forEach(subject => {
-        const records = bySubject[subject] || [];
-        const avg = calcAverage(records);
-        const final = suggestFinal(avg);
 
-        rows += `
-          <tr>
-            <td><div class="subject-name">${escapeHtml(subject)}</div></td>
-            <td>${renderGradeChips(records)}</td>
-            <td class="avg-cell">${fmtAvg(avg)}</td>
-            <td class="final-cell">${final !== null ? `<span class="final-badge ${gradeClass(final)}">${gradeLabel(final)}</span>` : `<span class="no-data">—</span>`}</td>
-          </tr>
-        `;
-      });
+      if (isYear) {
+        subjects.forEach(subject => {
+          const { final, quarters, avgQuarters } = getYearFinalForSubject(targetUid, subject);
+
+          rows += `
+            <tr>
+              <td><div class="subject-name">${escapeHtml(subject)}</div></td>
+              <td>${renderTermChips(quarters)}</td>
+              <td class="avg-cell">${fmtAvg(avgQuarters)}</td>
+              <td class="final-cell">${final !== null ? `<span class="final-badge ${gradeClass(final)}">${gradeLabel(final)}</span>` : `<span class="no-data">—</span>`}</td>
+            </tr>
+          `;
+        });
+      } else {
+        const bySubject = collectGradesBySubject(targetUid, termKey);
+
+        subjects.forEach(subject => {
+          const records = bySubject[subject] || [];
+          const avg = calcAverage(records);
+          const final = suggestFinal(avg);
+
+          rows += `
+            <tr>
+              <td><div class="subject-name">${escapeHtml(subject)}</div></td>
+              <td>${renderGradeChips(records)}</td>
+              <td class="avg-cell">${fmtAvg(avg)}</td>
+              <td class="final-cell">${final !== null ? `<span class="final-badge ${gradeClass(final)}">${gradeLabel(final)}</span>` : `<span class="no-data">—</span>`}</td>
+            </tr>
+          `;
+        });
+      }
 
       avgTableBody.innerHTML = rows;
     }
@@ -793,13 +913,48 @@
 
     function renderSubjectTab() {
       const termKey = termSelect.value;
+      const isYear = termKey === "year";
       const subject = subjectSelect.value;
+
       if (!subject) {
         subjectSummary.innerHTML = "";
         subjectTableBody.innerHTML = `<tr><td colspan="3"><div class="empty-state"><span class="material-symbols-outlined">menu_book</span><h3>Выберите предмет</h3></div></td></tr>`;
         return;
       }
 
+      // ✅ Для года: показываем четвертные итоги по предмету
+      if (isYear) {
+        const { final, quarters, avgQuarters } = getYearFinalForSubject(targetUid, subject);
+
+        subjectSummary.innerHTML = `
+          <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
+            <div><b>${escapeHtml(subject)}</b></div>
+            <div>Среднее по четвертям: <b>${avgQuarters === null ? "—" : avgQuarters.toFixed(2)}</b></div>
+            <div>Итог за год (в пользу ученика):
+              ${final !== null ? `<span class="final-badge ${gradeClass(final)}">${gradeLabel(final)}</span>` : `<span class="no-data">—</span>`}
+            </div>
+          </div>
+        `;
+
+        subjectTableBody.innerHTML = QUARTER_KEYS.map(qk => {
+          const t = termsCache[qk] || {};
+          const name = String(t.name || qk);
+          const val = quarters?.[qk];
+          const hasVal = val !== null && val !== undefined && Number.isFinite(Number(val));
+
+          return `
+            <tr>
+              <td><b>${escapeHtml(name)}</b></td>
+              <td>${hasVal ? `<span class="grade-mini ${gradeClass(val)}">${gradeLabel(val)}</span>` : `<span class="no-data">—</span>`}</td>
+              <td>—</td>
+            </tr>
+          `;
+        }).join("");
+
+        return;
+      }
+
+      // Обычный режим — по четверти
       const bySubject = collectGradesBySubject(targetUid, termKey);
       const records = (bySubject[subject] || []).slice().sort((a, b) => {
         const da = parseDate(a.date);
@@ -1202,7 +1357,6 @@
         renderHeader(user);
         updateNavLinks();
 
-        // ✅ Сначала тянем термины, потом заполняем селект, потом всё остальное
         await loadTerms();
         fillTermSelect();
         await loadData(user);
