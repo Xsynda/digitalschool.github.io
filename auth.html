@@ -322,6 +322,75 @@
     }
     .btn-outline:disabled { opacity: 0.5; cursor: not-allowed; }
 
+    /* ===== Google кнопка ===== */
+    .btn-google {
+      background: #ffffff;
+      color: #1f2b48;
+      border: 1.5px solid #d0dae9;
+      box-shadow: 0 4px 12px rgba(0, 20, 40, 0.06);
+      margin-top: 12px;
+    }
+    .btn-google:hover:not(:disabled) {
+      background: #f5f8ff;
+      border-color: #b9c8e4;
+      transform: scale(0.98);
+    }
+    .btn-google:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .btn-google .google-logo {
+      width: 20px;
+      height: 20px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* ===== Разделитель "или" ===== */
+    .divider-with-text {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0 6px;
+      color: #889bb3;
+      font-size: 13px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .divider-with-text::before,
+    .divider-with-text::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #eef3fa;
+    }
+
+    /* ===== Плашка «нельзя изменить» ===== */
+    .warning-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #fff8e6;
+      border: 1.5px dashed #f0c765;
+      border-radius: 20px;
+      padding: 14px 16px;
+      margin: 0 0 20px;
+      font-size: 13px;
+      color: #8a5a00;
+      line-height: 1.5;
+    }
+
+    .warning-note .material-symbols-outlined {
+      font-size: 20px;
+      color: #d97706;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .warning-note b {
+      color: #8a5a00;
+      font-weight: 700;
+    }
+
     .forgot-row {
       text-align: right;
       margin-top: -8px;
@@ -606,7 +675,6 @@
       font-weight: 600;
     }
 
-    /* ===== Блок с причиной отклонения ===== */
     .rejected-reason {
       background: #fff0f0;
       border: 1.5px dashed #f0b6b6;
@@ -718,6 +786,19 @@
 
       <button class="btn btn-primary" id="submitBtn">Войти</button>
 
+      <!-- ✅ Google -->
+      <div class="divider-with-text">или</div>
+
+      <button class="btn btn-google" id="googleBtn" type="button">
+        <svg class="google-logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+          <path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+          <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+          <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+        </svg>
+        <span id="googleBtnLabel">Войти с Google</span>
+      </button>
+
       <div class="switch-row" id="switchText">
         <span id="switchActionLabel">Нет аккаунта?</span>
         <span id="switchActionBtn">Зарегистрироваться</span>
@@ -806,6 +887,15 @@
         </select>
       </div>
 
+      <!-- ✅ Плашка «нельзя изменить» -->
+      <div class="warning-note">
+        <span class="material-symbols-outlined">warning</span>
+        <div>
+          <b>Вы не сможете изменить это после.</b><br>
+          Проверьте имя, школу и класс — после сохранения данные нельзя будет отредактировать самостоятельно.
+        </div>
+      </div>
+
       <div id="profileError" class="error-msg hidden"></div>
       <div id="profileInfo" class="info-msg hidden"></div>
 
@@ -861,7 +951,6 @@
         некорректные данные или нарушены правила школы.
       </div>
 
-      <!-- ✅ Причина отклонения — показывается, если в профиле есть reason -->
       <div id="rejectedReasonBlock" class="rejected-reason hidden">
         <div class="rejected-reason-label">
           <span class="material-symbols-outlined">report</span>
@@ -929,7 +1018,9 @@
       signOut,
       setPersistence,
       browserLocalPersistence,
-      browserSessionPersistence
+      browserSessionPersistence,
+      GoogleAuthProvider,
+      signInWithPopup
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -973,6 +1064,8 @@
     const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
     const togglePasswordBtn = document.getElementById("togglePasswordBtn");
     const togglePasswordIcon = document.getElementById("togglePasswordIcon");
+    const googleBtn = document.getElementById("googleBtn");
+    const googleBtnLabel = document.getElementById("googleBtnLabel");
 
     const verifyEmailText = document.getElementById("verifyEmailText");
     const verifyError = document.getElementById("verifyError");
@@ -1055,6 +1148,7 @@
         switchActionBtn.textContent = "Зарегистрироваться";
         forgotRow.classList.remove("hidden");
         passwordInput.setAttribute("autocomplete", "current-password");
+        if (googleBtnLabel) googleBtnLabel.textContent = "Войти с Google";
       } else {
         formTitle.textContent = "Регистрация";
         formSub.textContent = "Создайте новый аккаунт";
@@ -1063,6 +1157,7 @@
         switchActionBtn.textContent = "Войти";
         forgotRow.classList.add("hidden");
         passwordInput.setAttribute("autocomplete", "new-password");
+        if (googleBtnLabel) googleBtnLabel.textContent = "Зарегистрироваться с Google";
       }
       clearAllMessages();
     }
@@ -1087,7 +1182,13 @@
         "auth/too-many-requests": "Слишком много попыток. Подождите.",
         "auth/network-request-failed": "Проблема с интернетом.",
         "auth/internal-error": "Внутренняя ошибка сервера.",
-        "auth/missing-email": "Введите email."
+        "auth/missing-email": "Введите email.",
+        "auth/popup-closed-by-user": "Окно входа закрыто.",
+        "auth/cancelled-popup-request": "Запрос входа отменён.",
+        "auth/popup-blocked": "Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для этого сайта.",
+        "auth/account-exists-with-different-credential": "Этот email уже используется другим способом входа.",
+        "auth/operation-not-allowed": "Вход через Google отключён в настройках Firebase.",
+        "auth/unauthorized-domain": "Этот домен не разрешён в настройках Firebase. Добавьте его в Authentication → Settings → Authorized domains."
       };
       return codes[error.code] || error.message || "Неизвестная ошибка.";
     }
@@ -1262,7 +1363,6 @@
       clearAllMessages();
     }
 
-    // ✅ Экран отклонения с опциональным reason
     function showRejectedScreen(profile) {
       authFormBlock.classList.add("hidden");
       verifyBlock.classList.add("hidden");
@@ -1316,10 +1416,23 @@
       const selectedSchool = schoolOptions.find(item => item.id === schoolId) || { name: schoolId };
       const selectedClass = classOptions.find(item => item.id === classId) || { name: classId };
 
+      // ✅ Дополнительное подтверждение
+      const ok = confirm(
+        "Проверьте данные:\n\n" +
+        "Имя: " + name + "\n" +
+        "Школа: " + selectedSchool.name + "\n" +
+        "Класс: " + selectedClass.name + "\n\n" +
+        "После сохранения вы не сможете изменить это самостоятельно. Продолжить?"
+      );
+      if (!ok) return;
+
       saveProfileBtn.disabled = true;
       saveProfileBtn.textContent = "⏳ Сохранение...";
 
       try {
+        const providerData = user.providerData || [];
+        const usedGoogle = providerData.some(p => p.providerId === "google.com");
+
         await set(ref(db, "users/" + user.uid), {
           email: user.email,
           name: name,
@@ -1329,6 +1442,7 @@
           profileComplete: true,
           emailVerified: true,
           isAccepted: false,
+          authProvider: usedGoogle ? "google.com" : "password",
           createdAt: new Date().toISOString()
         });
         showPendingScreen();
@@ -1388,24 +1502,16 @@
     checkAcceptedBtn.addEventListener("click", checkAcceptedStatus);
 
     logoutFromPendingBtn.addEventListener("click", async () => {
-      try {
-        await signOut(auth);
-      } catch (e) {
-        console.warn(e);
-      }
+      try { await signOut(auth); } catch (e) { console.warn(e); }
       showAuthForm();
     });
 
     logoutFromRejectedBtn.addEventListener("click", async () => {
-      try {
-        await signOut(auth);
-      } catch (e) {
-        console.warn(e);
-      }
+      try { await signOut(auth); } catch (e) { console.warn(e); }
       showAuthForm();
     });
 
-    /* ============ Вход / Регистрация ============ */
+    /* ============ Вход / Регистрация (email) ============ */
 
     async function handleSubmit() {
       const email = emailInput.value.trim();
@@ -1448,6 +1554,7 @@
               profileComplete: false,
               emailVerified: false,
               isAccepted: false,
+              authProvider: "password",
               createdAt: new Date().toISOString()
             });
           } catch (dbError) {
@@ -1467,6 +1574,83 @@
     }
 
     submitBtn.addEventListener("click", handleSubmit);
+
+    /* ============ Вход / Регистрация через Google ============ */
+
+    async function handleGoogleAuth() {
+      clearAllMessages();
+
+      const originalLabel = googleBtnLabel ? googleBtnLabel.textContent : "Google";
+      googleBtn.disabled = true;
+      submitBtn.disabled = true;
+      if (googleBtnLabel) googleBtnLabel.textContent = "⏳ Подключение...";
+
+      try {
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: "select_account" });
+
+        if (rememberCheckbox.checked) {
+          await setPersistence(auth, browserLocalPersistence);
+        } else {
+          await setPersistence(auth, browserSessionPersistence);
+        }
+
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        let profile = {};
+        try {
+          const snap = await get(ref(db, "users/" + user.uid));
+          profile = snap.val() || {};
+        } catch (e) {
+          profile = {};
+        }
+
+        const hasProfile = !!(profile.profileComplete || (profile.name && profile.school && profile.class));
+
+        if (!hasProfile) {
+          try {
+            await set(ref(db, "users/" + user.uid), {
+              email: user.email,
+              status: 1,
+              profileComplete: false,
+              emailVerified: true,
+              isAccepted: false,
+              authProvider: "google.com",
+              createdAt: profile.createdAt || new Date().toISOString()
+            });
+          } catch (dbError) {
+            console.warn("Ошибка сохранения временного профиля (Google):", dbError);
+          }
+
+          await showProfileSetup();
+          return;
+        }
+
+        const status = getAcceptStatus(profile);
+
+        if (status === "accepted") {
+          redirectToMain();
+          return;
+        }
+        if (status === "rejected") {
+          showRejectedScreen(profile);
+          return;
+        }
+        showPendingScreen();
+      } catch (error) {
+        console.error("Google auth error:", error);
+        showMessage(authError, "❌ " + getErrorMessage(error));
+      } finally {
+        googleBtn.disabled = false;
+        submitBtn.disabled = false;
+        if (googleBtnLabel) googleBtnLabel.textContent = originalLabel;
+      }
+    }
+
+    googleBtn.addEventListener("click", handleGoogleAuth);
+
+    /* ============ Проверка email ============ */
 
     async function checkEmailVerified() {
       const user = auth.currentUser;
@@ -1553,11 +1737,7 @@
     resendBtn.addEventListener("click", resendVerification);
 
     async function goBackToForm() {
-      try {
-        await signOut(auth);
-      } catch (e) {
-        console.warn(e);
-      }
+      try { await signOut(auth); } catch (e) { console.warn(e); }
       showAuthForm();
     }
 
@@ -1623,7 +1803,9 @@
           return;
         }
 
-        const isEmailVerified = user.emailVerified;
+        const providerData = user.providerData || [];
+        const isGoogle = providerData.some(p => p.providerId === "google.com");
+        const isEmailVerified = user.emailVerified || isGoogle;
 
         let profile = {};
         try {
@@ -1637,7 +1819,6 @@
           return;
         }
 
-        // Если профиль ещё не заполнен
         if (!profile.profileComplete && !(profile.name && profile.school && profile.class)) {
           if (!profileSetupBlock.classList.contains("hidden")) return;
           await showProfileSetup();
@@ -1657,7 +1838,6 @@
           return;
         }
 
-        // pending
         if (!pendingBlock.classList.contains("hidden")) return;
         showPendingScreen();
       } finally {

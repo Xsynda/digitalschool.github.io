@@ -204,15 +204,49 @@
     .btn-primary:hover { background: #1a5fb0; }
     .btn-success { background: #1d8f52; color: white; box-shadow: 0 4px 12px rgba(29, 143, 82, 0.18); }
     .btn-success:hover { background: #167445; }
-    .btn-danger { background: #d95454; color: white; box-shadow: 0 4px 12px rgba(217, 84, 84, 0.18); }
-    .btn-danger:hover { background: #b74343; }
     .btn-ghost { background: #eef5ff; color: #1f2b48; border: 1px solid #dfeaf9; }
     .btn-ghost:hover { background: #e3eeff; }
     .btn-full { width: 100%; }
 
+    /* Кнопка Telegram */
+    .btn-telegram {
+      background: #229ED9;
+      color: white;
+      box-shadow: 0 4px 12px rgba(34, 158, 217, 0.25);
+      text-decoration: none;
+    }
+    .btn-telegram:hover { background: #1a7fb3; }
+
     .error-msg { display: block; font-size: 13px; color: #b63a3a; background: #fff2f2; border: 1px solid #ffd4d4; border-radius: 12px; padding: 10px 14px; margin-top: 10px; line-height: 1.5; }
     .success-msg { display: block; font-size: 13px; color: #146a3d; background: #ecf9f1; border: 1px solid #cdeedb; border-radius: 12px; padding: 10px 14px; margin-top: 10px; line-height: 1.5; }
     .hidden { display: none !important; }
+
+    /* Плашка «только через Telegram» */
+    .info-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #e5effb;
+      border: 1.5px dashed #a7c8ef;
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin: 0 0 16px;
+      font-size: 14px;
+      color: #1a5fb0;
+      line-height: 1.55;
+    }
+
+    .info-note .material-symbols-outlined {
+      font-size: 22px;
+      color: #2a7de1;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .info-note b.telegram-tag {
+      color: #1a5fb0;
+      font-weight: 700;
+    }
 
     .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid #eef3fa; font-size: 13px; color: #889bb3; text-align: center; }
 
@@ -316,18 +350,14 @@
       getAuth,
       onAuthStateChanged,
       signOut,
-      updateProfile,
       updatePassword,
-      deleteUser,
       EmailAuthProvider,
       reauthenticateWithCredential
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
     import {
       getDatabase,
       ref,
-      get,
-      update,
-      remove
+      get
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -345,6 +375,8 @@
     const db = getDatabase(app);
 
     const AUTH_URL = "auth.html";
+    const TELEGRAM_HANDLE = "@itsXsynda";
+    const TELEGRAM_URL = "https://t.me/itsXsynda";
 
     const loadscreen = document.getElementById("loadscreen");
     const profileContainer = document.getElementById("profileContainer");
@@ -533,24 +565,6 @@
       await reauthenticateWithCredential(user, credential);
     }
 
-    // ✅ Обновляем имя и СБРАСЫВАЕМ подтверждение
-    async function updateCurrentName(newName) {
-      const user = auth.currentUser;
-      if (!user) throw new Error("Пользователь не найден.");
-
-      const trimmed = String(newName || "").trim();
-      if (!trimmed) throw new Error("Введите имя.");
-
-      await updateProfile(user, { displayName: trimmed });
-
-      const profileRef = ref(db, `users/${user.uid}`);
-      await update(profileRef, {
-        name: trimmed,
-        isAccepted: false,
-        nameUpdatedAt: new Date().toISOString()
-      });
-    }
-
     async function changePassword(currentPassword, newPassword, confirmPassword) {
       const user = auth.currentUser;
       if (!user) throw new Error("Пользователь не найден.");
@@ -566,22 +580,6 @@
 
     async function logoutUser() {
       await signOut(auth);
-      window.location.href = AUTH_URL;
-    }
-
-    async function deleteAccount(targetPassword) {
-      const user = auth.currentUser;
-      if (!user) throw new Error("Пользователь не найден.");
-      if (!targetPassword || !String(targetPassword).trim()) {
-        throw new Error("Введите пароль для удаления аккаунта.");
-      }
-
-      await reauthenticateUser(targetPassword);
-
-      const profileRef = ref(db, `users/${user.uid}`);
-      await remove(profileRef);
-
-      await deleteUser(user);
       window.location.href = AUTH_URL;
     }
 
@@ -676,24 +674,6 @@
 
         <div class="settings-card">
           <div class="card-title">
-            <span class="material-symbols-outlined">edit</span>
-            Изменить имя
-          </div>
-
-          <div class="field-group">
-            <label>Новое имя</label>
-            <input type="text" id="newNameInput" value="${escapeHtml(profileData?.name || user.displayName || "")}" placeholder="Введите новое имя" />
-            <div class="hint">⚠️ После смены имени ваш аккаунт потребуется подтвердить заново у администратора.</div>
-          </div>
-
-          <div id="nameError" class="hidden error-msg"></div>
-          <div id="nameSuccess" class="hidden success-msg"></div>
-
-          <button class="btn-action btn-primary" id="updateNameBtn">Сохранить имя</button>
-        </div>
-
-        <div class="settings-card">
-          <div class="card-title">
             <span class="material-symbols-outlined">lock</span>
             Сменить пароль
           </div>
@@ -734,33 +714,57 @@
           <button class="btn-action btn-success" id="updatePasswordBtn">Изменить пароль</button>
         </div>
 
+        <!-- ✅ Изменение имени — только через Telegram -->
+        <div class="settings-card">
+          <div class="card-title">
+            <span class="material-symbols-outlined">edit</span>
+            Изменение имени
+          </div>
+
+          <div class="info-note">
+            <span class="material-symbols-outlined">info</span>
+            <div>
+              Изменение имени доступно <b>только через администратора</b>.
+              Напишите <b class="telegram-tag">${escapeHtml(TELEGRAM_HANDLE)}</b> в Telegram — он поможет изменить данные.
+            </div>
+          </div>
+
+          <a href="${escapeHtml(TELEGRAM_URL)}" target="_blank" rel="noopener noreferrer" class="btn-action btn-telegram btn-full">
+            <span class="material-symbols-outlined">send</span>
+            Написать ${escapeHtml(TELEGRAM_HANDLE)} в Telegram
+          </a>
+        </div>
+
+        <!-- ✅ Удаление аккаунта — только через Telegram -->
+        <div class="settings-card">
+          <div class="card-title">
+            <span class="material-symbols-outlined">delete_forever</span>
+            Удаление аккаунта
+          </div>
+
+          <div class="info-note">
+            <span class="material-symbols-outlined">info</span>
+            <div>
+              Удаление аккаунта доступно <b>только через администратора</b>.
+              Напишите <b class="telegram-tag">${escapeHtml(TELEGRAM_HANDLE)}</b> в Telegram — он удалит ваш аккаунт.
+            </div>
+          </div>
+
+          <a href="${escapeHtml(TELEGRAM_URL)}" target="_blank" rel="noopener noreferrer" class="btn-action btn-telegram btn-full">
+            <span class="material-symbols-outlined">send</span>
+            Написать ${escapeHtml(TELEGRAM_HANDLE)} в Telegram
+          </a>
+        </div>
+
         <div class="settings-card">
           <div class="card-title">
             <span class="material-symbols-outlined">logout</span>
             Безопасность
           </div>
 
-          <button class="btn-action btn-ghost btn-full" id="logoutBtn" style="margin-bottom: 14px;">
+          <button class="btn-action btn-ghost btn-full" id="logoutBtn">
             <span class="material-symbols-outlined">logout</span>
             Выйти из аккаунта
-          </button>
-
-          <div class="field-group">
-            <label>Пароль для удаления аккаунта</label>
-            <div class="input-with-icon">
-              <input type="password" id="deleteAccountPasswordInput" placeholder="Введите пароль для удаления" autocomplete="off" />
-              <button type="button" class="toggle-password" id="toggleDeletePasswordBtn" aria-label="Показать пароль">
-                <span class="material-symbols-outlined" id="toggleDeletePasswordIcon">visibility</span>
-              </button>
-            </div>
-          </div>
-
-          <div id="deleteAccountError" class="hidden error-msg"></div>
-          <div id="deleteAccountSuccess" class="hidden success-msg"></div>
-
-          <button class="btn-action btn-danger btn-full" id="deleteAccountBtn">
-            <span class="material-symbols-outlined">delete_forever</span>
-            Удалить аккаунт
           </button>
         </div>
       `;
@@ -768,26 +772,6 @@
       setupPasswordToggle("currentPasswordInput", "toggleCurrentPasswordBtn", "toggleCurrentPasswordIcon");
       setupPasswordToggle("newPasswordInput", "toggleNewPasswordBtn", "toggleNewPasswordIcon");
       setupPasswordToggle("confirmPasswordInput", "toggleConfirmPasswordBtn", "toggleConfirmPasswordIcon");
-      setupPasswordToggle("deleteAccountPasswordInput", "toggleDeletePasswordBtn", "toggleDeletePasswordIcon");
-
-      document.getElementById("updateNameBtn").addEventListener("click", async () => {
-        const input = document.getElementById("newNameInput");
-        const newName = input ? input.value : "";
-
-        try {
-          hideMessage("nameError");
-          hideMessage("nameSuccess");
-          await updateCurrentName(newName);
-          showMessage("nameSuccess", "Имя обновлено. Аккаунт отправлен на повторное подтверждение...", "success");
-
-          // Через секунду — редирект на auth.html, где сработает экран ожидания
-          setTimeout(() => {
-            window.location.href = AUTH_URL;
-          }, 1200);
-        } catch (error) {
-          showMessage("nameError", error?.message || "Не удалось обновить имя.", "error");
-        }
-      });
 
       document.getElementById("updatePasswordBtn").addEventListener("click", async () => {
         const currentPassword = document.getElementById("currentPasswordInput")?.value || "";
@@ -818,22 +802,6 @@
 
       document.getElementById("logoutBtn").addEventListener("click", async () => {
         await logoutUser();
-      });
-
-      document.getElementById("deleteAccountBtn").addEventListener("click", async () => {
-        const password = document.getElementById("deleteAccountPasswordInput")?.value || "";
-
-        try {
-          hideMessage("deleteAccountError");
-          hideMessage("deleteAccountSuccess");
-
-          const confirmed = window.confirm("Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить.");
-          if (!confirmed) return;
-
-          await deleteAccount(password);
-        } catch (error) {
-          showMessage("deleteAccountError", error?.message || "Не удалось удалить аккаунт.", "error");
-        }
       });
     }
 
