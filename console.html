@@ -829,6 +829,32 @@
     }
     .icon-btn.status:hover { background: #e0e3ff; }
 
+    /* ===== Рассылка ===== */
+    .recipient-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      transition: .15s;
+    }
+
+    .recipient-row:hover { border-color: #c7d9f0; }
+    .recipient-row.selected { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(42,125,225,.10); }
+
+    .recipient-row input[type="checkbox"] {
+      width: 18px; height: 18px;
+      accent-color: var(--blue);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .recipient-row .rec-info { min-width: 0; flex: 1 1 auto; }
+    .recipient-row .rec-name { font-size: 14px; font-weight: 600; word-break: break-word; }
+    .recipient-row .rec-meta { font-size: 12px; color: var(--text-soft); margin-top: 2px; word-break: break-all; }
+
     @media (max-width: 900px) {
       .week-days { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
@@ -1009,6 +1035,7 @@
       <button class="tab-btn active" data-tab="news">📰 Новости</button>
       <button class="tab-btn" data-tab="schedule">📅 Расписание</button>
       <button class="tab-btn hidden" data-tab="users" id="usersTabBtn">👥 Пользователи</button>
+      <button class="tab-btn hidden" data-tab="broadcast" id="broadcastTabBtn">📢 Рассылка</button>
     </div>
 
     <section class="tab-content active" id="tab-news">
@@ -1114,6 +1141,90 @@
       <div class="console-card">
         <div class="card-label">👥 Пользователи</div>
         <div id="usersList" class="users-list"></div>
+      </div>
+    </section>
+
+    <!-- ===== РАССЫЛКА ===== -->
+    <section class="tab-content" id="tab-broadcast">
+      <div class="console-card">
+        <div class="card-label">🎯 Аудитория рассылки</div>
+
+        <div class="field-grid">
+          <div>
+            <label class="form-label">Тип получателей</label>
+            <select id="broadcastScope" class="input">
+              <option value="all">Все пользователи</option>
+              <option value="school">Определённая школа</option>
+              <option value="class">Определённый класс</option>
+              <option value="status">Определённый статус</option>
+              <option value="manual">Выбрать вручную</option>
+            </select>
+          </div>
+
+          <div id="broadcastSchoolWrap" class="hidden">
+            <label class="form-label">Школа</label>
+            <select id="broadcastSchoolSelect" class="input"></select>
+          </div>
+
+          <div id="broadcastClassWrap" class="hidden">
+            <label class="form-label">Класс</label>
+            <select id="broadcastClassSelect" class="input"></select>
+          </div>
+
+          <div id="broadcastStatusWrap" class="hidden">
+            <label class="form-label">Статус</label>
+            <select id="broadcastStatusSelect" class="input">
+              <option value="1">Ученик (1)</option>
+              <option value="2">Администратор (2)</option>
+              <option value="3">Администратор класса (3)</option>
+              <option value="4">Учитель (4)</option>
+            </select>
+          </div>
+        </div>
+
+        <label class="checkbox-row" style="margin-top:12px;">
+          <input type="checkbox" id="broadcastOnlyAccepted" checked />
+          Только подтверждённые (isAccepted === true)
+        </label>
+
+        <div class="actions" style="margin-top:12px;">
+          <button class="btn-console btn-console-outline" id="broadcastPreviewBtn">
+            🔍 Обновить получателей
+          </button>
+        </div>
+
+        <div id="broadcastMessage" class="console-message"></div>
+      </div>
+
+      <div class="console-card">
+        <div class="card-label">
+          👥 Получатели
+          <span id="broadcastCountBadge" style="font-weight:500;color:#6a7f9e;font-size:13px;margin-left:6px;"></span>
+        </div>
+
+        <div id="broadcastManualTools" class="hidden" style="margin-bottom:10px;">
+          <div class="actions" style="margin-top:0;">
+            <button class="btn-console btn-console-outline" id="broadcastSelectAllBtn">Выбрать всех</button>
+            <button class="btn-console btn-console-outline" id="broadcastDeselectAllBtn">Снять всех</button>
+          </div>
+        </div>
+
+        <input type="text" id="broadcastSearchInput" class="input" placeholder="Поиск по имени, email, школе, классу..." style="margin-bottom:10px;" />
+
+        <div id="broadcastRecipientsList" class="users-list"></div>
+      </div>
+
+      <div class="console-card">
+        <div class="card-label">✉️ Сообщение</div>
+        <input type="text" id="broadcastSubject" class="input" placeholder="Тема (необязательно)" />
+        <textarea id="broadcastText" class="input" rows="5" placeholder="Текст сообщения..." style="margin-top:10px;"></textarea>
+
+        <div class="actions" style="margin-top:14px;">
+          <button class="btn-console btn-console-primary" id="broadcastSendBtn">📢 Отправить рассылку</button>
+          <button class="btn-console btn-console-outline" id="broadcastClearBtn">Очистить текст</button>
+        </div>
+
+        <div id="broadcastSendMessage" class="console-message"></div>
       </div>
     </section>
 
@@ -1348,7 +1459,7 @@
       EmailAuthProvider,
       reauthenticateWithCredential
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-    import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    import { getDatabase, ref, get, set, update, push } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
@@ -1414,6 +1525,11 @@
     let pastWeeksShown = 2;
 
     const expandedWeeks = new Set();
+
+    /* ===== Состояние рассылки ===== */
+    let broadcastPreviewUids = [];
+    let broadcastSelected = new Set();
+    let broadcastPreviewed = false;
 
     function escapeHtml(value) {
       if (value === null || value === undefined) return "";
@@ -1638,6 +1754,7 @@
       const newsTab = document.getElementById("tab-news");
       const scheduleTabBtn = document.querySelector('.tab-btn[data-tab="schedule"]');
       const usersTabBtn = document.getElementById("usersTabBtn");
+      const broadcastTabBtn = document.getElementById("broadcastTabBtn");
       const openSchoolClassModalBtn = document.getElementById("openSchoolClassModalBtn");
       const deleteSchoolBtn = document.getElementById("deleteSchoolBtn");
       const deleteClassBtn = document.getElementById("deleteClassBtn");
@@ -1648,6 +1765,12 @@
       if (usersTabBtn) {
         if (isFullAdmin) usersTabBtn.classList.remove("hidden");
         else usersTabBtn.classList.add("hidden");
+      }
+
+      // ===== Рассылка: только статус 2 =====
+      if (broadcastTabBtn) {
+        if (isFullAdmin) broadcastTabBtn.classList.remove("hidden");
+        else broadcastTabBtn.classList.add("hidden");
       }
 
       if (isLocalAdminUser) {
@@ -3221,14 +3344,12 @@
         const acceptBadge = getAcceptBadge(user);
         const state = getAcceptStatus(user);
 
-        // ✅ Подтвердить — показываем только для pending и rejected
         const acceptBtn = (state === "pending" || state === "rejected")
           ? `<button class="icon-btn accept accept-user-btn" data-uid="${escapeHtml(user.uid)}" title="Подтвердить">
                <span class="material-symbols-outlined">check</span>
              </button>`
           : "";
 
-        // ❌ Отклонить — только для pending (нельзя отклонить уже подтверждённого или уже отклонённого)
         const rejectBtn = (state === "pending")
           ? `<button class="icon-btn reject reject-user-btn" data-uid="${escapeHtml(user.uid)}" title="Отклонить">
                <span class="material-symbols-outlined">close</span>
@@ -3303,7 +3424,6 @@
       const user = usersCache.find((u) => u.uid === uid);
       if (!user) return;
 
-      // Защита: нельзя отклонить уже подтверждённого
       if (getAcceptStatus(user) === "accepted") {
         alert("Нельзя отклонить уже подтверждённый аккаунт.");
         return;
@@ -3550,6 +3670,349 @@
     document.getElementById("usersSortSelect").addEventListener("change", renderUsersList);
     document.getElementById("usersSearchInput").addEventListener("input", renderUsersList);
 
+    /* ============ РАССЫЛКА (только статус 2) ============ */
+
+    function getBroadcastScope() {
+      return document.getElementById("broadcastScope").value;
+    }
+
+    function getBroadcastStatusInfo(status) {
+      const s = Number(status);
+      if (s === 2) return "Администратор";
+      if (s === 3) return "Администратор класса";
+      if (s === 4) return "Учитель";
+      return "Ученик";
+    }
+
+    function fillBroadcastSchoolSelect() {
+      const sel = document.getElementById("broadcastSchoolSelect");
+      if (!sel) return;
+      sel.innerHTML = "";
+
+      if (!schoolsCache.length) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Школы не найдены";
+        sel.appendChild(opt);
+        return;
+      }
+
+      schoolsCache.forEach((school, index) => {
+        const opt = document.createElement("option");
+        opt.value = String(index);
+        opt.textContent = school?.name || `Школа ${index + 1}`;
+        sel.appendChild(opt);
+      });
+    }
+
+    function fillBroadcastClassSelect() {
+      const sel = document.getElementById("broadcastClassSelect");
+      if (!sel) return;
+      sel.innerHTML = "";
+
+      const schoolIdxRaw = document.getElementById("broadcastSchoolSelect").value;
+      const schoolIdx = schoolIdxRaw === "" ? -1 : Number(schoolIdxRaw);
+      const school = schoolsCache[schoolIdx];
+      const classes = school && Array.isArray(school.classes) ? school.classes : [];
+
+      if (!classes.length) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Классы не найдены";
+        sel.appendChild(opt);
+        return;
+      }
+
+      classes.forEach((cls, index) => {
+        const opt = document.createElement("option");
+        opt.value = String(index);
+        opt.textContent = cls?.name || `Класс ${index + 1}`;
+        sel.appendChild(opt);
+      });
+    }
+
+    function updateBroadcastScopeUI() {
+      const scope = getBroadcastScope();
+      document.getElementById("broadcastSchoolWrap").classList.toggle("hidden", scope !== "school" && scope !== "class");
+      document.getElementById("broadcastClassWrap").classList.toggle("hidden", scope !== "class");
+      document.getElementById("broadcastStatusWrap").classList.toggle("hidden", scope !== "status");
+      document.getElementById("broadcastManualTools").classList.toggle("hidden", scope !== "manual");
+    }
+
+    function computeBroadcastRecipients() {
+      const scope = getBroadcastScope();
+      const onlyAccepted = document.getElementById("broadcastOnlyAccepted").checked;
+
+      let list = [...usersCache];
+
+      if (onlyAccepted) {
+        list = list.filter((u) => getAcceptStatus(u) === "accepted");
+      }
+
+      if (scope === "school") {
+        const schoolIdx = Number(document.getElementById("broadcastSchoolSelect").value);
+        const schoolName = String(schoolsCache[schoolIdx]?.name || "").trim().toLowerCase();
+        if (!schoolName) return [];
+        list = list.filter((u) => String(u.school || "").trim().toLowerCase() === schoolName);
+      } else if (scope === "class") {
+        const schoolIdx = Number(document.getElementById("broadcastSchoolSelect").value);
+        const classIdx = Number(document.getElementById("broadcastClassSelect").value);
+        const school = schoolsCache[schoolIdx];
+        const cls = school && Array.isArray(school.classes) ? school.classes[classIdx] : null;
+        const schoolName = String(school?.name || "").trim().toLowerCase();
+        const className = String(cls?.name || "").trim().toLowerCase();
+        if (!schoolName || !className) return [];
+        list = list.filter((u) =>
+          String(u.school || "").trim().toLowerCase() === schoolName &&
+          String(u.class || "").trim().toLowerCase() === className
+        );
+      } else if (scope === "status") {
+        const statusValue = Number(document.getElementById("broadcastStatusSelect").value);
+        list = list.filter((u) => Number(u.status ?? 0) === statusValue);
+      } else if (scope === "manual") {
+        list = list.filter((u) => broadcastSelected.has(u.uid));
+      }
+
+      return list;
+    }
+
+    function renderBroadcastRecipients() {
+      const list = document.getElementById("broadcastRecipientsList");
+      const badge = document.getElementById("broadcastCountBadge");
+      const scope = getBroadcastScope();
+      const query = document.getElementById("broadcastSearchInput").value.trim().toLowerCase();
+
+      let displayList;
+      if (scope === "manual") {
+        displayList = filterUsers(usersCache, query);
+        const onlyAccepted = document.getElementById("broadcastOnlyAccepted").checked;
+        if (onlyAccepted) {
+          displayList = displayList.filter((u) => getAcceptStatus(u) === "accepted");
+        }
+      } else {
+        displayList = filterUsers(broadcastPreviewUids
+          .map((uid) => usersCache.find((u) => u.uid === uid))
+          .filter(Boolean), query);
+      }
+
+      badge.textContent = `(${broadcastPreviewUids.length})`;
+
+      if (!displayList.length) {
+        list.innerHTML = `<div class="empty-state">${broadcastPreviewed ? "Получатели не найдены." : "Нажмите «Обновить получателей»."}</div>`;
+        return;
+      }
+
+      list.innerHTML = displayList.map((u) => {
+        const status = getStatusInfo(u.status);
+        const isSelected = broadcastSelected.has(u.uid);
+        const checkbox = scope === "manual"
+          ? `<input type="checkbox" data-uid="${escapeHtml(u.uid)}" ${isSelected ? "checked" : ""} />`
+          : `<span class="material-symbols-outlined" style="color:#2a7de1;font-size:20px;">check_circle</span>`;
+
+        return `
+          <div class="recipient-row ${isSelected ? "selected" : ""}" data-uid="${escapeHtml(u.uid)}">
+            ${checkbox}
+            <div class="rec-info">
+              <div class="rec-name">${escapeHtml(u.name || u.email || "Без имени")}</div>
+              <div class="rec-meta">
+                ${escapeHtml(u.email || "—")} · ${escapeHtml(u.school || "—")} · ${escapeHtml(u.class || "—")} · ${status.label}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      if (scope === "manual") {
+        list.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+          cb.addEventListener("change", () => {
+            const uid = cb.dataset.uid;
+            if (cb.checked) broadcastSelected.add(uid);
+            else broadcastSelected.delete(uid);
+            broadcastPreviewUids = [...broadcastSelected];
+            renderBroadcastRecipients();
+          });
+        });
+      }
+    }
+
+    function refreshBroadcastPreview() {
+      const scope = getBroadcastScope();
+
+      if (scope === "manual") {
+        broadcastPreviewUids = [...broadcastSelected];
+      } else {
+        const list = computeBroadcastRecipients();
+        broadcastPreviewUids = list.map((u) => u.uid);
+      }
+
+      broadcastPreviewed = true;
+      renderBroadcastRecipients();
+
+      const msg = document.getElementById("broadcastMessage");
+      if (scope === "manual") {
+        showMessage(msg, `✅ Выбрано вручную: ${broadcastPreviewUids.length}`, "success");
+      } else {
+        showMessage(msg, `✅ Получателей: ${broadcastPreviewUids.length}`, "success");
+      }
+    }
+
+    document.getElementById("broadcastScope").addEventListener("change", () => {
+      updateBroadcastScopeUI();
+      broadcastPreviewed = false;
+      broadcastPreviewUids = getBroadcastScope() === "manual" ? [...broadcastSelected] : [];
+      renderBroadcastRecipients();
+    });
+
+    document.getElementById("broadcastSchoolSelect").addEventListener("change", () => {
+      fillBroadcastClassSelect();
+      broadcastPreviewed = false;
+    });
+
+    document.getElementById("broadcastClassSelect").addEventListener("change", () => {
+      broadcastPreviewed = false;
+    });
+
+    document.getElementById("broadcastStatusSelect").addEventListener("change", () => {
+      broadcastPreviewed = false;
+    });
+
+    document.getElementById("broadcastOnlyAccepted").addEventListener("change", () => {
+      broadcastPreviewed = false;
+    });
+
+    document.getElementById("broadcastPreviewBtn").addEventListener("click", () => {
+      refreshBroadcastPreview();
+    });
+
+    document.getElementById("broadcastSearchInput").addEventListener("input", () => {
+      renderBroadcastRecipients();
+    });
+
+    document.getElementById("broadcastSelectAllBtn").addEventListener("click", () => {
+      const query = document.getElementById("broadcastSearchInput").value.trim().toLowerCase();
+      const onlyAccepted = document.getElementById("broadcastOnlyAccepted").checked;
+      let pool = filterUsers(usersCache, query);
+      if (onlyAccepted) pool = pool.filter((u) => getAcceptStatus(u) === "accepted");
+      pool.forEach((u) => broadcastSelected.add(u.uid));
+      broadcastPreviewUids = [...broadcastSelected];
+      renderBroadcastRecipients();
+    });
+
+    document.getElementById("broadcastDeselectAllBtn").addEventListener("click", () => {
+      broadcastSelected.clear();
+      broadcastPreviewUids = [];
+      renderBroadcastRecipients();
+    });
+
+    document.getElementById("broadcastClearBtn").addEventListener("click", () => {
+      document.getElementById("broadcastSubject").value = "";
+      document.getElementById("broadcastText").value = "";
+      const msg = document.getElementById("broadcastSendMessage");
+      msg.textContent = "";
+      msg.className = "console-message";
+    });
+
+    document.getElementById("broadcastSendBtn").addEventListener("click", async () => {
+      if (Number(currentUserProfile?.status ?? 0) !== 2) {
+        showMessage(document.getElementById("broadcastSendMessage"), "⛔ Недостаточно прав", "error");
+        return;
+      }
+
+      const msg = document.getElementById("broadcastSendMessage");
+      const subject = document.getElementById("broadcastSubject").value.trim();
+      const text = document.getElementById("broadcastText").value.trim();
+
+      if (!text) {
+        showMessage(msg, "⚠️ Введите текст сообщения", "error");
+        return;
+      }
+
+      if (!broadcastPreviewed || getBroadcastScope() !== "manual") {
+        refreshBroadcastPreview();
+      } else {
+        broadcastPreviewUids = [...broadcastSelected];
+      }
+
+      if (!broadcastPreviewUids.length) {
+        showMessage(msg, "⚠️ Нет получателей. Нажмите «Обновить получателей».", "error");
+        return;
+      }
+
+      const recipients = broadcastPreviewUids
+        .map((uid) => usersCache.find((u) => u.uid === uid))
+        .filter(Boolean);
+
+      if (!recipients.length) {
+        showMessage(msg, "⚠️ Получатели не найдены в кэше", "error");
+        return;
+      }
+
+      if (!confirm(`Отправить сообщение ${recipients.length} ${recipients.length === 1 ? "получателю" : "получателям"}?`)) {
+        return;
+      }
+
+      const sendBtn = document.getElementById("broadcastSendBtn");
+      sendBtn.disabled = true;
+
+      try {
+        const scope = getBroadcastScope();
+        const audience = { scope };
+
+        if (scope === "school") {
+          const schoolIdx = Number(document.getElementById("broadcastSchoolSelect").value);
+          audience.school = schoolsCache[schoolIdx]?.name || "";
+        } else if (scope === "class") {
+          const schoolIdx = Number(document.getElementById("broadcastSchoolSelect").value);
+          const classIdx = Number(document.getElementById("broadcastClassSelect").value);
+          audience.school = schoolsCache[schoolIdx]?.name || "";
+          audience.class = schoolsCache[schoolIdx]?.classes?.[classIdx]?.name || "";
+        } else if (scope === "status") {
+          audience.status = Number(document.getElementById("broadcastStatusSelect").value);
+          audience.statusLabel = getBroadcastStatusInfo(audience.status);
+        } else if (scope === "manual") {
+          audience.manual = true;
+        }
+
+        const broadcastRef = push(ref(db, "broadcasts"));
+        const broadcastId = broadcastRef.key;
+        const createdAt = nowUnix();
+
+        const recipientsSnapshot = recipients.map((u) => ({
+          uid: u.uid,
+          name: u.name || "",
+          email: u.email || "",
+          school: u.school || "",
+          class: u.class || "",
+          status: Number(u.status ?? 0)
+        }));
+
+        await set(ref(db, `broadcasts/${broadcastId}`), {
+          createdBy: auth.currentUser?.uid || "",
+          createdByEmail: auth.currentUser?.email || "",
+          createdAt,
+          subject,
+          text,
+          audience,
+          recipientsCount: recipientsSnapshot.length,
+          recipients: recipientsSnapshot
+        });
+
+        showMessage(
+          msg,
+          `✅ Рассылка отправлена (${recipientsSnapshot.length} ${recipientsSnapshot.length === 1 ? "получатель" : "получателей"})`,
+          "success"
+        );
+
+        document.getElementById("broadcastSubject").value = "";
+        document.getElementById("broadcastText").value = "";
+      } catch (e) {
+        console.error("broadcast send error:", e);
+        showMessage(msg, "❌ Ошибка: " + e.message, "error");
+      } finally {
+        sendBtn.disabled = false;
+      }
+    });
+
     /* ============ Резолверы ============ */
 
     function resolveSchoolIndexFromProfile(profile, schools = []) {
@@ -3605,8 +4068,7 @@
           return;
         }
 
-        // Проверка подтверждения аккаунта (как в index.html):
-        // pending / rejected → на auth.html, где покажутся экраны ожидания/отклонения
+        // Проверка подтверждения аккаунта
         if (!isFullAdmin && acceptStatus !== "accepted") {
           window.location.href = AUTH_URL;
           return;
@@ -3618,6 +4080,12 @@
           await renderNewsList();
           await loadUsers();
           renderUsersList();
+
+          // Инициализация вкладки «Рассылка»
+          fillBroadcastSchoolSelect();
+          fillBroadcastClassSelect();
+          updateBroadcastScopeUI();
+          renderBroadcastRecipients();
         }
       } catch (error) {
         console.error("Ошибка инициализации консоли:", error);

@@ -34,7 +34,6 @@
       user-select: none;
     }
 
-    /* ===== Loadscreen ===== */
     #loadscreen {
       position: fixed;
       inset: 0;
@@ -113,7 +112,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* ===== Навигация ===== */
     .navbar {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -248,7 +246,6 @@
       background: #1a5fb0; transform: scale(.97);
     }
 
-    /* ===== Контейнер ===== */
     .container {
       max-width: 900px; margin: 0 auto;
       background: #fff; border-radius: 48px;
@@ -337,7 +334,6 @@
       text-decoration: none;
     }
 
-    /* ===== Кнопка "Показать ещё" ===== */
     .show-more-wrap {
       display: flex;
       justify-content: center;
@@ -391,7 +387,6 @@
       text-align: center; padding: 40px; color: #6a7f9e;
     }
 
-    /* ===== Модальные окна ===== */
     .modal-overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(0,0,0,.4); backdrop-filter: blur(4px);
@@ -483,7 +478,6 @@
       display: none !important;
     }
 
-    /* ===== Плавающая кнопка "Чат" ===== */
     .chat-fab {
       position: fixed;
       right: 24px;
@@ -524,7 +518,6 @@
       white-space: nowrap;
     }
 
-    /* ✅ Огонёк: по умолчанию скрыт, показывается только с .has-unread */
     .chat-fab .chat-dot {
       display: none;
       position: absolute;
@@ -547,7 +540,6 @@
       50% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(255,209,102,0); }
     }
 
-    /* ===== Адаптив: планшет ===== */
     @media (max-width: 860px) {
       .navbar { padding: 10px 18px; }
       .logo-text { font-size: 20px; }
@@ -555,7 +547,6 @@
       .user-badge { max-width: 160px; padding: 6px 12px 6px 10px; font-size: 13px; }
     }
 
-    /* ===== Адаптив: мобильный ===== */
     @media (max-width: 700px) {
       body { padding-top: 74px; }
 
@@ -639,7 +630,6 @@
   </style>
 </head>
 <body>
-  <!-- ===== Loadscreen ===== -->
   <div id="loadscreen">
     <div class="loader-logo-wrap">
       <img
@@ -692,7 +682,6 @@
     <div class="footer">© 2026 · Электронная школа</div>
   </div>
 
-  <!-- ✅ Плавающая кнопка "Чат" -->
   <a href="chat.html" class="chat-fab" id="chatFab" aria-label="Открыть чат" title="Открыть чат">
     <span class="chat-dot" aria-hidden="true"></span>
     <span class="material-symbols-outlined">forum</span>
@@ -790,14 +779,22 @@
     let currentProfile = {};
     let schoolsData = [];
 
-    // Пагинация новостей
     let allNews = [];
     let newsShown = 5;
     const NEWS_STEP = 5;
 
-    // Подписка на непрочитанные сообщения
     let unsubChatUnread = null;
     let unsubChatUnreadRef = null;
+
+    let unsubBroadcasts = null;
+    let unsubBroadcastsRef = null;
+
+    let unsubSeenAt = null;
+    let unsubSeenAtRef = null;
+
+    let chatUnreadCount = 0;
+    let broadcastUnreadCount = 0;
+    let lastBroadcastsRaw = {};
 
     function hideLoadscreen() {
       if (!loadscreen) return;
@@ -897,6 +894,16 @@
 
     /* ============ Огонёк на кнопке "Чат" ============ */
 
+    function updateChatFabDot() {
+      if (!chatFab) return;
+      const total = chatUnreadCount + broadcastUnreadCount;
+      if (total > 0) {
+        chatFab.classList.add("has-unread");
+      } else {
+        chatFab.classList.remove("has-unread");
+      }
+    }
+
     function detachChatUnread() {
       if (unsubChatUnread && unsubChatUnreadRef) {
         try { off(unsubChatUnreadRef, "value", unsubChatUnread); } catch (e) {}
@@ -905,7 +912,20 @@
       unsubChatUnreadRef = null;
     }
 
-    // ✅ Подписка на непрочитанные сообщения. Если их > 0 — показываем огонёк.
+    function detachBroadcastsUnread() {
+      if (unsubBroadcasts && unsubBroadcastsRef) {
+        try { off(unsubBroadcastsRef, "value", unsubBroadcasts); } catch (e) {}
+      }
+      unsubBroadcasts = null;
+      unsubBroadcastsRef = null;
+
+      if (unsubSeenAt && unsubSeenAtRef) {
+        try { off(unsubSeenAtRef, "value", unsubSeenAt); } catch (e) {}
+      }
+      unsubSeenAt = null;
+      unsubSeenAtRef = null;
+    }
+
     function subscribeChatUnread(uid) {
       if (!chatFab || !uid) return;
 
@@ -920,7 +940,6 @@
         Object.entries(raw).forEach(([chatId, chatData]) => {
           if (!chatData || typeof chatData !== "object") return;
 
-          // chatId = uid1_uid2 (отсортированные). Проверяем, что я участник.
           const parts = chatId.split("_");
           if (!parts.includes(uid)) return;
 
@@ -930,7 +949,6 @@
           Object.values(messages).forEach(m => {
             if (!m || typeof m !== "object") return;
 
-            // Скрытые для меня не считаем
             const hiddenForMe = m.hidden && m.hidden[uid] === true;
             if (hiddenForMe) return;
 
@@ -940,16 +958,74 @@
           });
         });
 
-        if (totalUnread > 0) {
-          chatFab.classList.add("has-unread");
-        } else {
-          chatFab.classList.remove("has-unread");
-        }
+        chatUnreadCount = totalUnread;
+        updateChatFabDot();
       };
 
       onValue(messagesRootRef, handler);
       unsubChatUnreadRef = messagesRootRef;
       unsubChatUnread = handler;
+    }
+
+    /* --- Непрочитанные рассылки ---
+       Считаем непрочитанной, если я в recipients и её createdAt > lastBroadcastsSeenAt.
+       При открытии чата «ЭлектроШкола» в chat.html lastBroadcastsSeenAt обновляется,
+       и здесь огонёк гаснет в реальном времени (подписка на /users/{uid}/lastBroadcastsSeenAt). */
+
+    function recomputeBroadcastUnread() {
+      const seenAt = Number(currentProfile?.lastBroadcastsSeenAt || 0);
+      let totalUnread = 0;
+
+      Object.entries(lastBroadcastsRaw).forEach(([id, b]) => {
+        if (!b || typeof b !== "object") return;
+
+        const createdAt = Number(b.createdAt || 0);
+        if (!createdAt) return;
+
+        if (seenAt && createdAt <= seenAt) return;
+
+        const recipients = Array.isArray(b.recipients) ? b.recipients : [];
+        const isForMe = recipients.some(r => {
+          if (!r) return false;
+          if (typeof r === "string") return r === currentUser.uid;
+          return r.uid === currentUser.uid;
+        });
+
+        if (isForMe) totalUnread++;
+      });
+
+      broadcastUnreadCount = totalUnread;
+      updateChatFabDot();
+    }
+
+    function subscribeBroadcastsUnread(uid) {
+      if (!chatFab || !uid) return;
+
+      detachBroadcastsUnread();
+
+      const broadcastsRef = ref(db, "broadcasts");
+      const seenAtRef = ref(db, `users/${uid}/lastBroadcastsSeenAt`);
+
+      const broadcastsHandler = (snap) => {
+        lastBroadcastsRaw = snap.exists() ? snap.val() : {};
+        recomputeBroadcastUnread();
+      };
+
+      const seenAtHandler = (snap) => {
+        currentProfile = {
+          ...currentProfile,
+          lastBroadcastsSeenAt: snap.exists() ? Number(snap.val() || 0) : 0
+        };
+        recomputeBroadcastUnread();
+      };
+
+      onValue(broadcastsRef, broadcastsHandler);
+      onValue(seenAtRef, seenAtHandler);
+
+      unsubBroadcastsRef = broadcastsRef;
+      unsubBroadcasts = broadcastsHandler;
+      unsubSeenAtRef = seenAtRef;
+      unsubSeenAt = seenAtHandler;
     }
 
     function openNewsModal(title, date, text) {
@@ -1124,16 +1200,12 @@
       return currentProfile;
     }
 
-    /* ============ Статус подтверждения ============ */
-
     function getAcceptStatus(profile) {
       const v = profile?.isAccepted;
       if (v === true) return "accepted";
       if (typeof v === "string" && v.trim().toLowerCase() === "откл") return "rejected";
       return "pending";
     }
-
-    /* ============ НОВОСТИ с пагинацией ============ */
 
     function renderNewsSlice() {
       if (!newsContainer) return;
@@ -1238,8 +1310,6 @@
       }
     }
 
-    /* ============ ПРОФИЛЬ ============ */
-
     profileSchoolSelect.addEventListener("change", updateClassOptionsForSelectedSchool);
 
     profileForm.addEventListener("submit", async (e) => {
@@ -1285,7 +1355,6 @@
         currentProfile = {};
       }
 
-      // Проверка подтверждения
       const acceptStatus = getAcceptStatus(currentProfile);
 
       if (acceptStatus === "pending") {
@@ -1306,8 +1375,9 @@
       updateConsoleLink();
       updateTeacherLinks();
 
-      // ✅ Подписка на непрочитанные — огонёк на кнопке «Чат»
+      // ✅ Огонёк: сообщения + рассылки
       subscribeChatUnread(user.uid);
+      subscribeBroadcastsUnread(user.uid);
 
       await Promise.all([
         loadSchools(),

@@ -615,6 +615,70 @@
 
     .hidden { display: none !important; }
 
+    /* ===== Чат «ЭлектроШкола» (системные сообщения) ===== */
+    .avatar.broadcast-avatar {
+      background: #fff;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1.5px #eef3fa;
+    }
+    .avatar.broadcast-avatar img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      border-radius: inherit;
+    }
+    .avatar.broadcast-avatar .broadcast-fallback {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #2a7de1 0%, #1a5fb0 100%);
+      color: #fff; font-weight: 700; font-size: 16px;
+      border-radius: inherit;
+    }
+
+    .chat-item.broadcast-item {
+      border: 1px solid #dbe7f7;
+      background: linear-gradient(135deg, #f4f9ff 0%, #eaf3ff 100%);
+    }
+    .chat-item.broadcast-item:hover {
+      background: linear-gradient(135deg, #eaf3ff 0%, #dcebff 100%);
+      border-color: #b8d3f1;
+    }
+    .chat-item.broadcast-item.active {
+      background: linear-gradient(135deg, #dcebff 0%, #cfe3ff 100%);
+      border-color: #2a7de1;
+    }
+    .chat-item.broadcast-item .chat-item-tag {
+      background: #e5effb;
+      color: #2a7de1;
+      text-transform: none;
+      letter-spacing: 0.02em;
+    }
+
+    .broadcast-subject {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 4px;
+      color: #1a5fb0;
+    }
+
+    .chat-input-row.locked {
+      background: #f4f7fb;
+      justify-content: center;
+      align-items: center;
+      padding: 14px 16px;
+    }
+    .chat-input-row.locked .locked-note {
+      font-size: 13px;
+      color: #889bb3;
+      display: flex; align-items: center; gap: 6px;
+      text-align: center;
+    }
+    .chat-input-row.locked .locked-note .material-symbols-outlined {
+      font-size: 18px;
+    }
+    .chat-input-row.locked textarea,
+    .chat-input-row.locked .send-btn { display: none; }
+
     @media (max-width: 860px) {
       .navbar { padding: 10px 18px; }
       .logo-text { font-size: 20px; }
@@ -750,6 +814,10 @@
         <button class="send-btn" id="sendBtn" aria-label="Отправить">
           <span class="material-symbols-outlined">send</span>
         </button>
+        <div class="locked-note" id="broadcastLockedNote" style="display:none;">
+          <span class="material-symbols-outlined">lock</span>
+          Это системные сообщения — писать сюда нельзя
+        </div>
       </div>
     </section>
   </div>
@@ -869,6 +937,9 @@
   const AUTH_URL = "auth.html";
   const GROUP_WINDOW_MS = 60 * 1000;
 
+  const BROADCAST_CHAT_ID = "__broadcast__";
+  const BROADCAST_NAME = "ЭлектроШкола";
+
   const urlParams = new URLSearchParams(window.location.search);
   const paramTo = String(urlParams.get("to") || "").trim();
   const paramChat = String(urlParams.get("chat") || "").trim();
@@ -890,8 +961,8 @@
   const messageInput = document.getElementById("messageInput");
   const sendBtn = document.getElementById("sendBtn");
   const backBtn = document.getElementById("backBtn");
+  const broadcastLockedNote = document.getElementById("broadcastLockedNote");
 
-  // === Ссылки навбара ===
   const diaryLink = document.getElementById("diaryLink");
   const journalLink = document.getElementById("journalLink");
   const consoleLink = document.getElementById("consoleLink");
@@ -928,9 +999,11 @@
   let unsubChatsMeta = null;
   let unsubUsers = null;
   let unsubUnread = null;
+  let unsubBroadcasts = null;
 
   let chatsMeta = {};
   let unreadCounts = {};
+  let broadcastsCache = [];
 
   let ctxMsgId = null;
   let ctxMsgText = "";
@@ -938,6 +1011,8 @@
   let ctxMsgMine = false;
 
   let editingMsgId = null;
+
+  let currentChatIsBroadcast = false;
 
   /* ================== Утилиты ================== */
 
@@ -1106,8 +1181,6 @@
     `;
   }
 
-  /* ===== Навигация — как в index.html ===== */
-
   function updateConsoleLink() {
     const status = Number(currentProfile?.status ?? 1);
     if (status === 2 || status === 3) {
@@ -1201,10 +1274,51 @@
     return { uid, ...profile };
   }
 
+  /* ================== Список чатов ================== */
+
+  function renderBroadcastChatItem() {
+    const isActive = currentChatIsBroadcast;
+    const last = broadcastsCache[broadcastsCache.length - 1];
+
+    let preview = "Системные сообщения";
+    let lastAt = 0;
+
+    if (last) {
+      const subject = String(last.subject || "").trim();
+      const text = String(last.text || "").trim();
+      const full = subject ? `${subject} — ${text}` : text;
+      preview = full.length > 80 ? full.slice(0, 77) + "..." : full;
+      lastAt = Number(last.createdAt || 0) * 1000;
+    }
+
+    return `
+      <div class="chat-item broadcast-item ${isActive ? "active" : ""}" data-broadcast="1">
+        <div class="avatar broadcast-avatar">
+          <img
+            src="logo.png"
+            alt="${escapeHtml(BROADCAST_NAME)}"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <div class="broadcast-fallback" style="display:none;">Ш</div>
+        </div>
+        <div class="chat-item-info">
+          <div class="chat-item-name">
+            ${escapeHtml(BROADCAST_NAME)}
+            <span class="chat-item-tag status-admin">Система</span>
+          </div>
+          <div class="chat-item-preview">${escapeHtml(preview)}</div>
+        </div>
+        <div class="chat-item-time">${lastAt ? formatTime(lastAt) : ""}</div>
+      </div>
+    `;
+  }
+
   function renderChatsList() {
     const q = String(searchInput.value || "").trim();
 
     if (!q) {
+      const broadcastHtml = renderBroadcastChatItem();
+
       const existingChats = [];
 
       Object.entries(chatsMeta).forEach(([chatId, meta]) => {
@@ -1225,20 +1339,14 @@
 
       existingChats.sort((a, b) => (b.meta.lastAt || 0) - (a.meta.lastAt || 0));
 
-      if (!existingChats.length) {
-        chatsListEl.innerHTML = `
-          <div class="hint-text">
-            <span class="material-symbols-outlined">person_search</span>
-            Введите <b>имя</b> или <b>UID</b> пользователя, чтобы найти его и начать переписку
-          </div>
-        `;
-        return;
+      let html = broadcastHtml;
+
+      if (existingChats.length) {
+        existingChats.forEach(({ contact, chatId, meta }) => {
+          html += renderChatItemHtml(contact, chatId, meta, false);
+        });
       }
 
-      let html = "";
-      existingChats.forEach(({ contact, chatId, meta }) => {
-        html += renderChatItemHtml(contact, chatId, meta, false);
-      });
       chatsListEl.innerHTML = html;
       bindChatItems();
       return;
@@ -1304,6 +1412,10 @@
   function bindChatItems() {
     chatsListEl.querySelectorAll(".chat-item").forEach(el => {
       el.addEventListener("click", () => {
+        if (el.dataset.broadcast === "1") {
+          openBroadcastChat();
+          return;
+        }
         const chatId = el.dataset.chatId;
         const uid = el.dataset.uid;
         const contact = resolveContactByUid(uid);
@@ -1332,6 +1444,24 @@
   function hideThreadUI() { chatMain.classList.remove("has-thread"); }
 
   function updateThreadHeader() {
+    if (currentChatIsBroadcast) {
+      threadAvatar.className = "avatar broadcast-avatar";
+      threadAvatar.innerHTML = `
+        <img src="logo.png" alt="${escapeHtml(BROADCAST_NAME)}"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <div class="broadcast-fallback" style="display:none;">Ш</div>
+      `;
+      threadName.innerHTML = `
+        ${escapeHtml(BROADCAST_NAME)}
+        <span class="chat-item-tag status-admin">Система</span>
+      `;
+      threadSub.textContent = "Системные сообщения";
+      renameBtn.style.display = "none";
+      return;
+    }
+
+    renameBtn.style.display = "";
+
     if (!currentPeer) return;
     const info = statusInfo(currentPeer.status);
     const realName = currentPeer.name || currentPeer.email || "Без имени";
@@ -1351,11 +1481,26 @@
     threadSub.textContent = subParts.length ? subParts.join(" · ") : (currentPeer.email || "");
   }
 
+  function setInputLocked(locked) {
+    if (locked) {
+      inputRow.classList.add("locked");
+      broadcastLockedNote.style.display = "flex";
+    } else {
+      inputRow.classList.remove("locked");
+      broadcastLockedNote.style.display = "none";
+    }
+  }
+
+  /* ===== Открытие обычного чата ===== */
+
   function openChat(contact, chatId) {
     detachMessagesListener();
 
     currentPeer = contact;
     currentChatId = chatId;
+    currentChatIsBroadcast = false;
+
+    setInputLocked(false);
 
     updateThreadHeader();
     showThreadUI();
@@ -1369,6 +1514,87 @@
     markChatAsRead(chatId);
 
     setMobileShowThread(true);
+  }
+
+  /* ===== Открытие чата «ЭлектроШкола» ===== */
+
+  function openBroadcastChat() {
+    detachMessagesListener();
+
+    currentPeer = null;
+    currentChatId = BROADCAST_CHAT_ID;
+    currentChatIsBroadcast = true;
+
+    setInputLocked(true);
+
+    updateThreadHeader();
+    showThreadUI();
+    renderChatsList();
+    renderBroadcastMessages();
+
+    setMobileShowThread(true);
+
+    // ✅ Помечаем рассылки прочитанными — огонёк на index.html гаснет
+    markBroadcastsAsSeen();
+  }
+
+  // ✅ Запись lastBroadcastsSeenAt = now (unix-секунды)
+  async function markBroadcastsAsSeen() {
+    if (!currentUser) return;
+    try {
+      await update(ref(db, `users/${currentUser.uid}`), {
+        lastBroadcastsSeenAt: Math.floor(Date.now() / 1000)
+      });
+    } catch (e) {
+      console.warn("markBroadcastsAsSeen error:", e);
+    }
+  }
+
+  function renderBroadcastMessages() {
+    if (!currentChatIsBroadcast) return;
+
+    if (!broadcastsCache.length) {
+      messagesEl.innerHTML = `
+        <div class="empty-thread">
+          <span class="material-symbols-outlined">campaign</span>
+          Пока нет системных сообщений
+        </div>
+      `;
+      return;
+    }
+
+    let html = "";
+    let lastDayTs = null;
+
+    broadcastsCache.forEach((b) => {
+      const tsMs = Number(b.createdAt || 0) * 1000;
+
+      if (!lastDayTs || !isSameDayTs(lastDayTs, tsMs)) {
+        html += `<div class="date-divider">${escapeHtml(formatDayLabel(tsMs))}</div>`;
+        lastDayTs = tsMs;
+      }
+
+      const subject = String(b.subject || "").trim();
+      const text = String(b.text || "");
+
+      let inner = "";
+      if (subject) {
+        inner += `<span class="broadcast-subject">${escapeHtml(subject)}</span>`;
+      }
+      inner += renderTextWithLinks(text);
+
+      html += `
+        <div class="msg-group theirs">
+          <div class="msg-bubble-row">
+            <div class="msg-bubble">${inner}</div>
+          </div>
+          <div class="msg-group-meta">${escapeHtml(formatTime(tsMs))}</div>
+        </div>
+      `;
+    });
+
+    messagesEl.innerHTML = html;
+    scrollMessagesToBottom();
   }
 
   function subscribeMessages(chatId) {
@@ -1612,14 +1838,14 @@
     const text = ctxMsgText;
     closeContextMenu();
 
-    if (!id || !currentChatId) return;
+    if (!id || !currentChatId || currentChatIsBroadcast) return;
     openEditMsgModal(id, text);
   });
 
   ctxHide.addEventListener("click", async () => {
     const id = ctxMsgId;
     closeContextMenu();
-    if (!id || !currentChatId) return;
+    if (!id || !currentChatId || currentChatIsBroadcast) return;
 
     try {
       await update(ref(db, `messages/${currentChatId}/messages/${id}/hidden`), {
@@ -1634,7 +1860,7 @@
   ctxUnhide.addEventListener("click", async () => {
     const id = ctxMsgId;
     closeContextMenu();
-    if (!id || !currentChatId) return;
+    if (!id || !currentChatId || currentChatIsBroadcast) return;
 
     try {
       await set(ref(db, `messages/${currentChatId}/messages/${id}/hidden/${currentUser.uid}`), null);
@@ -1681,7 +1907,7 @@
   });
 
   editMsgSaveBtn.addEventListener("click", async () => {
-    if (!editingMsgId || !currentChatId) return;
+    if (!editingMsgId || !currentChatId || currentChatIsBroadcast) return;
 
     const newText = String(editMsgInput.value || "").trim();
     if (!newText) {
@@ -1741,7 +1967,7 @@
   /* ================== Переименование ================== */
 
   function openRenameModal() {
-    if (!currentPeer) return;
+    if (!currentPeer || currentChatIsBroadcast) return;
     const realName = currentPeer.name || currentPeer.email || "";
     const alias = getMyAlias(currentPeer.uid);
     renameInput.value = alias || realName;
@@ -1770,7 +1996,7 @@
   });
 
   renameSaveBtn.addEventListener("click", async () => {
-    if (!currentPeer || !currentChatId) return;
+    if (!currentPeer || !currentChatId || currentChatIsBroadcast) return;
 
     const value = String(renameInput.value || "").trim();
     const realName = currentPeer.name || currentPeer.email || "";
@@ -1797,7 +2023,7 @@
   });
 
   renameResetBtn.addEventListener("click", async () => {
-    if (!currentPeer || !currentChatId) return;
+    if (!currentPeer || !currentChatId || currentChatIsBroadcast) return;
 
     try {
       await set(ref(db, `messages/${currentChatId}/aliases/${currentUser.uid}`), null);
@@ -1817,6 +2043,8 @@
   }
 
   async function sendMessage() {
+    if (currentChatIsBroadcast) return;
+
     const text = String(messageInput.value || "").trim();
     if (!text || !currentChatId || !currentPeer) return;
 
@@ -1864,6 +2092,7 @@
 
   async function markChatAsRead(chatId) {
     if (!chatId || !currentUser) return;
+    if (chatId === BROADCAST_CHAT_ID) return;
 
     try {
       const msgsRef = ref(db, `messages/${chatId}/messages`);
@@ -1888,7 +2117,7 @@
     }
   }
 
-  /* ================== Мета и непрочитанные ================== */
+  /* ================== Мета, непрочитанные, рассылки ================== */
 
   function subscribeChatsMeta() {
     const metaRef = ref(db, "messages");
@@ -1948,6 +2177,23 @@
     unsubUnread = handler;
   }
 
+  function subscribeBroadcasts() {
+    const broadcastsRef = ref(db, "broadcasts");
+
+    const handler = (snap) => {
+      const raw = snap.exists() ? snap.val() : {};
+      broadcastsCache = Object.entries(raw)
+        .map(([id, data]) => ({ id, ...(data || {}) }))
+        .sort((a, b) => Number(a.createdAt || 0) - Number(b.createdAt || 0));
+
+      renderChatsList();
+      if (currentChatIsBroadcast) renderBroadcastMessages();
+    };
+
+    onValue(broadcastsRef, handler);
+    unsubBroadcasts = handler;
+  }
+
   /* ================== Загрузка пользователей ================== */
 
   function subscribeUsers() {
@@ -1977,7 +2223,7 @@
   messageInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      sendMessage();
+      if (!currentChatIsBroadcast) sendMessage();
     }
   });
 
@@ -1997,7 +2243,9 @@
 
     currentChatId = null;
     currentPeer = null;
+    currentChatIsBroadcast = false;
 
+    setInputLocked(false);
     hideThreadUI();
 
     renderChatsList();
@@ -2059,7 +2307,6 @@
 
     renderHeader(user);
 
-    // ✅ Та же логика, что и в index.html
     updateConsoleLink();
     updateTeacherLinks();
 
@@ -2070,6 +2317,7 @@
     try { subscribeUsers(); } catch (e) { console.error(e); }
     try { subscribeChatsMeta(); } catch (e) { console.error(e); }
     try { subscribeUnreadCounts(); } catch (e) { console.error(e); }
+    try { subscribeBroadcasts(); } catch (e) { console.error(e); }
 
     if (paramTo || paramChat) {
       let tries = 0;
