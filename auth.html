@@ -25,7 +25,6 @@
       padding: 24px;
     }
 
-    /* ===== Loadscreen ===== */
     #loadscreen {
       position: fixed;
       inset: 0;
@@ -322,7 +321,6 @@
     }
     .btn-outline:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* ===== Google кнопка ===== */
     .btn-google {
       background: #ffffff;
       color: #1f2b48;
@@ -344,7 +342,6 @@
       flex-shrink: 0;
     }
 
-    /* ===== Разделитель "или" ===== */
     .divider-with-text {
       display: flex;
       align-items: center;
@@ -364,7 +361,6 @@
       background: #eef3fa;
     }
 
-    /* ===== Плашка «нельзя изменить» ===== */
     .warning-note {
       display: flex;
       align-items: flex-start;
@@ -389,6 +385,66 @@
     .warning-note b {
       color: #8a5a00;
       font-weight: 700;
+    }
+
+    /* ===== Галочка «прочитал правила» ===== */
+    .terms-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 4px 0 18px;
+      font-size: 14px;
+      color: #1f2b48;
+      line-height: 1.5;
+      cursor: pointer;
+      user-select: none;
+      background: #f9fcff;
+      border: 1.5px solid #eef3fa;
+      border-radius: 18px;
+      padding: 12px 14px;
+      transition: 0.15s;
+    }
+
+    .terms-check:hover {
+      border-color: #dce4ef;
+    }
+
+    .terms-check.error {
+      border-color: #ffd4d4;
+      background: #fff7f7;
+      animation: shake .35s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .terms-check input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #2a7de1;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .terms-check span {
+      min-width: 0;
+    }
+
+    .terms-check a {
+      color: #2a7de1;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: 0.15s;
+    }
+
+    .terms-check a:hover {
+      color: #1a5fb0;
+      text-decoration: none;
     }
 
     .forgot-row {
@@ -553,7 +609,6 @@
 
     .reset-icon .material-symbols-outlined { font-size: 38px; }
 
-    /* ===== Экран ожидания подтверждения ===== */
     .pending-icon {
       width: 80px;
       height: 80px;
@@ -620,7 +675,6 @@
       gap: 10px;
     }
 
-    /* ===== Экран отклонения ===== */
     .rejected-icon {
       width: 80px;
       height: 80px;
@@ -729,7 +783,6 @@
 </head>
 <body>
 
-  <!-- ===== Loadscreen ===== -->
   <div id="loadscreen">
     <div class="loader-logo-wrap">
       <img
@@ -771,6 +824,15 @@
         </div>
       </div>
 
+      <!-- ✅ Галочка прочитанных правил (только при регистрации) -->
+      <label class="terms-check hidden" id="termsCheckRow">
+        <input type="checkbox" id="termsCheckbox" />
+        <span>
+          Я прочитал(а) и согласен(на) с
+          <a href="tos.html" target="_blank" rel="noopener noreferrer">правилами пользования</a>
+        </span>
+      </label>
+
       <div class="remember-me">
         <input type="checkbox" id="rememberCheckbox" checked />
         <label for="rememberCheckbox">Запомнить меня</label>
@@ -786,7 +848,6 @@
 
       <button class="btn btn-primary" id="submitBtn">Войти</button>
 
-      <!-- ✅ Google -->
       <div class="divider-with-text">или</div>
 
       <button class="btn btn-google" id="googleBtn" type="button">
@@ -887,7 +948,6 @@
         </select>
       </div>
 
-      <!-- ✅ Плашка «нельзя изменить» -->
       <div class="warning-note">
         <span class="material-symbols-outlined">warning</span>
         <div>
@@ -902,7 +962,7 @@
       <button class="btn btn-success" id="saveProfileBtn">Сохранить профиль</button>
     </div>
 
-    <!-- === ЭКРАН 5: Ожидание подтверждения администратором === -->
+    <!-- === ЭКРАН 5: Ожидание подтверждения === -->
     <div id="pendingBlock" class="hidden">
       <div class="pending-icon">
         <span class="material-symbols-outlined">hourglass_top</span>
@@ -1067,6 +1127,10 @@
     const googleBtn = document.getElementById("googleBtn");
     const googleBtnLabel = document.getElementById("googleBtnLabel");
 
+    // ✅ Правила
+    const termsCheckRow = document.getElementById("termsCheckRow");
+    const termsCheckbox = document.getElementById("termsCheckbox");
+
     const verifyEmailText = document.getElementById("verifyEmailText");
     const verifyError = document.getElementById("verifyError");
     const verifySuccess = document.getElementById("verifySuccess");
@@ -1149,6 +1213,9 @@
         forgotRow.classList.remove("hidden");
         passwordInput.setAttribute("autocomplete", "current-password");
         if (googleBtnLabel) googleBtnLabel.textContent = "Войти с Google";
+
+        // ✅ При входе галочка не нужна
+        if (termsCheckRow) termsCheckRow.classList.add("hidden");
       } else {
         formTitle.textContent = "Регистрация";
         formSub.textContent = "Создайте новый аккаунт";
@@ -1158,6 +1225,12 @@
         forgotRow.classList.add("hidden");
         passwordInput.setAttribute("autocomplete", "new-password");
         if (googleBtnLabel) googleBtnLabel.textContent = "Зарегистрироваться с Google";
+
+        // ✅ При регистрации показываем галочку
+        if (termsCheckRow) {
+          termsCheckRow.classList.remove("hidden");
+          termsCheckRow.classList.remove("error");
+        }
       }
       clearAllMessages();
     }
@@ -1169,6 +1242,13 @@
     }
 
     switchActionBtn.addEventListener("click", toggleMode);
+
+    // ✅ Снимаем «ошибку» с галочки, когда её ставят
+    termsCheckbox.addEventListener("change", () => {
+      if (termsCheckbox.checked && termsCheckRow) {
+        termsCheckRow.classList.remove("error");
+      }
+    });
 
     function getErrorMessage(error) {
       const codes = {
@@ -1416,7 +1496,6 @@
       const selectedSchool = schoolOptions.find(item => item.id === schoolId) || { name: schoolId };
       const selectedClass = classOptions.find(item => item.id === classId) || { name: classId };
 
-      // ✅ Дополнительное подтверждение
       const ok = confirm(
         "Проверьте данные:\n\n" +
         "Имя: " + name + "\n" +
@@ -1522,6 +1601,19 @@
         return;
       }
 
+      // ✅ При регистрации требуем галочку
+      if (!isLoginMode) {
+        if (!termsCheckbox.checked) {
+          showMessage(authError, "⚠️ Подтвердите, что вы прочитали правила пользования");
+          if (termsCheckRow) {
+            termsCheckRow.classList.add("error");
+            termsCheckRow.scrollIntoView({ behavior: "smooth", block: "center" });
+            setTimeout(() => termsCheckRow.classList.remove("error"), 1200);
+          }
+          return;
+        }
+      }
+
       clearAllMessages();
       submitBtn.disabled = true;
       submitBtn.textContent = "⏳ Загрузка...";
@@ -1555,6 +1647,7 @@
               emailVerified: false,
               isAccepted: false,
               authProvider: "password",
+              acceptedTermsAt: new Date().toISOString(),
               createdAt: new Date().toISOString()
             });
           } catch (dbError) {
@@ -1578,6 +1671,19 @@
     /* ============ Вход / Регистрация через Google ============ */
 
     async function handleGoogleAuth() {
+      // ✅ При регистрации через Google тоже требуем галочку
+      if (!isLoginMode) {
+        if (!termsCheckbox.checked) {
+          showMessage(authError, "⚠️ Подтвердите, что вы прочитали правила пользования");
+          if (termsCheckRow) {
+            termsCheckRow.classList.add("error");
+            termsCheckRow.scrollIntoView({ behavior: "smooth", block: "center" });
+            setTimeout(() => termsCheckRow.classList.remove("error"), 1200);
+          }
+          return;
+        }
+      }
+
       clearAllMessages();
 
       const originalLabel = googleBtnLabel ? googleBtnLabel.textContent : "Google";
@@ -1617,6 +1723,7 @@
               emailVerified: true,
               isAccepted: false,
               authProvider: "google.com",
+              acceptedTermsAt: new Date().toISOString(),
               createdAt: profile.createdAt || new Date().toISOString()
             });
           } catch (dbError) {

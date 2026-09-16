@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Электронная школа" />
+  <meta property="og:title" content="Правила пользования · Электронная школа" />
+  <meta property="og:description" content="Правила использования сервиса «Электронная школа»" />
+  <meta property="og:url" content="https://xsynda.github.io/digitalschool.github.io/terms.html" />
+  <meta property="og:image" content="https://xsynda.github.io/digitalschool.github.io/logo.png" />
+  <title>Правила пользования · Электронная школа</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: "Inter", sans-serif;
+      background: #f8faff;
+      min-height: 100vh;
+      padding-top: 80px;
+      color: #0a1e3c;
+    }
+
+    /* ===== Loadscreen ===== */
+    #loadscreen {
+      position: fixed; inset: 0; z-index: 10000;
+      background: #f8faff;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 18px;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+    #loadscreen.hidden-loader { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .loader-logo-wrap {
+      position: relative; width: 88px; height: 88px;
+      display: flex; align-items: center; justify-content: center;
+      animation: loader-pulse 1.6s ease-in-out infinite;
+    }
+    .loader-logo-img {
+      width: 88px; height: 88px; border-radius: 22px; object-fit: cover;
+      background: #ffffff; box-shadow: 0 12px 32px rgba(42,125,225,.35); display: block;
+    }
+    .loader-logo-fallback {
+      display: none; width: 88px; height: 88px; border-radius: 22px;
+      background: #2a7de1; color: #fff;
+      align-items: center; justify-content: center;
+      font-size: 40px; font-weight: 700;
+      box-shadow: 0 12px 32px rgba(42,125,225,.35);
+    }
+    @keyframes loader-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+    .loader-text { font-size: 15px; color: #5f7696; font-weight: 500; letter-spacing: .2px; }
+    .loader-spinner {
+      width: 32px; height: 32px;
+      border: 3px solid #dbe7f7; border-top-color: #2a7de1;
+      border-radius: 50%;
+      animation: loader-spin .8s linear infinite;
+    }
+    @keyframes loader-spin { to { transform: rotate(360deg); } }
+
+    /* ===== Навбар ===== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: #fff; border-bottom: 1px solid #eef3fa;
+      box-shadow: 0 4px 20px rgba(0,20,40,.06);
+      padding: 10px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .navbar-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; min-width: 0; }
+    .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .logo-img { width: 42px; height: 42px; border-radius: 12px; object-fit: cover; display: block; flex-shrink: 0; box-shadow: 0 4px 12px rgba(42,125,225,.18); background: #fff; }
+    .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: #0a1e3c; white-space: nowrap; }
+    .logo-text span { color: #2a7de1; }
+
+    .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .nav-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border-radius: 40px; font-weight: 500;
+      font-size: 14px; color: #1f2b48; text-decoration: none;
+      background: transparent; border: 1.5px solid transparent;
+      transition: .15s; white-space: nowrap;
+    }
+    .nav-link:hover { background: #f0f4fe; border-color: #d0dae9; }
+    .nav-link.active { background: #e5effb; border-color: #2a7de1; color: #2a7de1; }
+    .nav-link .material-symbols-outlined { font-size: 18px; }
+
+    .nav-link.admin-link {
+        background: #fff3e0;
+        border-color: #ff9800;
+        color: #e65100;
+    }
+
+    .nav-link.admin-link:hover {
+        background: #ffe0b2;
+        border-color: #f57c00;
+    }
+
+    .nav-link.admin-link.active {
+        background: #ffe0b2;
+        border-color: #f57c00;
+        color: #e65100;
+    }
+
+    .navbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex-shrink: 0; }
+
+    .user-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #f0f6ff; padding: 6px 16px 6px 12px; border-radius: 40px;
+      font-size: 14px; font-weight: 500; color: #0a1e3c; text-decoration: none;
+      transition: .15s; max-width: 220px; min-width: 0; overflow: hidden;
+    }
+    .user-badge:hover { background: #e5effb; }
+    .user-badge .material-symbols-outlined { color: #2a7de1; font-size: 20px; flex-shrink: 0; }
+    .user-badge .user-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+    /* ===== Контейнер ===== */
+    .container {
+      max-width: 900px; margin: 0 auto;
+      background: #fff; border-radius: 48px;
+      box-shadow: 0 24px 60px rgba(0,20,40,.08);
+      padding: 32px 40px 44px;
+      border: 1px solid #f0f5fe;
+    }
+
+    .page-title {
+      font-size: 26px; font-weight: 600; color: #0a1e3c;
+      margin-bottom: 8px; display: flex; align-items: center; gap: 10px;
+    }
+    .page-title .material-symbols-outlined { color: #2a7de1; font-size: 32px; }
+    .page-sub { color: #5f7696; font-size: 15px; margin-bottom: 28px; }
+
+    /* ===== Содержимое ===== */
+    .terms-section {
+      background: #f9fcff;
+      border: 1px solid #eef3fa;
+      border-radius: 24px;
+      padding: 22px 24px;
+      margin-bottom: 16px;
+    }
+
+    .terms-section h2 {
+      font-size: 17px;
+      font-weight: 600;
+      color: #0a1e3c;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .terms-section h2 .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      background: #e5effb;
+      color: #2a7de1;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .terms-section p,
+    .terms-section li {
+      font-size: 15px;
+      color: #3d5270;
+      line-height: 1.7;
+    }
+
+    .terms-section p + p,
+    .terms-section p + ul,
+    .terms-section ul + p {
+      margin-top: 10px;
+    }
+
+    .terms-section ul {
+      padding-left: 20px;
+      margin-top: 8px;
+    }
+
+    .terms-section li { margin-bottom: 6px; }
+    .terms-section li:last-child { margin-bottom: 0; }
+
+    .terms-section b { color: #0a1e3c; font-weight: 600; }
+
+    .terms-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #e5effb;
+      border: 1.5px dashed #a7c8ef;
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin: 4px 0 20px;
+      font-size: 14px;
+      color: #1a5fb0;
+      line-height: 1.55;
+    }
+
+    .terms-note .material-symbols-outlined {
+      font-size: 22px;
+      color: #2a7de1;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .terms-updated {
+      text-align: center;
+      font-size: 13px;
+      color: #889bb3;
+      margin-top: 26px;
+      padding-top: 20px;
+      border-top: 1px solid #eef3fa;
+    }
+
+    .footer {
+      margin-top: 32px; padding-top: 20px;
+      border-top: 1px solid #eef3fa;
+      font-size: 13px; color: #889bb3;
+      text-align: center;
+    }
+
+    .hidden { display: none !important; }
+
+    /* ===== Адаптив ===== */
+    @media (max-width: 860px) {
+      .navbar { padding: 10px 18px; }
+      .logo-text { font-size: 20px; }
+      .nav-link { padding: 7px 14px; font-size: 13px; }
+      .user-badge { max-width: 160px; padding: 6px 12px 6px 10px; font-size: 13px; }
+    }
+    @media (max-width: 700px) {
+      body { padding-top: 74px; }
+      .navbar { padding: 8px 14px; flex-wrap: nowrap; gap: 8px; }
+      .navbar-left { flex-wrap: nowrap; gap: 8px; flex: 1; min-width: 0; }
+      .logo-img { width: 36px; height: 36px; border-radius: 10px; }
+      .logo-text { display: none; }
+      .nav-links { flex-wrap: nowrap; overflow-x: auto; gap: 4px; flex: 1; min-width: 0; scrollbar-width: none; }
+      .nav-links::-webkit-scrollbar { display: none; }
+      .nav-link { padding: 7px 14px; font-size: 13px; flex-shrink: 0; }
+      .nav-link .material-symbols-outlined { font-size: 16px; }
+      .user-badge { padding: 6px 12px 6px 10px; font-size: 13px; max-width: 130px; }
+      .user-badge .material-symbols-outlined { font-size: 18px; }
+      .container { margin: 12px 10px 20px; padding: 22px 16px 30px; border-radius: 32px; }
+      .page-title { font-size: 22px; }
+      .page-title .material-symbols-outlined { font-size: 27px; }
+      .page-sub { font-size: 14px; }
+      .terms-section { padding: 18px 16px; border-radius: 20px; }
+      .terms-section h2 { font-size: 15px; }
+      .terms-section p, .terms-section li { font-size: 14px; }
+    }
+    @media (max-width: 420px) {
+      .user-badge .user-name { display: none; }
+      .user-badge { padding: 6px 8px; max-width: none; }
+      .user-badge .material-symbols-outlined { margin: 0; }
+      .nav-link { padding: 6px 12px; font-size: 12px; }
+      .nav-link .material-symbols-outlined { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ===== Loadscreen ===== -->
+  <div id="loadscreen">
+    <div class="loader-logo-wrap">
+      <img
+        src="logo.png"
+        alt="Электронная школа"
+        class="loader-logo-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+      <div class="loader-logo-fallback">Ш</div>
+    </div>
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Загрузка данных...</div>
+  </div>
+
+  <header class="navbar">
+    <div class="navbar-left">
+      <a href="index.html" class="logo-area">
+        <img src="logo.png" alt="Электронная школа" class="logo-img" />
+        <div class="logo-text">Электро<span>школа</span></div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">
+          <span class="material-symbols-outlined">home</span> Главная
+        </a>
+        <a href="diary.html" class="nav-link hidden" id="diaryLink">
+          <span class="material-symbols-outlined">calendar_month</span> Дневник
+        </a>
+        <a href="journal.html" class="nav-link hidden" id="journalLink">
+          <span class="material-symbols-outlined">menu_book</span> Журнал
+        </a>
+        <a href="reports.html" class="nav-link hidden" id="reportsLink">
+          <span class="material-symbols-outlined">bar_chart</span> Отчёты
+        </a>
+        <a href="console.html" class="nav-link admin-link hidden" id="consoleLink">
+          <span class="material-symbols-outlined">dashboard</span> Консоль
+        </a>
+        <a href="chat.html" class="nav-link hidden" id="chatLink">
+          <span class="material-symbols-outlined">forum</span> Чат
+        </a>
+      </nav>
+    </div>
+    <div class="navbar-right" id="userArea"></div>
+  </header>
+
+  <main class="container">
+    <div class="page-title">
+      <span class="material-symbols-outlined">menu_book</span>
+      Правила пользования
+    </div>
+    <div class="page-sub">
+      Пожалуйста, ознакомьтесь с правилами использования сервиса «Электронная школа».
+    </div>
+
+    <div class="terms-note">
+      <span class="material-symbols-outlined">info</span>
+      <div>
+        Используя сервис, вы автоматически соглашаетесь с настоящими правилами.
+        Если вы не согласны — пожалуйста, прекратите использование.
+      </div>
+    </div>
+
+    <div class="terms-section">
+      <h2><span class="num">1</span> Общие положения</h2>
+      <p>
+        «Электронная школа» — это сервис для ведения дневника, журнала, просмотра
+        отчётов и общения между участниками образовательного процесса.
+      </p>
+      <p>
+        Сервис предоставляется в образовательных целях. Администраторы сайта следят за порядком и могут ограничить доступ
+        нарушителям.
+      </p>
+    </div>
+
+    <div class="terms-section">
+      <h2><span class="num">2</span> Регистрация и аккаунт</h2>
+      <ul>
+        <li>Для использования сервиса нужно зарегистрироваться с реальным email.</li>
+        <li>После регистрации необходимо указать настоящее <b>имя, школу и класс</b>.</li>
+        <li><b>Указанные данные нельзя изменить самостоятельно</b> — изменения принимает только администратор.</li>
+        <li>Аккаунт активируется после подтверждения администратором.</li>
+        <li>Ответственность за сохранность пароля лежит на пользователе.</li>
+      </ul>
+    </div>
+
+    <div class="terms-section">
+      <h2><span class="num">3</span> Правила поведения</h2>
+      <ul>
+        <li>Запрещено оскорблять других пользователей, использовать нецензурную лексику.</li>
+        <li>Запрещено публиковать материалы, нарушающие закон, чужие персональные данные или авторские права.</li>
+        <li>Запрещены спам, реклама, массовые рассылки и любые попытки взлома.</li>
+        <li>Запрещено выдавать себя за другого человека.</li>
+        <li>Пожалуйста, уважайте других участников образовательного процесса.</li>
+      </ul>
+    </div>
+
+    <div class="terms-section">
+      <h2><span class="num">4</span> Данные и конфиденциальность</h2>
+      <ul>
+        <li>Сервис хранит: email, имя, школу, класс, оценки, домашние задания, сообщения.</li>
+        <li>Данные видны администрации школы и учителям в рамках их полномочий.</li>
+        <li>Данные не передаются третьим лицам, кроме случаев, предусмотренных законом.</li>
+        <li>Пользователь может запросить удаление аккаунта — через администратора.</li>
+      </ul>
+    </div>
+
+    <div class="terms-section">
+      <h2><span class="num">5</span> Сообщения и чат</h2>
+      <ul>
+        <li>Встроенный чат предназначен для общения по учебным вопросам.</li>
+        <li>Ученики могут писать только администраторам или учителям по весомой причине.</li>
+        <li>Переписка может быть просмотрена администрацией при необходимости.</li>
+        <li>Отправленные сообщения можно изменить, но не удалить полностью — история сохраняется.</li>
+        <li>Скрытие сообщения действует только для вас, собеседник его всё равно видит.</li>
+      </ul>
+    </div>
+
+    <div class="terms-section">
+      <h2><span class="num">6</span> Ответственность</h2>
+      <ul>
+        <li>За нарушения правил может быть ограничен доступ, а аккаунт — заблокирован.</li>
+        <li>Администрация не несёт ответственности за технические сбои и потерю данных.</li>
+        <li>Администрация вправе изменять правила — пользователи уведомляются об этом.</li>
+        <li>Администрация вправе удалять аккаунты пользователей в случае нарушения правил.</li>
+        <li>Администрация не несёт ответственности за действия пользователей на сайте.</li>
+        <li>Пользователь несет ответственность за информацию, которую публикует на сайте.</li>
+        <li>Администрация не несёт ответственности за неверную или неполную информацию об расписании или заданиях.</li>
+      </ul>
+    </div>
+
+    <div class="terms-section">
+      <h2><span class="num">7</span> Обратная связь</h2>
+      <p>
+        Если у вас возникли вопросы, жалобы или предложения — напишите
+        администратору через встроенный чат.
+      </p>
+    </div>
+
+    <div class="terms-updated">
+      Последнее обновление: 16 сентября 2026
+    </div>
+
+    <div class="footer">© 2026 · Электронная школа</div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
+      authDomain: "digitalschool-f2c90.firebaseapp.com",
+      projectId: "digitalschool-f2c90",
+      storageBucket: "digitalschool-f2c90.appspot.com",
+      messagingSenderId: "797143730107",
+      appId: "1:797143730107:web:b19437db896170d88b269e",
+      measurementId: "G-FT9ENP491P"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const AUTH_URL = "auth.html";
+    const loadscreen = document.getElementById("loadscreen");
+    const userArea = document.getElementById("userArea");
+
+    const diaryLink = document.getElementById("diaryLink");
+    const journalLink = document.getElementById("journalLink");
+    const reportsLink = document.getElementById("reportsLink");
+    const consoleLink = document.getElementById("consoleLink");
+    const chatLink = document.getElementById("chatLink");
+
+    let currentProfile = {};
+
+    function hideLoadscreen() {
+      if (!loadscreen) return;
+      loadscreen.classList.add("hidden-loader");
+      setTimeout(() => {
+        if (loadscreen && loadscreen.parentNode) {
+          loadscreen.parentNode.removeChild(loadscreen);
+        }
+      }, 400);
+    }
+
+    function escapeHtml(value) {
+      if (value === null || value === undefined) return "";
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderHeader(user) {
+      const name = currentProfile?.name || user?.displayName || user?.email || "Пользователь";
+      userArea.innerHTML = `
+        <a href="account.html" class="user-badge">
+          <span class="material-symbols-outlined">person</span>
+          <span class="user-name">${escapeHtml(name)}</span>
+        </a>
+      `;
+    }
+
+    function applyNavVisibility() {
+      const status = Number(currentProfile?.status ?? 1);
+      const isTeacher = status === 4;
+      const isAdminish = status === 2 || status === 3;
+
+      // Дневник — всем, кроме учителя
+      if (diaryLink) {
+        if (isTeacher) diaryLink.classList.add("hidden");
+        else diaryLink.classList.remove("hidden");
+      }
+
+      // Журнал — только учителю
+      if (journalLink) {
+        if (isTeacher) journalLink.classList.remove("hidden");
+        else journalLink.classList.add("hidden");
+      }
+
+      // Консоль — только админам (2, 3)
+      if (consoleLink) {
+        if (isAdminish) consoleLink.classList.remove("hidden");
+        else consoleLink.classList.add("hidden");
+      }
+
+      // Отчёты и чат — для всех авторизованных
+      if (reportsLink) reportsLink.classList.remove("hidden");
+      if (chatLink) chatLink.classList.remove("hidden");
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        // Страница правил доступна и без авторизации —
+        // показываем контент, а в userArea — кнопку входа.
+        userArea.innerHTML = `
+          <a href="${AUTH_URL}" class="user-badge">
+            <span class="material-symbols-outlined">login</span>
+            <span class="user-name">Войти</span>
+          </a>
+        `;
+        // Прячем пункты, которые требуют аккаунта
+        [diaryLink, journalLink, reportsLink, consoleLink, chatLink].forEach(el => {
+          if (el) el.classList.add("hidden");
+        });
+        hideLoadscreen();
+        return;
+      }
+
+      try {
+        const snap = await get(ref(db, `users/${user.uid}`));
+        currentProfile = snap.exists() ? snap.val() || {} : {};
+      } catch (e) {
+        currentProfile = {};
+      }
+
+      if (currentProfile.name) user.displayName = currentProfile.name;
+
+      renderHeader(user);
+      applyNavVisibility();
+      hideLoadscreen();
+    });
+  </script>
+</body>
+</html>
