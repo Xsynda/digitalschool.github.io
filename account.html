@@ -23,104 +23,56 @@
       color: #0a1e3c;
     }
 
-    /* ===== Loadscreen ===== */
     #loadscreen {
-      position: fixed;
-      inset: 0;
-      z-index: 10000;
+      position: fixed; inset: 0; z-index: 10000;
       background: #f8faff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 18px;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 18px;
       transition: opacity .35s ease, visibility .35s ease;
     }
-
-    #loadscreen.hidden-loader {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
+    #loadscreen.hidden-loader { opacity: 0; visibility: hidden; pointer-events: none; }
 
     .loader-logo-wrap {
-      position: relative;
-      width: 88px;
-      height: 88px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: relative; width: 88px; height: 88px;
+      display: flex; align-items: center; justify-content: center;
       animation: loader-pulse 1.6s ease-in-out infinite;
     }
-
     .loader-logo-img {
-      width: 88px;
-      height: 88px;
-      border-radius: 22px;
-      object-fit: cover;
-      background: #ffffff;
-      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
-      display: block;
+      width: 88px; height: 88px; border-radius: 22px; object-fit: cover;
+      background: #fff; box-shadow: 0 12px 32px rgba(42,125,225,.35); display: block;
     }
-
     .loader-logo-fallback {
-      display: none;
-      width: 88px;
-      height: 88px;
-      border-radius: 22px;
-      background: #2a7de1;
-      color: #fff;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      font-weight: 700;
-      box-shadow: 0 12px 32px rgba(42, 125, 225, 0.35);
+      display: none; width: 88px; height: 88px; border-radius: 22px;
+      background: #2a7de1; color: #fff;
+      align-items: center; justify-content: center;
+      font-size: 40px; font-weight: 700;
+      box-shadow: 0 12px 32px rgba(42,125,225,.35);
     }
-
     @keyframes loader-pulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.06); }
     }
-
-    .loader-text {
-      font-size: 15px;
-      color: #5f7696;
-      font-weight: 500;
-      letter-spacing: .2px;
-    }
-
+    .loader-text { font-size: 15px; color: #5f7696; font-weight: 500; letter-spacing: .2px; }
     .loader-spinner {
-      width: 32px;
-      height: 32px;
-      border: 3px solid #dbe7f7;
-      border-top-color: #2a7de1;
+      width: 32px; height: 32px;
+      border: 3px solid #dbe7f7; border-top-color: #2a7de1;
       border-radius: 50%;
       animation: loader-spin .8s linear infinite;
     }
-
-    @keyframes loader-spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes loader-spin { to { transform: rotate(360deg); } }
 
     .navbar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 1000;
-      background: #ffffff;
-      border-bottom: 1px solid #eef3fa;
-      box-shadow: 0 4px 20px rgba(0, 20, 40, 0.06);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: #fff; border-bottom: 1px solid #eef3fa;
+      box-shadow: 0 4px 20px rgba(0,20,40,.06);
       padding: 10px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
     }
-
     .navbar-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; min-width: 0; }
     .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
-    .logo-img { width: 42px; height: 42px; border-radius: 12px; object-fit: cover; display: block; flex-shrink: 0; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.18); background: #ffffff; }
-    .logo-fallback { display: none; background: #2a7de1; color: white; width: 42px; height: 42px; border-radius: 12px; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); flex-shrink: 0; }
+    .logo-img { width: 42px; height: 42px; border-radius: 12px; object-fit: cover; display: block; box-shadow: 0 4px 12px rgba(42,125,225,.18); background: #fff; }
+    .logo-fallback { display: none; background: #2a7de1; color: white; width: 42px; height: 42px; border-radius: 12px; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; flex-shrink: 0; }
     .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: #0a1e3c; white-space: nowrap; }
     .logo-text span { color: #2a7de1; }
 
@@ -136,7 +88,7 @@
     .user-badge .material-symbols-outlined { color: #2a7de1; font-size: 20px; flex-shrink: 0; }
     .user-badge .user-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    .container { max-width: 720px; margin: 0 auto; background: #ffffff; border-radius: 48px; box-shadow: 0 24px 60px rgba(0, 20, 40, 0.08); padding: 32px 40px 44px; border: 1px solid #f0f5fe; }
+    .container { max-width: 720px; margin: 0 auto; background: #fff; border-radius: 48px; box-shadow: 0 24px 60px rgba(0,20,40,.08); padding: 32px 40px 44px; border: 1px solid #f0f5fe; }
 
     .page-title { font-size: 26px; font-weight: 600; color: #0a1e3c; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
     .page-title .material-symbols-outlined { color: #2a7de1; font-size: 32px; }
@@ -151,102 +103,51 @@
     .field-group { margin-bottom: 16px; }
     .field-group:last-child { margin-bottom: 0; }
     .field-group label { display: block; font-size: 13px; font-weight: 600; color: #1f2b48; margin-bottom: 6px; }
-    .field-group input { width: 100%; background: #ffffff; border: 1.5px solid #dce4ef; border-radius: 18px; padding: 12px 16px; font-size: 15px; font-family: 'Inter', sans-serif; color: #0a1e3c; transition: 0.15s ease; }
-    .field-group input:focus { outline: none; border-color: #2a7de1; box-shadow: 0 0 0 4px rgba(42, 125, 225, 0.10); }
+    .field-group input { width: 100%; background: #fff; border: 1.5px solid #dce4ef; border-radius: 18px; padding: 12px 16px; font-size: 15px; font-family: 'Inter', sans-serif; color: #0a1e3c; transition: 0.15s ease; }
+    .field-group input:focus { outline: none; border-color: #2a7de1; box-shadow: 0 0 0 4px rgba(42,125,225,0.10); }
     .field-group input:disabled { background: #f5f8fc; color: #556a8c; cursor: not-allowed; opacity: 0.9; }
 
-    .hint { font-size: 12px; color: #889bb3; margin-top: 6px; line-height: 1.5; }
+    .chip-list { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 0 2px; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: #fff; border: 1.5px solid #dce4ef; border-radius: 40px; font-size: 14px; font-weight: 500; color: #1f2b48; line-height: 1; }
+    .chip .material-symbols-outlined { font-size: 16px; color: #2a7de1; }
+    .chip.empty { background: #f5f8fc; border-style: dashed; color: #889bb3; font-style: italic; }
 
-    /* Список чипов (классы/предметы) */
-    .chip-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 4px 0 2px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      background: #ffffff;
-      border: 1.5px solid #dce4ef;
-      border-radius: 40px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #1f2b48;
-      line-height: 1;
-    }
-
-    .chip .material-symbols-outlined {
-      font-size: 16px;
-      color: #2a7de1;
-    }
-
-    .chip.empty {
-      background: #f5f8fc;
-      border-style: dashed;
-      color: #889bb3;
-      font-style: italic;
-    }
-
-    /* Поле с глазиком */
     .input-with-icon { position: relative; width: 100%; }
     .input-with-icon input { padding-right: 48px; }
     .toggle-password { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border: none; background: transparent; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #6a7f9e; transition: 0.15s; padding: 0; }
     .toggle-password:hover { background: #eef3fa; color: #2a7de1; }
     .toggle-password .material-symbols-outlined { font-size: 22px; }
 
-    .btn-action { border: none; border-radius: 40px; padding: 10px 20px; font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif; cursor: pointer; transition: 0.18s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-action { border: none; border-radius: 40px; padding: 10px 20px; font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif; cursor: pointer; transition: 0.18s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
     .btn-action:hover { transform: translateY(-1px); }
-    .btn-primary { background: #2a7de1; color: white; box-shadow: 0 4px 12px rgba(42, 125, 225, 0.20); }
-    .btn-primary:hover { background: #1a5fb0; }
-    .btn-success { background: #1d8f52; color: white; box-shadow: 0 4px 12px rgba(29, 143, 82, 0.18); }
+    .btn-success { background: #1d8f52; color: #fff; box-shadow: 0 4px 12px rgba(29,143,82,0.18); }
     .btn-success:hover { background: #167445; }
     .btn-ghost { background: #eef5ff; color: #1f2b48; border: 1px solid #dfeaf9; }
     .btn-ghost:hover { background: #e3eeff; }
     .btn-full { width: 100%; }
 
-    /* Кнопка Telegram */
-    .btn-telegram {
-      background: #229ED9;
+    .btn-chat {
+      background: linear-gradient(135deg, #2a7de1 0%, #1a5fb0 100%);
       color: white;
-      box-shadow: 0 4px 12px rgba(34, 158, 217, 0.25);
-      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(42, 125, 225, 0.30);
     }
-    .btn-telegram:hover { background: #1a7fb3; }
+    .btn-chat:hover {
+      background: linear-gradient(135deg, #1a5fb0 0%, #14478a 100%);
+      box-shadow: 0 6px 18px rgba(42, 125, 225, 0.38);
+    }
 
     .error-msg { display: block; font-size: 13px; color: #b63a3a; background: #fff2f2; border: 1px solid #ffd4d4; border-radius: 12px; padding: 10px 14px; margin-top: 10px; line-height: 1.5; }
     .success-msg { display: block; font-size: 13px; color: #146a3d; background: #ecf9f1; border: 1px solid #cdeedb; border-radius: 12px; padding: 10px 14px; margin-top: 10px; line-height: 1.5; }
     .hidden { display: none !important; }
 
-    /* Плашка «только через Telegram» */
     .info-note {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      background: #e5effb;
-      border: 1.5px dashed #a7c8ef;
-      border-radius: 18px;
-      padding: 14px 16px;
-      margin: 0 0 16px;
-      font-size: 14px;
-      color: #1a5fb0;
-      line-height: 1.55;
+      display: flex; align-items: flex-start; gap: 10px;
+      background: #e5effb; border: 1.5px dashed #a7c8ef;
+      border-radius: 18px; padding: 14px 16px; margin: 0 0 16px;
+      font-size: 14px; color: #1a5fb0; line-height: 1.55;
     }
-
-    .info-note .material-symbols-outlined {
-      font-size: 22px;
-      color: #2a7de1;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    .info-note b.telegram-tag {
-      color: #1a5fb0;
-      font-weight: 700;
-    }
+    .info-note .material-symbols-outlined { font-size: 22px; color: #2a7de1; flex-shrink: 0; margin-top: 1px; }
+    .info-note b.chat-tag { color: #1a5fb0; font-weight: 700; }
 
     .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid #eef3fa; font-size: 13px; color: #889bb3; text-align: center; }
 
@@ -256,7 +157,6 @@
       .nav-link { padding: 7px 14px; font-size: 13px; }
       .user-badge { max-width: 160px; padding: 6px 12px 6px 10px; font-size: 13px; }
     }
-
     @media (max-width: 700px) {
       body { padding-top: 74px; }
       .navbar { padding: 8px 14px; flex-wrap: nowrap; gap: 8px; }
@@ -277,7 +177,6 @@
       .page-sub { font-size: 14px; }
       .settings-card { padding: 18px 16px; border-radius: 20px; }
     }
-
     @media (max-width: 420px) {
       .user-badge .user-name { display: none; }
       .user-badge { padding: 6px 8px; max-width: none; }
@@ -288,15 +187,9 @@
   </style>
 </head>
 <body>
-  <!-- ===== Loadscreen ===== -->
   <div id="loadscreen">
     <div class="loader-logo-wrap">
-      <img
-        src="logo.png"
-        alt="Электронная школа"
-        class="loader-logo-img"
-        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-      />
+      <img src="logo.png" alt="Электронная школа" class="loader-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
       <div class="loader-logo-fallback">Ш</div>
     </div>
     <div class="loader-spinner"></div>
@@ -311,22 +204,11 @@
         <div class="logo-text">Электро<span>школа</span></div>
       </a>
       <nav class="nav-links">
-        <a href="index.html" class="nav-link">
-          <span class="material-symbols-outlined">home</span>
-          Главная
-        </a>
-        <a href="diary.html" class="nav-link" id="diaryLink">
-          <span class="material-symbols-outlined">calendar_month</span>
-          Дневник
-        </a>
-        <a href="journal.html" class="nav-link hidden" id="journalLink">
-          <span class="material-symbols-outlined">menu_book</span>
-          Журнал
-        </a>
-        <a href="reports.html" class="nav-link">
-          <span class="material-symbols-outlined">bar_chart</span>
-          Отчёты
-        </a>
+        <a href="index.html" class="nav-link"><span class="material-symbols-outlined">home</span> Главная</a>
+        <a href="diary.html" class="nav-link" id="diaryLink"><span class="material-symbols-outlined">calendar_month</span> Дневник</a>
+        <a href="journal.html" class="nav-link hidden" id="journalLink"><span class="material-symbols-outlined">menu_book</span> Журнал</a>
+        <a href="reports.html" class="nav-link"><span class="material-symbols-outlined">bar_chart</span> Отчёты</a>
+        <a href="chat.html" class="nav-link"><span class="material-symbols-outlined">forum</span> Чат</a>
       </nav>
     </div>
     <div class="navbar-right" id="userArea"></div>
@@ -375,8 +257,7 @@
     const db = getDatabase(app);
 
     const AUTH_URL = "auth.html";
-    const TELEGRAM_HANDLE = "@itsXsynda";
-    const TELEGRAM_URL = "https://t.me/itsXsynda";
+    const CHAT_URL = "chat.html";
 
     const loadscreen = document.getElementById("loadscreen");
     const profileContainer = document.getElementById("profileContainer");
@@ -384,21 +265,19 @@
     const diaryLink = document.getElementById("diaryLink");
     const journalLink = document.getElementById("journalLink");
 
+    let adminUidCache = null;
+
     function hideLoadscreen() {
       if (!loadscreen) return;
       loadscreen.classList.add("hidden-loader");
       setTimeout(() => {
-        if (loadscreen && loadscreen.parentNode) {
-          loadscreen.parentNode.removeChild(loadscreen);
-        }
+        if (loadscreen && loadscreen.parentNode) loadscreen.parentNode.removeChild(loadscreen);
       }, 400);
     }
 
-    // Учитель (status 4): показываем "Журнал", скрываем "Дневник".
     function updateTeacherLinks(profileData) {
       const status = Number(profileData?.status ?? 1);
       const isTeacher = status === 4;
-
       if (isTeacher) {
         if (journalLink) journalLink.classList.remove("hidden");
         if (diaryLink) diaryLink.classList.add("hidden");
@@ -408,7 +287,6 @@
       }
     }
 
-    // Статус подтверждения администратором
     function getAcceptStatus(profile) {
       const v = profile?.isAccepted;
       if (v === true) return "accepted";
@@ -465,76 +343,54 @@
     function normalizeSchools(raw) {
       if (!raw) return [];
       if (Array.isArray(raw)) return raw.filter(Boolean);
-
-      if (typeof raw === "object") {
-        return Object.values(raw).filter(Boolean);
-      }
-
+      if (typeof raw === "object") return Object.values(raw).filter(Boolean);
       return [];
     }
 
     function getSchoolByName(name, schools = []) {
       const target = String(name || "").trim();
       if (!target) return null;
-
-      return schools.find((school) => {
-        const schoolName = String(school?.name || school?.title || school?.schoolName || "").trim();
-        return schoolName === target;
+      return schools.find(s => {
+        const n = String(s?.name || s?.title || s?.schoolName || "").trim();
+        return n === target;
       }) || null;
     }
 
     function getClassByName(schoolName, className, schools = []) {
       const school = getSchoolByName(schoolName, schools);
       if (!school) return null;
-
       const classesRaw = school.classes;
       const classes = Array.isArray(classesRaw)
         ? classesRaw
         : (classesRaw && typeof classesRaw === "object" ? Object.values(classesRaw) : []);
-
       const target = String(className || "").trim();
       if (!target) return null;
-
-      return classes.find((item) => {
-        const name = String(item?.name || item?.title || item?.className || "").trim();
-        return name === target;
+      return classes.find(item => {
+        const n = String(item?.name || item?.title || item?.className || "").trim();
+        return n === target;
       }) || null;
     }
 
     function resolveSchoolAndClass(profileData = {}, schools = []) {
       const schoolNameInput = String(profileData.school || "").trim();
       const classNameInput = String(profileData.class || "").trim();
-
       const school = getSchoolByName(schoolNameInput, schools);
       const classObject = school ? getClassByName(schoolNameInput, classNameInput, schools) : null;
-
-      const schoolName = school
-        ? (school.name || school.title || school.schoolName || schoolNameInput)
-        : schoolNameInput || "—";
-
-      const className = classObject
-        ? (classObject.name || classObject.title || classObject.className || classNameInput)
-        : classNameInput || "—";
-
+      const schoolName = school ? (school.name || school.title || school.schoolName || schoolNameInput) : schoolNameInput || "—";
+      const className = classObject ? (classObject.name || classObject.title || classObject.className || classNameInput) : classNameInput || "—";
       return { schoolName, className };
     }
 
     function extractNamesArray(raw) {
       if (!raw) return [];
-
-      const arr = Array.isArray(raw)
-        ? raw
-        : (typeof raw === "object" ? Object.values(raw) : []);
-
-      return arr
-        .map((item) => {
-          if (typeof item === "string") return item.trim();
-          if (item && typeof item === "object") {
-            return String(item.name || item.title || item.subject || item.className || item.value || "").trim();
-          }
-          return "";
-        })
-        .filter(Boolean);
+      const arr = Array.isArray(raw) ? raw : (typeof raw === "object" ? Object.values(raw) : []);
+      return arr.map(item => {
+        if (typeof item === "string") return item.trim();
+        if (item && typeof item === "object") {
+          return String(item.name || item.title || item.subject || item.className || item.value || "").trim();
+        }
+        return "";
+      }).filter(Boolean);
     }
 
     function renderChipList(names, emptyText) {
@@ -543,7 +399,7 @@
       }
       return `
         <div class="chip-list">
-          ${names.map((name) => `
+          ${names.map(name => `
             <span class="chip">
               <span class="material-symbols-outlined">check_circle</span>
               ${escapeHtml(name)}
@@ -556,11 +412,7 @@
     async function reauthenticateUser(currentPassword) {
       const user = auth.currentUser;
       if (!user || !user.email) throw new Error("Пользователь не авторизован.");
-
-      if (!currentPassword || !String(currentPassword).trim()) {
-        throw new Error("Введите текущий пароль.");
-      }
-
+      if (!currentPassword || !String(currentPassword).trim()) throw new Error("Введите текущий пароль.");
       const credential = EmailAuthProvider.credential(user.email, String(currentPassword).trim());
       await reauthenticateWithCredential(user, credential);
     }
@@ -568,12 +420,10 @@
     async function changePassword(currentPassword, newPassword, confirmPassword) {
       const user = auth.currentUser;
       if (!user) throw new Error("Пользователь не найден.");
-
       if (!currentPassword || !String(currentPassword).trim()) throw new Error("Введите текущий пароль.");
       if (!newPassword || !String(newPassword).trim()) throw new Error("Введите новый пароль.");
       if (String(newPassword).trim().length < 6) throw new Error("Новый пароль должен содержать минимум 6 символов.");
       if (String(newPassword).trim() !== String(confirmPassword).trim()) throw new Error("Пароли не совпадают.");
-
       await reauthenticateUser(currentPassword);
       await updatePassword(user, String(newPassword).trim());
     }
@@ -583,8 +433,6 @@
       window.location.href = AUTH_URL;
     }
 
-    /* ============ Глазик для полей пароля ============ */
-
     const passwordVisibility = new Map();
 
     function setupPasswordToggle(inputId, buttonId, iconId) {
@@ -592,21 +440,50 @@
       const btn = document.getElementById(buttonId);
       const icon = document.getElementById(iconId);
       if (!input || !btn || !icon) return;
-
       let visible = false;
       passwordVisibility.set(inputId, false);
-
       btn.addEventListener("click", () => {
         visible = !visible;
         passwordVisibility.set(inputId, visible);
         input.type = visible ? "text" : "password";
         icon.textContent = visible ? "visibility_off" : "visibility";
         btn.setAttribute("aria-label", visible ? "Скрыть пароль" : "Показать пароль");
-
         input.focus();
         const len = input.value.length;
         try { input.setSelectionRange(len, len); } catch (e) {}
       });
+    }
+
+    // ✅ Ссылка на чат с админом
+    function buildChatLink() {
+      if (!adminUidCache) {
+        console.warn("[account] adminUidCache пустой, ссылка без ?to=");
+        return CHAT_URL;
+      }
+      return `${CHAT_URL}?to=${encodeURIComponent(adminUidCache)}`;
+    }
+
+    async function loadFirstAdminUid() {
+      try {
+        const snap = await get(ref(db, "users"));
+        const raw = snap.exists() ? snap.val() : {};
+        const admins = [];
+        Object.entries(raw).forEach(([uid, data]) => {
+          if (!data || typeof data !== "object") return;
+          if (data.isAccepted !== true) return;
+          const s = Number(data.status ?? 0);
+          if (s === 2 || s === 3) {
+            admins.push({ uid, status: s, name: data.name || "" });
+          }
+        });
+        admins.sort((a, b) => a.status - b.status);
+        const found = admins.length ? admins[0].uid : null;
+        console.log("[account] Найден админ для чата:", found, admins);
+        return found;
+      } catch (e) {
+        console.warn("[account] Не удалось загрузить админов:", e);
+        return null;
+      }
     }
 
     function renderProfile(user, profileData = {}, schools = []) {
@@ -618,28 +495,26 @@
       const teacherClasses = extractNamesArray(profileData.classes);
       const teacherSubjects = extractNamesArray(profileData.subjects);
 
-      const classFieldHtml = isTeacher
-        ? ""
-        : `
-          <div class="field-group">
-            <label>Класс</label>
-            <input type="text" value="${escapeHtml(className)}" disabled />
-          </div>
-        `;
+      const classFieldHtml = isTeacher ? "" : `
+        <div class="field-group">
+          <label>Класс</label>
+          <input type="text" value="${escapeHtml(className)}" disabled />
+        </div>
+      `;
 
-      const teacherBlockHtml = isTeacher
-        ? `
-          <div class="field-group">
-            <label>Классы, которыми управляет</label>
-            ${renderChipList(teacherClasses, "Классы не назначены")}
-          </div>
+      const teacherBlockHtml = isTeacher ? `
+        <div class="field-group">
+          <label>Классы, которыми управляет</label>
+          ${renderChipList(teacherClasses, "Классы не назначены")}
+        </div>
+        <div class="field-group">
+          <label>Предметы, которые ведёт</label>
+          ${renderChipList(teacherSubjects, "Предметы не назначены")}
+        </div>
+      ` : "";
 
-          <div class="field-group">
-            <label>Предметы, которые ведёт</label>
-            ${renderChipList(teacherSubjects, "Предметы не назначены")}
-          </div>
-        `
-        : "";
+      const chatLink = buildChatLink();
+      console.log("[account] buildChatLink:", chatLink);
 
       profileContainer.innerHTML = `
         <div class="settings-card">
@@ -647,27 +522,22 @@
             <span class="material-symbols-outlined">info</span>
             Информация
           </div>
-
           <div class="field-group">
             <label>Email</label>
             <input type="text" value="${escapeHtml(user.email || "—")}" disabled />
           </div>
-
           <div class="field-group">
             <label>Имя</label>
             <input type="text" value="${escapeHtml(profileData?.name || user.displayName || "—")}" disabled />
           </div>
-
           <div class="field-group">
             <label>Статус</label>
             <input type="text" value="${escapeHtml(status.title)}" disabled />
           </div>
-
           <div class="field-group">
             <label>Школа</label>
             <input type="text" value="${escapeHtml(schoolName)}" disabled />
           </div>
-
           ${classFieldHtml}
           ${teacherBlockHtml}
         </div>
@@ -677,82 +547,65 @@
             <span class="material-symbols-outlined">lock</span>
             Сменить пароль
           </div>
-
           <div class="field-group">
             <label>Текущий пароль</label>
             <div class="input-with-icon">
               <input type="password" id="currentPasswordInput" placeholder="Введите текущий пароль" autocomplete="current-password" />
-              <button type="button" class="toggle-password" id="toggleCurrentPasswordBtn" aria-label="Показать пароль">
-                <span class="material-symbols-outlined" id="toggleCurrentPasswordIcon">visibility</span>
-              </button>
+              <button type="button" class="toggle-password" id="toggleCurrentPasswordBtn"><span class="material-symbols-outlined" id="toggleCurrentPasswordIcon">visibility</span></button>
             </div>
           </div>
-
           <div class="field-group">
             <label>Новый пароль</label>
             <div class="input-with-icon">
               <input type="password" id="newPasswordInput" placeholder="Минимум 6 символов" autocomplete="new-password" />
-              <button type="button" class="toggle-password" id="toggleNewPasswordBtn" aria-label="Показать пароль">
-                <span class="material-symbols-outlined" id="toggleNewPasswordIcon">visibility</span>
-              </button>
+              <button type="button" class="toggle-password" id="toggleNewPasswordBtn"><span class="material-symbols-outlined" id="toggleNewPasswordIcon">visibility</span></button>
             </div>
           </div>
-
           <div class="field-group">
             <label>Подтверждение пароля</label>
             <div class="input-with-icon">
               <input type="password" id="confirmPasswordInput" placeholder="Повторите новый пароль" autocomplete="new-password" />
-              <button type="button" class="toggle-password" id="toggleConfirmPasswordBtn" aria-label="Показать пароль">
-                <span class="material-symbols-outlined" id="toggleConfirmPasswordIcon">visibility</span>
-              </button>
+              <button type="button" class="toggle-password" id="toggleConfirmPasswordBtn"><span class="material-symbols-outlined" id="toggleConfirmPasswordIcon">visibility</span></button>
             </div>
           </div>
-
           <div id="passwordError" class="hidden error-msg"></div>
           <div id="passwordSuccess" class="hidden success-msg"></div>
-
           <button class="btn-action btn-success" id="updatePasswordBtn">Изменить пароль</button>
         </div>
 
-        <!-- ✅ Изменение имени — только через Telegram -->
         <div class="settings-card">
           <div class="card-title">
             <span class="material-symbols-outlined">edit</span>
             Изменение имени
           </div>
-
           <div class="info-note">
             <span class="material-symbols-outlined">info</span>
             <div>
               Изменение имени доступно <b>только через администратора</b>.
-              Напишите <b class="telegram-tag">${escapeHtml(TELEGRAM_HANDLE)}</b> в Telegram — он поможет изменить данные.
+              Откройте чат и напишите <b class="chat-tag">администратору</b>.
             </div>
           </div>
-
-          <a href="${escapeHtml(TELEGRAM_URL)}" target="_blank" rel="noopener noreferrer" class="btn-action btn-telegram btn-full">
-            <span class="material-symbols-outlined">send</span>
-            Написать ${escapeHtml(TELEGRAM_HANDLE)} в Telegram
+          <a href="${escapeHtml(chatLink)}" class="btn-action btn-chat btn-full">
+            <span class="material-symbols-outlined">forum</span>
+            Открыть чат с администратором
           </a>
         </div>
 
-        <!-- ✅ Удаление аккаунта — только через Telegram -->
         <div class="settings-card">
           <div class="card-title">
             <span class="material-symbols-outlined">delete_forever</span>
             Удаление аккаунта
           </div>
-
           <div class="info-note">
             <span class="material-symbols-outlined">info</span>
             <div>
               Удаление аккаунта доступно <b>только через администратора</b>.
-              Напишите <b class="telegram-tag">${escapeHtml(TELEGRAM_HANDLE)}</b> в Telegram — он удалит ваш аккаунт.
+              Откройте чат и напишите <b class="chat-tag">администратору</b>.
             </div>
           </div>
-
-          <a href="${escapeHtml(TELEGRAM_URL)}" target="_blank" rel="noopener noreferrer" class="btn-action btn-telegram btn-full">
-            <span class="material-symbols-outlined">send</span>
-            Написать ${escapeHtml(TELEGRAM_HANDLE)} в Telegram
+          <a href="${escapeHtml(chatLink)}" class="btn-action btn-chat btn-full">
+            <span class="material-symbols-outlined">forum</span>
+            Открыть чат с администратором
           </a>
         </div>
 
@@ -761,7 +614,6 @@
             <span class="material-symbols-outlined">logout</span>
             Безопасность
           </div>
-
           <button class="btn-action btn-ghost btn-full" id="logoutBtn">
             <span class="material-symbols-outlined">logout</span>
             Выйти из аккаунта
@@ -777,19 +629,14 @@
         const currentPassword = document.getElementById("currentPasswordInput")?.value || "";
         const newPassword = document.getElementById("newPasswordInput")?.value || "";
         const confirmPassword = document.getElementById("confirmPasswordInput")?.value || "";
-
         try {
           hideMessage("passwordError");
           hideMessage("passwordSuccess");
           await changePassword(currentPassword, newPassword, confirmPassword);
           showMessage("passwordSuccess", "Пароль успешно изменён.", "success");
-
           ["currentPasswordInput", "newPasswordInput", "confirmPasswordInput"].forEach(id => {
             const el = document.getElementById(id);
-            if (el) {
-              el.value = "";
-              el.type = "password";
-            }
+            if (el) { el.value = ""; el.type = "password"; }
           });
           ["toggleCurrentPasswordIcon", "toggleNewPasswordIcon", "toggleConfirmPasswordIcon"].forEach(id => {
             const el = document.getElementById(id);
@@ -805,7 +652,6 @@
       });
     }
 
-    // Отдельные безопасные загрузчики
     async function loadProfileData(uid) {
       try {
         const snap = await get(ref(db, `users/${uid}`));
@@ -828,20 +674,15 @@
 
     async function refreshAccountPage(user) {
       if (!user) return;
-
-      const [profileData, schools] = await Promise.all([
+      const [profileData, schools, firstAdminUid] = await Promise.all([
         loadProfileData(user.uid),
-        loadSchools()
+        loadSchools(),
+        loadFirstAdminUid()
       ]);
+      adminUidCache = firstAdminUid;
 
-      user.displayName =
-        profileData?.name ||
-        user.displayName ||
-        user.email ||
-        "Пользователь";
-
+      user.displayName = profileData?.name || user.displayName || user.email || "Пользователь";
       updateTeacherLinks(profileData);
-
       renderUserBadge(user);
       renderProfile(user, profileData, schools);
     }
@@ -851,28 +692,20 @@
         window.location.href = AUTH_URL;
         return;
       }
-
       try {
-        // ✅ Загружаем профиль и проверяем статус подтверждения ДО отрисовки
         let profileData = {};
         try {
           const snap = await get(ref(db, `users/${user.uid}`));
           profileData = snap.exists() ? snap.val() || {} : {};
-        } catch (e) {
-          console.warn("Не удалось загрузить профиль для проверки:", e);
-        }
-
+        } catch (e) {}
         const acceptStatus = getAcceptStatus(profileData);
-
-        if (acceptStatus === "pending" || acceptStatus === "rejected") {
+        if (acceptStatus !== "accepted") {
           window.location.href = AUTH_URL;
           return;
         }
-
         await refreshAccountPage(user);
       } catch (error) {
         console.error("Критическая ошибка:", error);
-
         renderUserBadge(user);
         profileContainer.innerHTML = `
           <div class="settings-card">

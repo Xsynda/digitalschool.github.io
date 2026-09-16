@@ -483,6 +483,70 @@
       display: none !important;
     }
 
+    /* ===== Плавающая кнопка "Чат" ===== */
+    .chat-fab {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 900;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px 14px 18px;
+      background: linear-gradient(135deg, #2a7de1 0%, #1a5fb0 100%);
+      color: #fff;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      font-family: "Inter", sans-serif;
+      box-shadow: 0 12px 28px rgba(42, 125, 225, 0.35), 0 4px 12px rgba(0, 20, 40, 0.15);
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      cursor: pointer;
+    }
+
+    .chat-fab:hover {
+      transform: translateY(-2px) scale(1.03);
+      background: linear-gradient(135deg, #1a5fb0 0%, #14478a 100%);
+      box-shadow: 0 16px 36px rgba(42, 125, 225, 0.42), 0 6px 16px rgba(0, 20, 40, 0.18);
+    }
+
+    .chat-fab:active {
+      transform: scale(0.97);
+    }
+
+    .chat-fab .material-symbols-outlined {
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .chat-fab .chat-label {
+      white-space: nowrap;
+    }
+
+    /* ✅ Огонёк: по умолчанию скрыт, показывается только с .has-unread */
+    .chat-fab .chat-dot {
+      display: none;
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ffd166;
+      box-shadow: 0 0 0 3px rgba(255, 209, 102, 0.35);
+      animation: chat-pulse 1.8s ease-in-out infinite;
+    }
+
+    .chat-fab.has-unread .chat-dot {
+      display: block;
+    }
+
+    @keyframes chat-pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 3px rgba(255,209,102,.35); }
+      50% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(255,209,102,0); }
+    }
+
     /* ===== Адаптив: планшет ===== */
     @media (max-width: 860px) {
       .navbar { padding: 10px 18px; }
@@ -542,6 +606,19 @@
       .container { margin: 12px 10px 20px; padding: 20px 16px 28px; border-radius: 32px; }
       .section-title { font-size: 20px; }
       .section-title .material-symbols-outlined { font-size: 24px; }
+
+      .chat-fab {
+        right: 16px;
+        bottom: 16px;
+        padding: 0;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        justify-content: center;
+      }
+      .chat-fab .chat-label { display: none; }
+      .chat-fab .material-symbols-outlined { font-size: 26px; }
+      .chat-fab .chat-dot { top: 6px; right: 6px; }
     }
 
     @media (max-width: 480px) {
@@ -615,6 +692,13 @@
     <div class="footer">© 2026 · Электронная школа</div>
   </div>
 
+  <!-- ✅ Плавающая кнопка "Чат" -->
+  <a href="chat.html" class="chat-fab" id="chatFab" aria-label="Открыть чат" title="Открыть чат">
+    <span class="chat-dot" aria-hidden="true"></span>
+    <span class="material-symbols-outlined">forum</span>
+    <span class="chat-label">Чат</span>
+  </a>
+
   <div class="modal-overlay" id="modal">
     <div class="modal-box">
       <div class="m-title" id="modalTitle">Заголовок</div>
@@ -659,7 +743,14 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    import {
+      getDatabase,
+      ref,
+      get,
+      update,
+      onValue,
+      off
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDGPv-cUMTSRBq9ZLmpDZFT-JYc3UOcCpY",
@@ -693,6 +784,7 @@
     const modalDate = document.getElementById("modalDate");
     const modalText = document.getElementById("modalText");
     const modalClose = document.getElementById("modalClose");
+    const chatFab = document.getElementById("chatFab");
 
     let currentUser = null;
     let currentProfile = {};
@@ -702,6 +794,10 @@
     let allNews = [];
     let newsShown = 5;
     const NEWS_STEP = 5;
+
+    // Подписка на непрочитанные сообщения
+    let unsubChatUnread = null;
+    let unsubChatUnreadRef = null;
 
     function hideLoadscreen() {
       if (!loadscreen) return;
@@ -786,8 +882,6 @@
       }
     }
 
-    // Учитель (status 4): показываем "Журнал", скрываем "Дневник".
-    // Все остальные: показываем "Дневник", скрываем "Журнал".
     function updateTeacherLinks() {
       const status = Number(currentProfile?.status ?? 1);
       const isTeacher = status === 4;
@@ -799,6 +893,63 @@
         journalLink.classList.add("hidden");
         diaryLink.classList.remove("hidden");
       }
+    }
+
+    /* ============ Огонёк на кнопке "Чат" ============ */
+
+    function detachChatUnread() {
+      if (unsubChatUnread && unsubChatUnreadRef) {
+        try { off(unsubChatUnreadRef, "value", unsubChatUnread); } catch (e) {}
+      }
+      unsubChatUnread = null;
+      unsubChatUnreadRef = null;
+    }
+
+    // ✅ Подписка на непрочитанные сообщения. Если их > 0 — показываем огонёк.
+    function subscribeChatUnread(uid) {
+      if (!chatFab || !uid) return;
+
+      detachChatUnread();
+
+      const messagesRootRef = ref(db, "messages");
+
+      const handler = (snap) => {
+        const raw = snap.exists() ? snap.val() : {};
+        let totalUnread = 0;
+
+        Object.entries(raw).forEach(([chatId, chatData]) => {
+          if (!chatData || typeof chatData !== "object") return;
+
+          // chatId = uid1_uid2 (отсортированные). Проверяем, что я участник.
+          const parts = chatId.split("_");
+          if (!parts.includes(uid)) return;
+
+          const messages = chatData.messages;
+          if (!messages || typeof messages !== "object") return;
+
+          Object.values(messages).forEach(m => {
+            if (!m || typeof m !== "object") return;
+
+            // Скрытые для меня не считаем
+            const hiddenForMe = m.hidden && m.hidden[uid] === true;
+            if (hiddenForMe) return;
+
+            if (m.receiverId === uid && m.read !== true) {
+              totalUnread++;
+            }
+          });
+        });
+
+        if (totalUnread > 0) {
+          chatFab.classList.add("has-unread");
+        } else {
+          chatFab.classList.remove("has-unread");
+        }
+      };
+
+      onValue(messagesRootRef, handler);
+      unsubChatUnreadRef = messagesRootRef;
+      unsubChatUnread = handler;
     }
 
     function openNewsModal(title, date, text) {
@@ -1134,22 +1285,18 @@
         currentProfile = {};
       }
 
-      // ✅ Проверяем статус подтверждения администратором
+      // Проверка подтверждения
       const acceptStatus = getAcceptStatus(currentProfile);
 
       if (acceptStatus === "pending") {
-        // Аккаунт ещё не подтверждён → отправляем на экран ожидания в auth.html
         window.location.href = AUTH_URL;
         return;
       }
 
       if (acceptStatus === "rejected") {
-        // Аккаунт отклонён → отправляем на экран отклонения в auth.html
         window.location.href = AUTH_URL;
         return;
       }
-
-      // acceptStatus === "accepted" — идём дальше
 
       if (currentProfile.name) {
         user.displayName = currentProfile.name;
@@ -1158,6 +1305,9 @@
       renderHeader(user);
       updateConsoleLink();
       updateTeacherLinks();
+
+      // ✅ Подписка на непрочитанные — огонёк на кнопке «Чат»
+      subscribeChatUnread(user.uid);
 
       await Promise.all([
         loadSchools(),
