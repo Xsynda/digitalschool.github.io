@@ -219,7 +219,6 @@
     .avatar.teacher { background: linear-gradient(135deg, #1a8a4a 0%, #146e3a 100%); }
     .avatar.classadmin { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); }
 
-    /* ✅ Когда в аватаре картинка */
     .avatar.has-image {
       background: #eef3fa;
       color: transparent;
@@ -1374,6 +1373,9 @@
   const TYPING_TTL_MS = 3000;
   const TYPING_THROTTLE_MS = 1200;
 
+  // Heartbeat: раз в 25 сек обновляем presence, чтобы не «залипал» онлайн
+  const PRESENCE_HEARTBEAT_MS = 25000;
+
   const IMGBB_API_KEY = "96d427aa0815502bf7e968a503e61419";
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -1458,6 +1460,7 @@
   let unsubBroadcasts = null;
   let unsubTyping = null;
   let unsubPresence = null;
+  let unsubConnected = null;
 
   let chatsMeta = {};
   let unreadCounts = {};
@@ -1476,6 +1479,7 @@
   let currentChatIsBroadcast = false;
 
   let lastTypingSentAt = 0;
+  let presenceHeartbeatTimer = null;
 
   let lastSeenMessageAt = 0;
   let titleBlinkTimer = null;
@@ -1811,16 +1815,19 @@
     lastTypingSentAt = now;
 
     const typingRef = ref(db, `messages/${currentChatId}/typing/${currentUser.uid}`);
-    try {
-      set(typingRef, now);
-      onDisconnect(typingRef).remove();
-    } catch (e) {}
+    set(typingRef, now)
+      .then(() => {
+        onDisconnect(typingRef).remove();
+      })
+      .catch((e) => {
+        console.warn("typing set error:", e?.message || e);
+      });
   }
 
   function stopTypingSignal() {
     if (!currentChatId || !currentUser) return;
     const typingRef = ref(db, `messages/${currentChatId}/typing/${currentUser.uid}`);
-    try { remove(typingRef); } catch (e) {}
+    try { remove(typingRef).catch(() => {}); } catch (e) {}
   }
 
   function subscribeTyping(chatId) {
@@ -1831,7 +1838,9 @@
       updateTypingUI(chatId);
       renderChatsList();
     };
-    onValue(typingRef, handler);
+    onValue(typingRef, handler, (error) => {
+      console.warn("typing subscribe error:", error?.message || error);
+    });
     unsubTyping = { ref: typingRef, handler };
   }
 
@@ -1869,10 +1878,32 @@
   function setupPresence() {
     if (!currentUser) return;
     const myPresenceRef = ref(db, `presence/${currentUser.uid}`);
-    try {
-      set(myPresenceRef, true);
-      onDisconnect(myPresenceRef).remove();
-    } catch (e) {}
+    const connectedRef = ref(db, ".info/connected");
+
+    // Слушаем реальное состояние подключения
+    const handler = (snap) => {
+      if (snap.val() !== true) return;
+
+      // Сначала регистрируем onDisconnect, потом ставим true
+      onDisconnect(myPresenceRef).remove()
+        .then(() => {
+          return set(myPresenceRef, true);
+        })
+        .catch((e) => {
+          console.warn("presence setup error:", e?.message || e);
+        });
+    };
+
+    onValue(connectedRef, handler);
+    unsubConnected = { ref: connectedRef, handler };
+
+    // Heartbeat: обновляем timestamp присутствия каждые 25 сек,
+    // чтобы можно было определить «залипший» онлайн
+    if (presenceHeartbeatTimer) clearInterval(presenceHeartbeatTimer);
+    presenceHeartbeatTimer = setInterval(() => {
+      if (!currentUser) return;
+      set(ref(db, `presence/${currentUser.uid}`), true).catch(() => {});
+    }, PRESENCE_HEARTBEAT_MS);
   }
 
   function subscribePresence() {
@@ -1883,8 +1914,27 @@
       renderChatsList();
       updateThreadHeader();
     };
-    onValue(presenceRef, handler);
-    unsubPresence = handler;
+    onValue(presenceRef, handler, (error) => {
+      console.warn("presence subscribe error:", error?.message || error);
+    });
+    unsubPresence = { ref: presenceRef, handler };
+  }
+
+  function detachPresence() {
+    if (unsubPresence && unsubPresence.ref) {
+      try { off(unsubPresence.ref, "value", unsubPresence.handler); } catch (e) {}
+    }
+    unsubPresence = null;
+
+    if (unsubConnected && unsubConnected.ref) {
+      try { off(unsubConnected.ref, "value", unsubConnected.handler); } catch (e) {}
+    }
+    unsubConnected = null;
+
+    if (presenceHeartbeatTimer) {
+      clearInterval(presenceHeartbeatTimer);
+      presenceHeartbeatTimer = null;
+    }
   }
 
   /* ================== Сжатие и загрузка изображений ================== */
@@ -3355,6 +3405,10 @@
       if (currentChatId && !currentChatIsBroadcast) {
         markChatAsRead(currentChatId);
       }
+      // При возврате во вкладку — сразу обновляем presence
+      if (currentUser) {
+        set(ref(db, `presence/${currentUser.uid}`), true).catch(() => {});
+      }
     }
   });
 
@@ -3553,6 +3607,7 @@
 
   window.addEventListener("beforeunload", () => {
     try { stopTypingSignal(); } catch (e) {}
+    try { detachPresence(); } catch (e) {}
   });
 </script>
 </body>
