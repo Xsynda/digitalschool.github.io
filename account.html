@@ -149,6 +149,57 @@
     .info-note .material-symbols-outlined { font-size: 22px; color: #2a7de1; flex-shrink: 0; margin-top: 1px; }
     .info-note b.chat-tag { color: #1a5fb0; font-weight: 700; }
 
+    /* ===== Аватар ===== */
+    .avatar-block {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .avatar-preview {
+      width: 96px;
+      height: 96px;
+      border-radius: 24px;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #2a7de1 0%, #1a5fb0 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: 700;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(42,125,225,.25);
+      position: relative;
+      border: 2px solid #fff;
+    }
+
+    .avatar-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .avatar-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .avatar-info-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0a1e3c;
+      margin-bottom: 4px;
+    }
+
+    .avatar-info-sub {
+      font-size: 13px;
+      color: #5f7696;
+      line-height: 1.5;
+    }
+
     .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid #eef3fa; font-size: 13px; color: #889bb3; text-align: center; }
 
     @media (max-width: 860px) {
@@ -176,6 +227,8 @@
       .page-title .material-symbols-outlined { font-size: 27px; }
       .page-sub { font-size: 14px; }
       .settings-card { padding: 18px 16px; border-radius: 20px; }
+
+      .avatar-preview { width: 80px; height: 80px; border-radius: 20px; font-size: 30px; }
     }
     @media (max-width: 420px) {
       .user-badge .user-name { display: none; }
@@ -183,6 +236,9 @@
       .user-badge .material-symbols-outlined { margin: 0; }
       .nav-link { padding: 6px 12px; font-size: 12px; }
       .nav-link .material-symbols-outlined { font-size: 15px; }
+
+      .avatar-block { flex-direction: column; align-items: flex-start; }
+      .avatar-preview { width: 72px; height: 72px; border-radius: 18px; font-size: 26px; }
     }
   </style>
 </head>
@@ -302,6 +358,14 @@
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+    }
+
+    function safeUrl(url) {
+      if (!url) return "";
+      const s = String(url).trim();
+      if (!/^https?:\/\//i.test(s)) return "";
+      if (/[\s<>"]/.test(s)) return "";
+      return s;
     }
 
     function showMessage(elId, message, type = "error") {
@@ -454,7 +518,14 @@
       });
     }
 
-    // ✅ Ссылка на чат с админом
+    function getInitials(name) {
+      const s = String(name || "").trim();
+      if (!s) return "?";
+      const parts = s.split(/\s+/).filter(Boolean);
+      if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+
     function buildChatLink() {
       if (!adminUidCache) {
         console.warn("[account] adminUidCache пустой, ссылка без ?to=");
@@ -495,6 +566,10 @@
       const teacherClasses = extractNamesArray(profileData.classes);
       const teacherSubjects = extractNamesArray(profileData.subjects);
 
+      const displayName = profileData?.name || user.displayName || user.email || "Пользователь";
+      const avatarUrl = safeUrl(profileData?.avatar || "");
+      const avatarInitials = getInitials(displayName);
+
       const classFieldHtml = isTeacher ? "" : `
         <div class="field-group">
           <label>Класс</label>
@@ -514,9 +589,46 @@
       ` : "";
 
       const chatLink = buildChatLink();
-      console.log("[account] buildChatLink:", chatLink);
+
+      const avatarInner = avatarUrl
+        ? `<img src="${escapeHtml(avatarUrl)}" alt="Аватар" />`
+        : escapeHtml(avatarInitials);
 
       profileContainer.innerHTML = `
+        <div class="settings-card">
+          <div class="card-title">
+            <span class="material-symbols-outlined">account_circle</span>
+            Аватар
+          </div>
+
+          <div class="avatar-block">
+            <div class="avatar-preview" id="avatarPreview">${avatarInner}</div>
+            <div class="avatar-info">
+              <div class="avatar-info-title">${avatarUrl ? "Ваш аватар" : "Аватар не установлен"}</div>
+              <div class="avatar-info-sub">
+                ${avatarUrl
+                  ? "Аватар отображается в чате и в шапке рядом с вашим именем."
+                  : "Пока используется автоматический аватар с инициалами."}
+                <br>
+                Установка и смена аватара — <b>только через администратора</b>.
+              </div>
+            </div>
+          </div>
+
+          <div class="info-note" style="margin-top:16px;">
+            <span class="material-symbols-outlined">info</span>
+            <div>
+              Чтобы установить или сменить аватар, откройте чат и напишите
+              <b class="chat-tag">администратору</b> — он загрузит ваше изображение.
+            </div>
+          </div>
+
+          <a href="${escapeHtml(chatLink)}" class="btn-action btn-chat btn-full">
+            <span class="material-symbols-outlined">forum</span>
+            Открыть чат с администратором
+          </a>
+        </div>
+
         <div class="settings-card">
           <div class="card-title">
             <span class="material-symbols-outlined">info</span>
@@ -528,7 +640,7 @@
           </div>
           <div class="field-group">
             <label>Имя</label>
-            <input type="text" value="${escapeHtml(profileData?.name || user.displayName || "—")}" disabled />
+            <input type="text" value="${escapeHtml(displayName)}" disabled />
           </div>
           <div class="field-group">
             <label>Статус</label>

@@ -213,10 +213,55 @@
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 16px;
       flex-shrink: 0; position: relative;
+      overflow: visible;
     }
     .avatar.admin { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
     .avatar.teacher { background: linear-gradient(135deg, #1a8a4a 0%, #146e3a 100%); }
     .avatar.classadmin { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); }
+
+    /* ✅ Когда в аватаре картинка */
+    .avatar.has-image {
+      background: #eef3fa;
+      color: transparent;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1.5px #eef3fa;
+    }
+
+    .avatar.has-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: inherit;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .avatar.has-image .online-dot,
+    .avatar.has-image .avatar-badge {
+      z-index: 5;
+    }
+
+    .avatar .online-dot {
+      position: absolute;
+      bottom: -2px; right: -2px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #c7d0dc;
+      border: 2.5px solid #fff;
+      transition: background .2s;
+      z-index: 2;
+    }
+    .avatar .online-dot.online {
+      background: #22c55e;
+      box-shadow: 0 0 0 0 rgba(34,197,94,.55);
+      animation: online-pulse 2s ease-in-out infinite;
+    }
+    @keyframes online-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,.55); }
+      50% { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+    }
 
     .avatar-badge {
       position: absolute; bottom: -2px; right: -2px;
@@ -226,7 +271,10 @@
       border-radius: 10px; padding: 0 5px;
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 0 0 2px #fff;
+      z-index: 3;
     }
+    .avatar:not(.has-unread) .online-dot { display: flex; }
+    .avatar.has-unread .online-dot { display: none; }
 
     .chat-item-info { min-width: 0; flex: 1 1 auto; }
 
@@ -251,6 +299,14 @@
       font-size: 12px; color: #5f7696;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       margin-top: 2px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .chat-item-preview.typing {
+      color: #2a7de1; font-style: italic;
+    }
+    .chat-item-preview .material-symbols-outlined {
+      font-size: 14px;
+      color: #889bb3;
     }
 
     .chat-item-time {
@@ -304,6 +360,24 @@
     .chat-header-sub {
       font-size: 12px; color: #5f7696; margin-top: 2px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .status-text { display: inline-flex; align-items: center; gap: 4px; }
+    .status-text.online { color: #16a34a; font-weight: 600; }
+    .status-text.offline { color: #889bb3; }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #c7d0dc;
+      flex-shrink: 0;
+    }
+    .status-dot.online {
+      background: #22c55e;
+      box-shadow: 0 0 0 0 rgba(34,197,94,.55);
+      animation: online-pulse 2s ease-in-out infinite;
     }
 
     .rename-btn {
@@ -394,6 +468,72 @@
     .msg-group.theirs .msg-bubble a { color: #2a7de1; }
     .msg-group.theirs .msg-bubble a:hover { color: #1a5fb0; }
 
+    .msg-content {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-width: 100%;
+    }
+
+    .msg-text {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .msg-image-wrap {
+      display: block;
+      max-width: 320px;
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: zoom-in;
+      position: relative;
+      background: rgba(0,0,0,.03);
+      line-height: 0;
+      transition: transform .15s;
+    }
+    .msg-group.mine .msg-image-wrap {
+      background: rgba(255,255,255,.08);
+    }
+    .msg-image-wrap:hover {
+      transform: scale(1.005);
+    }
+    .msg-image-wrap img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 400px;
+      object-fit: cover;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .msg-image-wrap.loading::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.35) 50%, rgba(255,255,255,0) 100%);
+      animation: img-shimmer 1.2s infinite;
+    }
+    @keyframes img-shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .msg-image-zoom-hint {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      background: rgba(0,0,0,.5);
+      color: #fff;
+      border-radius: 50%;
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity .15s;
+      pointer-events: none;
+    }
+    .msg-image-zoom-hint .material-symbols-outlined { font-size: 16px; }
+    .msg-image-wrap:hover .msg-image-zoom-hint { opacity: 1; }
+
     .msg-edited-mark {
       display: inline-flex; align-items: center; gap: 2px;
       font-size: 10px; font-weight: 600;
@@ -463,10 +603,77 @@
     .chat-input-row {
       border-top: 1px solid #eef3fa;
       padding: 12px 14px;
-      align-items: flex-end; gap: 10px;
       background: #fbfdff;
       flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
     }
+
+    .input-controls {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .typing-indicator {
+      position: absolute;
+      top: -22px;
+      left: 22px;
+      font-size: 12px;
+      color: #2a7de1;
+      background: #fff;
+      padding: 3px 10px;
+      border-radius: 40px;
+      border: 1px solid #eef3fa;
+      display: none;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 8px rgba(0,20,40,.05);
+      font-style: italic;
+      white-space: nowrap;
+    }
+    .typing-indicator.visible { display: inline-flex; }
+    .typing-indicator .dots span {
+      display: inline-block;
+      width: 4px; height: 4px; margin: 0 1px;
+      border-radius: 50%;
+      background: #2a7de1;
+      animation: typing-bounce 1.2s infinite ease-in-out;
+    }
+    .typing-indicator .dots span:nth-child(2) { animation-delay: .15s; }
+    .typing-indicator .dots span:nth-child(3) { animation-delay: .3s; }
+    @keyframes typing-bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: .5; }
+      30% { transform: translateY(-3px); opacity: 1; }
+    }
+
+    .attach-btn {
+      border: none;
+      background: #eef5ff;
+      color: #1f2b48;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: .15s;
+    }
+    .attach-btn:hover:not(:disabled) {
+      background: #dde9fb;
+      color: #2a7de1;
+    }
+    .attach-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+    .attach-btn .material-symbols-outlined { font-size: 22px; }
 
     .chat-input-row textarea {
       flex: 1 1 auto;
@@ -479,6 +686,7 @@
       resize: none; outline: none; transition: .15s;
       max-height: 120px; min-height: 44px;
       line-height: 1.4;
+      min-width: 0;
     }
     .chat-input-row textarea:focus {
       border-color: #2a7de1;
@@ -496,6 +704,70 @@
     .send-btn:hover:not(:disabled) { background: #1a5fb0; transform: scale(.97); }
     .send-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
     .send-btn .material-symbols-outlined { font-size: 22px; }
+
+    .attach-preview {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: #f9fcff;
+      border: 1.5px dashed #c7d9f0;
+      border-radius: 14px;
+      position: relative;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .attach-preview.visible { display: flex; }
+    .attach-preview img {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #eef3fa;
+    }
+    .attach-preview-info {
+      flex: 1 1 auto;
+      min-width: 0;
+      font-size: 13px;
+      color: #5f7696;
+    }
+    .attach-preview-name {
+      font-weight: 600;
+      color: #0a1e3c;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .attach-preview-status {
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .attach-preview-status .material-symbols-outlined { font-size: 14px; }
+    .attach-preview-status.uploading { color: #2a7de1; }
+    .attach-preview-status.ready { color: #16a34a; }
+    .attach-preview-status.error { color: #c74a4a; }
+
+    .attach-remove {
+      border: none;
+      background: #fff0f0;
+      color: #c74a4a;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: .15s;
+    }
+    .attach-remove:hover { background: #ffdada; }
+    .attach-remove .material-symbols-outlined { font-size: 18px; }
+
+    .chat-input-row.locked .attach-btn { display: none; }
 
     .context-menu {
       position: fixed; z-index: 5000;
@@ -615,7 +887,6 @@
 
     .hidden { display: none !important; }
 
-    /* ===== Чат «ЭлектроШкола» (системные сообщения) ===== */
     .avatar.broadcast-avatar {
       background: #fff;
       padding: 0;
@@ -677,7 +948,97 @@
       font-size: 18px;
     }
     .chat-input-row.locked textarea,
-    .chat-input-row.locked .send-btn { display: none; }
+    .chat-input-row.locked .send-btn,
+    .chat-input-row.locked .attach-btn,
+    .chat-input-row.locked .attach-preview { display: none; }
+
+    .image-viewer {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: rgba(0,0,0,.92);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      touch-action: none;
+    }
+    .image-viewer.open { display: flex; }
+
+    .image-viewer-canvas {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+    }
+    .image-viewer-canvas.grabbing { cursor: grabbing; }
+
+    .image-viewer-img {
+      max-width: 95vw;
+      max-height: 95vh;
+      object-fit: contain;
+      transform-origin: center center;
+      user-select: none;
+      -webkit-user-drag: none;
+      will-change: transform;
+      transition: transform .05s linear;
+      pointer-events: none;
+    }
+
+    .image-viewer-toolbar {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: flex;
+      gap: 8px;
+      z-index: 2;
+    }
+
+    .image-viewer-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,.15);
+      color: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: .15s;
+      backdrop-filter: blur(6px);
+    }
+    .image-viewer-btn:hover { background: rgba(255,255,255,.28); }
+    .image-viewer-btn .material-symbols-outlined { font-size: 22px; }
+
+    .image-viewer-zoominfo {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 14px;
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      border-radius: 40px;
+      font-size: 13px;
+      backdrop-filter: blur(6px);
+      font-weight: 500;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+    .image-viewer-zoominfo.fade { opacity: 0; }
+
+    .upload-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #dbe7f7;
+      border-top-color: #2a7de1;
+      border-radius: 50%;
+      animation: loader-spin .8s linear infinite;
+      flex-shrink: 0;
+    }
 
     @media (max-width: 860px) {
       .navbar { padding: 10px 18px; }
@@ -707,6 +1068,8 @@
       .chat-wrap.show-thread .chat-sidebar { display: none; }
       .chat-wrap.show-thread .chat-main { display: flex; }
       .chat-back-btn { display: inline-flex; }
+
+      .msg-image-wrap { max-width: 78vw; }
     }
 
     @media (max-width: 420px) {
@@ -716,6 +1079,8 @@
       .nav-link { padding: 6px 12px; font-size: 12px; }
       .nav-link .material-symbols-outlined { font-size: 15px; }
       .msg-group { max-width: 84%; }
+      .attach-btn { width: 40px; height: 40px; }
+      .send-btn { width: 40px; height: 40px; }
     }
   </style>
 </head>
@@ -810,17 +1175,79 @@
       <div class="messages" id="messages"></div>
 
       <div class="chat-input-row" id="inputRow">
-        <textarea id="messageInput" placeholder="Напишите сообщение..." rows="1"></textarea>
-        <button class="send-btn" id="sendBtn" aria-label="Отправить">
-          <span class="material-symbols-outlined">send</span>
-        </button>
-        <div class="locked-note" id="broadcastLockedNote" style="display:none;">
-          <span class="material-symbols-outlined">lock</span>
-          Это системные сообщения — писать сюда нельзя
+        <div class="typing-indicator" id="typingIndicator">
+          <span id="typingName">Кто-то</span> печатает
+          <span class="dots"><span></span><span></span><span></span></span>
         </div>
+
+        <div class="attach-preview" id="attachPreview">
+          <img id="attachPreviewImg" src="" alt="" />
+          <div class="attach-preview-info">
+            <div class="attach-preview-name" id="attachPreviewName">image.jpg</div>
+            <div class="attach-preview-status uploading" id="attachPreviewStatus">
+              <div class="upload-spinner"></div>
+              <span>Загрузка на сервер...</span>
+            </div>
+          </div>
+          <button class="attach-remove" id="attachRemoveBtn" title="Убрать" aria-label="Убрать">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div class="input-controls">
+          <button class="attach-btn" id="attachBtn" title="Прикрепить изображение" aria-label="Прикрепить изображение">
+            <span class="material-symbols-outlined">attach_file</span>
+          </button>
+
+          <textarea
+            id="messageInput"
+            name="chat-message-field"
+            placeholder="Напишите сообщение..."
+            rows="1"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="sentences"
+            spellcheck="false"
+            data-form-type="other"
+            data-lpignore="true"
+            data-1p-ignore
+          ></textarea>
+
+          <button class="send-btn" id="sendBtn" aria-label="Отправить">
+            <span class="material-symbols-outlined">send</span>
+          </button>
+
+          <div class="locked-note" id="broadcastLockedNote" style="display:none;">
+            <span class="material-symbols-outlined">lock</span>
+            Это системные сообщения — писать сюда нельзя
+          </div>
+        </div>
+
+        <input type="file" id="attachInput" accept="image/*" style="display:none;" />
       </div>
     </section>
   </div>
+</div>
+
+<div class="image-viewer" id="imageViewer">
+  <div class="image-viewer-toolbar">
+    <button class="image-viewer-btn" id="imgZoomIn" title="Приблизить">
+      <span class="material-symbols-outlined">zoom_in</span>
+    </button>
+    <button class="image-viewer-btn" id="imgZoomOut" title="Отдалить">
+      <span class="material-symbols-outlined">zoom_out</span>
+    </button>
+    <button class="image-viewer-btn" id="imgZoomReset" title="Сбросить масштаб">
+      <span class="material-symbols-outlined">restart_alt</span>
+    </button>
+    <button class="image-viewer-btn" id="imgClose" title="Закрыть">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div class="image-viewer-canvas" id="imgViewerCanvas">
+    <img class="image-viewer-img" id="imgViewerImg" alt="" />
+  </div>
+  <div class="image-viewer-zoominfo" id="imgZoomInfo">100%</div>
 </div>
 
 <div class="context-menu" id="contextMenu">
@@ -891,6 +1318,8 @@
       id="editMsgInput"
       placeholder="Введите текст..."
       maxlength="4000"
+      autocomplete="off"
+      spellcheck="false"
     ></textarea>
     <div class="modal-hint">
       Поддерживаются ссылки: <b>https://...</b> и <b>[текст](https://...)</b>
@@ -916,7 +1345,9 @@
     set,
     push,
     update,
+    remove,
     onValue,
+    onDisconnect,
     off
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
@@ -940,6 +1371,11 @@
   const BROADCAST_CHAT_ID = "__broadcast__";
   const BROADCAST_NAME = "ЭлектроШкола";
 
+  const TYPING_TTL_MS = 3000;
+  const TYPING_THROTTLE_MS = 1200;
+
+  const IMGBB_API_KEY = "96d427aa0815502bf7e968a503e61419";
+
   const urlParams = new URLSearchParams(window.location.search);
   const paramTo = String(urlParams.get("to") || "").trim();
   const paramChat = String(urlParams.get("chat") || "").trim();
@@ -962,6 +1398,26 @@
   const sendBtn = document.getElementById("sendBtn");
   const backBtn = document.getElementById("backBtn");
   const broadcastLockedNote = document.getElementById("broadcastLockedNote");
+
+  const typingIndicator = document.getElementById("typingIndicator");
+  const typingName = document.getElementById("typingName");
+
+  const attachBtn = document.getElementById("attachBtn");
+  const attachInput = document.getElementById("attachInput");
+  const attachPreview = document.getElementById("attachPreview");
+  const attachPreviewImg = document.getElementById("attachPreviewImg");
+  const attachPreviewName = document.getElementById("attachPreviewName");
+  const attachPreviewStatus = document.getElementById("attachPreviewStatus");
+  const attachRemoveBtn = document.getElementById("attachRemoveBtn");
+
+  const imageViewer = document.getElementById("imageViewer");
+  const imgViewerCanvas = document.getElementById("imgViewerCanvas");
+  const imgViewerImg = document.getElementById("imgViewerImg");
+  const imgZoomIn = document.getElementById("imgZoomIn");
+  const imgZoomOut = document.getElementById("imgZoomOut");
+  const imgZoomReset = document.getElementById("imgZoomReset");
+  const imgClose = document.getElementById("imgClose");
+  const imgZoomInfo = document.getElementById("imgZoomInfo");
 
   const diaryLink = document.getElementById("diaryLink");
   const journalLink = document.getElementById("journalLink");
@@ -1000,10 +1456,15 @@
   let unsubUsers = null;
   let unsubUnread = null;
   let unsubBroadcasts = null;
+  let unsubTyping = null;
+  let unsubPresence = null;
 
   let chatsMeta = {};
   let unreadCounts = {};
   let broadcastsCache = [];
+
+  let onlineUsers = {};
+  let typingUsersByChat = {};
 
   let ctxMsgId = null;
   let ctxMsgText = "";
@@ -1013,6 +1474,28 @@
   let editingMsgId = null;
 
   let currentChatIsBroadcast = false;
+
+  let lastTypingSentAt = 0;
+
+  let lastSeenMessageAt = 0;
+  let titleBlinkTimer = null;
+  const originalTitle = document.title;
+  let soundCtx = null;
+
+  let pendingAttachment = null;
+  let attachUploadController = null;
+
+  let viewerZoom = 1;
+  let viewerX = 0;
+  let viewerY = 0;
+  let viewerDragging = false;
+  let viewerDragStartX = 0;
+  let viewerDragStartY = 0;
+  let viewerStartX = 0;
+  let viewerStartY = 0;
+  let viewerTouchDist = 0;
+  let viewerTouchStartZoom = 1;
+  let viewerInfoHideTimer = null;
 
   /* ================== Утилиты ================== */
 
@@ -1171,6 +1654,31 @@
     return (meta.aliases && meta.aliases[currentUser.uid]) || "";
   }
 
+  function isUserOnline(uid) {
+    return !!onlineUsers[uid];
+  }
+
+  function isPeerTyping(chatId) {
+    if (!chatId || !currentUser) return false;
+    const entries = typingUsersByChat[chatId] || {};
+    const now = Date.now();
+    return Object.entries(entries).some(([uid, ts]) => {
+      if (uid === currentUser.uid) return false;
+      return now - Number(ts) < TYPING_TTL_MS;
+    });
+  }
+
+  function getTypingPeerUid(chatId) {
+    if (!chatId || !currentUser) return null;
+    const entries = typingUsersByChat[chatId] || {};
+    const now = Date.now();
+    const found = Object.entries(entries).find(([uid, ts]) => {
+      if (uid === currentUser.uid) return false;
+      return now - Number(ts) < TYPING_TTL_MS;
+    });
+    return found ? found[0] : null;
+  }
+
   function renderHeader(user) {
     const name = currentProfile?.name || user?.displayName || user?.email || "Пользователь";
     userArea.innerHTML = `
@@ -1201,6 +1709,427 @@
       journalLink.classList.add("hidden");
       diaryLink.classList.remove("hidden");
     }
+  }
+
+  /* ================== Уведомления ================== */
+
+  function ensureNotificationPermission() {
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "default") {
+      setTimeout(() => {
+        try { Notification.requestPermission(); } catch (e) {}
+      }, 3000);
+    }
+  }
+
+  function playIncomingSound() {
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      if (!soundCtx) soundCtx = new Ctx();
+      if (soundCtx.state === "suspended") soundCtx.resume();
+
+      const now = soundCtx.currentTime;
+      const osc = soundCtx.createOscillator();
+      const gain = soundCtx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(880, now);
+      osc.frequency.exponentialRampToValueAtTime(660, now + 0.12);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.18, now + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+      osc.connect(gain);
+      gain.connect(soundCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.24);
+    } catch (e) {}
+  }
+
+  function startTitleBlink(text) {
+    if (titleBlinkTimer) return;
+    let on = false;
+    titleBlinkTimer = setInterval(() => {
+      document.title = on ? originalTitle : `🔔 ${text}`;
+      on = !on;
+    }, 900);
+  }
+
+  function stopTitleBlink() {
+    if (titleBlinkTimer) {
+      clearInterval(titleBlinkTimer);
+      titleBlinkTimer = null;
+    }
+    document.title = originalTitle;
+  }
+
+  function notifyIncomingMessage(msg) {
+    if (!msg || !msg.senderId) return;
+    if (msg.senderId === currentUser?.uid) return;
+
+    const isActiveChat = currentChatId === msg.chatId;
+    const isTabActive = document.visibilityState === "visible";
+
+    if (isActiveChat && isTabActive) {
+      playIncomingSound();
+      return;
+    }
+
+    playIncomingSound();
+
+    const senderProfile = allUsers[msg.senderId] || {};
+    const senderName = senderProfile.name || senderProfile.email || "Новое сообщение";
+    startTitleBlink(`${senderName}: новое сообщение`);
+
+    if ("Notification" in window && Notification.permission === "granted") {
+      try {
+        const body = msg.image
+          ? (msg.text ? `${msg.text.slice(0, 60)} (изображение)` : "Изображение")
+          : String(msg.text || "").slice(0, 80);
+
+        const n = new Notification("Электронная школа", {
+          body: `${senderName}: ${body}`,
+          icon: "logo.png",
+          tag: `chat-${msg.chatId}`
+        });
+        n.onclick = () => {
+          try { window.focus(); } catch (e) {}
+          n.close();
+        };
+      } catch (e) {}
+    }
+  }
+
+  /* ================== «Печатает…» ================== */
+
+  function sendTypingSignal() {
+    if (!currentChatId || currentChatIsBroadcast || !currentUser) return;
+    const now = Date.now();
+    if (now - lastTypingSentAt < TYPING_THROTTLE_MS) return;
+    lastTypingSentAt = now;
+
+    const typingRef = ref(db, `messages/${currentChatId}/typing/${currentUser.uid}`);
+    try {
+      set(typingRef, now);
+      onDisconnect(typingRef).remove();
+    } catch (e) {}
+  }
+
+  function stopTypingSignal() {
+    if (!currentChatId || !currentUser) return;
+    const typingRef = ref(db, `messages/${currentChatId}/typing/${currentUser.uid}`);
+    try { remove(typingRef); } catch (e) {}
+  }
+
+  function subscribeTyping(chatId) {
+    const typingRef = ref(db, `messages/${chatId}/typing`);
+    const handler = (snap) => {
+      const raw = snap.exists() ? snap.val() : {};
+      typingUsersByChat[chatId] = raw || {};
+      updateTypingUI(chatId);
+      renderChatsList();
+    };
+    onValue(typingRef, handler);
+    unsubTyping = { ref: typingRef, handler };
+  }
+
+  function detachTyping() {
+    if (unsubTyping && unsubTyping.ref) {
+      try { off(unsubTyping.ref, "value", unsubTyping.handler); } catch (e) {}
+    }
+    unsubTyping = null;
+  }
+
+  function updateTypingUI(chatId) {
+    if (!chatId) {
+      typingIndicator.classList.remove("visible");
+      return;
+    }
+
+    if (chatId === BROADCAST_CHAT_ID || currentChatIsBroadcast) {
+      typingIndicator.classList.remove("visible");
+      return;
+    }
+
+    const peerUid = getTypingPeerUid(chatId);
+    if (!peerUid) {
+      typingIndicator.classList.remove("visible");
+      return;
+    }
+
+    const peerName = getPeerDisplayName(peerUid, allUsers[peerUid]?.name || "Собеседник");
+    typingName.textContent = peerName;
+    typingIndicator.classList.add("visible");
+  }
+
+  /* ================== Присутствие ================== */
+
+  function setupPresence() {
+    if (!currentUser) return;
+    const myPresenceRef = ref(db, `presence/${currentUser.uid}`);
+    try {
+      set(myPresenceRef, true);
+      onDisconnect(myPresenceRef).remove();
+    } catch (e) {}
+  }
+
+  function subscribePresence() {
+    const presenceRef = ref(db, "presence");
+    const handler = (snap) => {
+      const raw = snap.exists() ? snap.val() : {};
+      onlineUsers = raw || {};
+      renderChatsList();
+      updateThreadHeader();
+    };
+    onValue(presenceRef, handler);
+    unsubPresence = handler;
+  }
+
+  /* ================== Сжатие и загрузка изображений ================== */
+
+  function loadImageFromFile(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error("Не удалось прочитать изображение"));
+        img.src = reader.result;
+      };
+      reader.onerror = () => reject(new Error("Не удалось прочитать файл"));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function compressImage(img, maxSide = 1600, quality = 0.85) {
+    return new Promise((resolve) => {
+      let w = img.naturalWidth || img.width;
+      let h = img.naturalHeight || img.height;
+
+      if (w > maxSide || h > maxSide) {
+        if (w >= h) {
+          h = Math.round(h * (maxSide / w));
+          w = maxSide;
+        } else {
+          w = Math.round(w * (maxSide / h));
+          h = maxSide;
+        }
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+
+      canvas.toBlob(
+        (blob) => resolve(blob),
+        "image/jpeg",
+        quality
+      );
+    });
+  }
+
+  async function uploadToImgbb(blob) {
+    const form = new FormData();
+    form.append("image", blob, "chat-image.jpg");
+    form.append("key", IMGBB_API_KEY);
+
+    const res = await fetch("https://api.imgbb.com/1/upload", {
+      method: "POST",
+      body: form
+    });
+
+    if (!res.ok) {
+      throw new Error(`imgbb HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (!data?.success || !data?.data?.url) {
+      throw new Error(data?.error?.message || "imgbb: ошибка загрузки");
+    }
+
+    return {
+      url: data.data.url,
+      thumb: data.data.thumb?.url || data.data.url,
+      deleteUrl: data.data.delete_url || ""
+    };
+  }
+
+  function blobToDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.onerror = () => reject(new Error("Не удалось прочитать blob"));
+      r.readAsDataURL(blob);
+    });
+  }
+
+  async function handleFileSelected(file) {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Можно прикреплять только изображения.");
+      return;
+    }
+
+    clearAttachment();
+
+    try {
+      const img = await loadImageFromFile(file);
+      const blob = await compressImage(img);
+      const dataUrl = await blobToDataUrl(blob);
+
+      pendingAttachment = {
+        url: "",
+        dataUrl,
+        name: file.name || "image.jpg",
+        status: "uploading"
+      };
+
+      renderAttachPreview();
+      updateSendAvailability();
+
+      attachUploadController = { cancelled: false };
+
+      try {
+        const result = await uploadToImgbb(blob);
+        if (attachUploadController?.cancelled) return;
+
+        pendingAttachment.url = result.url;
+        pendingAttachment.status = "ready";
+        renderAttachPreview();
+        updateSendAvailability();
+      } catch (e) {
+        console.error("Ошибка загрузки в imgbb:", e);
+        pendingAttachment.status = "error";
+        renderAttachPreview();
+        updateSendAvailability();
+      }
+    } catch (e) {
+      console.error("Ошибка подготовки изображения:", e);
+      alert("Не удалось обработать изображение.");
+      clearAttachment();
+    }
+  }
+
+  function renderAttachPreview() {
+    if (!pendingAttachment) {
+      attachPreview.classList.remove("visible");
+      return;
+    }
+
+    attachPreview.classList.add("visible");
+    attachPreviewImg.src = pendingAttachment.dataUrl;
+    attachPreviewName.textContent = pendingAttachment.name;
+
+    if (pendingAttachment.status === "uploading") {
+      attachPreviewStatus.className = "attach-preview-status uploading";
+      attachPreviewStatus.innerHTML = `<div class="upload-spinner"></div><span>Загрузка на сервер...</span>`;
+    } else if (pendingAttachment.status === "ready") {
+      attachPreviewStatus.className = "attach-preview-status ready";
+      attachPreviewStatus.innerHTML = `<span class="material-symbols-outlined">check_circle</span><span>Готово к отправке</span>`;
+    } else {
+      attachPreviewStatus.className = "attach-preview-status error";
+      attachPreviewStatus.innerHTML = `<span class="material-symbols-outlined">error</span><span>Ошибка загрузки — попробуйте другое изображение</span>`;
+    }
+  }
+
+  function clearAttachment() {
+    if (attachUploadController) attachUploadController.cancelled = true;
+    attachUploadController = null;
+    pendingAttachment = null;
+    attachPreview.classList.remove("visible");
+    attachPreviewImg.src = "";
+    attachPreviewName.textContent = "";
+    attachInput.value = "";
+    updateSendAvailability();
+  }
+
+  function updateSendAvailability() {
+    const hasText = String(messageInput.value || "").trim().length > 0;
+    const hasImage = pendingAttachment && pendingAttachment.status === "ready";
+    const hasUploading = pendingAttachment && pendingAttachment.status === "uploading";
+
+    if (currentChatIsBroadcast) {
+      sendBtn.disabled = true;
+      return;
+    }
+
+    sendBtn.disabled = !(hasText || hasImage) || hasUploading;
+  }
+
+  /* ================== Просмотр картинки ================== */
+
+  function openImageViewer(url) {
+    if (!url) return;
+    viewerZoom = 1;
+    viewerX = 0;
+    viewerY = 0;
+    applyViewerTransform();
+
+    imgViewerImg.src = url;
+    imageViewer.classList.add("open");
+
+    imgZoomInfo.classList.remove("fade");
+    if (viewerInfoHideTimer) clearTimeout(viewerInfoHideTimer);
+    viewerInfoHideTimer = setTimeout(() => {
+      imgZoomInfo.classList.add("fade");
+    }, 1500);
+  }
+
+  function closeImageViewer() {
+    imageViewer.classList.remove("open");
+    imgViewerImg.src = "";
+    viewerZoom = 1;
+    viewerX = 0;
+    viewerY = 0;
+    if (viewerInfoHideTimer) clearTimeout(viewerInfoHideTimer);
+  }
+
+  function applyViewerTransform() {
+    imgViewerImg.style.transform = `translate(${viewerX}px, ${viewerY}px) scale(${viewerZoom})`;
+    imgZoomInfo.textContent = Math.round(viewerZoom * 100) + "%";
+  }
+
+  function zoomImage(delta, cx, cy) {
+    const oldZoom = viewerZoom;
+    let next = viewerZoom * delta;
+    if (next < 0.5) next = 0.5;
+    if (next > 8) next = 8;
+    if (next === oldZoom) return;
+
+    if (typeof cx === "number" && typeof cy === "number") {
+      const rect = imgViewerCanvas.getBoundingClientRect();
+      const cxc = cx - (rect.left + rect.width / 2);
+      const cyc = cy - (rect.top + rect.height / 2);
+      const ratio = next / oldZoom;
+      viewerX = cxc - (cxc - viewerX) * ratio;
+      viewerY = cyc - (cyc - viewerY) * ratio;
+    }
+
+    viewerZoom = next;
+    applyViewerTransform();
+
+    imgZoomInfo.classList.remove("fade");
+    if (viewerInfoHideTimer) clearTimeout(viewerInfoHideTimer);
+    viewerInfoHideTimer = setTimeout(() => {
+      imgZoomInfo.classList.add("fade");
+    }, 1200);
+  }
+
+  function bindMessageImageOpeners() {
+    messagesEl.querySelectorAll(".msg-image-wrap").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const url = el.dataset.fullUrl;
+        if (url) openImageViewer(url);
+      });
+    });
   }
 
   /* ================== Контакты ================== */
@@ -1384,17 +2313,46 @@
     const alias = meta && meta.aliases && meta.aliases[currentUser.uid];
     const displayName = (alias && String(alias).trim()) ? String(alias).trim() : realName;
 
+    const online = isUserOnline(contact.uid);
+    const avatarUrl = safeUrl(contact.avatar || "");
+    const initials = getInitials(displayName);
+
     let lastPreview = "";
-    if (meta && meta.lastMessage) {
-      lastPreview = (meta.lastSenderId === currentUser.uid ? "Вы: " : "") + meta.lastMessage;
-    } else if (isSearchResult) {
-      lastPreview = "Нет сообщений — напишите первым";
+    let isTypingPeer = false;
+    let lastIsImage = false;
+
+    if (chatId === currentChatId && isPeerTyping(chatId)) {
+      const typUid = getTypingPeerUid(chatId);
+      if (typUid && typUid === contact.uid) {
+        isTypingPeer = true;
+        lastPreview = "печатает…";
+      }
     }
+
+    if (!lastPreview) {
+      if (meta && meta.lastMessage) {
+        lastPreview = (meta.lastSenderId === currentUser.uid ? "Вы: " : "") + meta.lastMessage;
+      } else if (meta && meta.lastIsImage) {
+        lastPreview = (meta.lastSenderId === currentUser.uid ? "Вы: " : "") + "Изображение";
+        lastIsImage = true;
+      } else if (isSearchResult) {
+        lastPreview = "Нет сообщений — напишите первым";
+      }
+    }
+
+    const previewIcon = lastIsImage
+      ? `<span class="material-symbols-outlined">image</span>`
+      : "";
+
+    const avatarInner = avatarUrl
+      ? `<img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(displayName)}" loading="lazy" />`
+      : escapeHtml(initials);
 
     return `
       <div class="chat-item ${isActive ? "active" : ""}" data-chat-id="${escapeHtml(chatId)}" data-uid="${escapeHtml(contact.uid)}">
-        <div class="avatar ${info.avatarCls}">
-          ${escapeHtml(getInitials(displayName))}
+        <div class="avatar ${info.avatarCls} ${unread > 0 ? "has-unread" : ""} ${avatarUrl ? "has-image" : ""}">
+          ${avatarInner}
+          <span class="online-dot ${online ? "online" : ""}"></span>
           ${unread > 0 ? `<span class="avatar-badge">${unread > 99 ? "99+" : unread}</span>` : ""}
         </div>
         <div class="chat-item-info">
@@ -1402,7 +2360,7 @@
             ${escapeHtml(displayName)}
             ${info.cls ? `<span class="chat-item-tag ${info.cls}">${info.label}</span>` : ""}
           </div>
-          <div class="chat-item-preview">${escapeHtml(lastPreview)}</div>
+          <div class="chat-item-preview ${isTypingPeer ? "typing" : ""}">${previewIcon}${escapeHtml(lastPreview)}</div>
         </div>
         <div class="chat-item-time">${meta && meta.lastAt ? formatTime(meta.lastAt) : ""}</div>
       </div>
@@ -1467,8 +2425,19 @@
     const realName = currentPeer.name || currentPeer.email || "Без имени";
     const displayName = getPeerDisplayName(currentPeer.uid, realName);
 
-    threadAvatar.className = `avatar ${info.avatarCls}`;
-    threadAvatar.textContent = getInitials(displayName);
+    const online = isUserOnline(currentPeer.uid);
+    const typingNow = currentChatId && isPeerTyping(currentChatId);
+
+    const avatarUrl = safeUrl(currentPeer.avatar || "");
+    const initials = getInitials(displayName);
+
+    threadAvatar.className = `avatar ${info.avatarCls} ${avatarUrl ? "has-image" : ""}`;
+    threadAvatar.innerHTML = `
+      ${avatarUrl
+        ? `<img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(displayName)}" loading="lazy" />`
+        : escapeHtml(initials)}
+      <span class="online-dot ${online ? "online" : ""}"></span>
+    `;
 
     threadName.innerHTML = `
       ${escapeHtml(displayName)}
@@ -1476,25 +2445,45 @@
     `;
 
     const subParts = [];
-    if (currentPeer.school) subParts.push(currentPeer.school);
-    if (currentPeer.class) subParts.push(currentPeer.class);
-    threadSub.textContent = subParts.length ? subParts.join(" · ") : (currentPeer.email || "");
+
+    if (typingNow) {
+      subParts.push(`<span class="status-text" style="color:#2a7de1;font-style:italic;">печатает…</span>`);
+    } else if (online) {
+      subParts.push(`<span class="status-text online"><span class="status-dot online"></span>в сети</span>`);
+    } else {
+      subParts.push(`<span class="status-text offline"><span class="status-dot"></span>не в сети</span>`);
+    }
+
+    const infoParts = [];
+    if (currentPeer.school) infoParts.push(currentPeer.school);
+    if (currentPeer.class) infoParts.push(currentPeer.class);
+
+    if (infoParts.length) {
+      subParts.push(escapeHtml(infoParts.join(" · ")));
+    } else if (currentPeer.email) {
+      subParts.push(escapeHtml(currentPeer.email));
+    }
+
+    threadSub.innerHTML = subParts.join(" · ");
   }
 
   function setInputLocked(locked) {
     if (locked) {
       inputRow.classList.add("locked");
       broadcastLockedNote.style.display = "flex";
+      typingIndicator.classList.remove("visible");
     } else {
       inputRow.classList.remove("locked");
       broadcastLockedNote.style.display = "none";
     }
   }
 
-  /* ===== Открытие обычного чата ===== */
-
   function openChat(contact, chatId) {
     detachMessagesListener();
+    detachTyping();
+    stopTypingSignal();
+    lastTypingSentAt = 0;
+    clearAttachment();
 
     currentPeer = contact;
     currentChatId = chatId;
@@ -1511,15 +2500,20 @@
     `;
 
     subscribeMessages(chatId);
+    subscribeTyping(chatId);
     markChatAsRead(chatId);
 
     setMobileShowThread(true);
-  }
 
-  /* ===== Открытие чата «ЭлектроШкола» ===== */
+    stopTitleBlink();
+    updateSendAvailability();
+  }
 
   function openBroadcastChat() {
     detachMessagesListener();
+    detachTyping();
+    stopTypingSignal();
+    clearAttachment();
 
     currentPeer = null;
     currentChatId = BROADCAST_CHAT_ID;
@@ -1534,11 +2528,11 @@
 
     setMobileShowThread(true);
 
-    // ✅ Помечаем рассылки прочитанными — огонёк на index.html гаснет
     markBroadcastsAsSeen();
+    stopTitleBlink();
+    updateSendAvailability();
   }
 
-  // ✅ Запись lastBroadcastsSeenAt = now (unix-секунды)
   async function markBroadcastsAsSeen() {
     if (!currentUser) return;
     try {
@@ -1603,8 +2597,18 @@
     const handler = (snap) => {
       const raw = snap.exists() ? snap.val() : {};
       const list = Object.entries(raw)
-        .map(([id, data]) => ({ id, ...(data || {}) }))
+        .map(([id, data]) => ({ id, chatId, ...(data || {}) }))
         .sort((a, b) => Number(a.createdAt || 0) - Number(b.createdAt || 0));
+
+      list.forEach(m => {
+        const ts = Number(m.createdAt || 0);
+        if (ts > lastSeenMessageAt) {
+          lastSeenMessageAt = ts;
+          if (m.senderId !== currentUser.uid) {
+            notifyIncomingMessage(m);
+          }
+        }
+      });
 
       renderMessages(list);
       markChatAsRead(chatId);
@@ -1679,16 +2683,46 @@
         const rawText = String(m.text || "");
         const isEdited = m.edited === true;
 
-        let bubbleInner;
+        let bubbleInner = "";
+
         if (hidden) {
-          bubbleInner = "Сообщение скрыто";
+          bubbleInner = `<div class="msg-content"><div class="msg-text">Сообщение скрыто</div></div>`;
         } else {
-          bubbleInner = renderTextWithLinks(rawText);
-          if (isEdited) {
-            bubbleInner += `<span class="msg-edited-mark" title="Изменено">
-              <span class="material-symbols-outlined">edit</span>изм.
-            </span>`;
+          const hasText = rawText.trim().length > 0;
+          const imageUrl = safeUrl(m.image || "");
+
+          let contentInner = "";
+
+          if (hasText) {
+            contentInner += `<div class="msg-text">${renderTextWithLinks(rawText)}${
+              isEdited ? `<span class="msg-edited-mark" title="Изменено">
+                <span class="material-symbols-outlined">edit</span>изм.
+              </span>` : ""
+            }</div>`;
+          } else if (isEdited && !imageUrl) {
+            contentInner += `<div class="msg-text">${renderTextWithLinks(rawText)}${
+              `<span class="msg-edited-mark" title="Изменено">
+                <span class="material-symbols-outlined">edit</span>изм.
+              </span>`
+            }</div>`;
           }
+
+          if (imageUrl) {
+            contentInner += `
+              <div class="msg-image-wrap" data-full-url="${escapeHtml(imageUrl)}" title="Открыть">
+                <img src="${escapeHtml(imageUrl)}" alt="Изображение" loading="lazy" />
+                <div class="msg-image-zoom-hint">
+                  <span class="material-symbols-outlined">zoom_in</span>
+                </div>
+              </div>
+            `;
+          }
+
+          if (!contentInner) {
+            contentInner = `<div class="msg-text">${renderTextWithLinks(rawText)}</div>`;
+          }
+
+          bubbleInner = `<div class="msg-content">${contentInner}</div>`;
         }
 
         const bubbleClass = `msg-bubble${hidden ? " hidden-for-me" : ""}`;
@@ -1720,6 +2754,7 @@
 
     messagesEl.innerHTML = html;
     bindMessageActions(list);
+    bindMessageImageOpeners();
     scrollMessagesToBottom();
   }
 
@@ -1809,6 +2844,10 @@
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
+      if (imageViewer.classList.contains("open")) {
+        closeImageViewer();
+        return;
+      }
       closeContextMenu();
       closeRenameModal();
       closeEditMsgModal();
@@ -1870,7 +2909,7 @@
     }
   });
 
-  /* ================== Редактирование сообщения ================== */
+  /* ================== Редактирование ================== */
 
   function openEditMsgModal(msgId, currentText) {
     editingMsgId = msgId;
@@ -2046,7 +3085,10 @@
     if (currentChatIsBroadcast) return;
 
     const text = String(messageInput.value || "").trim();
-    if (!text || !currentChatId || !currentPeer) return;
+    const hasImage = pendingAttachment && pendingAttachment.status === "ready";
+
+    if (!text && !hasImage) return;
+    if (!currentChatId || !currentPeer) return;
 
     sendBtn.disabled = true;
 
@@ -2064,28 +3106,41 @@
       read: false
     };
 
+    if (hasImage) {
+      payload.image = pendingAttachment.url;
+    }
+
     try {
       await set(newMsgRef, payload);
 
-      const previewText = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, "$1");
+      const previewText = text
+        ? text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, "$1")
+        : "Изображение";
 
       await update(ref(db, `messages/${currentChatId}`), {
         chatId: currentChatId,
         members: [myUid, peerUid].sort(),
         lastMessage: previewText.length > 120 ? previewText.slice(0, 117) + "..." : previewText,
+        lastIsImage: !!hasImage,
         lastAt: payload.createdAt,
         lastSenderId: myUid,
         updatedAt: payload.createdAt
       });
 
+      lastSeenMessageAt = Math.max(lastSeenMessageAt, payload.createdAt);
+
       messageInput.value = "";
       autoResizeTextarea();
+      clearAttachment();
       scrollMessagesToBottom();
+
+      stopTypingSignal();
     } catch (e) {
       console.error("Ошибка отправки:", e);
       alert("Не удалось отправить сообщение. Проверьте соединение.");
     } finally {
       sendBtn.disabled = false;
+      updateSendAvailability();
       messageInput.focus();
     }
   }
@@ -2130,6 +3185,7 @@
         if (!data || typeof data !== "object") return;
         chatsMeta[chatId] = {
           lastMessage: data.lastMessage || "",
+          lastIsImage: data.lastIsImage === true,
           lastAt: Number(data.lastAt || 0),
           lastSenderId: data.lastSenderId || "",
           aliases: (data.aliases && typeof data.aliases === "object") ? data.aliases : {}
@@ -2218,7 +3274,11 @@
     messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + "px";
   }
 
-  messageInput.addEventListener("input", autoResizeTextarea);
+  messageInput.addEventListener("input", () => {
+    autoResizeTextarea();
+    updateSendAvailability();
+    if (!currentChatIsBroadcast) sendTypingSignal();
+  });
 
   messageInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -2227,7 +3287,40 @@
     }
   });
 
+  messageInput.addEventListener("blur", () => {
+    stopTypingSignal();
+  });
+
+  messageInput.addEventListener("paste", (e) => {
+    if (currentChatIsBroadcast) return;
+    const items = e.clipboardData && e.clipboardData.items;
+    if (!items) return;
+
+    for (const item of items) {
+      if (item.kind === "file" && item.type.startsWith("image/")) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) handleFileSelected(file);
+        return;
+      }
+    }
+  });
+
   sendBtn.addEventListener("click", sendMessage);
+
+  attachBtn.addEventListener("click", () => {
+    if (currentChatIsBroadcast) return;
+    attachInput.click();
+  });
+
+  attachInput.addEventListener("change", (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) handleFileSelected(file);
+  });
+
+  attachRemoveBtn.addEventListener("click", () => {
+    clearAttachment();
+  });
 
   searchInput.addEventListener("input", () => {
     renderChatsList();
@@ -2237,6 +3330,10 @@
     setMobileShowThread(false);
 
     detachMessagesListener();
+    detachTyping();
+    stopTypingSignal();
+    clearAttachment();
+
     closeContextMenu();
     closeRenameModal();
     closeEditMsgModal();
@@ -2249,9 +3346,127 @@
     hideThreadUI();
 
     renderChatsList();
+    updateSendAvailability();
   });
 
-  /* ================== Автооткрытие по ?to= / ?chat= ================== */
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      stopTitleBlink();
+      if (currentChatId && !currentChatIsBroadcast) {
+        markChatAsRead(currentChatId);
+      }
+    }
+  });
+
+  /* ================== Просмотр картинки ================== */
+
+  imgClose.addEventListener("click", closeImageViewer);
+
+  imageViewer.addEventListener("click", (e) => {
+    if (e.target === imageViewer) closeImageViewer();
+  });
+
+  imgZoomIn.addEventListener("click", () => zoomImage(1.25));
+  imgZoomOut.addEventListener("click", () => zoomImage(0.8));
+  imgZoomReset.addEventListener("click", () => {
+    viewerZoom = 1;
+    viewerX = 0;
+    viewerY = 0;
+    applyViewerTransform();
+  });
+
+  imgViewerCanvas.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const factor = e.deltaY < 0 ? 1.15 : 0.87;
+    zoomImage(factor, e.clientX, e.clientY);
+  }, { passive: false });
+
+  imgViewerCanvas.addEventListener("mousedown", (e) => {
+    viewerDragging = true;
+    imgViewerCanvas.classList.add("grabbing");
+    viewerDragStartX = e.clientX;
+    viewerDragStartY = e.clientY;
+    viewerStartX = viewerX;
+    viewerStartY = viewerY;
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!viewerDragging) return;
+    viewerX = viewerStartX + (e.clientX - viewerDragStartX);
+    viewerY = viewerStartY + (e.clientY - viewerDragStartY);
+    applyViewerTransform();
+  });
+
+  document.addEventListener("mouseup", () => {
+    if (viewerDragging) {
+      viewerDragging = false;
+      imgViewerCanvas.classList.remove("grabbing");
+    }
+  });
+
+  imgViewerCanvas.addEventListener("dblclick", (e) => {
+    e.preventDefault();
+    if (viewerZoom > 1.05) {
+      viewerZoom = 1;
+      viewerX = 0;
+      viewerY = 0;
+      applyViewerTransform();
+    } else {
+      zoomImage(2, e.clientX, e.clientY);
+    }
+  });
+
+  imgViewerCanvas.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      viewerTouchDist = Math.hypot(dx, dy);
+      viewerTouchStartZoom = viewerZoom;
+    } else if (e.touches.length === 1) {
+      viewerDragging = true;
+      viewerDragStartX = e.touches[0].clientX;
+      viewerDragStartY = e.touches[0].clientY;
+      viewerStartX = viewerX;
+      viewerStartY = viewerY;
+    }
+  }, { passive: true });
+
+  imgViewerCanvas.addEventListener("touchmove", (e) => {
+    if (e.touches.length === 2 && viewerTouchDist > 0) {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      const factor = dist / viewerTouchDist;
+      let next = viewerTouchStartZoom * factor;
+      if (next < 0.5) next = 0.5;
+      if (next > 8) next = 8;
+
+      const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+
+      const rect = imgViewerCanvas.getBoundingClientRect();
+      const cxc = cx - (rect.left + rect.width / 2);
+      const cyc = cy - (rect.top + rect.height / 2);
+      const ratio = next / viewerZoom;
+      viewerX = cxc - (cxc - viewerX) * ratio;
+      viewerY = cyc - (cyc - viewerY) * ratio;
+
+      viewerZoom = next;
+      applyViewerTransform();
+    } else if (e.touches.length === 1 && viewerDragging) {
+      viewerX = viewerStartX + (e.touches[0].clientX - viewerDragStartX);
+      viewerY = viewerStartY + (e.touches[0].clientY - viewerDragStartY);
+      applyViewerTransform();
+    }
+  }, { passive: false });
+
+  imgViewerCanvas.addEventListener("touchend", (e) => {
+    if (e.touches.length < 2) viewerTouchDist = 0;
+    if (e.touches.length === 0) viewerDragging = false;
+  }, { passive: true });
+
+  /* ================== Автооткрытие по параметрам ================== */
 
   function tryOpenChatFromParams() {
     if (!currentUser) return false;
@@ -2314,10 +3529,15 @@
 
     hideLoadscreen();
 
+    try { setupPresence(); } catch (e) { console.error(e); }
     try { subscribeUsers(); } catch (e) { console.error(e); }
     try { subscribeChatsMeta(); } catch (e) { console.error(e); }
     try { subscribeUnreadCounts(); } catch (e) { console.error(e); }
     try { subscribeBroadcasts(); } catch (e) { console.error(e); }
+    try { subscribePresence(); } catch (e) { console.error(e); }
+
+    ensureNotificationPermission();
+    updateSendAvailability();
 
     if (paramTo || paramChat) {
       let tries = 0;
@@ -2329,6 +3549,10 @@
         }
       }, 200);
     }
+  });
+
+  window.addEventListener("beforeunload", () => {
+    try { stopTypingSignal(); } catch (e) {}
   });
 </script>
 </body>
