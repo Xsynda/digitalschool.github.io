@@ -3,7 +3,7 @@
 <head>
   <link rel="icon" type="image/png" href="logo.png" />
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Электронная школа" />
   <meta property="og:title" content="Чат · Электронная школа" />
@@ -16,12 +16,18 @@
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { margin: 0; padding: 0; height: 100%; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      height: 100dvh;
+    }
 
     body {
       font-family: "Inter", sans-serif;
       background: #f8faff;
       min-height: 100vh;
+      min-height: 100dvh;
       color: #0a1e3c;
       padding-top: 80px;
       overflow: hidden;
@@ -112,6 +118,7 @@
     .chat-page {
       padding: 16px;
       height: calc(100vh - 80px);
+      height: calc(100dvh - 80px);
       overflow: hidden;
       display: flex;
       justify-content: center;
@@ -602,12 +609,14 @@
     .chat-input-row {
       border-top: 1px solid #eef3fa;
       padding: 12px 14px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
       background: #fbfdff;
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
       gap: 8px;
       position: relative;
+      z-index: 2;
     }
 
     .input-controls {
@@ -1060,7 +1069,12 @@
       .user-badge { padding: 6px 12px 6px 10px; font-size: 13px; max-width: 130px; }
       .user-badge .material-symbols-outlined { font-size: 18px; }
 
-      .chat-page { padding: 8px; height: calc(100vh - 74px); }
+      .chat-page {
+        padding: 8px;
+        height: calc(100vh - 74px);
+        height: calc(100dvh - 74px);
+        padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+      }
       .chat-wrap { border-radius: 24px; grid-template-columns: 1fr; }
       .chat-sidebar { display: flex; }
       .chat-main { display: none; }
@@ -1372,8 +1386,6 @@
 
   const TYPING_TTL_MS = 3000;
   const TYPING_THROTTLE_MS = 1200;
-
-  // Heartbeat: раз в 25 сек обновляем presence, чтобы не «залипал» онлайн
   const PRESENCE_HEARTBEAT_MS = 25000;
 
   const IMGBB_API_KEY = "96d427aa0815502bf7e968a503e61419";
@@ -1880,11 +1892,9 @@
     const myPresenceRef = ref(db, `presence/${currentUser.uid}`);
     const connectedRef = ref(db, ".info/connected");
 
-    // Слушаем реальное состояние подключения
     const handler = (snap) => {
       if (snap.val() !== true) return;
 
-      // Сначала регистрируем onDisconnect, потом ставим true
       onDisconnect(myPresenceRef).remove()
         .then(() => {
           return set(myPresenceRef, true);
@@ -1897,8 +1907,6 @@
     onValue(connectedRef, handler);
     unsubConnected = { ref: connectedRef, handler };
 
-    // Heartbeat: обновляем timestamp присутствия каждые 25 сек,
-    // чтобы можно было определить «залипший» онлайн
     if (presenceHeartbeatTimer) clearInterval(presenceHeartbeatTimer);
     presenceHeartbeatTimer = setInterval(() => {
       if (!currentUser) return;
@@ -3337,6 +3345,16 @@
     }
   });
 
+  messageInput.addEventListener("focus", () => {
+    // На мобильных — прокрутить страницу так, чтобы поле ввода было видно
+    // над панелью Яндекс.Браузера / клавиатурой
+    setTimeout(() => {
+      try {
+        messageInput.scrollIntoView({ block: "end", behavior: "smooth" });
+      } catch (e) {}
+    }, 250);
+  });
+
   messageInput.addEventListener("blur", () => {
     stopTypingSignal();
   });
@@ -3405,7 +3423,6 @@
       if (currentChatId && !currentChatIsBroadcast) {
         markChatAsRead(currentChatId);
       }
-      // При возврате во вкладку — сразу обновляем presence
       if (currentUser) {
         set(ref(db, `presence/${currentUser.uid}`), true).catch(() => {});
       }
@@ -3547,6 +3564,27 @@
 
     return false;
   }
+
+  /* ================== Фикс высоты для Яндекс.Браузера / мобильных ================== */
+
+  function applyVisualViewportFix() {
+    if (!window.visualViewport) return;
+    const vv = window.visualViewport;
+
+    function update() {
+      const chatPage = document.querySelector(".chat-page");
+      if (!chatPage) return;
+      const navHeight = window.innerWidth <= 760 ? 74 : 80;
+      const h = vv.height - navHeight;
+      chatPage.style.height = Math.max(200, h) + "px";
+    }
+
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    update();
+  }
+
+  applyVisualViewportFix();
 
   /* ================== Авторизация ================== */
 
