@@ -387,7 +387,6 @@
       font-weight: 700;
     }
 
-    /* ===== Галочка «прочитал правила» ===== */
     .terms-check {
       display: flex;
       align-items: flex-start;
@@ -824,7 +823,6 @@
         </div>
       </div>
 
-      <!-- ✅ Галочка прочитанных правил (только при регистрации) -->
       <label class="terms-check hidden" id="termsCheckRow">
         <input type="checkbox" id="termsCheckbox" />
         <span>
@@ -1100,6 +1098,8 @@
 
     const REDIRECT_URL = "index.html";
 
+    /* ========== DOM ========== */
+
     const loadscreen = document.getElementById("loadscreen");
     const authFormBlock = document.getElementById("authFormBlock");
     const verifyBlock = document.getElementById("verifyBlock");
@@ -1127,7 +1127,6 @@
     const googleBtn = document.getElementById("googleBtn");
     const googleBtnLabel = document.getElementById("googleBtnLabel");
 
-    // ✅ Правила
     const termsCheckRow = document.getElementById("termsCheckRow");
     const termsCheckbox = document.getElementById("termsCheckbox");
 
@@ -1166,11 +1165,23 @@
     const resetSuccess = document.getElementById("resetSuccess");
     const resetInfo = document.getElementById("resetInfo");
 
+    /* ========== Состояние ========== */
+
     let isLoginMode = true;
     let schoolOptions = [];
     let classOptions = [];
     let schoolsRawData = [];
     let loadscreenHidden = false;
+
+    // Пока true — onAuthStateChanged НЕ показывает экраны сам.
+    // Нужно, чтобы во время ручного входа/регистрации не было «мигания».
+    let manualAuthInProgress = false;
+
+    // Пока false — onAuthStateChanged вообще не обрабатывает user.
+    // Ставим true только после первой полной проверки.
+    let initialCheckDone = false;
+
+    /* ========== Утилиты ========== */
 
     function hideLoadscreen() {
       if (loadscreenHidden || !loadscreen) return;
@@ -1203,6 +1214,76 @@
       element.classList.remove("hidden");
     }
 
+    function getAcceptStatus(profile) {
+      const v = profile?.isAccepted;
+      if (v === true) return "accepted";
+      if (typeof v === "string" && v.trim().toLowerCase() === "откл") return "rejected";
+      return "pending";
+    }
+
+    /* ========== КЛЮЧЕВАЯ ФУНКЦИЯ: определение состояния пользователя ========== */
+
+    /**
+     * Возвращает одно из:
+     *  "no-user"      — нет залогиненного пользователя
+     *  "need-verify"  — почта не подтверждена
+     *  "need-profile" — профиль не заполнен
+     *  "pending"      — профиль заполнен, но не подтверждён админом
+     *  "rejected"     — отклонён
+     *  "accepted"     — всё ок, можно редиректить
+     *
+     * Внутри СНАЧАЛА обновляет ID-токен и reload, ПОТОМ проверяет emailVerified.
+     * Так emailVerified будет максимально свежим.
+     */
+    async function resolveUserState(user) {
+      if (!user) return { state: "no-user" };
+
+      // Google-провайдер — почта всегда подтверждена
+      const providerData = user.providerData || [];
+      const isGoogle = providerData.some(p => p.providerId === "google.com");
+
+      if (!isGoogle) {
+        // Сначала принудительно обновляем токен и данные пользователя
+        try { await user.getIdToken(true); } catch (e) {}
+        try { await user.reload(); } catch (e) {}
+
+        const freshUser = auth.currentUser;
+        const verified = freshUser?.emailVerified === true;
+
+        console.log("resolveUserState:", {
+          uid: user.uid,
+          email: user.email,
+          emailVerifiedBefore: user.emailVerified,
+          emailVerifiedAfter: freshUser?.emailVerified,
+          verified
+        });
+
+        if (!verified) {
+          return { state: "need-verify", user: freshUser || user };
+        }
+      }
+
+      // Читаем профиль из Realtime DB
+      let profile = {};
+      try {
+        const snap = await get(ref(db, "users/" + user.uid));
+        profile = snap.val() || {};
+      } catch (e) {
+        console.warn("Не удалось прочитать профиль:", e);
+      }
+
+      if (!profile.profileComplete && !(profile.name && profile.school && profile.class)) {
+        return { state: "need-profile", user, profile };
+      }
+
+      const status = getAcceptStatus(profile);
+      if (status === "accepted") return { state: "accepted", user, profile };
+      if (status === "rejected") return { state: "rejected", user, profile };
+      return { state: "pending", user, profile };
+    }
+
+    /* ========== Показ экранов ========== */
+
     function updateFormMode() {
       if (isLoginMode) {
         formTitle.textContent = "Вход";
@@ -1213,8 +1294,6 @@
         forgotRow.classList.remove("hidden");
         passwordInput.setAttribute("autocomplete", "current-password");
         if (googleBtnLabel) googleBtnLabel.textContent = "Войти с Google";
-
-        // ✅ При входе галочка не нужна
         if (termsCheckRow) termsCheckRow.classList.add("hidden");
       } else {
         formTitle.textContent = "Регистрация";
@@ -1225,161 +1304,12 @@
         forgotRow.classList.add("hidden");
         passwordInput.setAttribute("autocomplete", "new-password");
         if (googleBtnLabel) googleBtnLabel.textContent = "Зарегистрироваться с Google";
-
-        // ✅ При регистрации показываем галочку
         if (termsCheckRow) {
           termsCheckRow.classList.remove("hidden");
           termsCheckRow.classList.remove("error");
         }
       }
       clearAllMessages();
-    }
-
-    function toggleMode() {
-      isLoginMode = !isLoginMode;
-      updateFormMode();
-      passwordInput.value = "";
-    }
-
-    switchActionBtn.addEventListener("click", toggleMode);
-
-    // ✅ Снимаем «ошибку» с галочки, когда её ставят
-    termsCheckbox.addEventListener("change", () => {
-      if (termsCheckbox.checked && termsCheckRow) {
-        termsCheckRow.classList.remove("error");
-      }
-    });
-
-    function getErrorMessage(error) {
-      const codes = {
-        "auth/user-not-found": "Пользователь с таким email не найден.",
-        "auth/wrong-password": "Неверный пароль.",
-        "auth/invalid-credential": "Неверный email или пароль.",
-        "auth/email-already-in-use": "Этот email уже зарегистрирован.",
-        "auth/invalid-email": "Некорректный формат email.",
-        "auth/weak-password": "Пароль слишком простой (мин. 6 символов).",
-        "auth/user-disabled": "Аккаунт отключён.",
-        "auth/too-many-requests": "Слишком много попыток. Подождите.",
-        "auth/network-request-failed": "Проблема с интернетом.",
-        "auth/internal-error": "Внутренняя ошибка сервера.",
-        "auth/missing-email": "Введите email.",
-        "auth/popup-closed-by-user": "Окно входа закрыто.",
-        "auth/cancelled-popup-request": "Запрос входа отменён.",
-        "auth/popup-blocked": "Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для этого сайта.",
-        "auth/account-exists-with-different-credential": "Этот email уже используется другим способом входа.",
-        "auth/operation-not-allowed": "Вход через Google отключён в настройках Firebase.",
-        "auth/unauthorized-domain": "Этот домен не разрешён в настройках Firebase. Добавьте его в Authentication → Settings → Authorized domains."
-      };
-      return codes[error.code] || error.message || "Неизвестная ошибка.";
-    }
-
-    function loadSavedEmail() {
-      try {
-        const saved = localStorage.getItem("remembered_email");
-        if (saved) {
-          emailInput.value = saved;
-          rememberCheckbox.checked = true;
-        }
-      } catch (e) {}
-    }
-
-    let passwordVisible = false;
-
-    togglePasswordBtn.addEventListener("click", () => {
-      passwordVisible = !passwordVisible;
-      passwordInput.type = passwordVisible ? "text" : "password";
-      togglePasswordIcon.textContent = passwordVisible ? "visibility_off" : "visibility";
-      togglePasswordBtn.setAttribute("aria-label", passwordVisible ? "Скрыть пароль" : "Показать пароль");
-      passwordInput.focus();
-      const len = passwordInput.value.length;
-      try { passwordInput.setSelectionRange(len, len); } catch (e) {}
-    });
-
-    function normalizeOptions(raw) {
-      if (!raw) return [];
-      if (Array.isArray(raw)) {
-        return raw.map((item, index) => {
-          if (item && typeof item === "object") {
-            const id = item.id ?? String(index);
-            const name = item.name ?? item.title ?? item.label ?? item.value ?? item.fullName ?? `Элемент ${index + 1}`;
-            return { id: String(id), name: String(name), raw: item };
-          }
-          return { id: String(index), name: String(item), raw: item };
-        }).filter(item => item && item.name);
-      }
-      if (typeof raw === "object") {
-        return Object.entries(raw).map(([id, value]) => {
-          if (value && typeof value === "object") {
-            const name = value.name ?? value.title ?? value.label ?? value.value ?? value.fullName ?? id;
-            return { id: String(id), name: String(name), raw: value };
-          }
-          return { id: String(id), name: String(value), raw: value };
-        }).filter(item => item && item.name);
-      }
-      return [];
-    }
-
-    function fillSelect(select, options, placeholder) {
-      select.innerHTML = "";
-      const emptyOption = document.createElement("option");
-      emptyOption.value = "";
-      emptyOption.textContent = placeholder;
-      select.appendChild(emptyOption);
-
-      if (!options.length) {
-        select.disabled = true;
-        return;
-      }
-      select.disabled = false;
-
-      options.forEach(option => {
-        const opt = document.createElement("option");
-        opt.value = option.id;
-        opt.textContent = option.name;
-        select.appendChild(opt);
-      });
-    }
-
-    function getSchoolRecordById(id) {
-      if (Array.isArray(schoolsRawData)) {
-        return schoolsRawData[Number(id)] ?? schoolsRawData[id];
-      }
-      if (typeof schoolsRawData === "object") {
-        return schoolsRawData[id] ?? Object.values(schoolsRawData).find((_, index) => String(index) === String(id));
-      }
-      return null;
-    }
-
-    function fillClassesForSchool(schoolId) {
-      const schoolRecord = getSchoolRecordById(schoolId);
-      const rawClasses = schoolRecord?.classes ?? schoolRecord?.classList ?? schoolRecord?.items ?? [];
-      classOptions = normalizeOptions(rawClasses);
-      fillSelect(classSelect, classOptions, "Выберите класс");
-      if (!classOptions.length) classSelect.value = "";
-    }
-
-    async function loadProfileOptions() {
-      try {
-        const snapshot = await get(ref(db, "schools"));
-        const data = snapshot.val() || [];
-        schoolsRawData = Array.isArray(data) ? data : (typeof data === "object" ? data : []);
-        schoolOptions = normalizeOptions(schoolsRawData);
-        fillSelect(schoolSelect, schoolOptions, "Выберите школу");
-
-        if (schoolOptions.length > 0) {
-          const firstSchoolId = schoolOptions[0].id;
-          schoolSelect.value = firstSchoolId;
-          fillClassesForSchool(firstSchoolId);
-        } else {
-          fillSelect(classSelect, [], "Выберите класс");
-        }
-
-        schoolSelect.onchange = () => fillClassesForSchool(schoolSelect.value);
-      } catch (error) {
-        console.error("Ошибка загрузки школ:", error);
-        fillSelect(schoolSelect, [], "Школы не найдены");
-        fillSelect(classSelect, [], "Классы не найдены");
-      }
     }
 
     function showAuthForm() {
@@ -1479,7 +1409,146 @@
       resetEmailInput.focus();
     }
 
-    /* ============ Профиль ============ */
+    /**
+     * Применяет результат resolveUserState — показывает нужный экран.
+     */
+    async function applyUserState(result) {
+      switch (result.state) {
+        case "no-user":
+          showAuthForm();
+          return;
+        case "need-verify":
+          showVerifyScreen(result.user?.email || "—");
+          return;
+        case "need-profile":
+          await showProfileSetup();
+          return;
+        case "pending":
+          showPendingScreen();
+          return;
+        case "rejected":
+          showRejectedScreen(result.profile || {});
+          return;
+        case "accepted":
+          redirectToMain();
+          return;
+      }
+    }
+
+    /* ========== Email / пароль ========== */
+
+    function loadSavedEmail() {
+      try {
+        const saved = localStorage.getItem("remembered_email");
+        if (saved) {
+          emailInput.value = saved;
+          rememberCheckbox.checked = true;
+        }
+      } catch (e) {}
+    }
+
+    let passwordVisible = false;
+
+    togglePasswordBtn.addEventListener("click", () => {
+      passwordVisible = !passwordVisible;
+      passwordInput.type = passwordVisible ? "text" : "password";
+      togglePasswordIcon.textContent = passwordVisible ? "visibility_off" : "visibility";
+      togglePasswordBtn.setAttribute("aria-label", passwordVisible ? "Скрыть пароль" : "Показать пароль");
+      passwordInput.focus();
+      const len = passwordInput.value.length;
+      try { passwordInput.setSelectionRange(len, len); } catch (e) {}
+    });
+
+    /* ========== Школы / классы ========== */
+
+    function normalizeOptions(raw) {
+      if (!raw) return [];
+      if (Array.isArray(raw)) {
+        return raw.map((item, index) => {
+          if (item && typeof item === "object") {
+            const id = item.id ?? String(index);
+            const name = item.name ?? item.title ?? item.label ?? item.value ?? item.fullName ?? `Элемент ${index + 1}`;
+            return { id: String(id), name: String(name), raw: item };
+          }
+          return { id: String(index), name: String(item), raw: item };
+        }).filter(item => item && item.name);
+      }
+      if (typeof raw === "object") {
+        return Object.entries(raw).map(([id, value]) => {
+          if (value && typeof value === "object") {
+            const name = value.name ?? value.title ?? value.label ?? value.value ?? value.fullName ?? id;
+            return { id: String(id), name: String(name), raw: value };
+          }
+          return { id: String(id), name: String(value), raw: value };
+        }).filter(item => item && item.name);
+      }
+      return [];
+    }
+
+    function fillSelect(select, options, placeholder) {
+      select.innerHTML = "";
+      const emptyOption = document.createElement("option");
+      emptyOption.value = "";
+      emptyOption.textContent = placeholder;
+      select.appendChild(emptyOption);
+
+      if (!options.length) {
+        select.disabled = true;
+        return;
+      }
+      select.disabled = false;
+
+      options.forEach(option => {
+        const opt = document.createElement("option");
+        opt.value = option.id;
+        opt.textContent = option.name;
+        select.appendChild(opt);
+      });
+    }
+
+    function getSchoolRecordById(id) {
+      if (Array.isArray(schoolsRawData)) {
+        return schoolsRawData[Number(id)] ?? schoolsRawData[id];
+      }
+      if (typeof schoolsRawData === "object") {
+        return schoolsRawData[id] ?? Object.values(schoolsRawData).find((_, index) => String(index) === String(id));
+      }
+      return null;
+    }
+
+    function fillClassesForSchool(schoolId) {
+      const schoolRecord = getSchoolRecordById(schoolId);
+      const rawClasses = schoolRecord?.classes ?? schoolRecord?.classList ?? schoolRecord?.items ?? [];
+      classOptions = normalizeOptions(rawClasses);
+      fillSelect(classSelect, classOptions, "Выберите класс");
+      if (!classOptions.length) classSelect.value = "";
+    }
+
+    async function loadProfileOptions() {
+      try {
+        const snapshot = await get(ref(db, "schools"));
+        const data = snapshot.val() || [];
+        schoolsRawData = Array.isArray(data) ? data : (typeof data === "object" ? data : []);
+        schoolOptions = normalizeOptions(schoolsRawData);
+        fillSelect(schoolSelect, schoolOptions, "Выберите школу");
+
+        if (schoolOptions.length > 0) {
+          const firstSchoolId = schoolOptions[0].id;
+          schoolSelect.value = firstSchoolId;
+          fillClassesForSchool(firstSchoolId);
+        } else {
+          fillSelect(classSelect, [], "Выберите класс");
+        }
+
+        schoolSelect.onchange = () => fillClassesForSchool(schoolSelect.value);
+      } catch (error) {
+        console.error("Ошибка загрузки школ:", error);
+        fillSelect(schoolSelect, [], "Школы не найдены");
+        fillSelect(classSelect, [], "Классы не найдены");
+      }
+    }
+
+    /* ========== Профиль ========== */
 
     async function saveProfile() {
       const user = auth.currentUser;
@@ -1535,14 +1604,7 @@
 
     saveProfileBtn.addEventListener("click", saveProfile);
 
-    /* ============ Экран ожидания ============ */
-
-    function getAcceptStatus(profile) {
-      const v = profile?.isAccepted;
-      if (v === true) return "accepted";
-      if (typeof v === "string" && v.trim().toLowerCase() === "откл") return "rejected";
-      return "pending";
-    }
+    /* ========== Ожидание / отклонение ========== */
 
     async function checkAcceptedStatus() {
       const user = auth.currentUser;
@@ -1590,7 +1652,7 @@
       showAuthForm();
     });
 
-    /* ============ Вход / Регистрация (email) ============ */
+    /* ========== Вход / регистрация (email) ========== */
 
     async function handleSubmit() {
       const email = emailInput.value.trim();
@@ -1601,7 +1663,6 @@
         return;
       }
 
-      // ✅ При регистрации требуем галочку
       if (!isLoginMode) {
         if (!termsCheckbox.checked) {
           showMessage(authError, "⚠️ Подтвердите, что вы прочитали правила пользования");
@@ -1618,6 +1679,8 @@
       submitBtn.disabled = true;
       submitBtn.textContent = "⏳ Загрузка...";
 
+      manualAuthInProgress = true;
+
       try {
         if (rememberCheckbox.checked) {
           await setPersistence(auth, browserLocalPersistence);
@@ -1628,17 +1691,23 @@
         }
 
         if (isLoginMode) {
-          await signInWithEmailAndPassword(auth, email, password);
+          /* ===== ВХОД ===== */
+          const cred = await signInWithEmailAndPassword(auth, email, password);
+
+          // После логина сразу проверяем состояние пользователя
+          const result = await resolveUserState(cred.user);
+
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Войти";
+          manualAuthInProgress = false;
+
+          await applyUserState(result);
         } else {
+          /* ===== РЕГИСТРАЦИЯ ===== */
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           const user = userCredential.user;
 
-          try {
-            await sendEmailVerification(user);
-          } catch (mailErr) {
-            console.warn("Не удалось отправить письмо:", mailErr);
-          }
-
+          // Создаём временный профиль в БД
           try {
             await set(ref(db, "users/" + user.uid), {
               email: email,
@@ -1654,24 +1723,57 @@
             console.warn("Ошибка сохранения временного профиля:", dbError);
           }
 
+          // Проверяем, не подтверждена ли почта УЖЕ (маловероятно при регистрации, но возможно)
+          const result = await resolveUserState(user);
+
+          if (result.state === "need-verify") {
+            // Отправляем письмо
+            try { await sendEmailVerification(user); } catch (e) { console.warn(e); }
+          }
+
           submitBtn.disabled = false;
-          submitBtn.textContent = isLoginMode ? "Войти" : "Создать";
-          showVerifyScreen(email);
+          submitBtn.textContent = "Создать";
+          manualAuthInProgress = false;
+
+          await applyUserState(result);
         }
       } catch (error) {
         console.error("Ошибка:", error);
         showMessage(authError, "❌ " + getErrorMessage(error));
         submitBtn.disabled = false;
         submitBtn.textContent = isLoginMode ? "Войти" : "Создать";
+        manualAuthInProgress = false;
       }
     }
 
     submitBtn.addEventListener("click", handleSubmit);
 
-    /* ============ Вход / Регистрация через Google ============ */
+    function getErrorMessage(error) {
+      const codes = {
+        "auth/user-not-found": "Пользователь с таким email не найден.",
+        "auth/wrong-password": "Неверный пароль.",
+        "auth/invalid-credential": "Неверный email или пароль.",
+        "auth/email-already-in-use": "Этот email уже зарегистрирован.",
+        "auth/invalid-email": "Некорректный формат email.",
+        "auth/weak-password": "Пароль слишком простой (мин. 6 символов).",
+        "auth/user-disabled": "Аккаунт отключён.",
+        "auth/too-many-requests": "Слишком много попыток. Подождите.",
+        "auth/network-request-failed": "Проблема с интернетом.",
+        "auth/internal-error": "Внутренняя ошибка сервера.",
+        "auth/missing-email": "Введите email.",
+        "auth/popup-closed-by-user": "Окно входа закрыто.",
+        "auth/cancelled-popup-request": "Запрос входа отменён.",
+        "auth/popup-blocked": "Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для этого сайта.",
+        "auth/account-exists-with-different-credential": "Этот email уже используется другим способом входа.",
+        "auth/operation-not-allowed": "Вход через Google отключён в настройках Firebase.",
+        "auth/unauthorized-domain": "Этот домен не разрешён в настройках Firebase. Добавьте его в Authentication → Settings → Authorized domains."
+      };
+      return codes[error.code] || error.message || "Неизвестная ошибка.";
+    }
+
+    /* ========== Google ========== */
 
     async function handleGoogleAuth() {
-      // ✅ При регистрации через Google тоже требуем галочку
       if (!isLoginMode) {
         if (!termsCheckbox.checked) {
           showMessage(authError, "⚠️ Подтвердите, что вы прочитали правила пользования");
@@ -1691,6 +1793,8 @@
       submitBtn.disabled = true;
       if (googleBtnLabel) googleBtnLabel.textContent = "⏳ Подключение...";
 
+      manualAuthInProgress = true;
+
       try {
         const provider = new GoogleAuthProvider();
         provider.setCustomParameters({ prompt: "select_account" });
@@ -1704,13 +1808,12 @@
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
+        // Проверяем, есть ли уже профиль
         let profile = {};
         try {
           const snap = await get(ref(db, "users/" + user.uid));
           profile = snap.val() || {};
-        } catch (e) {
-          profile = {};
-        }
+        } catch (e) {}
 
         const hasProfile = !!(profile.profileComplete || (profile.name && profile.school && profile.class));
 
@@ -1730,24 +1833,19 @@
             console.warn("Ошибка сохранения временного профиля (Google):", dbError);
           }
 
+          manualAuthInProgress = false;
           await showProfileSetup();
           return;
         }
 
-        const status = getAcceptStatus(profile);
-
-        if (status === "accepted") {
-          redirectToMain();
-          return;
-        }
-        if (status === "rejected") {
-          showRejectedScreen(profile);
-          return;
-        }
-        showPendingScreen();
+        // Полный resolveUserState — но у Google уже verified=true
+        const result2 = await resolveUserState(user);
+        manualAuthInProgress = false;
+        await applyUserState(result2);
       } catch (error) {
         console.error("Google auth error:", error);
         showMessage(authError, "❌ " + getErrorMessage(error));
+        manualAuthInProgress = false;
       } finally {
         googleBtn.disabled = false;
         submitBtn.disabled = false;
@@ -1757,7 +1855,7 @@
 
     googleBtn.addEventListener("click", handleGoogleAuth);
 
-    /* ============ Проверка email ============ */
+    /* ========== Проверка email ========== */
 
     async function checkEmailVerified() {
       const user = auth.currentUser;
@@ -1771,10 +1869,16 @@
       continueBtn.textContent = "⏳ Проверка...";
 
       try {
-        await user.reload();
-        const freshUser = auth.currentUser;
+        // Принудительно обновляем токен и данные
+        try { await user.getIdToken(true); } catch (e) {}
+        try { await user.reload(); } catch (e) {}
 
-        if (freshUser?.emailVerified) {
+        const freshUser = auth.currentUser;
+        const providerData = freshUser?.providerData || [];
+        const isGoogle = providerData.some(p => p.providerId === "google.com");
+        const verified = freshUser?.emailVerified === true || isGoogle;
+
+        if (verified) {
           continueBtn.disabled = false;
           continueBtn.textContent = "Я подтвердил почту";
           showVerifiedScreen(freshUser.email);
@@ -1799,23 +1903,8 @@
         showAuthForm();
         return;
       }
-      try {
-        const snap = await get(ref(db, "users/" + user.uid));
-        const profile = snap.val() || {};
-        const status = getAcceptStatus(profile);
-
-        if (status === "accepted") {
-          redirectToMain();
-        } else if (status === "rejected") {
-          showRejectedScreen(profile);
-        } else if (profile.profileComplete || (profile.name && profile.school && profile.class)) {
-          showPendingScreen();
-        } else {
-          await showProfileSetup();
-        }
-      } catch {
-        await showProfileSetup();
-      }
+      const result = await resolveUserState(user);
+      await applyUserState(result);
     });
 
     async function resendVerification() {
@@ -1830,6 +1919,16 @@
       resendBtn.textContent = "⏳ Отправка...";
 
       try {
+        await user.reload();
+        const freshUser = auth.currentUser;
+
+        if (freshUser?.emailVerified === true) {
+          showMessage(verifySuccess, "✅ Почта уже подтверждена. Нажмите «Я подтвердил почту».");
+          resendBtn.disabled = false;
+          resendBtn.textContent = "Отправить письмо заново";
+          return;
+        }
+
         await sendEmailVerification(user);
         showMessage(verifySuccess, "✅ Письмо отправлено повторно. Проверьте почту и папку «Спам».");
       } catch (error) {
@@ -1849,6 +1948,8 @@
     }
 
     backBtn.addEventListener("click", goBackToForm);
+
+    /* ========== Сброс пароля ========== */
 
     forgotPasswordBtn.addEventListener("click", () => {
       showResetScreen();
@@ -1890,6 +1991,8 @@
 
     resetPasswordBtn.addEventListener("click", handleResetPassword);
 
+    /* ========== Enter ========== */
+
     document.addEventListener("keydown", (e) => {
       if (e.key !== "Enter") return;
       const active = document.activeElement;
@@ -1903,54 +2006,68 @@
       }
     });
 
+    switchActionBtn.addEventListener("click", () => {
+      isLoginMode = !isLoginMode;
+      updateFormMode();
+      passwordInput.value = "";
+    });
+
+    termsCheckbox.addEventListener("change", () => {
+      if (termsCheckbox.checked && termsCheckRow) {
+        termsCheckRow.classList.remove("error");
+      }
+    });
+
+    /* ========== Главный входной обработчик ========== */
+
     onAuthStateChanged(auth, async (user) => {
+      // Пока идёт ручная обработка — не мешаем
+      if (manualAuthInProgress) return;
+
+      // Пока не завершена первичная проверка — не мешаем
+      if (!initialCheckDone) return;
+
       try {
-        if (!user) {
-          showAuthForm();
-          return;
-        }
-
-        const providerData = user.providerData || [];
-        const isGoogle = providerData.some(p => p.providerId === "google.com");
-        const isEmailVerified = user.emailVerified || isGoogle;
-
-        let profile = {};
-        try {
-          const snap = await get(ref(db, "users/" + user.uid));
-          profile = snap.val() || {};
-        } catch (e) {}
-
-        if (!isEmailVerified) {
-          if (!verifyBlock.classList.contains("hidden")) return;
-          showVerifyScreen(user.email || "—");
-          return;
-        }
-
-        if (!profile.profileComplete && !(profile.name && profile.school && profile.class)) {
-          if (!profileSetupBlock.classList.contains("hidden")) return;
-          await showProfileSetup();
-          return;
-        }
-
-        const status = getAcceptStatus(profile);
-
-        if (status === "accepted") {
-          redirectToMain();
-          return;
-        }
-
-        if (status === "rejected") {
-          if (!rejectedBlock.classList.contains("hidden")) return;
-          showRejectedScreen(profile);
-          return;
-        }
-
-        if (!pendingBlock.classList.contains("hidden")) return;
-        showPendingScreen();
+        const result = await resolveUserState(user);
+        await applyUserState(result);
+      } catch (error) {
+        console.error("onAuthStateChanged error:", error);
+        showAuthForm();
       } finally {
         hideLoadscreen();
       }
     });
+
+    /* ========== Первичная проверка ========== */
+
+    (async function initialResolve() {
+      // Ждём первое срабатывание onAuthStateChanged
+      const user = await new Promise((resolve) => {
+        const unsub = onAuthStateChanged(auth, (u) => {
+          unsub();
+          resolve(u);
+        });
+      });
+
+      if (!user) {
+        initialCheckDone = true;
+        showAuthForm();
+        hideLoadscreen();
+        return;
+      }
+
+      try {
+        const result = await resolveUserState(user);
+        initialCheckDone = true;
+        await applyUserState(result);
+      } catch (error) {
+        console.error("initialResolve error:", error);
+        initialCheckDone = true;
+        showAuthForm();
+      } finally {
+        hideLoadscreen();
+      }
+    })();
 
     updateFormMode();
     loadSavedEmail();
