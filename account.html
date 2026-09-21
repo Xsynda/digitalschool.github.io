@@ -457,6 +457,90 @@
       }).filter(Boolean);
     }
 
+    /**
+     * Извлекает список классов учителя (по name).
+     * profileData.classes = [
+     *   { name: "9А", subjects: ["алгебра", "геометрия"] },
+     *   ...
+     * ]
+     * Уникализирует по названию.
+     */
+    function extractTeacherClasses(profileData) {
+      const classesRaw = profileData?.classes;
+      if (!classesRaw) return [];
+
+      const classesArr = Array.isArray(classesRaw)
+        ? classesRaw
+        : (typeof classesRaw === "object" ? Object.values(classesRaw) : []);
+
+      const result = [];
+      const seen = new Set();
+
+      classesArr.forEach((cls) => {
+        let name = "";
+        if (typeof cls === "string") {
+          name = cls.trim();
+        } else if (cls && typeof cls === "object") {
+          name = String(cls.name || cls.title || cls.className || "").trim();
+        }
+        if (!name) return;
+
+        const key = name.toLowerCase();
+        if (seen.has(key)) return;
+        seen.add(key);
+        result.push(name);
+      });
+
+      return result;
+    }
+
+    /**
+     * Извлекает список предметов учителя по структуре:
+     * profileData.classes = [
+     *   { name: "9А", subjects: ["алгебра", "геометрия"] },
+     *   { name: "9Б", subjects: ["алгебра", "физика"] }
+     * ]
+     * Возвращает уникальный список (без повторов), сохраняя порядок.
+     */
+    function extractTeacherSubjects(profileData) {
+      const classesRaw = profileData?.classes;
+      if (!classesRaw) return [];
+
+      const classesArr = Array.isArray(classesRaw)
+        ? classesRaw
+        : (typeof classesRaw === "object" ? Object.values(classesRaw) : []);
+
+      const result = [];
+      const seen = new Set();
+
+      classesArr.forEach((cls) => {
+        if (!cls || typeof cls !== "object") return;
+        const subjectsRaw = cls.subjects;
+        if (!subjectsRaw) return;
+
+        const subjectsArr = Array.isArray(subjectsRaw)
+          ? subjectsRaw
+          : (typeof subjectsRaw === "object" ? Object.values(subjectsRaw) : []);
+
+        subjectsArr.forEach((subj) => {
+          let name = "";
+          if (typeof subj === "string") {
+            name = subj.trim();
+          } else if (subj && typeof subj === "object") {
+            name = String(subj.name || subj.title || subj.subject || subj.value || "").trim();
+          }
+          if (!name) return;
+
+          const key = name.toLowerCase();
+          if (seen.has(key)) return;
+          seen.add(key);
+          result.push(name);
+        });
+      });
+
+      return result;
+    }
+
     function renderChipList(names, emptyText) {
       if (!names.length) {
         return `<div class="chip-list"><span class="chip empty">${escapeHtml(emptyText)}</span></div>`;
@@ -563,8 +647,8 @@
       const { schoolName, className } = resolveSchoolAndClass(profileData, schools);
 
       const isTeacher = statusNum === 4;
-      const teacherClasses = extractNamesArray(profileData.classes);
-      const teacherSubjects = extractNamesArray(profileData.subjects);
+      const teacherClasses = extractTeacherClasses(profileData);
+      const teacherSubjects = extractTeacherSubjects(profileData);
 
       const displayName = profileData?.name || user.displayName || user.email || "Пользователь";
       const avatarUrl = safeUrl(profileData?.avatar || "");

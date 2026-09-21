@@ -302,6 +302,7 @@
     }
 
     .field-grid.three { grid-template-columns: 1.2fr 1fr .7fr; }
+    .field-grid.four { grid-template-columns: 70px 1.2fr 1fr .7fr; }
 
     .input, .console-card input, .console-card textarea, .console-card select {
       width: 100%; border: 1.5px solid var(--input-border);
@@ -931,7 +932,7 @@
       .tab-btn { white-space: nowrap; flex: 0 0 auto; }
 
       .grid-2 { grid-template-columns: 1fr; gap: 12px; }
-      .field-grid, .field-grid.three { grid-template-columns: 1fr; }
+      .field-grid, .field-grid.three, .field-grid.four { grid-template-columns: 1fr; }
 
       .console-card { padding: 16px 14px; border-radius: 20px; }
 
@@ -1981,12 +1982,47 @@
       }
     }
 
+    /* ===== Номер урока ===== */
+
+    function getLessonNumber(lesson, fallbackIndex) {
+      const raw = lesson?.number;
+      if (raw === null || raw === undefined || raw === "") return fallbackIndex + 1;
+      const n = Number(raw);
+      if (!Number.isFinite(n) || n < 0) return fallbackIndex + 1;
+      return n;
+    }
+
+    function getNextLessonNumber(lessons) {
+      if (!Array.isArray(lessons) || !lessons.length) return 1;
+      let maxNumber = 0;
+      let hasNumber = false;
+
+      lessons.forEach((lesson, idx) => {
+        const raw = lesson?.number;
+        if (raw !== null && raw !== undefined && raw !== "") {
+          const n = Number(raw);
+          if (Number.isFinite(n) && n >= 0) {
+            hasNumber = true;
+            if (n > maxNumber) maxNumber = n;
+            return;
+          }
+        }
+        const fallback = idx + 1;
+        if (fallback > maxNumber) maxNumber = fallback;
+      });
+
+      if (!hasNumber) return lessons.length + 1;
+      return maxNumber + 1;
+    }
+
     function renderLessonHtml(lesson, lessonIndex) {
       lesson = lesson || {};
+      const lessonNumber = getLessonNumber(lesson, lessonIndex);
+
       return `
         <div class="lesson-card" data-key="${lessonIndex}">
           <div class="lesson-summary">
-            <div class="lesson-number">${lessonIndex + 1}</div>
+            <div class="lesson-number">${escapeHtml(lessonNumber)}</div>
 
             <div style="min-width:0;">
               <div class="lesson-title">${escapeHtml(lesson.name || "Без названия")}</div>
@@ -2001,7 +2037,11 @@
           </div>
 
           <div class="lesson-edit">
-            <div class="field-grid three">
+            <div class="field-grid four">
+              <div>
+                <label class="form-label">№</label>
+                <input type="number" min="0" class="lesson-number-input" value="${escapeHtml(lessonNumber)}" />
+              </div>
               <div>
                 <label class="form-label">Название урока</label>
                 <input class="lesson-name-input" value="${escapeHtml(lesson.name || "")}" />
@@ -2042,6 +2082,8 @@
       const pastClass = isPast ? "past" : "";
       const lessons = Array.isArray(day.lessons) ? day.lessons : [];
       const lessonCount = lessons.length;
+
+      const nextNumber = getNextLessonNumber(lessons);
 
       return `
         <div class="day-item ${selected} ${pastClass}" data-day-key="${escapeHtml(dayKey)}">
@@ -2084,7 +2126,11 @@
               <details class="add-lesson-card">
                 <summary>➕ Добавить новый урок</summary>
                 <div style="margin-top:14px;">
-                  <div class="field-grid three">
+                  <div class="field-grid four">
+                    <div>
+                      <label class="form-label">№</label>
+                      <input type="number" min="0" class="new-lesson-number" value="${escapeHtml(nextNumber)}" />
+                    </div>
                     <div>
                       <label class="form-label">Название</label>
                       <input class="new-lesson-name" placeholder="Математика" />
@@ -2518,7 +2564,17 @@
           const day = schedule[dayIdx];
           const lessons = Array.isArray(day.lessons) ? [...day.lessons] : [];
 
+          const numberRaw = card.querySelector(".lesson-number-input").value.trim();
+          let numberValue;
+          if (numberRaw === "") {
+            numberValue = lessonIndex + 1;
+          } else {
+            const n = Number(numberRaw);
+            numberValue = Number.isFinite(n) && n >= 0 ? n : lessonIndex + 1;
+          }
+
           lessons[lessonIndex] = {
+            number: numberValue,
             name: card.querySelector(".lesson-name-input").value.trim(),
             time: card.querySelector(".lesson-time-input").value.trim(),
             cab: card.querySelector(".lesson-cab-input").value === "" ? null : Number(card.querySelector(".lesson-cab-input").value),
@@ -2631,6 +2687,8 @@
           const cab = card.querySelector(".new-lesson-cab").value === "" ? null : Number(card.querySelector(".new-lesson-cab").value);
           const homework = card.querySelector(".new-lesson-homework").value;
 
+          const numberRaw = card.querySelector(".new-lesson-number").value.trim();
+
           if (!name) {
             showMessage(card.querySelector(".add-lesson-message"), "⚠️ Введите название урока", "error");
             return;
@@ -2643,7 +2701,15 @@
           const day = schedule[dayIdx];
           const lessons = Array.isArray(day.lessons) ? [...day.lessons] : [];
 
-          lessons.push({ name, time, cab, homework });
+          let numberValue;
+          if (numberRaw === "") {
+            numberValue = getNextLessonNumber(lessons);
+          } else {
+            const n = Number(numberRaw);
+            numberValue = Number.isFinite(n) && n >= 0 ? n : getNextLessonNumber(lessons);
+          }
+
+          lessons.push({ number: numberValue, name, time, cab, homework });
           day.lessons = lessons;
           schedule[dayIdx] = day;
 
@@ -2893,9 +2959,20 @@
       const source = schedule.find((d) => d.date === fromKey);
       if (!source) { showMessage(msg, "⚠️ Источник не найден", "error"); return; }
 
+      const copiedLessons = Array.isArray(source.lessons)
+        ? source.lessons.map((lesson, idx) => {
+            const raw = lesson?.number;
+            const n = Number(raw);
+            const numberValue = (raw !== null && raw !== undefined && raw !== "" && Number.isFinite(n) && n >= 0)
+              ? n
+              : idx + 1;
+            return { ...lesson, number: numberValue };
+          })
+        : [];
+
       const copied = {
         date,
-        lessons: Array.isArray(source.lessons) ? source.lessons.map((lesson) => ({ ...lesson })) : []
+        lessons: copiedLessons
       };
       schedule.push(copied);
       const sorted = sortScheduleByDate(schedule);
@@ -2983,13 +3060,22 @@
         newDate.setDate(newDate.getDate() + srcDayIdx);
         const newDateStr = dateToScheduleDateString(newDate);
 
+        // Сохраняем номер урока из исходного дня
         const lessons = Array.isArray(day.lessons)
-          ? day.lessons.map((lesson) => ({
-              name: lesson?.name || "",
-              time: lesson?.time || "",
-              cab: lesson?.cab ?? null,
-              homework: copyHomework ? (lesson?.homework || "") : ""
-            }))
+          ? day.lessons.map((lesson, idx) => {
+              const raw = lesson?.number;
+              const n = Number(raw);
+              const numberValue = (raw !== null && raw !== undefined && raw !== "" && Number.isFinite(n) && n >= 0)
+                ? n
+                : idx + 1;
+              return {
+                number: numberValue,
+                name: lesson?.name || "",
+                time: lesson?.time || "",
+                cab: lesson?.cab ?? null,
+                homework: copyHomework ? (lesson?.homework || "") : ""
+              };
+            })
           : [];
 
         schedule.push({ date: newDateStr, lessons });

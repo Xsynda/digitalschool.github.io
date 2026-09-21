@@ -132,7 +132,7 @@
     }
 
     .container {
-      max-width: 1100px; margin: 24px auto;
+      max-width: 1400px; margin: 24px auto;
       background: var(--card); border-radius: 48px;
       box-shadow: 0 24px 60px rgba(0,20,40,.08);
       padding: 32px 40px 44px; border: 1px solid #f0f5fe;
@@ -142,7 +142,7 @@
     .page-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 26px; }
 
     .console-card { background: var(--soft-card); border-radius: 24px; padding: 20px 24px; border: 1px solid var(--border); margin-bottom: 20px; }
-    .card-label { font-size: 15px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .card-label { font-size: 15px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
     .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
     .form-label { font-size: 12px; color: var(--text-soft); margin: 0 0 5px 4px; display: block; }
@@ -188,96 +188,282 @@
       font-family: "Inter", sans-serif;
     }
 
-    .students-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    /* ===== Панель навигации по месяцам ===== */
+    .month-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #f0f6ff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
 
-    .student-card {
-      background: #fff; border: 1px solid var(--border);
-      border-radius: 20px; padding: 14px 16px;
-      display: flex; flex-direction: column; gap: 10px;
+    .month-nav-left,
+    .month-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .month-nav-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      text-transform: capitalize;
+      min-width: 150px;
+      text-align: center;
+    }
+
+    .month-nav-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1.5px solid var(--input-border);
+      background: #fff;
+      color: #1f2b48;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: .15s;
+      padding: 0;
+    }
+    .month-nav-btn:hover {
+      background: #e5effb;
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+    .month-nav-btn .material-symbols-outlined { font-size: 22px; }
+
+    .month-nav-today-btn {
+      height: 38px;
+      padding: 0 14px;
+      border-radius: 40px;
+      border: 1.5px solid var(--input-border);
+      background: #fff;
+      color: #1f2b48;
+      font-weight: 500;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       transition: .15s;
     }
-    .student-card:hover { border-color: #c7d9f0; }
-
-    .student-card-info { min-width: 0; }
-    .student-card-name {
-      font-size: 14px; font-weight: 600; color: var(--text);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      display: flex; align-items: center; gap: 6px;
+    .month-nav-today-btn:hover {
+      background: #e5effb;
+      border-color: var(--blue);
+      color: var(--blue);
     }
-    .student-card-email {
-      font-size: 11px; color: var(--text-soft); margin-top: 2px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
+    .month-nav-today-btn .material-symbols-outlined { font-size: 16px; }
 
-    .user-status {
-      display: inline-block; font-size: 10px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.04em;
-      padding: 2px 8px; border-radius: 40px; flex-shrink: 0;
-    }
-    .user-status.status-admin { background: #fff3e0; color: #b45309; border: 1px solid #ff9800; }
-    .user-status.status-classadmin { background: #e0f7fa; color: #0e7490; border: 1px solid #0891b2; }
-
-    /* ===== Текущие оценки + кнопка ===== */
-    .student-grade-row {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 10px; flex-wrap: wrap;
-      padding-top: 8px; border-top: 1px dashed #eef3fa;
+    .month-nav-count {
+      font-size: 12px;
+      color: var(--text-soft);
+      white-space: nowrap;
     }
 
-    .student-grade-display {
-      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-      min-height: 32px; flex: 1; min-width: 0;
+    /* ===== Таблица журнала ===== */
+    .journal-wrap {
+      overflow: auto;
+      max-height: 72vh;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: #fff;
+      position: relative;
     }
 
-    .grade-chip {
+    .journal-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: max-content;
+      min-width: 100%;
+      font-size: 13px;
+    }
+
+    .journal-table th,
+    .journal-table td {
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .journal-table th:last-child,
+    .journal-table td:last-child { border-right: none; }
+    .journal-table tr:last-child td { border-bottom: none; }
+
+    /* Заголовок-даты */
+    .journal-table thead th.date-header {
+      background: #f7fbff;
+      min-width: 72px;
+      padding: 8px 4px;
+      cursor: pointer;
+      user-select: none;
+      transition: .12s;
+      position: relative;
+    }
+    .journal-table thead th.date-header:hover {
+      background: #e5effb;
+    }
+    .journal-table thead th.date-header.empty-date {
+      cursor: default;
+      opacity: 0.45;
+    }
+    .journal-table thead th.date-header.empty-date:hover {
+      background: #f7fbff;
+    }
+    .journal-table thead th.date-header .date-h-main {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .journal-table thead th.date-header .date-h-sub {
+      font-size: 10px;
+      color: var(--text-soft);
+      margin-top: 2px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .journal-table thead th.date-header .date-h-markers {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      margin-top: 3px;
+      flex-wrap: wrap;
+    }
+
+    .journal-table thead th.date-header .date-h-lessons {
+      display: inline-block;
+      background: var(--blue);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 40px;
+    }
+
+    .journal-table thead th.date-header .date-h-hw {
+      display: inline-block;
+      background: #fef3c7;
+      color: #b45309;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 40px;
+    }
+
+    /* Липкая колонка с именами */
+    .journal-table th.student-col,
+    .journal-table td.student-col {
+      position: sticky;
+      left: 0;
+      background: #fff;
+      z-index: 2;
+      text-align: left;
+      min-width: 180px;
+      max-width: 220px;
+      padding: 9px 14px;
+      border-right: 1px solid var(--border);
+    }
+    .journal-table thead th.student-col {
+      background: #f7fbff;
+      z-index: 3;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      cursor: default;
+    }
+
+    .student-cell-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Ячейка с оценкой */
+    .journal-table td.grade-cell {
+      min-width: 72px;
+      cursor: pointer;
+      transition: .12s;
+      position: relative;
+      height: 44px;
+    }
+    .journal-table td.grade-cell:hover {
+      background: #f0f6ff;
+    }
+    .journal-table td.grade-cell.empty:hover {
+      background: #e5effb;
+    }
+    .journal-table td.grade-cell.empty:hover::after {
+      content: "+";
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 18px;
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .journal-table td.grade-cell.no-lesson {
+      cursor: default;
+      background: #fbfdff;
+    }
+    .journal-table td.grade-cell.no-lesson:hover {
+      background: #fbfdff;
+    }
+    .journal-table td.grade-cell.no-lesson:hover::after {
+      content: none;
+    }
+
+    .cell-grades {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      flex-wrap: wrap;
+      padding: 4px;
+    }
+
+    .cell-grade-chip {
       display: inline-flex; align-items: center; justify-content: center;
-      min-width: 32px; height: 32px; padding: 0 10px;
-      border-radius: 10px;
-      font-size: 14px; font-weight: 700; color: #fff;
+      min-width: 22px; height: 22px; padding: 0 5px;
+      border-radius: 6px;
+      font-size: 11px; font-weight: 700; color: #fff;
       line-height: 1;
     }
-    .grade-chip.grade-5 { background: #1a8a4a; }
-    .grade-chip.grade-4 { background: #2a7de1; }
-    .grade-chip.grade-3 { background: #f59e0b; }
-    .grade-chip.grade-2 { background: #c74a4a; }
-    .grade-chip.grade-1 { background: #8a3030; }
+    .cell-grade-chip.grade-5 { background: #1a8a4a; }
+    .cell-grade-chip.grade-4 { background: #2a7de1; }
+    .cell-grade-chip.grade-3 { background: #f59e0b; }
+    .cell-grade-chip.grade-2 { background: #c74a4a; }
+    .cell-grade-chip.grade-1 { background: #8a3030; }
 
-    .grade-weight-badge {
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 4px 10px; border-radius: 40px;
-      font-size: 11px; font-weight: 600;
-      background: #eef3fa; color: #3d5270;
-      height: 32px;
-    }
-
-    .grade-empty {
-      font-size: 12px; color: #a0b3cc; font-style: italic;
-    }
-
-    .grade-lesson-label {
-      font-size: 10px;
+    .cell-grade-lesson-tag {
+      font-size: 9px;
       color: #889bb3;
       font-weight: 700;
-      margin-right: 2px;
+      margin-right: 1px;
     }
 
-    .grade-set-btn {
-      border: 1.5px solid var(--input-border);
-      background: #fff; color: #1f2b48;
-      padding: 7px 14px; border-radius: 40px;
-      font-size: 13px; font-weight: 500;
-      display: inline-flex; align-items: center; gap: 6px;
-      transition: .15s; flex-shrink: 0;
+    .cell-multi-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
     }
-    .grade-set-btn:hover { background: #e5effb; border-color: var(--blue); color: var(--blue); }
-    .grade-set-btn .material-symbols-outlined { font-size: 16px; }
-
-    .empty-state { text-align: center; padding: 30px 20px; color: var(--text-soft); }
-    .empty-state .material-symbols-outlined { font-size: 42px; color: #d0dae9; margin-bottom: 10px; }
-    .empty-state h3 { color: var(--text); font-weight: 500; margin-bottom: 4px; font-size: 16px; }
-    .empty-state div { font-size: 13px; }
-
-    .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 13px; color: #889bb3; text-align: center; }
 
     /* ===== Модальное окно оценки ===== */
     .modal-overlay {
@@ -335,9 +521,13 @@
     .grade-pick-btn.selected.grade-2 { background: #c74a4a; border-color: #c74a4a; color: #fff; }
     .grade-pick-btn.selected.grade-1 { background: #8a3030; border-color: #8a3030; color: #fff; }
 
-    .grade-pick-btn.selected.grade-0 {
+    .grade-pick-btn.selected.grade-none {
       background: #eef3fa; border-color: #889bb3; color: #5f7696;
       box-shadow: 0 0 0 3px rgba(136,155,179,.15);
+    }
+    .grade-pick-btn.grade-none {
+      font-size: 13px;
+      min-width: 56px;
     }
 
     .weight-row {
@@ -370,6 +560,49 @@
       margin-right: auto;
     }
 
+    /* Список выбора урока в модалке */
+    .lesson-choose-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .lesson-choose-btn {
+      border: 1.5px solid var(--input-border);
+      background: #fff;
+      color: #1f2b48;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 14px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: .15s;
+    }
+    .lesson-choose-btn:hover {
+      background: #e5effb;
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+    .lesson-choose-btn .lesson-choose-meta {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    /* ===== Модальное окно ДЗ ===== */
+    .modal-wide { max-width: 620px; }
+
+    .hw-lesson-info {
+      background: var(--blue-soft);
+      color: var(--blue-dark);
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 13px;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
     /* ===== Адаптив ===== */
     @media (max-width: 860px) {
       .navbar { padding: 10px 18px; }
@@ -388,7 +621,6 @@
       .container { margin: 12px 10px 20px; padding: 22px 14px 30px; border-radius: 32px; }
       .page-title { font-size: 22px; }
       .field-grid { grid-template-columns: 1fr; }
-      .students-grid { grid-template-columns: 1fr; }
 
       .user-badge {
         padding: 6px 12px 6px 10px; font-size: 13px;
@@ -400,6 +632,8 @@
       .modal-actions { flex-direction: column-reverse; }
       .modal-actions .btn-console { width: 100%; }
       .modal-remove-btn { margin-right: 0; }
+
+      .month-nav-title { min-width: 110px; font-size: 14px; }
     }
     @media (max-width: 420px) {
       .user-badge .user-name { display: none; }
@@ -408,6 +642,11 @@
 
       .nav-link { padding: 6px 12px; font-size: 12px; }
       .grade-pick-btn { min-width: 42px; height: 42px; font-size: 15px; }
+
+      .month-nav { padding: 8px 10px; }
+      .month-nav-btn { width: 34px; height: 34px; }
+      .month-nav-today-btn { height: 34px; padding: 0 10px; font-size: 12px; }
+      .month-nav-title { min-width: 90px; font-size: 13px; }
     }
   </style>
 </head>
@@ -448,10 +687,10 @@
       <span class="material-symbols-outlined">menu_book</span>
       Журнал учителя
     </div>
-    <div class="page-sub">Выставление оценок и задание домашнего задания</div>
+    <div class="page-sub">Нажмите на дату — задать ДЗ. Нажмите на ячейку ученика — выставить оценку</div>
 
     <div class="console-card">
-      <div class="card-label">🎯 Выбор класса, предмета и даты</div>
+      <div class="card-label">🎯 Выбор класса и предмета</div>
 
       <div class="field-grid">
         <div>
@@ -462,66 +701,68 @@
           <label class="form-label">Предмет</label>
           <select id="subjectSelect" class="input"></select>
         </div>
-        <div>
-          <label class="form-label">Дата урока</label>
-          <input type="date" id="dateInput" class="input" />
-        </div>
-        <div id="lessonPickWrap" style="display:none;">
-          <label class="form-label">Урок в этот день</label>
-          <select id="lessonPickSelect" class="input"></select>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="btn-console btn-console-teal" id="loadBtn">
-          <span class="material-symbols-outlined" style="font-size:16px;">refresh</span>
-          Загрузить учеников
-        </button>
       </div>
 
       <div id="mainMessage" class="console-message"></div>
     </div>
 
-    <div class="console-card" id="homeworkCard" style="display:none;">
-      <div class="card-label">📚 Домашнее задание на урок</div>
-
-      <textarea id="homeworkInput" class="input homework-textarea" placeholder="Введите текст домашнего задания для всего класса..."></textarea>
-
-      <div class="actions">
-        <button class="btn-console btn-console-green" id="saveHomeworkBtn">
-          <span class="material-symbols-outlined" style="font-size:16px;">save</span>
-          Сохранить ДЗ
-        </button>
-        <button class="btn-console btn-console-outline" id="clearHomeworkBtn">
-          <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
-          Очистить поле
-        </button>
+    <div class="console-card" id="journalCard" style="display:none;">
+      <div class="card-label">
+        📋 Журнал
+        <span id="journalInfoBadge" style="font-weight:500;color:#6a7f9e;font-size:13px;margin-left:6px;"></span>
       </div>
 
-      <div id="homeworkMessage" class="console-message"></div>
+      <div class="month-nav">
+        <div class="month-nav-left">
+          <button type="button" class="month-nav-btn" id="prevMonthBtn" title="Предыдущий месяц">
+            <span class="material-symbols-outlined">chevron_left</span>
+          </button>
+          <div class="month-nav-title" id="monthNavTitle">—</div>
+          <button type="button" class="month-nav-btn" id="nextMonthBtn" title="Следующий месяц">
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+        <div class="month-nav-right">
+          <span class="month-nav-count" id="monthNavCount"></span>
+          <button type="button" class="month-nav-today-btn" id="todayMonthBtn">
+            <span class="material-symbols-outlined">today</span>
+            Текущий месяц
+          </button>
+        </div>
+      </div>
+
+      <div class="journal-wrap" id="journalWrap"></div>
     </div>
 
-    <div class="console-card">
-      <div class="card-label">👥 Ученики</div>
-      <div id="studentsContainer">
-        <div class="empty-state">
-          <span class="material-symbols-outlined">group</span>
-          <h3>Выберите класс, предмет и дату</h3>
-          <div>Затем нажмите «Загрузить учеников»</div>
-        </div>
+    <div class="console-card" id="emptyCard">
+      <div class="empty-state" style="text-align:center; padding: 30px 20px; color: var(--text-soft);">
+        <span class="material-symbols-outlined" style="font-size:42px; color:#d0dae9; margin-bottom: 10px;">group</span>
+        <h3 style="color: var(--text); font-weight:500; margin-bottom:4px; font-size:16px;">Выберите класс и предмет</h3>
+        <div style="font-size:13px;">Журнал появится автоматически</div>
       </div>
     </div>
 
     <div class="footer">© 2026 · Электронная школа</div>
   </main>
 
-  <!-- ===== Модальное окно оценок ===== -->
+  <!-- ===== Модалка: выбор урока ===== -->
+  <div class="modal-overlay" id="chooseLessonModal">
+    <div class="modal">
+      <h2 id="chooseLessonTitle">Выберите урок</h2>
+      <div class="modal-sub" id="chooseLessonSub">—</div>
+      <div class="lesson-choose-list" id="chooseLessonList"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn-console btn-console-outline" id="chooseLessonCancel">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Модалка оценок ===== -->
   <div class="modal-overlay" id="gradeModal">
     <div class="modal">
       <h2 id="gradeModalTitle">Оценка ученика</h2>
       <div class="modal-sub" id="gradeModalSub">Ученик: —</div>
 
-      <!-- Первая оценка -->
       <div class="grade-section">
         <div class="grade-section-head">
           <div class="grade-section-title">
@@ -538,17 +779,15 @@
         </div>
       </div>
 
-      <!-- Вторая оценка -->
       <div class="grade-section">
         <div class="grade-section-head">
           <div class="grade-section-title">
             <span class="material-symbols-outlined" style="color:#0891b2;">looks_two</span>
             Вторая оценка
           </div>
-          <div class="weight-hint">0 — нет второй оценки</div>
         </div>
         <div class="grade-picker" id="sgradePicker">
-          <button type="button" class="grade-pick-btn grade-0" data-value="0" title="Нет второй оценки">0</button>
+          <button type="button" class="grade-pick-btn grade-none" data-value="0" title="Нет второй оценки">Нет</button>
           <button type="button" class="grade-pick-btn grade-1" data-value="1" title="Оценка 1">•</button>
           <button type="button" class="grade-pick-btn grade-2" data-value="2" title="Оценка 2">2</button>
           <button type="button" class="grade-pick-btn grade-3" data-value="3" title="Оценка 3">3</button>
@@ -559,7 +798,6 @@
 
       <div class="divider"></div>
 
-      <!-- Вес -->
       <div class="grade-section" style="margin-bottom: 0;">
         <div class="grade-section-head">
           <div class="grade-section-title">
@@ -588,6 +826,25 @@
         <button type="button" class="btn-console btn-console-outline" id="cancelGradeBtn">Отмена</button>
         <button type="button" class="btn-console btn-console-teal" id="saveGradeBtn">💾 Сохранить</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== Модалка ДЗ ===== -->
+  <div class="modal-overlay" id="hwModal">
+    <div class="modal modal-wide">
+      <h2>📚 Домашнее задание</h2>
+      <div class="modal-sub" id="hwModalSub">—</div>
+
+      <div class="hw-lesson-info" id="hwLessonInfo"></div>
+
+      <textarea id="hwInput" class="input homework-textarea" placeholder="Введите текст домашнего задания..."></textarea>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-console btn-console-outline" id="hwCancelBtn">Отмена</button>
+        <button type="button" class="btn-console btn-console-green" id="hwSaveBtn">💾 Сохранить ДЗ</button>
+      </div>
+
+      <div id="hwMessage" class="console-message"></div>
     </div>
   </div>
 
@@ -627,21 +884,28 @@
 
         const classSelect = document.getElementById("classSelect");
         const subjectSelect = document.getElementById("subjectSelect");
-        const dateInput = document.getElementById("dateInput");
-        const loadBtn = document.getElementById("loadBtn");
         const mainMessage = document.getElementById("mainMessage");
-        const studentsContainer = document.getElementById("studentsContainer");
         const userArea = document.getElementById("userArea");
         const loadscreen = document.getElementById("loadscreen");
 
-        const lessonPickWrap = document.getElementById("lessonPickWrap");
-        const lessonPickSelect = document.getElementById("lessonPickSelect");
+        const journalCard = document.getElementById("journalCard");
+        const journalWrap = document.getElementById("journalWrap");
+        const journalInfoBadge = document.getElementById("journalInfoBadge");
+        const emptyCard = document.getElementById("emptyCard");
 
-        const homeworkCard = document.getElementById("homeworkCard");
-        const homeworkInput = document.getElementById("homeworkInput");
-        const saveHomeworkBtn = document.getElementById("saveHomeworkBtn");
-        const clearHomeworkBtn = document.getElementById("clearHomeworkBtn");
-        const homeworkMessage = document.getElementById("homeworkMessage");
+        // Навигация по месяцам
+        const monthNavTitle = document.getElementById("monthNavTitle");
+        const monthNavCount = document.getElementById("monthNavCount");
+        const prevMonthBtn = document.getElementById("prevMonthBtn");
+        const nextMonthBtn = document.getElementById("nextMonthBtn");
+        const todayMonthBtn = document.getElementById("todayMonthBtn");
+
+        // Модалка выбора урока
+        const chooseLessonModal = document.getElementById("chooseLessonModal");
+        const chooseLessonTitle = document.getElementById("chooseLessonTitle");
+        const chooseLessonSub = document.getElementById("chooseLessonSub");
+        const chooseLessonList = document.getElementById("chooseLessonList");
+        const chooseLessonCancel = document.getElementById("chooseLessonCancel");
 
         // Модалка оценок
         const gradeModal = document.getElementById("gradeModal");
@@ -654,6 +918,15 @@
         const saveGradeBtn = document.getElementById("saveGradeBtn");
         const removeGradeBtn = document.getElementById("removeGradeBtn");
 
+        // Модалка ДЗ
+        const hwModal = document.getElementById("hwModal");
+        const hwModalSub = document.getElementById("hwModalSub");
+        const hwLessonInfo = document.getElementById("hwLessonInfo");
+        const hwInput = document.getElementById("hwInput");
+        const hwCancelBtn = document.getElementById("hwCancelBtn");
+        const hwSaveBtn = document.getElementById("hwSaveBtn");
+        const hwMessage = document.getElementById("hwMessage");
+
         let currentUser = null;
         let currentProfile = {};
         let schoolsCache = [];
@@ -664,18 +937,28 @@
 
         let loadedClassInfo = null;
         let loadedSubject = "";
-        let loadedDateStr = "";
-        let loadedDayIndex = -1;
-        let loadedLessonIndices = [];   // все индексы уроков с этим предметом в этот день
-        let loadedLessonPickIndex = -1; // -1 = «все совпадения», иначе индекс конкретного урока
         let loadedSchedule = [];
-        let loadedStudents = [];
 
-        // Что редактируем в модалке
+        // Месяц, отображаемый сейчас в журнале
+        // { year, month } — month 0..11
+        const today = new Date();
+        let currentMonth = { year: today.getFullYear(), month: today.getMonth() };
+
+        let loadedStudents = [];
+        // Список дней месяца: [{day, dateStr, dayIndex (или -1), lessonIndices: []}]
+        let loadedDaysInMonth = [];
+
+        // Модалка оценок
         let editingUid = null;
-        let editingFgrade = null;  // 1..5
-        let editingSgrade = 0;     // 0..5
+        let editingDayIndex = -1;
+        let editingLessonIndex = -1;
+        let editingFgrade = null;
+        let editingSgrade = 0;
         let editingWeight = 1;
+
+        // Модалка ДЗ
+        let hwEditingDayIndex = -1;
+        let hwEditingLessonIndex = -1;
 
         function hideLoadscreen() {
           if (!loadscreen) return;
@@ -709,11 +992,31 @@
           node.textContent = "";
         }
 
-        function dateInputToScheduleDate(v) {
-          if (!v) return "";
-          const m = v.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-          if (!m) return "";
-          return m[3] + "." + m[2] + "." + m[1];
+        function parseScheduleDate(str) {
+          if (!str) return null;
+          const m = String(str).trim().match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+          if (!m) return null;
+          const d = Number(m[1]);
+          const mo = Number(m[2]);
+          const y = Number(m[3]);
+          const date = new Date(y, mo - 1, d);
+          if (date.getFullYear() !== y || date.getMonth() !== mo - 1 || date.getDate() !== d) return null;
+          return date;
+        }
+
+        function dateToScheduleStr(d) {
+          const dd = String(d.getDate()).padStart(2, "0");
+          const mm = String(d.getMonth() + 1).padStart(2, "0");
+          const yyyy = d.getFullYear();
+          return dd + "." + mm + "." + yyyy;
+        }
+
+        const MONTHS_FULL = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+        const MONTHS_SHORT = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+        const WEEKDAYS_SHORT = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+
+        function formatMonthTitle(year, month) {
+          return MONTHS_FULL[month] + " " + year;
         }
 
         function gradeClass(g) {
@@ -726,12 +1029,10 @@
           return "grade-0";
         }
 
-        // Отображение оценки: 1 -> точка
         function gradeLabel(g) {
           return Number(g) === 1 ? "•" : String(g);
         }
 
-        // Приведение старой/новой записи к единому формату
         function normalizeGradeRecord(raw) {
           if (raw === null || raw === undefined || raw === "") return null;
           if (typeof raw === "number" || (typeof raw === "string" && /^\d+$/.test(raw))) {
@@ -754,28 +1055,11 @@
           return null;
         }
 
-        function statusBadge(status) {
-          const s = Number(status);
-          if (s === 2) return '<span class="user-status status-admin">Админ</span>';
-          if (s === 3) return '<span class="user-status status-classadmin">Админ класса</span>';
-          return "";
-        }
-
         function normalizeName(s) {
           if (s === null || s === undefined) return "";
           return String(s).trim().toLowerCase();
         }
 
-        function declOfNum(n, forms) {
-          n = Math.abs(n) % 100;
-          const n1 = n % 10;
-          if (n > 10 && n < 20) return forms[2];
-          if (n1 > 1 && n1 < 5) return forms[1];
-          if (n1 === 1) return forms[0];
-          return forms[2];
-        }
-
-        // ✅ Статус подтверждения: accepted / pending / rejected
         function getAcceptStatus(profile) {
           const v = profile && profile.isAccepted;
           if (v === true) return "accepted";
@@ -831,29 +1115,60 @@
         }
 
         function loadTeacherData() {
-          teacherSubjects = [];
-          if (Array.isArray(currentProfile.subjects)) {
-            currentProfile.subjects.forEach(function (s) {
-              if (typeof s === "string") teacherSubjects.push(s.trim());
-              else if (s && typeof s === "object") {
-                const v = s.name || s.title || s.subject || s.value || "";
-                if (v) teacherSubjects.push(String(v).trim());
-              }
-            });
-          }
-          teacherSubjects = teacherSubjects.filter(Boolean);
+          const classesRaw = currentProfile.classes;
 
           teacherClasses = [];
-          if (Array.isArray(currentProfile.classes)) {
-            currentProfile.classes.forEach(function (c) {
-              if (typeof c === "string") teacherClasses.push(c.trim());
-              else if (c && typeof c === "object") {
-                const v = c.name || c.title || c.className || c.value || "";
-                if (v) teacherClasses.push(String(v).trim());
-              }
+          const seenClasses = {};
+          if (Array.isArray(classesRaw)) {
+            classesRaw.forEach(function (c) {
+              let v = "";
+              if (typeof c === "string") v = c.trim();
+              else if (c && typeof c === "object") v = String(c.name || c.title || c.className || c.value || "").trim();
+              if (!v) return;
+              const key = v.toLowerCase();
+              if (seenClasses[key]) return;
+              seenClasses[key] = true;
+              teacherClasses.push(v);
             });
           }
-          teacherClasses = teacherClasses.filter(Boolean);
+
+          teacherSubjects = [];
+          const seenSubjects = {};
+          if (Array.isArray(classesRaw)) {
+            classesRaw.forEach(function (cls) {
+              if (!cls || typeof cls !== "object") return;
+              const subsRaw = cls.subjects;
+              if (!subsRaw) return;
+
+              const subsArr = Array.isArray(subsRaw)
+                ? subsRaw
+                : (typeof subsRaw === "object" ? Object.values(subsRaw) : []);
+
+              subsArr.forEach(function (subj) {
+                let v = "";
+                if (typeof subj === "string") v = subj.trim();
+                else if (subj && typeof subj === "object") v = String(subj.name || subj.title || subj.subject || subj.value || "").trim();
+                if (!v) return;
+                const key = v.toLowerCase();
+                if (seenSubjects[key]) return;
+                seenSubjects[key] = true;
+                teacherSubjects.push(v);
+              });
+            });
+          }
+
+          if (!teacherSubjects.length && Array.isArray(currentProfile.subjects)) {
+            currentProfile.subjects.forEach(function (s) {
+              let v = "";
+              if (typeof s === "string") v = s.trim();
+              else if (s && typeof s === "object") v = String(s.name || s.title || s.subject || s.value || "").trim();
+              if (!v) return;
+              const key = v.toLowerCase();
+              if (seenSubjects[key]) return;
+              seenSubjects[key] = true;
+              teacherSubjects.push(v);
+            });
+          }
 
           teacherSchoolName = String(currentProfile.school || "").trim();
 
@@ -871,7 +1186,6 @@
           });
         }
 
-        // ✅ Учитель видит только подтверждённых учеников (isAccepted === true)
         function loadStudentsForClass(className) {
           return db.ref("users").once("value").then(function (snap) {
             const raw = snap.val() || {};
@@ -882,8 +1196,6 @@
               const u = raw[uid];
               if (!u || typeof u !== "object") return;
               if (Number(u.status) === 4) return;
-
-              // 🔒 Неподтверждённые и отклонённые — скрыты от учителя
               if (getAcceptStatus(u) !== "accepted") return;
 
               if (normalizeName(u.class) === targetClass) {
@@ -914,90 +1226,56 @@
           return -1;
         }
 
-        // Возвращает { dayIndex, lessonIndices: [] }
-        function findLessonIndicesInSchedule(schedule, dateStr, subjectName) {
-          let dayIndex = -1;
-          for (let i = 0; i < schedule.length; i++) {
-            if (String(schedule[i].date || "").trim() === dateStr) {
-              dayIndex = i;
-              break;
-            }
-          }
-          if (dayIndex === -1) return { dayIndex: -1, lessonIndices: [] };
-
-          const lessons = Array.isArray(schedule[dayIndex].lessons) ? schedule[dayIndex].lessons : [];
+        /**
+         * Строит массив дней месяца 1..N.
+         * Для каждого дня ищет день в расписании и уроки по предмету.
+         * Возвращает: [{ day, dateStr, dayIndex, lessonIndices, dateObj }]
+         */
+        function buildDaysInMonth(schedule, year, month, subjectName) {
+          const daysInMonth = new Date(year, month + 1, 0).getDate();
           const target = normalizeName(subjectName);
-          const indices = [];
-          for (let j = 0; j < lessons.length; j++) {
-            if (normalizeName(lessons[j].name) === target) indices.push(j);
-          }
-          return { dayIndex: dayIndex, lessonIndices: indices };
-        }
 
-        function fillLessonPickSelect() {
-          if (!loadedClassInfo || loadedDayIndex === -1 || !loadedLessonIndices.length) {
-            lessonPickWrap.style.display = "none";
-            lessonPickSelect.innerHTML = "";
-            loadedLessonPickIndex = -1;
-            return;
-          }
-
-          if (loadedLessonIndices.length === 1) {
-            lessonPickWrap.style.display = "none";
-            loadedLessonPickIndex = loadedLessonIndices[0];
-            return;
-          }
-
-          lessonPickWrap.style.display = "";
-          lessonPickSelect.innerHTML = "";
-
-          const allOpt = document.createElement("option");
-          allOpt.value = "-1";
-          allOpt.textContent = "Все совпадения (" + loadedLessonIndices.length + ")";
-          lessonPickSelect.appendChild(allOpt);
-
-          const day = loadedSchedule[loadedDayIndex];
-          const lessons = Array.isArray(day.lessons) ? day.lessons : [];
-
-          loadedLessonIndices.forEach(function (idx, i) {
-            const l = lessons[idx] || {};
-            const time = String(l.time || "").trim();
-            const cab = l.cab != null && l.cab !== "" ? "каб. " + l.cab : "";
-            const meta = [time, cab].filter(Boolean).join(", ") || "без времени";
-            const opt = document.createElement("option");
-            opt.value = String(idx);
-            opt.textContent = "Урок " + (i + 1) + " (" + meta + ")";
-            lessonPickSelect.appendChild(opt);
+          // Индексируем расписание по dateStr
+          const scheduleByDate = {};
+          (schedule || []).forEach(function (day, dayIndex) {
+            const ds = String(day.date || "").trim();
+            if (!ds) return;
+            scheduleByDate[ds] = { day: day, dayIndex: dayIndex };
           });
 
-          loadedLessonPickIndex = -1;
-          lessonPickSelect.value = "-1";
-        }
+          const result = [];
+          for (let d = 1; d <= daysInMonth; d++) {
+            const dateObj = new Date(year, month, d);
+            const dateStr = dateToScheduleDateString(dateObj);
+            const entry = scheduleByDate[dateStr];
+            let dayIndex = -1;
+            let lessonIndices = [];
 
-        lessonPickSelect.addEventListener("change", function () {
-          const v = Number(lessonPickSelect.value);
-          loadedLessonPickIndex = Number.isFinite(v) ? v : -1;
-          renderStudents();
-          updateHomeworkBlock();
-        });
+            if (entry) {
+              dayIndex = entry.dayIndex;
+              const lessons = Array.isArray(entry.day.lessons) ? entry.day.lessons : [];
+              lessons.forEach(function (l, j) {
+                if (normalizeName(l && l.name) === target) lessonIndices.push(j);
+              });
+            }
 
-        function updateHomeworkBlock() {
-          if (loadedDayIndex === -1 || !loadedClassInfo || !loadedLessonIndices.length) {
-            homeworkCard.style.display = "none";
-            return;
+            result.push({
+              day: d,
+              dateStr: dateStr,
+              dayIndex: dayIndex,
+              lessonIndices: lessonIndices,
+              dateObj: dateObj
+            });
           }
 
-          const useIdx = loadedLessonPickIndex !== -1
-            ? loadedLessonPickIndex
-            : loadedLessonIndices[0];
+          return result;
+        }
 
-          const day = loadedSchedule[loadedDayIndex];
-          const lesson = (day.lessons || [])[useIdx] || {};
-          const hw = lesson.homework || "";
-
-          homeworkCard.style.display = "block";
-          homeworkInput.value = hw;
-          hideMessage(homeworkMessage);
+        function dateToScheduleDateString(d) {
+          const dd = String(d.getDate()).padStart(2, "0");
+          const mm = String(d.getMonth() + 1).padStart(2, "0");
+          const yyyy = d.getFullYear();
+          return dd + "." + mm + "." + yyyy;
         }
 
         function syncCacheSchedule(schoolIndex, classIndex, newSchedule) {
@@ -1014,59 +1292,260 @@
           }
         }
 
-        // ✅ Пишем ТОЛЬКО изменённый урок — не трогаем чужие оценки/ДЗ
-        function saveHomework() {
-          if (loadedDayIndex === -1 || !loadedClassInfo || !loadedLessonIndices.length) return;
+        /* ===== Рендер ===== */
 
-          const useIdx = loadedLessonPickIndex !== -1
-            ? loadedLessonPickIndex
-            : loadedLessonIndices[0];
+        function updateMonthNav() {
+          monthNavTitle.textContent = formatMonthTitle(currentMonth.year, currentMonth.month);
 
-          const schoolIndex = loadedClassInfo.schoolIndex;
-          const classIndex = loadedClassInfo.classIndex;
-
-          const text = String(homeworkInput.value || "");
-
-          const newSchedule = JSON.parse(JSON.stringify(loadedSchedule || []));
-          const day = newSchedule[loadedDayIndex];
-          if (!day || !Array.isArray(day.lessons)) return;
-
-          const lesson = day.lessons[useIdx];
-          if (!lesson) return;
-
-          lesson.homework = text;
-
-          saveHomeworkBtn.disabled = true;
-          saveHomeworkBtn.innerHTML =
-            '<span class="material-symbols-outlined" style="font-size:16px;">hourglass_top</span> Сохранение...';
-
-          db.ref("schools/" + schoolIndex + "/classes/" + classIndex +
-            "/schedule/" + loadedDayIndex + "/lessons/" + useIdx + "/homework")
-            .set(text || null)
-            .then(function () {
-              loadedSchedule = newSchedule;
-              syncCacheSchedule(schoolIndex, classIndex, newSchedule);
-              showMessage(homeworkMessage, "✅ Домашнее задание сохранено", "success");
-              setTimeout(function () {
-                if (homeworkMessage.classList.contains("success")) hideMessage(homeworkMessage);
-              }, 1800);
-            })
-            .catch(function (e) {
-              console.error("[journal] ошибка сохранения ДЗ:", e);
-              showMessage(homeworkMessage, "❌ Ошибка сохранения: " + (e && e.message), "error");
-            })
-            .then(function () {
-              saveHomeworkBtn.disabled = false;
-              saveHomeworkBtn.innerHTML =
-                '<span class="material-symbols-outlined" style="font-size:16px;">save</span> Сохранить ДЗ';
-            });
+          const total = loadedDaysInMonth.length;
+          const withLessons = loadedDaysInMonth.filter(function (x) { return x.lessonIndices.length > 0; }).length;
+          monthNavCount.textContent = "уроков по предмету: " + withLessons + " из " + total + " дней";
         }
 
-        saveHomeworkBtn.addEventListener("click", saveHomework);
+        function renderJournal() {
+          if (!loadedClassInfo) {
+            journalCard.style.display = "none";
+            emptyCard.style.display = "";
+            return;
+          }
 
-        clearHomeworkBtn.addEventListener("click", function () {
-          homeworkInput.value = "";
-          hideMessage(homeworkMessage);
+          if (!loadedStudents.length) {
+            journalCard.style.display = "none";
+            emptyCard.style.display = "";
+            emptyCard.innerHTML =
+              '<div class="empty-state" style="text-align:center; padding: 30px 20px; color: var(--text-soft);">' +
+                '<span class="material-symbols-outlined" style="font-size:42px; color:#d0dae9; margin-bottom: 10px;">person_off</span>' +
+                '<h3 style="color: var(--text); font-weight:500; margin-bottom:4px; font-size:16px;">В этом классе нет подтверждённых учеников</h3>' +
+                '<div style="font-size:13px;">Учителю видны только ученики с подтверждённым аккаунтом</div>' +
+              '</div>';
+            return;
+          }
+
+          if (!loadedDaysInMonth.length) {
+            journalCard.style.display = "none";
+            emptyCard.style.display = "";
+            emptyCard.innerHTML =
+              '<div class="empty-state" style="text-align:center; padding: 30px 20px; color: var(--text-soft);">' +
+                '<span class="material-symbols-outlined" style="font-size:42px; color:#d0dae9; margin-bottom: 10px;">event_busy</span>' +
+                '<h3 style="color: var(--text); font-weight:500; margin-bottom:4px; font-size:16px;">Нет дней в этом месяце</h3>' +
+                '<div style="font-size:13px;">Попробуйте другой месяц</div>' +
+              '</div>';
+            return;
+          }
+
+          journalCard.style.display = "";
+          emptyCard.style.display = "none";
+
+          journalInfoBadge.textContent = loadedClassInfo.className + " · " + loadedSubject;
+
+          updateMonthNav();
+
+          let html = '';
+          html += '<table class="journal-table">';
+
+          // ===== Заголовок =====
+          html += '<thead><tr>';
+          html += '<th class="student-col">Ученик</th>';
+
+          loadedDaysInMonth.forEach(function (d) {
+            const dateObj = d.dateObj;
+            const wd = WEEKDAYS_SHORT[dateObj.getDay()];
+            const moShort = MONTHS_SHORT[dateObj.getMonth()];
+
+            const hasLessons = d.lessonIndices.length > 0;
+            const thClass = "date-header" + (hasLessons ? "" : " empty-date");
+
+            // Определяем, есть ли ДЗ на этот день
+            let hasHw = false;
+            if (hasLessons && d.dayIndex >= 0) {
+              const day = loadedSchedule[d.dayIndex];
+              if (day && Array.isArray(day.lessons)) {
+                d.lessonIndices.forEach(function (idx) {
+                  const l = day.lessons[idx];
+                  if (l && typeof l.homework === "string" && l.homework.trim()) hasHw = true;
+                });
+              }
+            }
+
+            html += '<th class="' + thClass + '" data-date="' + escapeHtml(d.dateStr) + '" data-day-index="' + d.dayIndex + '" data-has-lessons="' + (hasLessons ? "1" : "0") + '">';
+            html += '<div class="date-h-main">' + d.day + '</div>';
+            html += '<div class="date-h-sub">' + wd + '</div>';
+
+            if (hasLessons) {
+              html += '<div class="date-h-markers">';
+              if (d.lessonIndices.length > 1) {
+                html += '<span class="date-h-lessons">' + d.lessonIndices.length + '</span>';
+              }
+              if (hasHw) {
+                html += '<span class="date-h-hw">📚</span>';
+              }
+              html += '</div>';
+            } else {
+              html += '<div class="date-h-markers" style="visibility:hidden;">·</div>';
+            }
+
+            html += '</th>';
+          });
+
+          html += '</tr></thead>';
+
+          // ===== Тело =====
+          html += '<tbody>';
+
+          loadedStudents.forEach(function (student) {
+            const uid = student.uid;
+            const name = student.name || student.email || "Без имени";
+
+            html += '<tr>';
+            html += '<td class="student-col">';
+            html += '<div class="student-cell-name">' + escapeHtml(name) + '</div>';
+            html += '</td>';
+
+            loadedDaysInMonth.forEach(function (d) {
+              const hasLessons = d.lessonIndices.length > 0;
+
+              if (!hasLessons) {
+                // День без урока по предмету — пустая (некликабельная) ячейка
+                html += '<td class="grade-cell no-lesson"></td>';
+                return;
+              }
+
+              const day = loadedSchedule[d.dayIndex];
+              const lessons = day && Array.isArray(day.lessons) ? day.lessons : [];
+
+              let cellContent = '';
+              let hasAnyGrade = false;
+
+              d.lessonIndices.forEach(function (idx, i) {
+                const lesson = lessons[idx];
+                if (!lesson) return;
+                const grades = (lesson.grades && typeof lesson.grades === "object") ? lesson.grades : {};
+                const normalized = normalizeGradeRecord(grades[uid]);
+
+                if (normalized) {
+                  hasAnyGrade = true;
+                  const multi = d.lessonIndices.length > 1;
+
+                  cellContent += '<span class="cell-multi-group">';
+                  if (multi) {
+                    cellContent += '<span class="cell-grade-lesson-tag">У' + (i + 1) + '</span>';
+                  }
+                  cellContent += '<span class="cell-grade-chip ' + gradeClass(normalized.fgrade) + '">' + gradeLabel(normalized.fgrade) + '</span>';
+                  if (normalized.sgrade && normalized.sgrade >= 1) {
+                    cellContent += '<span class="cell-grade-chip ' + gradeClass(normalized.sgrade) + '">' + gradeLabel(normalized.sgrade) + '</span>';
+                  }
+                  cellContent += '</span>';
+                }
+              });
+
+              const cellClass = hasAnyGrade ? "grade-cell" : "grade-cell empty";
+              const dataAttrs =
+                ' data-uid="' + escapeHtml(uid) + '"' +
+                ' data-day-index="' + d.dayIndex + '"' +
+                ' data-date="' + escapeHtml(d.dateStr) + '"' +
+                ' data-lesson-indices="' + d.lessonIndices.join(",") + '"';
+
+              html += '<td class="' + cellClass + '"' + dataAttrs + '>';
+              if (hasAnyGrade) {
+                html += '<div class="cell-grades">' + cellContent + '</div>';
+              }
+              html += '</td>';
+            });
+
+            html += '</tr>';
+          });
+
+          html += '</tbody></table>';
+
+          journalWrap.innerHTML = html;
+
+          // ===== Обработчики =====
+          journalWrap.querySelectorAll("th.date-header").forEach(function (th) {
+            th.addEventListener("click", function () {
+              if (th.getAttribute("data-has-lessons") !== "1") return;
+              const dateStr = th.getAttribute("data-date");
+              const dateInfo = loadedDaysInMonth.find(function (x) { return x.dateStr === dateStr; });
+              if (!dateInfo || !dateInfo.lessonIndices.length) return;
+              openHomeworkFlow(dateInfo);
+            });
+          });
+
+          journalWrap.querySelectorAll("td.grade-cell").forEach(function (td) {
+            td.addEventListener("click", function () {
+              if (td.classList.contains("no-lesson")) return;
+
+              const uid = td.getAttribute("data-uid");
+              const dayIndex = Number(td.getAttribute("data-day-index"));
+              const dateStr = td.getAttribute("data-date");
+              const indicesStr = td.getAttribute("data-lesson-indices") || "";
+              const indices = indicesStr.split(",").map(Number).filter(function (n) { return Number.isFinite(n); });
+
+              const dateInfo = loadedDaysInMonth.find(function (x) { return x.dateStr === dateStr; });
+              if (!dateInfo) return;
+
+              if (indices.length === 1) {
+                openGradeModalFor(uid, dayIndex, indices[0], dateInfo);
+              } else if (indices.length > 1) {
+                openChooseLessonModal(
+                  "Какой урок?",
+                  "На дату " + dateStr + " уроков по предмету: " + indices.length,
+                  indices,
+                  dayIndex,
+                  function (idx) {
+                    openGradeModalFor(uid, dayIndex, idx, dateInfo);
+                  }
+                );
+              }
+            });
+          });
+        }
+
+        /* ===== Модалка выбора урока ===== */
+
+        let chooseLessonCallback = null;
+
+        function openChooseLessonModal(title, sub, indices, dayIndex, onPick) {
+          chooseLessonTitle.textContent = title;
+          chooseLessonSub.textContent = sub;
+          chooseLessonList.innerHTML = "";
+          chooseLessonCallback = onPick;
+
+          const day = loadedSchedule[dayIndex];
+          const lessons = day && Array.isArray(day.lessons) ? day.lessons : [];
+
+          indices.forEach(function (idx, i) {
+            const l = lessons[idx] || {};
+            const time = String(l.time || "").trim();
+            const cab = l.cab != null && l.cab !== "" ? "каб. " + l.cab : "";
+            const meta = [time, cab].filter(Boolean).join(" · ") || "без времени";
+
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "lesson-choose-btn";
+            btn.innerHTML =
+              '<span>Урок ' + (i + 1) + ' · ' + escapeHtml(l.name || "Урок") + '</span>' +
+              '<span class="lesson-choose-meta">' + escapeHtml(meta) + '</span>';
+
+            btn.addEventListener("click", function () {
+              const cb = chooseLessonCallback;
+              closeChooseLessonModal();
+              if (cb) cb(idx);
+            });
+
+            chooseLessonList.appendChild(btn);
+          });
+
+          chooseLessonModal.classList.add("open");
+        }
+
+        function closeChooseLessonModal() {
+          chooseLessonModal.classList.remove("open");
+          chooseLessonCallback = null;
+        }
+
+        chooseLessonCancel.addEventListener("click", closeChooseLessonModal);
+        chooseLessonModal.addEventListener("click", function (e) {
+          if (e.target === chooseLessonModal) closeChooseLessonModal();
         });
 
         /* ===== Модалка оценок ===== */
@@ -1079,37 +1558,35 @@
           });
         }
 
-        function openGradeModal(student) {
-          const uid = student.uid;
-          const name = student.name || student.email || "Ученик";
+        function openGradeModalFor(uid, dayIndex, lessonIndex, dateInfo) {
+          const student = loadedStudents.find(function (s) { return s.uid === uid; });
+          if (!student) return;
 
-          if (loadedDayIndex === -1 || !loadedClassInfo || !loadedLessonIndices.length) {
-            showMessage(mainMessage, "⚠️ Сначала загрузите урок", "error");
-            return;
-          }
+          const day = loadedSchedule[dayIndex];
+          const lesson = day && Array.isArray(day.lessons) ? day.lessons[lessonIndex] : null;
+          if (!lesson) return;
 
           editingUid = uid;
+          editingDayIndex = dayIndex;
+          editingLessonIndex = lessonIndex;
+
+          const name = student.name || student.email || "Ученик";
+          const dateStr = dateInfo.dateStr;
+          const time = String(lesson.time || "").trim();
+          const cab = lesson.cab != null && lesson.cab !== "" ? "каб. " + lesson.cab : "";
+          const meta = [dateStr, time, cab].filter(Boolean).join(" · ");
 
           gradeModalTitle.textContent = "Оценка ученика";
-          gradeModalSub.textContent = "Ученик: " + name;
+          gradeModalSub.textContent = "Ученик: " + name + " · " + meta;
 
-          if (loadedLessonPickIndex !== -1) {
-            const day = loadedSchedule[loadedDayIndex];
-            const lesson = (day.lessons || [])[loadedLessonPickIndex] || {};
-            const grades = (lesson.grades && typeof lesson.grades === "object") ? lesson.grades : {};
-            const normalized = normalizeGradeRecord(grades[uid]);
+          const grades = (lesson.grades && typeof lesson.grades === "object") ? lesson.grades : {};
+          const normalized = normalizeGradeRecord(grades[uid]);
 
-            if (normalized) {
-              editingFgrade = normalized.fgrade;
-              editingSgrade = normalized.sgrade;
-              editingWeight = normalized.weight;
-              removeGradeBtn.style.display = "";
-            } else {
-              editingFgrade = null;
-              editingSgrade = 0;
-              editingWeight = 1;
-              removeGradeBtn.style.display = "none";
-            }
+          if (normalized) {
+            editingFgrade = normalized.fgrade;
+            editingSgrade = normalized.sgrade;
+            editingWeight = normalized.weight;
+            removeGradeBtn.style.display = "";
           } else {
             editingFgrade = null;
             editingSgrade = 0;
@@ -1127,6 +1604,8 @@
         function closeGradeModal() {
           gradeModal.classList.remove("open");
           editingUid = null;
+          editingDayIndex = -1;
+          editingLessonIndex = -1;
           editingFgrade = null;
           editingSgrade = 0;
           editingWeight = 1;
@@ -1164,18 +1643,12 @@
         });
 
         removeGradeBtn.addEventListener("click", function () {
-          if (editingUid === null) return;
-
-          const indices = loadedLessonPickIndex !== -1
-            ? [loadedLessonPickIndex]
-            : loadedLessonIndices;
-
-          if (!indices.length) return;
-          saveGradeToIndices(editingUid, indices, null);
+          if (editingUid === null || editingLessonIndex === -1 || editingDayIndex === -1) return;
+          saveGradeToLesson(editingUid, editingDayIndex, editingLessonIndex, null);
         });
 
         saveGradeBtn.addEventListener("click", function () {
-          if (editingUid === null) return;
+          if (editingUid === null || editingLessonIndex === -1 || editingDayIndex === -1) return;
           if (editingFgrade === null) return;
 
           const payload = {
@@ -1184,70 +1657,46 @@
             weight: editingWeight || 1
           };
 
-          if (loadedLessonPickIndex !== -1) {
-            saveGradeToIndices(editingUid, [loadedLessonPickIndex], payload);
-            return;
-          }
-
-          const indices = loadedLessonIndices;
-          if (indices.length <= 1) {
-            saveGradeToIndices(editingUid, indices, payload);
-            return;
-          }
-
-          const ok = confirm(
-            "В этот день " + indices.length + " урока по предмету «" + loadedSubject + "».\n\n" +
-            "ОК — поставить оценку во ВСЕ " + indices.length + ".\n" +
-            "Отмена — выбрать конкретный урок в списке сверху."
-          );
-
-          if (ok) {
-            saveGradeToIndices(editingUid, indices, payload);
-          }
+          saveGradeToLesson(editingUid, editingDayIndex, editingLessonIndex, payload);
         });
 
-        // ✅ Пишем ТОЛЬКО изменённый узел grades и только для выбранных уроков
-        function saveGradeToIndices(uid, indices, gradeRecord) {
-          if (loadedDayIndex === -1 || !loadedClassInfo || !indices.length) return;
+        function saveGradeToLesson(uid, dayIndex, lessonIndex, gradeRecord) {
+          if (!loadedClassInfo) return;
 
           const schoolIndex = loadedClassInfo.schoolIndex;
           const classIndex = loadedClassInfo.classIndex;
 
           const newSchedule = JSON.parse(JSON.stringify(loadedSchedule || []));
-          const day = newSchedule[loadedDayIndex];
+          const day = newSchedule[dayIndex];
           if (!day || !Array.isArray(day.lessons)) return;
 
+          const lesson = day.lessons[lessonIndex];
+          if (!lesson) return;
+
+          let newGrades;
+          if (lesson.grades && typeof lesson.grades === "object") {
+            newGrades = { ...lesson.grades };
+          } else {
+            newGrades = {};
+          }
+
+          if (gradeRecord === null) {
+            delete newGrades[uid];
+          } else {
+            newGrades[uid] = {
+              fgrade: Number(gradeRecord.fgrade),
+              sgrade: Number(gradeRecord.sgrade || 0),
+              weight: Number(gradeRecord.weight || 1)
+            };
+          }
+
+          lesson.grades = newGrades;
+
+          const path = "schools/" + schoolIndex + "/classes/" + classIndex +
+            "/schedule/" + dayIndex + "/lessons/" + lessonIndex + "/grades";
+
           const updates = {};
-
-          indices.forEach(function (idx) {
-            const lesson = day.lessons[idx];
-            if (!lesson) return;
-
-            let newGrades;
-            if (lesson.grades && typeof lesson.grades === "object") {
-              newGrades = { ...lesson.grades };
-            } else {
-              newGrades = {};
-            }
-
-            if (gradeRecord === null) {
-              delete newGrades[uid];
-            } else {
-              newGrades[uid] = {
-                fgrade: Number(gradeRecord.fgrade),
-                sgrade: Number(gradeRecord.sgrade || 0),
-                weight: Number(gradeRecord.weight || 1)
-              };
-            }
-
-            lesson.grades = newGrades;
-
-            const path = "schools/" + schoolIndex + "/classes/" + classIndex +
-              "/schedule/" + loadedDayIndex + "/lessons/" + idx + "/grades";
-
-            // null вместо пустого объекта — чтобы не оставлять «мусор»
-            updates[path] = Object.keys(newGrades).length ? newGrades : null;
-          });
+          updates[path] = Object.keys(newGrades).length ? newGrades : null;
 
           db.ref()
             .update(updates)
@@ -1256,7 +1705,7 @@
               syncCacheSchedule(schoolIndex, classIndex, newSchedule);
 
               closeGradeModal();
-              renderStudents();
+              renderJournal();
               showMessage(mainMessage, "✅ Оценка сохранена", "success");
               setTimeout(function () {
                 if (mainMessage.classList.contains("success")) mainMessage.classList.remove("show");
@@ -1268,167 +1717,136 @@
             });
         }
 
-        function renderStudents() {
-          if (!loadedClassInfo) {
-            studentsContainer.innerHTML =
-              '<div class="empty-state">' +
-                '<span class="material-symbols-outlined">group</span>' +
-                '<h3>Выберите класс, предмет и дату</h3>' +
-                '<div>Затем нажмите «Загрузить учеников»</div>' +
-              '</div>';
-            return;
-          }
+        /* ===== Модалка ДЗ ===== */
 
-          if (!loadedStudents.length) {
-            studentsContainer.innerHTML =
-              '<div class="empty-state">' +
-                '<span class="material-symbols-outlined">person_off</span>' +
-                '<h3>В этом классе нет подтверждённых учеников</h3>' +
-                '<div>Учителю видны только ученики с подтверждённым аккаунтом</div>' +
-              '</div>';
-            return;
-          }
+        function openHomeworkFlow(dateInfo) {
+          if (!dateInfo) return;
 
-          if (loadedDayIndex === -1) {
-            studentsContainer.innerHTML =
-              '<div class="empty-state">' +
-                '<span class="material-symbols-outlined">event_busy</span>' +
-                '<h3>На эту дату нет дня в расписании</h3>' +
-                '<div>Сначала добавьте день ' + escapeHtml(loadedDateStr) + ' в расписании класса</div>' +
-              '</div>';
-            return;
-          }
-
-          if (!loadedLessonIndices.length) {
-            studentsContainer.innerHTML =
-              '<div class="empty-state">' +
-                '<span class="material-symbols-outlined">book_2</span>' +
-                '<h3>В этот день нет урока «' + escapeHtml(loadedSubject) + '»</h3>' +
-                '<div>Проверьте название предмета в расписании</div>' +
-              '</div>';
-            return;
-          }
-
-          const day = loadedSchedule[loadedDayIndex];
-          const lessons = Array.isArray(day.lessons) ? day.lessons : [];
-
-          const displayIndices = loadedLessonPickIndex !== -1
-            ? [loadedLessonPickIndex]
-            : loadedLessonIndices;
-
-          const studentsHtml = loadedStudents.map(function (student) {
-            const uid = student.uid;
-            const name = student.name || student.email || "Без имени";
-            const email = student.email || "";
-            const badge = statusBadge(student.status);
-
-            let displayHtml = "";
-            let hasAny = false;
-
-            displayIndices.forEach(function (idx, i) {
-              const lesson = lessons[idx] || {};
-              const grades = (lesson.grades && typeof lesson.grades === "object") ? lesson.grades : {};
-              const normalized = normalizeGradeRecord(grades[uid]);
-
-              if (normalized) hasAny = true;
-
-              const lessonLabel = displayIndices.length > 1 ? ("У" + (i + 1)) : "";
-
-              if (normalized) {
-                const f = normalized.fgrade;
-                const s = normalized.sgrade;
-                const w = normalized.weight;
-
-                let block = "";
-                if (lessonLabel) {
-                  block += '<span class="grade-lesson-label">' + lessonLabel + '</span>';
-                }
-                block += '<span class="grade-chip ' + gradeClass(f) + '">' + gradeLabel(f) + '</span>';
-                if (s && s >= 1) {
-                  block += '<span class="grade-chip ' + gradeClass(s) + '">' + gradeLabel(s) + '</span>';
-                }
-                block += '<span class="grade-weight-badge">вес: ' + escapeHtml(w) + '</span>';
-
-                displayHtml += '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:8px;">' + block + '</span>';
-              } else if (displayIndices.length > 1) {
-                let block = "";
-                block += '<span class="grade-lesson-label">' + lessonLabel + '</span>';
-                block += '<span class="grade-empty">—</span>';
-                displayHtml += '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:8px;">' + block + '</span>';
+          if (dateInfo.lessonIndices.length === 1) {
+            openHwModal(dateInfo.dayIndex, dateInfo.lessonIndices[0], dateInfo.dateStr);
+          } else {
+            openChooseLessonModal(
+              "На какой урок задать ДЗ?",
+              "На дату " + dateInfo.dateStr + " уроков по предмету: " + dateInfo.lessonIndices.length,
+              dateInfo.lessonIndices,
+              dateInfo.dayIndex,
+              function (idx) {
+                openHwModal(dateInfo.dayIndex, idx, dateInfo.dateStr);
               }
-            });
-
-            if (!displayHtml) {
-              displayHtml = '<span class="grade-empty">Оценок нет</span>';
-            }
-
-            return (
-              '<div class="student-card" data-uid="' + escapeHtml(uid) + '">' +
-                '<div class="student-card-info">' +
-                  '<div class="student-card-name">' +
-                    escapeHtml(name) +
-                    badge +
-                  '</div>' +
-                  (email ? '<div class="student-card-email">' + escapeHtml(email) + '</div>' : '') +
-                '</div>' +
-                '<div class="student-grade-row">' +
-                  '<div class="student-grade-display">' + displayHtml + '</div>' +
-                  '<button class="grade-set-btn" data-uid="' + escapeHtml(uid) + '" type="button">' +
-                    '<span class="material-symbols-outlined">' + (hasAny ? 'edit' : 'add') + '</span>' +
-                    (hasAny ? 'Изменить' : 'Поставить оценку') +
-                  '</button>' +
-                '</div>' +
-              '</div>'
             );
-          }).join("");
-
-          const pickInfo = loadedLessonPickIndex !== -1
-            ? "Урок выбран"
-            : ("Все совпадения: " + loadedLessonIndices.length);
-
-          studentsContainer.innerHTML =
-            '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;">' +
-              '<div style="font-size:13px;color:#5f7696;">' +
-                'Класс: <b>' + escapeHtml(loadedClassInfo.className) + '</b> · ' +
-                'Предмет: <b>' + escapeHtml(loadedSubject) + '</b> · ' +
-                'Дата: <b>' + escapeHtml(loadedDateStr) + '</b> · ' +
-                '<b>' + escapeHtml(pickInfo) + '</b>' +
-              '</div>' +
-              '<div style="font-size:13px;color:#5f7696;">Учеников: <b>' + loadedStudents.length + '</b></div>' +
-            '</div>' +
-            '<div class="students-grid">' + studentsHtml + '</div>';
-
-          studentsContainer.querySelectorAll(".grade-set-btn").forEach(function (btn) {
-            btn.addEventListener("click", function () {
-              const uid = btn.getAttribute("data-uid");
-              const student = loadedStudents.find(function (s) { return s.uid === uid; });
-              if (!student) return;
-              openGradeModal(student);
-            });
-          });
+          }
         }
 
-        function handleLoad() {
+        function openHwModal(dayIndex, lessonIndex, dateStr) {
+          const day = loadedSchedule[dayIndex];
+          const lesson = day && Array.isArray(day.lessons) ? day.lessons[lessonIndex] : null;
+          if (!lesson) return;
+
+          hwEditingDayIndex = dayIndex;
+          hwEditingLessonIndex = lessonIndex;
+
+          const time = String(lesson.time || "").trim();
+          const cab = lesson.cab != null && lesson.cab !== "" ? "каб. " + lesson.cab : "";
+          const meta = [dateStr, time, cab].filter(Boolean).join(" · ");
+
+          hwModalSub.textContent = "Класс: " + loadedClassInfo.className + " · Предмет: " + loadedSubject;
+          hwLessonInfo.textContent = "Урок: " + (lesson.name || loadedSubject) + " · " + meta;
+
+          hwInput.value = lesson.homework || "";
+          hideMessage(hwMessage);
+
+          hwModal.classList.add("open");
+        }
+
+        function closeHwModal() {
+          hwModal.classList.remove("open");
+          hwEditingDayIndex = -1;
+          hwEditingLessonIndex = -1;
+          hideMessage(hwMessage);
+        }
+
+        hwCancelBtn.addEventListener("click", closeHwModal);
+        hwModal.addEventListener("click", function (e) {
+          if (e.target === hwModal) closeHwModal();
+        });
+
+        hwSaveBtn.addEventListener("click", function () {
+          if (hwEditingDayIndex === -1 || hwEditingLessonIndex === -1 || !loadedClassInfo) return;
+
+          const schoolIndex = loadedClassInfo.schoolIndex;
+          const classIndex = loadedClassInfo.classIndex;
+          const dayIndex = hwEditingDayIndex;
+          const lessonIndex = hwEditingLessonIndex;
+
+          const text = String(hwInput.value || "");
+
+          const newSchedule = JSON.parse(JSON.stringify(loadedSchedule || []));
+          const day = newSchedule[dayIndex];
+          if (!day || !Array.isArray(day.lessons)) return;
+
+          const lesson = day.lessons[lessonIndex];
+          if (!lesson) return;
+
+          lesson.homework = text;
+
+          hwSaveBtn.disabled = true;
+          hwSaveBtn.innerHTML = '⏳ Сохранение...';
+
+          db.ref("schools/" + schoolIndex + "/classes/" + classIndex +
+            "/schedule/" + dayIndex + "/lessons/" + lessonIndex + "/homework")
+            .set(text || null)
+            .then(function () {
+              loadedSchedule = newSchedule;
+              syncCacheSchedule(schoolIndex, classIndex, newSchedule);
+              closeHwModal();
+              renderJournal();
+              showMessage(mainMessage, "✅ Домашнее задание сохранено", "success");
+              setTimeout(function () {
+                if (mainMessage.classList.contains("success")) mainMessage.classList.remove("show");
+              }, 1800);
+            })
+            .catch(function (e) {
+              console.error("[journal] ошибка сохранения ДЗ:", e);
+              showMessage(hwMessage, "❌ Ошибка: " + (e && e.message), "error");
+            })
+            .then(function () {
+              hwSaveBtn.disabled = false;
+              hwSaveBtn.innerHTML = '💾 Сохранить ДЗ';
+            });
+        });
+
+        /* ===== Загрузка ===== */
+
+        function rebuildDaysInMonth() {
+          loadedDaysInMonth = buildDaysInMonth(
+            loadedSchedule,
+            currentMonth.year,
+            currentMonth.month,
+            loadedSubject
+          );
+        }
+
+        function handleClassSubjectChange() {
           const classIndexValue = Number(classSelect.value);
           const subjectIndexValue = Number(subjectSelect.value);
-          const dateValue = dateInput.value;
 
           if (!Number.isInteger(classIndexValue) || classIndexValue < 0) {
-            showMessage(mainMessage, "⚠️ Выберите класс", "error");
+            loadedClassInfo = null;
+            loadedStudents = [];
+            loadedDaysInMonth = [];
+            renderJournal();
             return;
           }
           if (!Number.isInteger(subjectIndexValue) || subjectIndexValue < 0) {
-            showMessage(mainMessage, "⚠️ Выберите предмет", "error");
-            return;
-          }
-          if (!dateValue) {
-            showMessage(mainMessage, "⚠️ Выберите дату", "error");
+            loadedClassInfo = null;
+            loadedStudents = [];
+            loadedDaysInMonth = [];
+            renderJournal();
             return;
           }
 
           const className = teacherClasses[classIndexValue];
           const subjectName = teacherSubjects[subjectIndexValue];
-          const dateStr = dateInputToScheduleDate(dateValue);
 
           const schoolIndex = schoolsCache.findIndex(function (s) {
             const n = s && (s.name || s.title || s.schoolName || "");
@@ -1458,48 +1876,49 @@
             schoolName: teacherSchoolName
           };
           loadedSubject = subjectName;
-          loadedDateStr = dateStr;
           loadedSchedule = schedule;
 
-          const found = findLessonIndicesInSchedule(schedule, dateStr, subjectName);
-          loadedDayIndex = found.dayIndex;
-          loadedLessonIndices = found.lessonIndices;
-          loadedLessonPickIndex = loadedLessonIndices.length === 1 ? loadedLessonIndices[0] : -1;
-
-          fillLessonPickSelect();
+          rebuildDaysInMonth();
 
           loadStudentsForClass(className).then(function (students) {
             loadedStudents = students;
-            renderStudents();
-            updateHomeworkBlock();
+            renderJournal();
 
-            let msg = "✅ Загружено: " + students.length + " " + declOfNum(students.length, ["ученик", "ученика", "учеников"]);
-            if (loadedLessonIndices.length > 1) {
-              msg += " · уроков с этим предметом: " + loadedLessonIndices.length;
+            const withLessons = loadedDaysInMonth.filter(function (x) { return x.lessonIndices.length > 0; }).length;
+            if (!withLessons) {
+              showMessage(mainMessage, "⚠️ В этом месяце нет уроков по предмету «" + subjectName + "»", "error");
+            } else {
+              showMessage(mainMessage,
+                "✅ Учеников: " + students.length + " · дней с предметом: " + withLessons,
+                "success");
+              setTimeout(function () {
+                if (mainMessage.classList.contains("success")) mainMessage.classList.remove("show");
+              }, 1800);
             }
-            showMessage(mainMessage, msg, "success");
           });
         }
 
-        loadBtn.addEventListener("click", handleLoad);
+        function shiftMonth(delta) {
+          let m = currentMonth.month + delta;
+          let y = currentMonth.year;
+          while (m < 0) { m += 12; y -= 1; }
+          while (m > 11) { m -= 12; y += 1; }
+          currentMonth = { year: y, month: m };
+          rebuildDaysInMonth();
+          renderJournal();
+        }
 
-        classSelect.addEventListener("change", function () {
-          if (classSelect.value !== "" && subjectSelect.value !== "" && dateInput.value) handleLoad();
-        });
-        subjectSelect.addEventListener("change", function () {
-          if (classSelect.value !== "" && subjectSelect.value !== "" && dateInput.value) handleLoad();
-        });
-        dateInput.addEventListener("change", function () {
-          if (classSelect.value !== "" && subjectSelect.value !== "" && dateInput.value) handleLoad();
-        });
-
-        (function initDate() {
+        prevMonthBtn.addEventListener("click", function () { shiftMonth(-1); });
+        nextMonthBtn.addEventListener("click", function () { shiftMonth(1); });
+        todayMonthBtn.addEventListener("click", function () {
           const now = new Date();
-          const y = now.getFullYear();
-          const m = String(now.getMonth() + 1).padStart(2, "0");
-          const d = String(now.getDate()).padStart(2, "0");
-          dateInput.value = y + "-" + m + "-" + d;
-        })();
+          currentMonth = { year: now.getFullYear(), month: now.getMonth() };
+          rebuildDaysInMonth();
+          renderJournal();
+        });
+
+        classSelect.addEventListener("change", handleClassSubjectChange);
+        subjectSelect.addEventListener("change", handleClassSubjectChange);
 
         auth.onAuthStateChanged(function (user) {
           if (!user) {
@@ -1513,17 +1932,14 @@
             const profile = snap.exists() ? snap.val() : {};
             currentProfile = profile;
 
-            // ✅ Сначала проверяем роль: только учитель (status 4)
             if (Number(profile.status) !== 4) {
               alert("Доступ только для учителя.");
               window.location.href = "index.html";
               return;
             }
 
-            // ✅ Проверка подтверждения аккаунта администратором
             const acceptStatus = getAcceptStatus(profile);
             if (acceptStatus !== "accepted") {
-              // pending / rejected → на auth.html, где покажутся соответствующие экраны
               window.location.href = "auth.html";
               return;
             }

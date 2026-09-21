@@ -942,7 +942,8 @@
     const gradeRow = document.getElementById("modalGradeRow");
     const gradeEl = document.getElementById("modalGrade");
 
-    title.textContent = lesson?.name || "Урок";
+    const numberPrefix = lesson?.number ? `${escapeHtml(lesson.number)}. ` : "";
+    title.textContent = `${numberPrefix}${lesson?.name || "Урок"}`;
     time.textContent = lesson?.time ? `⏰ ${lesson.time}` : "⏰ Время не указано";
     cab.textContent = lesson?.cab ?? "—";
     homework.innerHTML = lesson?.homework ? processHomeworkFull(lesson.homework) : "Нет задания";
@@ -1031,16 +1032,29 @@
             const gradeBadges = renderGradeBadges(lesson);
             const rec = getMyGradeRecord(lesson);
 
+            // === Номер урока: из базы (lesson.number), иначе порядковый ===
+            const rawNumber = lesson?.number;
+            const parsedNumber = Number(rawNumber);
+            const lessonNumber =
+              rawNumber !== null &&
+              rawNumber !== undefined &&
+              rawNumber !== "" &&
+              Number.isFinite(parsedNumber) &&
+              parsedNumber >= 0
+                ? parsedNumber
+                : idx + 1;
+
             return `
               <div class="lesson-mini"
                    data-name="${escapeHtml(name)}"
                    data-time="${escapeHtml(lesson?.time || "")}"
                    data-cab="${escapeHtml(lesson?.cab ?? "")}"
                    data-homework="${escapeHtml(lesson?.homework || "")}"
+                   data-number="${escapeHtml(lessonNumber)}"
                    data-fgrade="${rec ? escapeHtml(rec.fgrade) : ""}"
                    data-sgrade="${rec ? escapeHtml(rec.sgrade) : ""}"
                    data-weight="${rec ? escapeHtml(rec.weight) : ""}">
-                <div class="lesson-mini-number">${idx + 1}</div>
+                <div class="lesson-mini-number">${escapeHtml(lessonNumber)}</div>
                 <div class="lesson-mini-info">
                   <div class="lesson-mini-name">${escapeHtml(name)}</div>
                   ${meta ? `<div class="lesson-mini-meta">${escapeHtml(meta)}</div>` : ""}
@@ -1133,6 +1147,7 @@
         }
 
         openLessonModal({
+          number: el.dataset.number || "",
           name: el.dataset.name || "Урок",
           time: el.dataset.time || "",
           cab: el.dataset.cab || "",
