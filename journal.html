@@ -155,6 +155,7 @@
       font-family: "Inter", sans-serif;
     }
     .input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(42,125,225,.10); }
+    .input:disabled { background: #f5f8fc; color: #889bb3; cursor: not-allowed; }
 
     .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
 
@@ -695,11 +696,15 @@
       <div class="field-grid">
         <div>
           <label class="form-label">Класс</label>
-          <select id="classSelect" class="input"></select>
+          <select id="classSelect" class="input">
+            <option value="">— Выберите класс —</option>
+          </select>
         </div>
         <div>
           <label class="form-label">Предмет</label>
-          <select id="subjectSelect" class="input"></select>
+          <select id="subjectSelect" class="input" disabled>
+            <option value="">— Выберите предмет —</option>
+          </select>
         </div>
       </div>
 
@@ -931,21 +936,22 @@
         let currentProfile = {};
         let schoolsCache = [];
 
-        let teacherSubjects = [];
-        let teacherClasses = [];
+        // Классы учителя вместе с их предметами
+        // [{ name: "9А", subjects: ["алгебра", "геометрия"] }, ...]
+        let teacherClassesFull = [];
+
         let teacherSchoolName = "";
 
         let loadedClassInfo = null;
         let loadedSubject = "";
         let loadedSchedule = [];
 
-        // Месяц, отображаемый сейчас в журнале
-        // { year, month } — month 0..11
+        // Месяц, отображаемый в журнале
         const today = new Date();
         let currentMonth = { year: today.getFullYear(), month: today.getMonth() };
 
         let loadedStudents = [];
-        // Список дней месяца: [{day, dateStr, dayIndex (или -1), lessonIndices: []}]
+        // [{ day, dateStr, dayIndex, lessonIndices, dateObj }]
         let loadedDaysInMonth = [];
 
         // Модалка оценок
@@ -992,19 +998,7 @@
           node.textContent = "";
         }
 
-        function parseScheduleDate(str) {
-          if (!str) return null;
-          const m = String(str).trim().match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
-          if (!m) return null;
-          const d = Number(m[1]);
-          const mo = Number(m[2]);
-          const y = Number(m[3]);
-          const date = new Date(y, mo - 1, d);
-          if (date.getFullYear() !== y || date.getMonth() !== mo - 1 || date.getDate() !== d) return null;
-          return date;
-        }
-
-        function dateToScheduleStr(d) {
+        function dateToScheduleDateString(d) {
           const dd = String(d.getDate()).padStart(2, "0");
           const mm = String(d.getMonth() + 1).padStart(2, "0");
           const yyyy = d.getFullYear();
@@ -1012,7 +1006,6 @@
         }
 
         const MONTHS_FULL = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-        const MONTHS_SHORT = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
         const WEEKDAYS_SHORT = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 
         function formatMonthTitle(year, month) {
@@ -1076,104 +1069,129 @@
             '</a>';
         }
 
-        function fillClassSelect() {
-          classSelect.innerHTML = "";
-          if (!teacherClasses.length) {
-            const opt = document.createElement("option");
-            opt.value = "";
-            opt.textContent = "Классы не указаны";
-            classSelect.appendChild(opt);
-            classSelect.disabled = true;
-            return;
-          }
-          classSelect.disabled = false;
-          teacherClasses.forEach(function (name, i) {
-            const opt = document.createElement("option");
-            opt.value = String(i);
-            opt.textContent = name;
-            classSelect.appendChild(opt);
-          });
-        }
-
-        function fillSubjectSelect() {
-          subjectSelect.innerHTML = "";
-          if (!teacherSubjects.length) {
-            const opt = document.createElement("option");
-            opt.value = "";
-            opt.textContent = "Предметы не указаны";
-            subjectSelect.appendChild(opt);
-            subjectSelect.disabled = true;
-            return;
-          }
-          subjectSelect.disabled = false;
-          teacherSubjects.forEach(function (name, i) {
-            const opt = document.createElement("option");
-            opt.value = String(i);
-            opt.textContent = name;
-            subjectSelect.appendChild(opt);
-          });
-        }
-
+        /**
+         * Загружает классы и предметы учителя из профиля.
+         * Классы — из profileData.classes[*].name.
+         * Предметы — свои для КАЖДОГО класса (profileData.classes[i].subjects).
+         */
         function loadTeacherData() {
           const classesRaw = currentProfile.classes;
 
-          teacherClasses = [];
+          teacherClassesFull = [];
           const seenClasses = {};
+
           if (Array.isArray(classesRaw)) {
             classesRaw.forEach(function (c) {
-              let v = "";
-              if (typeof c === "string") v = c.trim();
-              else if (c && typeof c === "object") v = String(c.name || c.title || c.className || c.value || "").trim();
-              if (!v) return;
-              const key = v.toLowerCase();
-              if (seenClasses[key]) return;
-              seenClasses[key] = true;
-              teacherClasses.push(v);
-            });
-          }
+              if (!c) return;
 
-          teacherSubjects = [];
-          const seenSubjects = {};
-          if (Array.isArray(classesRaw)) {
-            classesRaw.forEach(function (cls) {
-              if (!cls || typeof cls !== "object") return;
-              const subsRaw = cls.subjects;
-              if (!subsRaw) return;
+              // Класс строкой — без предметов
+              if (typeof c === "string") {
+                const name = c.trim();
+                if (!name) return;
+                const key = name.toLowerCase();
+                if (seenClasses[key]) return;
+                seenClasses[key] = true;
+                teacherClassesFull.push({ name: name, subjects: [] });
+                return;
+              }
 
+              if (typeof c !== "object") return;
+
+              const name = String(c.name || c.title || c.className || c.value || "").trim();
+              if (!name) return;
+
+              // Предметы этого класса
+              const subsRaw = c.subjects;
               const subsArr = Array.isArray(subsRaw)
                 ? subsRaw
-                : (typeof subsRaw === "object" ? Object.values(subsRaw) : []);
+                : (subsRaw && typeof subsRaw === "object" ? Object.values(subsRaw) : []);
 
+              const subjects = [];
+              const seenSubs = {};
               subsArr.forEach(function (subj) {
                 let v = "";
                 if (typeof subj === "string") v = subj.trim();
                 else if (subj && typeof subj === "object") v = String(subj.name || subj.title || subj.subject || subj.value || "").trim();
                 if (!v) return;
-                const key = v.toLowerCase();
-                if (seenSubjects[key]) return;
-                seenSubjects[key] = true;
-                teacherSubjects.push(v);
+                const sk = v.toLowerCase();
+                if (seenSubs[sk]) return;
+                seenSubs[sk] = true;
+                subjects.push(v);
               });
-            });
-          }
 
-          if (!teacherSubjects.length && Array.isArray(currentProfile.subjects)) {
-            currentProfile.subjects.forEach(function (s) {
-              let v = "";
-              if (typeof s === "string") v = s.trim();
-              else if (s && typeof s === "object") v = String(s.name || s.title || s.subject || s.value || "").trim();
-              if (!v) return;
-              const key = v.toLowerCase();
-              if (seenSubjects[key]) return;
-              seenSubjects[key] = true;
-              teacherSubjects.push(v);
+              const key = name.toLowerCase();
+              if (seenClasses[key]) return;
+              seenClasses[key] = true;
+              teacherClassesFull.push({ name: name, subjects: subjects });
             });
           }
 
           teacherSchoolName = String(currentProfile.school || "").trim();
 
           fillClassSelect();
-          fillSubjectSelect();
+          // Предметы пока пустые, т.к. класс не выбран
+          refillSubjectsForSelectedClass();
+        }
+
+        function fillClassSelect() {
+          classSelect.innerHTML = "";
+
+          const placeholder = document.createElement("option");
+          placeholder.value = "";
+          placeholder.textContent = "— Выберите класс —";
+          classSelect.appendChild(placeholder);
+
+          if (!teacherClassesFull.length) {
+            classSelect.disabled = true;
+            return;
+          }
+
+          classSelect.disabled = false;
+          teacherClassesFull.forEach(function (cls, i) {
+            const opt = document.createElement("option");
+            opt.value = String(i);
+            opt.textContent = cls.name;
+            classSelect.appendChild(opt);
+          });
+
+          // Ничего не выбираем автоматически
+          classSelect.value = "";
+        }
+
+        /**
+         * Заполняет селект предметов ТОЛЬКО предметами выбранного класса.
+         */
+        function refillSubjectsForSelectedClass() {
+          subjectSelect.innerHTML = "";
+
+          const placeholder = document.createElement("option");
+          placeholder.value = "";
+          placeholder.textContent = "— Выберите предмет —";
+          subjectSelect.appendChild(placeholder);
+
+          const classIdx = Number(classSelect.value);
+          const cls = Number.isInteger(classIdx) && classIdx >= 0 && classSelect.value !== ""
+            ? teacherClassesFull[classIdx]
+            : null;
+
+          const subjects = cls && Array.isArray(cls.subjects) ? cls.subjects : [];
+
+          if (!subjects.length) {
+            subjectSelect.disabled = true;
+            subjectSelect.value = "";
+            return;
+          }
+
+          subjectSelect.disabled = false;
+          subjects.forEach(function (name, i) {
+            const opt = document.createElement("option");
+            opt.value = String(i);
+            opt.textContent = name;
+            subjectSelect.appendChild(opt);
+          });
+
+          // Ничего не выбираем автоматически
+          subjectSelect.value = "";
         }
 
         function loadSchoolsOnce() {
@@ -1226,16 +1244,10 @@
           return -1;
         }
 
-        /**
-         * Строит массив дней месяца 1..N.
-         * Для каждого дня ищет день в расписании и уроки по предмету.
-         * Возвращает: [{ day, dateStr, dayIndex, lessonIndices, dateObj }]
-         */
         function buildDaysInMonth(schedule, year, month, subjectName) {
           const daysInMonth = new Date(year, month + 1, 0).getDate();
           const target = normalizeName(subjectName);
 
-          // Индексируем расписание по dateStr
           const scheduleByDate = {};
           (schedule || []).forEach(function (day, dayIndex) {
             const ds = String(day.date || "").trim();
@@ -1269,13 +1281,6 @@
           }
 
           return result;
-        }
-
-        function dateToScheduleDateString(d) {
-          const dd = String(d.getDate()).padStart(2, "0");
-          const mm = String(d.getMonth() + 1).padStart(2, "0");
-          const yyyy = d.getFullYear();
-          return dd + "." + mm + "." + yyyy;
         }
 
         function syncCacheSchedule(schoolIndex, classIndex, newSchedule) {
@@ -1343,19 +1348,16 @@
           let html = '';
           html += '<table class="journal-table">';
 
-          // ===== Заголовок =====
           html += '<thead><tr>';
           html += '<th class="student-col">Ученик</th>';
 
           loadedDaysInMonth.forEach(function (d) {
             const dateObj = d.dateObj;
             const wd = WEEKDAYS_SHORT[dateObj.getDay()];
-            const moShort = MONTHS_SHORT[dateObj.getMonth()];
 
             const hasLessons = d.lessonIndices.length > 0;
             const thClass = "date-header" + (hasLessons ? "" : " empty-date");
 
-            // Определяем, есть ли ДЗ на этот день
             let hasHw = false;
             if (hasLessons && d.dayIndex >= 0) {
               const day = loadedSchedule[d.dayIndex];
@@ -1389,7 +1391,6 @@
 
           html += '</tr></thead>';
 
-          // ===== Тело =====
           html += '<tbody>';
 
           loadedStudents.forEach(function (student) {
@@ -1405,7 +1406,6 @@
               const hasLessons = d.lessonIndices.length > 0;
 
               if (!hasLessons) {
-                // День без урока по предмету — пустая (некликабельная) ячейка
                 html += '<td class="grade-cell no-lesson"></td>';
                 return;
               }
@@ -1459,7 +1459,6 @@
 
           journalWrap.innerHTML = html;
 
-          // ===== Обработчики =====
           journalWrap.querySelectorAll("th.date-header").forEach(function (th) {
             th.addEventListener("click", function () {
               if (th.getAttribute("data-has-lessons") !== "1") return;
@@ -1827,6 +1826,15 @@
         }
 
         function handleClassSubjectChange() {
+          if (classSelect.value === "" || subjectSelect.value === "") {
+            loadedClassInfo = null;
+            loadedStudents = [];
+            loadedDaysInMonth = [];
+            loadedSubject = "";
+            renderJournal();
+            return;
+          }
+
           const classIndexValue = Number(classSelect.value);
           const subjectIndexValue = Number(subjectSelect.value);
 
@@ -1845,8 +1853,17 @@
             return;
           }
 
-          const className = teacherClasses[classIndexValue];
-          const subjectName = teacherSubjects[subjectIndexValue];
+          const cls = teacherClassesFull[classIndexValue];
+          const className = cls ? cls.name : "";
+          const subjectName = cls && Array.isArray(cls.subjects) ? cls.subjects[subjectIndexValue] : "";
+
+          if (!className || !subjectName) {
+            loadedClassInfo = null;
+            loadedStudents = [];
+            loadedDaysInMonth = [];
+            renderJournal();
+            return;
+          }
 
           const schoolIndex = schoolsCache.findIndex(function (s) {
             const n = s && (s.name || s.title || s.schoolName || "");
@@ -1917,7 +1934,11 @@
           renderJournal();
         });
 
-        classSelect.addEventListener("change", handleClassSubjectChange);
+        // При смене класса — сначала пересобираем предметы, потом грузим журнал
+        classSelect.addEventListener("change", function () {
+          refillSubjectsForSelectedClass();
+          handleClassSubjectChange();
+        });
         subjectSelect.addEventListener("change", handleClassSubjectChange);
 
         auth.onAuthStateChanged(function (user) {
