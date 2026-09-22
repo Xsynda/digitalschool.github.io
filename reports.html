@@ -543,21 +543,21 @@
     let schedule = [];
     let currentTab = "avg";
 
-    let teacherClasses = [];
+    // ✅ Теперь: [{ name, subjects: [] }] — как в консоли/журнале
+    let teacherClassesFull = [];
+    // Активные предметы выбранного класса
     let teacherSubjects = [];
     let teacherSchoolName = "";
+
     let schoolsArr = [];
     let currentSchoolIndex = -1;
     let currentClassIndex = -1;
     let allUsers = {};
 
-    // ✅ Термины из /terms
+    // Термины из /terms
     let termsCache = {};
 
-    // Порядок, в котором показываем периоды в селекте
     const TERM_ORDER = ["term1", "term2", "term3", "term4", "year"];
-
-    // Ключи четвертей (без year). Используются для расчёта годовой.
     const QUARTER_KEYS = ["term1", "term2", "term3", "term4"];
 
     /* ===== Утилиты ===== */
@@ -693,6 +693,11 @@
       return [...set].sort((a, b) => a.localeCompare(b));
     }
 
+    /**
+     * ✅ Видимые предметы.
+     * - Не учитель: все предметы из расписания класса.
+     * - Учитель: предметы ВЫБРАННОГО класса из teacherSubjects.
+     */
     function getVisibleSubjects() {
       const all = getAllSubjectsFromSchedule(schedule);
       if (!isTeacher) return all;
@@ -748,7 +753,6 @@
       return sum / cnt;
     }
 
-    // Итог за четверть: 3.50 → 3, 3.51 → 4
     function suggestFinal(avg) {
       if (avg === null || avg === undefined) return null;
       const rounded = Math.floor(avg + 0.5 - 1e-9);
@@ -757,17 +761,14 @@
       return rounded;
     }
 
-    // ✅ Итог за год: округление в пользу ученика (3.50 → 4)
     function roundFavorStudent(avg) {
       if (avg === null || avg === undefined) return null;
-      // Math.round(3.5) = 4, Math.round(3.49) = 3
       let r = Math.round(avg + 1e-9);
       if (r < 2) r = 2;
       if (r > 5) r = 5;
       return r;
     }
 
-    // ✅ Итог за четверть по конкретному предмету (число или null)
     function getQuarterFinalForSubject(uid, subject, quarterKey) {
       const bySubject = collectGradesBySubject(uid, quarterKey);
       const records = bySubject[subject] || [];
@@ -775,8 +776,6 @@
       return suggestFinal(avg);
     }
 
-    // ✅ Итог за год по предмету: среднее из четвертных итогов + округление в пользу ученика
-    // Возвращает { final, quarters: {term1, term2, term3, term4}, avgQuarters }
     function getYearFinalForSubject(uid, subject) {
       const quarters = {};
       QUARTER_KEYS.forEach(qk => {
@@ -808,7 +807,6 @@
       }).join("")}</div>`;
     }
 
-    // ✅ Отрисовка четвертных итогов в виде чипов (для годового отчёта)
     function renderTermChips(quarters) {
       const items = QUARTER_KEYS.map(qk => {
         const t = termsCache[qk] || {};
@@ -838,7 +836,6 @@
       const isYear = termKey === "year";
       const subjects = getVisibleSubjects();
 
-      // Меняем заголовок колонки и сноску для года
       if (isYear) {
         avgGradesHeader.textContent = "Четвертные итоги";
         avgFootnote.innerHTML = "* Годовая оценка = округление среднего из четвертных итогов <b>в пользу ученика</b> (3.50 → 4).";
@@ -848,7 +845,7 @@
       }
 
       if (!subjects.length) {
-        avgTableBody.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="material-symbols-outlined">event_busy</span><h3>Нет доступных предметов</h3></div></td></tr>`;
+        avgTableBody.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="material-symbols-outlined">event_busy</span><h3>Нет доступных предметов</h3><div>Учителю видны только предметы его классов</div></div></td></tr>`;
         return;
       }
 
@@ -922,7 +919,6 @@
         return;
       }
 
-      // ✅ Для года: показываем четвертные итоги по предмету
       if (isYear) {
         const { final, quarters, avgQuarters } = getYearFinalForSubject(targetUid, subject);
 
@@ -954,7 +950,6 @@
         return;
       }
 
-      // Обычный режим — по четверти
       const bySubject = collectGradesBySubject(targetUid, termKey);
       const records = (bySubject[subject] || []).slice().sort((a, b) => {
         const da = parseDate(a.date);
@@ -999,7 +994,7 @@
       }).join("");
     }
 
-    /* ===== Управление вкладками ===== */
+    /* ===== Вкладки ===== */
 
     function setTab(tab) {
       currentTab = tab;
@@ -1156,57 +1151,101 @@
 
     /* ===== Учительский режим ===== */
 
-    async function initTeacherMode(profile) {
-      teacherClasses = [];
-      if (Array.isArray(profile.classes)) {
-        profile.classes.forEach(c => {
-          if (typeof c === "string") teacherClasses.push(c.trim());
-          else if (c && typeof c === "object") {
-            const v = c.name || c.title || c.className || c.value || "";
-            if (v) teacherClasses.push(String(v).trim());
-          }
-        });
-      }
-      teacherClasses = teacherClasses.filter(Boolean);
+    /**
+     * ✅ Классы учителя теперь берём как [{ name, subjects }].
+     * Предметы активного класса хранятся в teacherSubjects.
+     */
+    function loadTeacherStructure(profile) {
+      const classesRaw = profile.classes;
 
-      teacherSubjects = [];
-      if (Array.isArray(profile.subjects)) {
-        profile.subjects.forEach(s => {
-          if (typeof s === "string") teacherSubjects.push(s.trim());
-          else if (s && typeof s === "object") {
-            const v = s.name || s.title || s.subject || s.value || "";
-            if (v) teacherSubjects.push(String(v).trim());
+      teacherClassesFull = [];
+      const seenClasses = {};
+
+      if (Array.isArray(classesRaw)) {
+        classesRaw.forEach(c => {
+          if (!c) return;
+
+          if (typeof c === "string") {
+            const name = c.trim();
+            if (!name) return;
+            const key = name.toLowerCase();
+            if (seenClasses[key]) return;
+            seenClasses[key] = true;
+            teacherClassesFull.push({ name, subjects: [] });
+            return;
           }
+
+          if (typeof c !== "object") return;
+
+          const name = String(c.name || c.title || c.className || c.value || "").trim();
+          if (!name) return;
+
+          const subsRaw = c.subjects;
+          const subsArr = Array.isArray(subsRaw)
+            ? subsRaw
+            : (subsRaw && typeof subsRaw === "object" ? Object.values(subsRaw) : []);
+
+          const subjects = [];
+          const seenSubs = {};
+          subsArr.forEach(subj => {
+            let v = "";
+            if (typeof subj === "string") v = subj.trim();
+            else if (subj && typeof subj === "object") v = String(subj.name || subj.title || subj.subject || subj.value || "").trim();
+            if (!v) return;
+            const sk = v.toLowerCase();
+            if (seenSubs[sk]) return;
+            seenSubs[sk] = true;
+            subjects.push(v);
+          });
+
+          const key = name.toLowerCase();
+          if (seenClasses[key]) return;
+          seenClasses[key] = true;
+          teacherClassesFull.push({ name, subjects });
         });
       }
-      teacherSubjects = teacherSubjects.filter(Boolean);
 
       teacherSchoolName = String(profile.school || "").trim();
+    }
+
+    function applySubjectsForClass(classIdx) {
+      const cls = Number.isInteger(classIdx) && classIdx >= 0 ? teacherClassesFull[classIdx] : null;
+      teacherSubjects = cls && Array.isArray(cls.subjects) ? cls.subjects.slice() : [];
+    }
+
+    async function initTeacherMode(profile) {
+      loadTeacherStructure(profile);
 
       teacherClassSelect.innerHTML = "";
-      if (!teacherClasses.length) {
+
+      if (!teacherClassesFull.length) {
         const o = document.createElement("option");
         o.value = "";
         o.textContent = "Классы не указаны";
         teacherClassSelect.appendChild(o);
         teacherClassSelect.disabled = true;
         teacherStudentSelect.disabled = true;
+        teacherSubjects = [];
         return;
       }
 
-      teacherClasses.forEach((c, i) => {
+      teacherClassesFull.forEach((cls, i) => {
         const o = document.createElement("option");
         o.value = String(i);
-        o.textContent = c;
+        o.textContent = cls.name;
         teacherClassSelect.appendChild(o);
       });
 
       teacherClassSelect.disabled = false;
       teacherClassSelect.value = "0";
 
+      applySubjectsForClass(0);
+
       await fillTeacherStudents();
 
+      // ✅ Меняем предметы при смене класса
       teacherClassSelect.addEventListener("change", async () => {
+        applySubjectsForClass(Number(teacherClassSelect.value));
         await fillTeacherStudents();
         updateCurrentInfo();
         rerenderAll();
@@ -1221,7 +1260,7 @@
 
     async function fillTeacherStudents() {
       const classIdx = Number(teacherClassSelect.value);
-      const className = teacherClasses[classIdx] || "";
+      const className = teacherClassesFull[classIdx]?.name || "";
 
       teacherStudentSelect.innerHTML = "";
 
@@ -1252,7 +1291,6 @@
 
       setScheduleFromClass(schoolIdx, classIdxInSchool);
 
-      // ✅ Учитель видит только подтверждённых учеников
       const students = Object.entries(allUsers)
         .map(([uid, data]) => ({ uid, ...(data || {}) }))
         .filter(u => Number(u.status) !== 4)
@@ -1346,7 +1384,6 @@
         const profile = profileSnap.exists() ? profileSnap.val() : {};
         currentProfile = profile;
 
-        // ✅ Проверка подтверждения аккаунта администратором
         const acceptStatus = getAcceptStatus(profile);
         if (acceptStatus !== "accepted") {
           window.location.href = AUTH_URL;
